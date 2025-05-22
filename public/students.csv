@@ -1,0 +1,4 @@
+id,first_name,last_name,email,gender,phone_number,id_number,passport_number,address,postal_code,city,state,country,date_of_birth,registration_number
+1,Joshua,Kisek,joshu.kisekei@example.com,Male,+1234567890,12345678,A123456,123 Main St,12345,New York,NY,USA,1995-01-15,STD0021
+2,Jane,Kitu,janee.kituu@example.com,Female,+0987654321,87654321,,456 Park Ave,54321,Boston,MA,USA,1997-05-22,STD0022
+3,Michael,Jogo,michaeel.j@example.com,Male,+2345678901,,,789 Broad St,,Chicago,IL,USA,1996-11-03,STD0023
