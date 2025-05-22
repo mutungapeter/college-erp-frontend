@@ -169,9 +169,10 @@ console.log("marksData",marksData)
      
          <div className="flex md:items-center md:flex-row flex-col gap-4">
           <UploadMarks refetchData={refetch} />
-          <Link href="/dashboard/academics/marks/assessment-list" className="flex space-x-3 items-center bg-success-600 hover:bg-success-700 rounded-xl px-3 py-2"> 
-            <FaRegHandPointRight   className=" text-lg text-white"/>
-            <span className="text-white">Adding Single Mark</span>
+          <Link href="/dashboard/academics/marks/assessment-list" className="flex space-x-2 items-center 
+          bg-success-600 hover:bg-success-700 rounded-md md:p-2 p-1"> 
+            <FaRegHandPointRight   className=" text-sm text-white"/>
+            <span className="text-white text-xs">Adding Single Mark</span>
           </Link>
          </div>
         </div>

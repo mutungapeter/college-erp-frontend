@@ -30,9 +30,10 @@ const EditDepartment = ({
 
   const [updateDepartment, { isLoading: isUpdating }] =
     useUpdateDepartmentMutation();
-  const {
-    data: schoolsData
-  } = useGetSchoolsQuery({}, { refetchOnMountOrArgChange: true });
+  const { data: schoolsData } = useGetSchoolsQuery(
+    {},
+    { refetchOnMountOrArgChange: true }
+  );
   console.log("schoolsData", schoolsData);
   const {
     register,
@@ -60,15 +61,15 @@ const EditDepartment = ({
     setIsError(false);
     handleCloseModal();
   };
-const handleSchoolChange = (
-  selected: SingleValue<{ value: number | null; label: string }>
-) => {
-  if (selected) {
-    setValue("school", Number(selected.value));
-  } else {
-    setValue("school", null);
-  }
-};
+  const handleSchoolChange = (
+    selected: SingleValue<{ value: number | null; label: string }>
+  ) => {
+    if (selected) {
+      setValue("school", Number(selected.value));
+    } else {
+      setValue("school", null);
+    }
+  };
 
   const onSubmit = async (formData: z.infer<typeof updateDepartmentSchema>) => {
     console.log("submitting form data");
@@ -83,7 +84,7 @@ const handleSchoolChange = (
       setIsError(false);
       setSuccessMessage("Department Updated successfully!");
       setShowSuccessModal(true);
-   
+
       refetchData();
     } catch (error: unknown) {
       console.log("error", error);
@@ -97,7 +98,7 @@ const handleSchoolChange = (
         setSuccessMessage("Failed to update Department. Please try again.");
         setShowSuccessModal(true);
       }
-    }finally {
+    } finally {
       refetchData();
     }
   };
@@ -171,7 +172,7 @@ const handleSchoolChange = (
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2  gap-4">
                     <div>
-                      <label>School</label>
+                      <label className="block mb-2 text-sm font-medium">School</label>
                       <Select
                         options={schoolsData?.map((school: SchoolType) => ({
                           value: school.id.toString(),
@@ -179,10 +180,9 @@ const handleSchoolChange = (
                         }))}
                         menuPortalTarget={document.body}
                         defaultValue={{
-  value: department?.school?.id || null, 
-  label: department?.school?.name || "",
-}}
-
+                          value: department?.school?.id || null,
+                          label: department?.school?.name || "",
+                        }}
                         styles={{
                           menuPortal: (base) => ({
                             ...base,
@@ -190,7 +190,7 @@ const handleSchoolChange = (
                           }),
                           control: (base) => ({
                             ...base,
-                            minHeight: "44px",
+                            minHeight: "25px",
                             minWidth: "200px",
                             borderColor: "#d1d5db",
                             boxShadow: "none",

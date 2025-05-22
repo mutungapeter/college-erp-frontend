@@ -168,7 +168,7 @@ const AddDepartment = ({ refetchData }: { refetchData: () => void }) => {
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2  gap-4">
                     <div>
-                      <label>School</label>
+                      <label className="block space-x-1  text-sm font-medium mb-2">School</label>
                       <Select
                         options={schoolsData?.map((school: SchoolType) => ({
                           value: school.id,
@@ -182,7 +182,7 @@ const AddDepartment = ({ refetchData }: { refetchData: () => void }) => {
                           }),
                           control: (base) => ({
                             ...base,
-                            minHeight: "23px",
+                            minHeight: "30px",
                             minWidth: "200px",
                             borderColor: "#d1d5db",
                             boxShadow: "none",
@@ -214,7 +214,8 @@ const AddDepartment = ({ refetchData }: { refetchData: () => void }) => {
                         type="text"
                         {...register("office")}
                         placeholder="e.g Greec Towers, 5th Floor"
-                        className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
+                        className="w-full py-2 px-4 border placeholder:text-sm 
+                         rounded-md focus:outline-none "
                       />
                       {errors.office && (
                         <p className="text-red-500 text-sm">
