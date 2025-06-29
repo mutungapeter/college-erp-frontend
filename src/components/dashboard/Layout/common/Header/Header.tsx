@@ -1,8 +1,9 @@
 "use client";
 import Link from "next/link";
+import { AiOutlineMenu } from "react-icons/ai";
+import { GoSidebarCollapse } from "react-icons/go";
 import { LuMessageCircle } from "react-icons/lu";
 import { MdOutlineMenu } from "react-icons/md";
-import { RiMenuUnfold3Line } from "react-icons/ri";
 import DropdownUser from "./DropdownUser";
 const Navbar = ({
   onToggleSidebar,
@@ -46,9 +47,9 @@ const Navbar = ({
       {/* Large Screen Sidebar Collapse Button */}
       <button onClick={onToggleSidebar} className="hidden md:block">
         {isOpen ? (
-          <MdOutlineMenu className="text-lg text-primary font-nunito md:text-3xl cursor-pointer" />
+          <AiOutlineMenu className="text-lg text-primary p-1 rounded-md border border-primary font-nunito md:text-3xl cursor-pointer" />
         ) : (
-          <RiMenuUnfold3Line className="text-lg text-primary font-nunito md:text-3xl cursor-pointer" />
+          <GoSidebarCollapse className="text-lg text-primary font-nunito md:text-3xl cursor-pointer" />
         )}
       </button>
 

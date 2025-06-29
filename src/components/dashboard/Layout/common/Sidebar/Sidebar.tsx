@@ -1,10 +1,9 @@
 "use client";
 
-import Link from "next/link";
+import Image from "next/image";
 import { VscClose } from "react-icons/vsc";
-import SidebarItem from "./SidebarItem";
 import { menuItems } from "../../admin/MenuLinks/menu";
-
+import SidebarItem from "./SidebarItem";
 const Menu = ({
   isOpen,
   isMobileOpen,
@@ -14,24 +13,34 @@ const Menu = ({
   isMobileOpen: boolean;
   onCloseMobile: () => void;
 }) => {
- 
   return (
     <div
-      className={`fixed bg-sidebar-bg left-0 top-0 z-[999] duration-300 ease-linear h-screen transition-all md:relative md:translate-x-0 
+      className={`fixed bg-white shadow-sm left-0 top-0 z-[999] duration-300 ease-linear h-screen transition-all md:relative md:translate-x-0 
     ${isMobileOpen ? "translate-x-0 w-[80%]" : "-translate-x-full"}
     ${isOpen ? "md:w-[17%] lg:w-[17%]" : "md:w-[6%] lg:w-[6%]"} 
     p-4 flex flex-col`}
     >
       <div className="flex items-center justify-between">
-        <Link href="/" className="flex items-center">
-          {isOpen && (
-            <div className="flex h-[45px] w-full md:h-[55px] flex-col">
-              <h2 className="text-lg md:text-lg font-bold tracking-tight text-primary uppercase">
-                College ERP
-              </h2>
+        <div className="text-center">
+          <div className="flex items-center justify-center space-x-3 mb-4">
+            <div className="flex-shrink-0">
+              <Image
+                src="/logo/logo.png"
+                alt="University Logo"
+                width={40}
+                height={40}
+                className="w-10 h-10 object-contain"
+              />
             </div>
-          )}
-        </Link>
+            {isOpen && (
+              <div className="text-left">
+                <h1 className="text-lg md:text-md font-semibold leading-tight uppercase">
+                  College ERP
+                </h1>
+              </div>
+            )}
+          </div>
+        </div>
 
         <VscClose
           onClick={onCloseMobile}
@@ -46,11 +55,11 @@ const Menu = ({
             <div className="flex flex-col mb-5" key={category.title}>
               <div className="space-y-1 flex flex-col">
                 {category.items.map((item) => (
-                  <SidebarItem 
-                    key={item.label} 
-                    item={item} 
-                    isOpen={isOpen} 
-                    onCloseMobile={onCloseMobile} 
+                  <SidebarItem
+                    key={item.label}
+                    item={item}
+                    isOpen={isOpen}
+                    onCloseMobile={onCloseMobile}
                   />
                 ))}
               </div>
