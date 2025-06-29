@@ -1,8 +1,13 @@
-import React from 'react'
+"use client";
+import PageLoadingSpinner from '@/components/common/spinners/pageLoadingSpinner';
+import Members from '@/components/library/members';
+import { Suspense } from 'react';
 
 const MembersPage = () => {
   return (
-    <div>MembersPage</div>
+          <Suspense fallback={<PageLoadingSpinner />}>
+                <Members />
+                </Suspense>
   )
 }
 

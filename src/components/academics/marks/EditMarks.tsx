@@ -141,59 +141,56 @@ const EditMarks = ({
                   </div>
                 </div>
                 <div className="p-3 space-y-2">
-<div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Student Name
-                    </label>
-                    <input
-                      type="text"
-                      value={`${data?.student?.user.first_name} ${data?.student?.user.last_name}`}
-                      readOnly
-                        className="w-full py-2 px-4 border bg-gray-200 placeholder:text-sm rounded-md focus:outline-none"
-                   />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Registration Number
-                    </label>
-                    <input
-                      type="text"
-                      value={data?.student?.registration_number}
-                      readOnly
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Student Name
+                      </label>
+                      <input
+                        type="text"
+                        value={`${data?.student?.user.first_name} ${data?.student?.user.last_name}`}
+                        readOnly
                         className="w-full py-2 px-4 border bg-gray-200 placeholder:text-sm rounded-md focus:outline-none"
                       />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Registration Number
+                      </label>
+                      <input
+                        type="text"
+                        value={data?.student?.registration_number}
+                        readOnly
+                        className="w-full py-2 px-4 border bg-gray-200 placeholder:text-sm rounded-md focus:outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Cohort/Class
+                      </label>
+                      <input
+                        type="text"
+                        value={data?.cohort?.name}
+                        readOnly
+                        className="w-full py-2 px-4 border bg-gray-200 placeholder:text-sm rounded-md focus:outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Semester
+                      </label>
+                      <input
+                        type="text"
+                        value={`${data?.semester?.name} (${data?.semester?.academic_year})`}
+                        readOnly
+                        className="w-full py-2 px-4 border bg-gray-200 placeholder:text-sm rounded-md focus:outline-none"
+                      />
+                    </div>
                   </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Cohort/Class
-                    </label>
-                    <input
-                      type="text"
-                      value={data?.cohort?.name}
-                      readOnly
-                    className="w-full py-2 px-4 border bg-gray-200 placeholder:text-sm rounded-md focus:outline-none"
-
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Semester
-                    </label>
-                    <input
-                      type="text"
-                      value={`${data?.semester?.name} (${data?.semester?.academic_year})`}
-                      readOnly
-                    className="w-full py-2 px-4 border bg-gray-200 placeholder:text-sm rounded-md focus:outline-none"
-
-                    />
-                  </div>
-
-                </div>
-                 <div className="">
+                  <div className="">
                     <label className="block text-sm font-medium text-gray-700">
                       Unit
                     </label>
@@ -201,8 +198,7 @@ const EditMarks = ({
                       type="text"
                       value={`${data?.course?.course_code} - ${data?.course?.name}`}
                       readOnly
-                    className="w-full py-2 px-4 border bg-gray-200 placeholder:text-sm rounded-md focus:outline-none"
-
+                      className="w-full py-2 px-4 border bg-gray-200 placeholder:text-sm rounded-md focus:outline-none"
                     />
                   </div>
                 </div>

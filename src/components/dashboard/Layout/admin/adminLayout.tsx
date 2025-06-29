@@ -39,7 +39,7 @@ export default function AdminDashboardLayout({
           
           
           <div
-            className={`flex flex-col h-screen transition-all ${
+            className={`flex flex-col overflow-y-auto h-screen transition-all ${
               isMobileSidebarOpen
                 ? "md:block"
                 : isSidebarOpen
@@ -55,7 +55,8 @@ export default function AdminDashboardLayout({
             />
             
         
-            <main className="flex-1 overflow-y-auto mx-2 md:mx-2 p-2 md:p-2 md:mt-4 mt-2">
+            {/* <main className="flex-1 overflow-y-auto mx-2  md:mx-2 p-2 md:p-2  md:mt-10 md:mb-10 mt-2"> */}
+            <main className="flex-1  mx-2  md:mx-2 p-2 md:p-2  md:mt-10 md:mb-10 mt-2">
               {children}
             </main>
           </div>

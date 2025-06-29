@@ -63,6 +63,7 @@ console.log("schools",schools)
     setIsDeleteModalOpen(true);
   };
 
+  console.log("data", data)
   const closeDeleteModal = () => {
     setIsDeleteModalOpen(false);
     setSelectedDepartment(null);
@@ -88,13 +89,20 @@ console.log("schools",schools)
     {
       header: "Name",
       accessor: "name",
-      cell: (depart: DepartmentType) => <span>{depart.name}</span>,
+      cell: (depart: DepartmentType) => <span >{depart?.name ?? "-"}</span>,
     },
     {
       header: "School",
       accessor: "school",
       cell: (depart: DepartmentType) => (
-        <span className="text-sm font-normal">{depart.school.name}</span>
+        <span className="text-sm font-normal">{depart?.school?.name ?? "-"}</span>
+      ),
+    },
+    {
+      header: "Department Type",
+      accessor: "department_type",
+      cell: (depart: DepartmentType) => (
+        <span className="text-sm font-normal">{depart.department_type}</span>
       ),
     },
     {

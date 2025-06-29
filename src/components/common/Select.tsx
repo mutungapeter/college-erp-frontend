@@ -65,47 +65,48 @@ const FilterSelect: React.FC<FilterSelectProps> = ({
           color: "#9ca3af",
           fontSize: "0.875rem",
         }),
-        // Add styling for the options in the dropdown
+        
         option: (base, state) => ({
           ...base,
-          fontSize: "0.875rem",  // Font size of the dropdown options
-          color: state.isSelected ? "#ffffff" : "#333333",  // Text color of options
+          fontSize: "0.875rem",  
+          color: state.isSelected ? "#ffffff" : "#333333",  
+          cursor: "pointer",
           backgroundColor: state.isSelected 
-            ? "#4f46e5"  // Background for selected option
+            ? "#4f46e5"  
             : state.isFocused 
-              ? "#e5e7eb"  // Background for focused option
-              : "#ffffff", // Background for normal option
+              ? "#e5e7eb"  
+              : "#ffffff", 
           "&:hover": {
-            backgroundColor: "#e5e7eb", // Background color on hover
+            backgroundColor: "#e5e7eb", 
           },
-          padding: "8px 12px",  // Add more padding for better readability
+          padding: "8px 12px", 
         }),
-        // Style for the selected value
+        
         singleValue: (base) => ({
           ...base,
           fontSize: "0.875rem",
-          color: "#333333", // Color of the selected value text
+          color: "#333333", 
         }),
-        // Style for the menu/dropdown
+       
         menu: (base) => ({
           ...base,
           boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
           borderRadius: "0.375rem",
           width: "auto",
-          minWidth: "100%", // Ensures the menu is at least as wide as the control
+          minWidth: "100%",
         }),
-        // Style for the menu list (scrollable area with options)
+       
         menuList: (base) => ({
           ...base,
           padding: "5px",
-          maxHeight: "300px", // Control max height for very long lists
+          maxHeight: "300px",
         }),
-        // Container for the entire component
+        
         container: (base) => ({
           ...base,
           width: "100%",
         }),
-        // Style for the value container (inside the control)
+        
         valueContainer: (base) => ({
           ...base,
           padding: "2px 8px",

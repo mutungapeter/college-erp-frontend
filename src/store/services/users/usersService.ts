@@ -12,12 +12,19 @@ export const usersApi = apiSlice.injectEndpoints({
         
       }),
     }),
+    updateUserAccount: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `users/update/${id}/`,
+        method: "PATCH",
+        body: data,
+        
+      }),
+    }),
    
   }),
 });
 
 export const {
-useUpdateUserProfileMutation
-
-
+useUpdateUserProfileMutation,
+useUpdateUserAccountMutation,
 } = usersApi;

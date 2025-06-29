@@ -1,16 +1,19 @@
 import { MenuGroup } from "@/definitions/menu";
+import { AiOutlineFileDone } from "react-icons/ai";
+import { BiBuildingHouse } from "react-icons/bi";
+import { GrMoney } from "react-icons/gr";
 import {
   IoBedOutline,
   IoBriefcaseOutline,
   IoCalendarOutline,
-  IoCashOutline,
   IoHomeOutline,
   IoLibraryOutline,
   IoPeopleOutline,
   IoSchoolOutline
 } from "react-icons/io5";
+import { LuBookOpenCheck } from "react-icons/lu";
 import { PiUserList } from "react-icons/pi";
-
+import { RiMoneyDollarBoxLine } from "react-icons/ri";
 export const menuItems: MenuGroup[] = [
   {
     title: "Dashboard",
@@ -23,15 +26,27 @@ export const menuItems: MenuGroup[] = [
     ],
   },
   {
-    title: "Manage Academics",
+    title: "Manage Units",
     items: [
       {
-        icon: <IoSchoolOutline />,
-        label: "Curriculum",
+        icon: <BiBuildingHouse />,
+        label: "School Units",
         children: [
           { label: "Campuses", href: "/dashboard/curriculum/campuses" },
           { label: "Schools", href: "/dashboard/curriculum/schools" },
           { label: "Departments", href: "/dashboard/curriculum/departments" },
+            ],
+      },
+    ],
+  },
+  {
+    title: "Manage Academics",
+    items: [
+      {
+        icon: <IoSchoolOutline />,
+        label: "Academics",
+        children: [
+          { label: "Intakes", href: "/dashboard/curriculum/intakes" },
           { label: "Programmes", href: "/dashboard/curriculum/programmes" },
           { label: "Units", href: "/dashboard/curriculum/units" },
           { label: "Cohorts", href: "/dashboard/curriculum/cohorts" },
@@ -52,6 +67,16 @@ export const menuItems: MenuGroup[] = [
       },
     ],
   },
+    {
+    title: "Reporting",
+    items: [
+      {
+        icon: <LuBookOpenCheck />,
+        label: "Reporting",
+        href: "/dashboard/reporting" 
+      },
+    ],
+  },
   {
     title: "Manage Students",
     items: [
@@ -68,11 +93,11 @@ export const menuItems: MenuGroup[] = [
     ],
   },
   {
-    title: "Academics",
+    title: "Results ",
     items: [
       {
-        icon: <IoCalendarOutline />,
-        label: "Academics",
+        icon: <AiOutlineFileDone />,
+        label: "Results ",
         children: [
           { label: "Marks", href: "/dashboard/academics/marks" },
           { label: "Assessment List", href: "/dashboard/academics/marks/assessment-list" },
@@ -88,9 +113,37 @@ export const menuItems: MenuGroup[] = [
         icon: <IoBriefcaseOutline />,
         label: "Staff",
         children: [
-          { label: "College Staff", href: "/dashboard/staff" },
-          { label: "Staff Attendance", href: "/dashboard/staff/attendance" },
+          { label: "Positions", href: "/dashboard/staff/positions" },
+          { label: "All Staff", href: "/dashboard/staff" },
+          { label: "Attendance", href: "/dashboard/staff/attendance" },
+        ],
+      },
+    ],
+  },
+  {
+    title: "Leaves",
+    items: [
+      {
+        icon: <IoCalendarOutline />,
+        label: "Leaves",
+        children: [
+          { label: "Leave Entitlements", href: "/dashboard/staff/leaves/leave-entitlements" },
+          { label: "Leave Applications", href: "/dashboard/staff/leaves/leave-applications" },
           { label: "Leaves", href: "/dashboard/staff/leaves" },
+        ],
+      },
+    ],
+  },
+  {
+    title: "Payroll & Payslips",
+    items: [
+      {
+        icon: <IoBriefcaseOutline />,
+        label: "Payroll/Payslips",
+        children: [
+          { label: "Payroll", href: "/dashboard/payroll" },
+          { label: "Payslips", href: "/dashboard/payroll/payslips" },
+          { label: "P9 Forms", href: "/dashboard/payroll/p9-forms" },
         ],
       },
     ],
@@ -102,25 +155,27 @@ export const menuItems: MenuGroup[] = [
         icon: <IoBedOutline />,
         label: "Hostels",
         children: [
-          { label: "Rooms", href: "/dashboard/hostels/rooms" },
-          { label: "Hostels", href: "/dashboard/hostels" },
+          { label: "Bookings", href: "/dashboard/hostels/bookings" },
+          { label: "Rooms", href: "/dashboard/hostels" },
         ],
       },
     ],
   },
-  // {
-  //   title: "Cafeteria",
-  //   items: [
-  //     {
-  //       icon: <IoRestaurantOutline />,
-  //       label: "Cafeteria",
-  //       children: [
-  //         { label: "Meals", href: "/dashboard/cafeteria/meals" },
-  //         { label: "Meal Plans", href: "/dashboard/cafeteria/plans" },
-  //       ],
-  //     },
-  //   ],
-  // },
+    {
+    title: "Fees",
+    items: [
+      {
+        icon: <GrMoney />,
+        label: "Fees",
+        children: [
+          { label: "Invoices", href: "/dashboard/finance/fees/invoices" },
+          { label: "Fee Statements", href: "/dashboard/finance/fees/fee-statement" },
+          { label: "Fee Structure", href: "/dashboard/finance/fees/fee-structure" },
+          { label: "Fee Payments", href: "/dashboard/finance/fees/fees-payments" },
+        ],
+      },
+    ],
+  },
   {
     title: "Library",
     items: [
@@ -130,21 +185,22 @@ export const menuItems: MenuGroup[] = [
         children: [
           { label: "Books", href: "/dashboard/library/books" },
           { label: "Members", href: "/dashboard/library/members" },
-          { label: "Borrowed Records", href: "#" },
-          { label: "Fines", href: "#" },
+          { label: "Borrowed Books", href: "/dashboard/library/borrowed-books" },
+          { label: "Fines", href: "/dashboard/library/borrowed-books-fines" },
         ],
       },
     ],
   },
   {
-    title: "Financials",
+    title: "Finance",
     items: [
       {
-        icon: <IoCashOutline />,
-        label: "Financials",
+        icon: <RiMoneyDollarBoxLine />,
+        label: "Finance",
         children: [
-          { label: "Fees Structure", href: "/dashboard/finance/fee-structure" },
-          { label: "Fees Statements", href: "/dashboard/finance/fee-statement" },
+          // { label: "Reports", href: "/dashboard/finance/reports" },
+          { label: "Library Payments", href: "/dashboard/finance/library-payments" },
+          // { label: "Budget", href: "/dashboard/finance/budget" },
         ],
       },
     ],

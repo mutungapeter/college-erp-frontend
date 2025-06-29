@@ -6,6 +6,10 @@ export const CohortStatusOptions: ProgramOption[] = [
   { value: "Active", label: "Active" },
   { value: "Graduated", label: "Graduated" },
 ];
+export const BookingStatusOptions: ProgramOption[] = [
+  { value: "Checked In", label: "Checked In" },
+  { value: "Checked Out", label: "Checked Out" },
+];
 
 export const YearsOptions:  ProgramOption[] = [
   { value: "First Year", label: "First Year" },
@@ -51,6 +55,22 @@ export const SessionStatusOptions = [
 export const GenderOptions = [
   { value: "Male", label: "Male" },
   { value: "Female", label: "Female" },
+];
+export const HostelGenderOptions = [
+  { value: "Male", label: "Male" },
+  { value: "Female", label: "Female" },
+  { value: "Mixed", label: "Mixed" },
+];
+export const BookCategoryOptions = [
+  { value: "Book", label: "Book" },
+  { value: "Journal", label: "Journal" },
+  { value: "Digital", label: "Digital" },
+];
+
+export const BorrowedBookStatusOptions = [
+  { value: "Returned", label: "Returned" },
+  { value: "Pending Return", label: "Pending Return" },
+  { value: "Lost", label: "Lost" },
 ];
 export const EducationHistoryOptions = [
   { value: "Primary School", label: "Primary School" },

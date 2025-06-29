@@ -1,3 +1,4 @@
+import { IntakeType } from "./admissions";
 
 
 
@@ -6,6 +7,7 @@ export interface DepartmentType {
 	name: string;
 	school: SchoolType;
 	office: string;
+	department_type: string;
 }
 
 export interface ProgrammeType {
@@ -34,6 +36,7 @@ export interface ProgrammeCohortType {
 	current_year: string;
 	current_semester: SemesterType;
 	status: string;
+	intake: IntakeType;
 }
 
 

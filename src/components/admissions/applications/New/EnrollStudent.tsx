@@ -82,6 +82,7 @@ const EnrollStudent = ({ refetchData, data }:Props) => {
       const response = await enrollApplication({
         application: data?.id,
         campus: data?.campus?.id,
+        
         ...formData,
       }).unwrap();
       console.log("response", response);

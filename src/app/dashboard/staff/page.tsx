@@ -1,9 +1,14 @@
-import React from 'react'
+"use client";
+import PageLoadingSpinner from '@/components/common/spinners/pageLoadingSpinner';
+import Staff from '@/components/staff';
+import { Suspense } from 'react';
 
 const StaffPage = () => {
   return (
-    <div>StaffPage</div>
+          <Suspense fallback={<PageLoadingSpinner />}>
+                <Staff />
+                </Suspense>
   )
 }
 
-export default StaffPage
+export default StaffPage;

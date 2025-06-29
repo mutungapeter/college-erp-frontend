@@ -16,6 +16,8 @@ import { cohortSchema } from "@/schemas/curriculum/cohorts";
 import { useCreateCohortMutation } from "@/store/services/curriculum/cohortsService";
 import { useGetProgrammesQuery } from "@/store/services/curriculum/programmesService";
 import { useGetSemestersQuery } from "@/store/services/curriculum/semestersService";
+import { useGetIntakesQuery } from "@/store/services/admissions/admissionsService";
+import { IntakeType } from "@/definitions/admissions";
 type SchoolOption = {
   value: string;
   label: string;
@@ -30,8 +32,18 @@ const AddCohort = ({ refetchData }: { refetchData: () => void }) => {
 
   const [createCohort, { isLoading: isCreating }] = useCreateCohortMutation();
 
-const { data: semeestersData } = useGetSemestersQuery({}, { refetchOnMountOrArgChange: true });
-const { data: programmesData } = useGetProgrammesQuery({}, { refetchOnMountOrArgChange: true });
+  const { data: semeestersData } = useGetSemestersQuery(
+    {},
+    { refetchOnMountOrArgChange: true }
+  );
+  const { data: programmesData } = useGetProgrammesQuery(
+    {},
+    { refetchOnMountOrArgChange: true }
+  );
+  const { data: intakesData } = useGetIntakesQuery(
+    {},
+    { refetchOnMountOrArgChange: true }
+  );
   type FormValues = z.infer<typeof cohortSchema>;
   const {
     register,
@@ -45,9 +57,10 @@ const { data: programmesData } = useGetProgrammesQuery({}, { refetchOnMountOrArg
       name: "",
       programme: undefined,
       current_semester: undefined,
+      intake: undefined,
       status: "",
       current_year: "",
-    }
+    },
   });
   useEffect(() => {
     console.log("Form Errors:", errors);
@@ -62,26 +75,32 @@ const { data: programmesData } = useGetProgrammesQuery({}, { refetchOnMountOrArg
     setIsError(false);
     handleCloseModal();
   };
-  
+
   const handleSemesterChange = (selected: SchoolOption | null) => {
     if (selected) {
       const semesterId = Number(selected.value);
       setValue("current_semester", semesterId);
     }
   };
-  
+  const handleIntakeChange = (selected: SchoolOption | null) => {
+    if (selected) {
+      const intakeId = Number(selected.value);
+      setValue("intake", intakeId);
+    }
+  };
+
   const handleProgrammeChange = (selected: SchoolOption | null) => {
     if (selected) {
       const programmeId = Number(selected.value);
       setValue("programme", programmeId);
     }
   };
-   const handleYearChange = (selected: SchoolOption | null) => {
+  const handleYearChange = (selected: SchoolOption | null) => {
     if (selected && selected.value) {
       setValue("current_year", String(selected.value));
     }
   };
-  
+
   const handleStatusChange = (selected: SchoolOption | null) => {
     if (selected && selected.value) {
       setValue("status", String(selected.value));
@@ -157,7 +176,7 @@ const { data: programmesData } = useGetProgrammesQuery({}, { refetchOnMountOrArg
                   </p>
                   <div className="flex justify-end cursor-pointer">
                     <IoCloseOutline
-                      size={30}
+                      size={20}
                       onClick={handleCloseModal}
                       className="text-gray-500  "
                     />
@@ -176,7 +195,7 @@ const { data: programmesData } = useGetProgrammesQuery({}, { refetchOnMountOrArg
                       id="name"
                       type="text"
                       {...register("name")}
-                      placeholder="e.g SIT/2025"
+                      placeholder="e.g SIT 2025"
                       className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                     />
                     {errors.name && (
@@ -188,89 +207,128 @@ const { data: programmesData } = useGetProgrammesQuery({}, { refetchOnMountOrArg
                   <div className="grid grid-cols-1 md:grid-cols-2  gap-4">
                     <div>
                       <div>
-
-                      <label>Programme</label>
-                      <Select
-                        options={programmesData?.map((prog: ProgrammeType) => ({
-                          value: prog.id,
-                          label: prog.name,
-                        }))}
-                        menuPortalTarget={document.body}
-                        menuPlacement="auto"
-                        styles={{
-                          menuPortal: (base) => ({
-                            ...base,
-                            zIndex: 9999,
-                          }),
-                          control: (base) => ({
-                            ...base,
-                            minHeight: "24px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
-                            },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
+                        <label>Programme</label>
+                        <Select
+                          options={programmesData?.map(
+                            (prog: ProgrammeType) => ({
+                              value: prog.id,
+                              label: prog.name,
+                            })
+                          )}
+                          menuPortalTarget={document.body}
+                          menuPlacement="auto"
+                          styles={{
+                            menuPortal: (base) => ({
+                              ...base,
+                              zIndex: 9999,
+                            }),
+                            control: (base) => ({
+                              ...base,
+                              minHeight: "24px",
+                              minWidth: "200px",
+                              borderColor: "#d1d5db",
                               boxShadow: "none",
-                            },
-                          }),
-                        }}
-                        onChange={handleProgrammeChange}
-                      />
+                              "&:hover": {
+                                borderColor: "#9ca3af",
+                              },
+                              "&:focus-within": {
+                                borderColor: "#9ca3af",
+                                boxShadow: "none",
+                              },
+                            }),
+                          }}
+                          onChange={handleProgrammeChange}
+                        />
 
-                      {errors.programme && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {errors.programme.message}
-                        </p>
-                      )}
+                        {errors.programme && (
+                          <p className="text-red-500 text-sm mt-1">
+                            {errors.programme.message}
+                          </p>
+                        )}
                       </div>
                     </div>
-<div>
-  <div>
-
-                      <label>Current Semester</label>
-                      <Select
-                        options={semeestersData?.map((sem: SemesterType) => ({
-                          value: sem.id,
-                          label: sem.name,
-                        }))}
-                        menuPortalTarget={document.body}
-                        menuPlacement="auto"
-
-                        styles={{
-                          menuPortal: (base) => ({
-                            ...base,
-                            zIndex: 9999,
-                          }),
-                          control: (base) => ({
-                            ...base,
-                            minHeight: "24px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
-                            },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
+                    <div>
+                      <div>
+                        <label>Current Semester</label>
+                        <Select
+                          options={semeestersData?.map((sem: SemesterType) => ({
+                            value: sem.id,
+                            label: sem.name,
+                          }))}
+                          menuPortalTarget={document.body}
+                          menuPlacement="auto"
+                          styles={{
+                            menuPortal: (base) => ({
+                              ...base,
+                              zIndex: 9999,
+                            }),
+                            control: (base) => ({
+                              ...base,
+                              minHeight: "24px",
+                              minWidth: "200px",
+                              borderColor: "#d1d5db",
                               boxShadow: "none",
-                            },
-                          }),
-                        }}
-                        onChange={handleSemesterChange}
-                      />
+                              "&:hover": {
+                                borderColor: "#9ca3af",
+                              },
+                              "&:focus-within": {
+                                borderColor: "#9ca3af",
+                                boxShadow: "none",
+                              },
+                            }),
+                          }}
+                          onChange={handleSemesterChange}
+                        />
 
-                      {errors.current_semester && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {errors.current_semester.message}
-                        </p>
-                      )}
-  </div>
+                        {errors.current_semester && (
+                          <p className="text-red-500 text-sm mt-1">
+                            {errors.current_semester.message}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                  
-                  <div>
+                    <div>
+                      <div>
+                        <label>Inatake</label>
+                        <Select
+                          options={intakesData?.map((item: IntakeType) => ({
+                            value: item.id,
+                           label: `${item.name} (${new Date(item.start_date).getFullYear()})`
+                          }))}
+                          menuPortalTarget={document.body}
+                          menuPlacement="auto"
+                          styles={{
+                            menuPortal: (base) => ({
+                              ...base,
+                              zIndex: 9999,
+                            }),
+                            control: (base) => ({
+                              ...base,
+                              minHeight: "24px",
+                              minWidth: "200px",
+                              borderColor: "#d1d5db",
+                              boxShadow: "none",
+                              "&:hover": {
+                                borderColor: "#9ca3af",
+                              },
+                              "&:focus-within": {
+                                borderColor: "#9ca3af",
+                                boxShadow: "none",
+                              },
+                            }),
+                          }}
+                          onChange={handleIntakeChange}
+                        />
+
+                        {errors.intake && (
+                          <p className="text-red-500 text-sm mt-1">
+                            {errors.intake.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div>
                       <label className="block space-x-1  text-sm font-medium mb-2">
                         Year
                       </label>
@@ -300,15 +358,16 @@ const { data: programmesData } = useGetProgrammesQuery({}, { refetchOnMountOrArg
                           }),
                         }}
                       />
-                     {errors.current_year && (
+                      {errors.current_year && (
                         <p className="text-red-500 text-sm mt-1">
                           {errors.current_year.message}
                         </p>
                       )}
                     </div>
-                  <div>
+                  </div>
+                    <div>
                       <label className="block space-x-1  text-sm font-medium mb-2">
-                       Status
+                        Status
                       </label>
                       <Select
                         options={CohortStatusOptions}
@@ -336,20 +395,18 @@ const { data: programmesData } = useGetProgrammesQuery({}, { refetchOnMountOrArg
                           }),
                         }}
                       />
-                       {errors.status && (
+                      {errors.status && (
                         <p className="text-red-500 text-sm mt-1">
                           {errors.status.message}
                         </p>
                       )}
                     </div>
 
-                  </div>
-
-                  <div className="sticky bottom-0 bg-white z-40 flex md:px-6  gap-4 md:justify-end items-center py-3 ">
+                  <div className="sticky bottom-0 bg-white z-40 flex md:px-6  gap-4 md:justify-between items-center py-3 ">
                     <button
                       type="button"
                       onClick={handleCloseModal}
-                      className="border border-gray-300 bg-white shadow-sm text-gray-700 py-2 text-sm px-4 rounded-md w-full min-w-[100px] md:w-auto hover:bg-gray-50"
+                      className="border border-red-500 bg-white shadow-sm text-red-500 py-2 text-sm px-4 rounded-lg w-full min-w-[100px] md:w-auto hover:bg-red-500 hover:text-white"
                     >
                       Cancel
                     </button>

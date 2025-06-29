@@ -55,9 +55,8 @@ const Units = () => {
     refetchOnMountOrArgChange: true,
   });
   console.log("data",data)
+  const [deleteCourse, {isLoading:isDeleting}] = useDeleteCourseMutation();   
   const { data:departments } = useGetDepartmentsQuery({}, {refetchOnMountOrArgChange: true,});
-const [deleteCourse, {isLoading:isDeleting}] = useDeleteCourseMutation();   
-  //  console.log("departments", departments)
 const departmentOptions = departments?.map((depart:DepartmentType) => ({
     value: depart.id, 
     label: depart.name,

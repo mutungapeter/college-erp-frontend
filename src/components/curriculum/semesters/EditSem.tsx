@@ -1,7 +1,7 @@
 "use client";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { FiEdit } from "react-icons/fi";
 import { IoCloseOutline } from "react-icons/io5";
 import Select from "react-select";
@@ -11,9 +11,9 @@ import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
 import SubmitSpinner from "@/components/common/spinners/submitSpinner";
 
 import { SemesterType } from "@/definitions/curiculum";
+import { SemesterNameOptions, SemesterStatusOptions } from "@/lib/constants";
 import { updateSemesterSchema } from "@/schemas/curriculum/semesters";
 import { useUpdateSemesterMutation } from "@/store/services/curriculum/semestersService";
-import { SemesterNameOptions, SemesterStatusOptions } from "@/lib/constants";
 
 
 type SelectOption = {
@@ -52,7 +52,6 @@ const EditSemester = ({ data, refetchData }: EditSemesterProps) => {
     resolver: zodResolver(updateSemesterSchema),
     defaultValues: {
       name: data.name,
-      academic_year: data.academic_year,
       start_date: formatDateForInput(data.start_date),
       end_date: formatDateForInput(data.end_date),
       status: data.status,
@@ -63,7 +62,6 @@ const EditSemester = ({ data, refetchData }: EditSemesterProps) => {
     if (data) {
       reset({
         name: data.name,
-        academic_year: data.academic_year,
         start_date: formatDateForInput(data.start_date),
         end_date: formatDateForInput(data.end_date),
         status: data.status,
@@ -176,7 +174,7 @@ const EditSemester = ({ data, refetchData }: EditSemesterProps) => {
                   onSubmit={handleSubmit(onSubmit)}
                   className="space-y-4 mt-2 p-4 md:p-4 lg:p-4 "
                 >
-                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                 
                     <div>
                       <div>
                         <label className="block space-x-1 text-sm font-medium mb-2">
@@ -216,26 +214,8 @@ const EditSemester = ({ data, refetchData }: EditSemesterProps) => {
                         )}
                       </div>
                     </div>
-                    <div>
-                      <div>
-                        <label className="block space-x-1 text-sm font-medium mb-2">
-                          Academic Year<span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
-                          placeholder="e.g. 2025-2026"
-                          defaultValue={data.academic_year}
-                          {...register("academic_year")}
-                        />
-                        {errors.academic_year && (
-                          <p className="text-red-500 text-sm mt-1">
-                            {errors.academic_year.message}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+                  
+                  
                   
                
                         <div>

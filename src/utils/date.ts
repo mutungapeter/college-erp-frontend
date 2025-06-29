@@ -57,14 +57,22 @@ export const formatCustomDate = (date: Date | string | null, formatString: strin
     return dayjs(date).format(formatString);
   };
 
-  // export const CustomDate = (
-  //   date: Date | string | null,
-  //   formatString: string = "MMMM D, YYYY, h:mm A"
-  // ): string => {
-  //   if (!date) return "";
-  //   const formatted = dayjs(date).format(formatString);
-  //   return formatted.replace("AM", "a.m.").replace("PM", "p.m.");
-  // };
+  export const YearMonthCustomDate = (
+  date: Date | string | null,
+  formatString: string = "MMMM D, YYYY"
+): string => {
+  if (!date) return "";
+
+  const dayjsDate = dayjs(date);
+
+  
+  const format = formatString.replace("MMMM", "MMM");
+
+  const formatted = dayjsDate.format(format);
+
+  return formatted.replace("AM", "a.m.").replace("PM", "p.m.");
+};
+
   export const CustomDate = (
     date: Date | string | null,
     // formatString: string = "MMM D, YYYY, h:mm A" 

@@ -33,6 +33,24 @@ export const campusesApi = apiSlice.injectEndpoints({
         };
       },
     }),
+    getRecentActions: builder.query({
+      query: () => {
+        
+        return {
+          url: `core/recent-actions`,
+          method: "GET"
+        };
+      },
+    }),
+    getRoles: builder.query({
+      query: () => {
+        
+        return {
+          url: `core/user-roles/`,
+          method: "GET",
+        };
+      },
+    }),
    
     createCampus: builder.mutation({
       query: (data) => ({
@@ -67,4 +85,6 @@ export const {
  useCreateCampusMutation,
  useUpateCampusMutation,
  useDeleteCampusMutation,
+ useGetRolesQuery,
+ useGetRecentActionsQuery
 } = campusesApi;

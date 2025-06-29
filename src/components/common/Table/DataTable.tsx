@@ -36,18 +36,41 @@ interface DataTableProps<T> {
   columns: Column<T>[];
   isLoading: boolean;
   error: unknown;
+   rowBgColor?: string;
+   columnBgColor?: string;
+   columnTextColor?: string;
+  //  rowTextColor?: string;
+   stripedRows?: boolean;
+  stripeColor?: string;
 }
 const DataTable = <T,>({
   data,
   columns,
   isLoading,
   error,
+  rowBgColor,
+  columnBgColor,
+  columnTextColor,
+  stripedRows = false,
+  stripeColor = 'bg-gray-50',
+  // rowTextColor,
 }: DataTableProps<T>): JSX.Element => {
+   const getRowBgColor = (index: number): string => {
+    if (stripedRows) {
+      return index % 2 === 0 ? 'bg-white' : stripeColor;
+    }
+    return rowBgColor || 'bg-white';
+  };
   return (
     <div className="relative overflow-x-auto bg-white rounded-md border mt-5">
       <table className="w-full table-auto">
         <thead>
-          <tr className="bg-white text-gray-600 uppercase border-b text-xs font-semibold border-gray-200 leading-normal">
+          <tr className={`"
+           text-gray-600 uppercase border-b text-xs font-semibold
+            border-gray-200 leading-normal"
+
+            ${columnBgColor ? columnBgColor : "bg-white"}
+            ${columnTextColor ? columnTextColor : "text-gray-600"}`}>
             {columns.map((column, index) => (
               <th
                 key={index}
@@ -79,7 +102,8 @@ const DataTable = <T,>({
             data.map((row, rowIndex) => (
               <tr
                 key={rowIndex}
-                className="border-b text-md font-thin border-gray-200 hover:bg-gray-100"
+                className={`"border-b text-md font-thin border-gray-200  hover:bg-gray-100"
+                  ${getRowBgColor(rowIndex)}`}
               >
                 {columns.map((column, colIndex) => (
                   <td

@@ -4,7 +4,7 @@ import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.share
 
 interface UseFiltersProps<T> {
   initialFilters: T;
-  initialPage: number;
+  initialPage?: number;
   router: AppRouterInstance;
   debounceTime?: number;
   debouncedFields?: string[];
@@ -12,7 +12,7 @@ interface UseFiltersProps<T> {
 
 export function useFilters<T extends Record<string, string>>({
   initialFilters,
-  initialPage,
+  initialPage=1,
   router,
   debounceTime = 300,
   debouncedFields = []

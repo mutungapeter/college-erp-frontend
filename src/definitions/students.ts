@@ -1,4 +1,4 @@
-import { CampusType, ProgrammeCohortType, ProgrammeType } from "./curiculum";
+import { CampusType, ProgrammeCohortType, ProgrammeType, SemesterType } from "./curiculum";
 
 
 export interface StudentType {
@@ -79,5 +79,6 @@ export interface StudentDetailsType {
 	cohort: ProgrammeCohortType;
 	created_on: string;
 	updated_on: string;
+	current_semester: SemesterType;
 }
 

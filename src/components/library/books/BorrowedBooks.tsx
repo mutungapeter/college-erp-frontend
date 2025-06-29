@@ -1,0 +1,211 @@
+"use client";
+
+import Pagination from "@/components/common/Pagination";
+
+import { useFilters } from "@/hooks/useFilters";
+
+import DataTable, { Column } from "@/components/common/Table/DataTable";
+import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
+
+import { IssuedBookType } from "@/definitions/library";
+import { PAGE_SIZE } from "@/lib/constants";
+import { useGetBorrowedBooksQuery } from "@/store/services/library/libraryService";
+import { YearMonthCustomDate } from "@/utils/date";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useMemo } from "react";
+import { GoSearch } from "react-icons/go";
+import UpdateBorrowedBookStatus from "./UpdateIssuedBookStatus";
+
+
+const BorrowedBooksList = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const { filters, currentPage, handleFilterChange, handlePageChange } =
+    useFilters({
+      initialFilters: {
+        search: searchParams.get("search") || "",
+      },
+      initialPage: parseInt(searchParams.get("page") || "1", 10),
+      router,
+      debounceTime: 100,
+      debouncedFields: ["search"],
+    });
+
+  const queryParams = useMemo(
+    () => ({
+      page: currentPage,
+      page_size: PAGE_SIZE,
+      ...filters,
+    }),
+    [currentPage, filters]
+  );
+console.log("queryParams",queryParams)
+  
+  const { data:booksData, isLoading, error, refetch } = useGetBorrowedBooksQuery(queryParams, {
+    refetchOnMountOrArgChange: true,
+  });
+console.log("booksData",booksData)
+
+ 
+ 
+  const columns: Column<IssuedBookType>[] = [
+    {
+      header: "Member",
+      accessor: "member",
+      cell: (item: IssuedBookType) => <span className="font-semibold text-sm">{item.member.user.first_name} {item.member.user.last_name}</span>,
+    },
+    {
+      header: "MemberType",
+      accessor: "member",
+      cell: (item: IssuedBookType) => <span className="font-semibold text-sm">{item.member.role}</span>,
+    },
+    {
+      header: "Title",
+      accessor: "book",
+      cell: (item: IssuedBookType) => <span className="font-semibold text-sm">{item.book.title}</span>,
+    },
+    {
+      header: "Borrow  Date",
+      accessor: "borrow_date",
+      cell: (item: IssuedBookType) => (
+        <span className="text-xs font-normal">{YearMonthCustomDate(item.borrow_date)}</span>
+      ),
+    },
+    
+    {
+      header: "Due Date",
+      accessor: "due_date",
+      cell: (item: IssuedBookType) => (
+        <span>
+          <span className="text-xs font-nunito ">{YearMonthCustomDate(item.due_date)}</span>
+        </span>
+      ),
+    },
+    {
+      header: "Days Due",
+      accessor: "days_overdue",
+      cell: (item: IssuedBookType) => (
+        <span>
+          <span className="text-sm normal">{item.days_overdue}</span>
+        </span>
+      ),
+    },
+    
+    {
+      header: "Status",
+      accessor: "status",
+      cell: (item: IssuedBookType) => (
+        <span className="">
+          <span className={`text-xs font-normal px-2 py-1 rounded-md
+            ${
+        item.status === "overdue"
+          ? "bg-blue-100 text-blue-800"
+          : item.status === "Returned"
+          ? "bg-green-100 text-green-700"
+          : item.status === "active"
+          ? "bg-yellow-100 text-yellow-700"
+          : item.status === "Pending Return"
+          ? "bg-yellow-100 text-yellow-700"
+          : item.status === "lost"
+          ? "bg-red-100 text-red-700"
+          : item.status === "renewed"
+          ? "bg-green-100 text-green-700"
+          : item.status === "rejected"
+          ? "bg-red-100 text-red-700"
+
+          : "bg-red-100 text-red-700"
+      }
+            `}>{item.status}</span>
+        </span>
+      ),
+    },
+    
+   
+  
+   
+    {
+      header: "Actions",
+      accessor: "id",
+      cell: (item: IssuedBookType) => (
+        <div className="flex items-center justify-center space-x-2">
+        
+            <UpdateBorrowedBookStatus data={item} refetchData={refetch} />
+          
+         
+
+       
+        </div>
+      ),
+    },
+  ];
+ 
+ 
+  return (
+    <>
+      <div className="bg-white w-full  p-1 shadow-md rounded-lg font-nunito">
+        <div className=" p-3  flex flex-col md:flex-row md:items-center lg:items-center md:gap-0 lg:gap-0 gap-4 lg:justify-between md:justify-between">
+          <h2 className="font-semibold text-black text-xl">All Issued Books</h2>
+          
+         
+        </div>
+
+        <div className="flex flex-col gap-4 mt-5 lg:gap-0 md:gap-0 lg:flex-row md:flex-row  md:items-center p-2 md:justify-between lg:items-center lg:justify-between">
+          <div className="relative w-full md:w-auto md:min-w-[60%] flex-grow flex items-center gap-2 text-gray-500 focus-within:text-blue-600 px-2">
+            <GoSearch size={20} className="" />
+            <input
+              type="text"
+              name="search"
+              onChange={handleFilterChange}
+              value={filters.search}
+              placeholder="Search by  member's phone no ,first name, last name , book title or author"
+              className="w-full md:w-auto text-gray-900 md:min-w-[60%]  text-sm px-2 py-2 bg-transparent outline-none border-b border-gray-300 focus:border-blue-600"
+            />
+          </div>
+          <div className="flex flex-col gap-3  lg:p-0 lg:flex-row md:flex-row md:items-center md:space-x-2 lg:items-center lg:space-x-5">
+             {/* <FilterSelect
+            options={intakeOptions}
+            value={intakeOptions.find(
+              (option:LabelOptionsType) => option.value === filters.intake  
+            ) || { value: "", label: "All Intakes" }}
+            onChange={handleIntakeChange}
+            placeholder=""
+            defaultLabel="All Intakes"
+          /> */}
+          </div>
+        </div>
+        {isLoading ? (
+          <div className="flex justify-center py-8">
+            <ContentSpinner />
+          </div>
+        ) : error ? (
+          <div className="bg-red-50 p-4 rounded-md text-red-800 text-center">
+            Error loading Borrowing records . Please try again later.
+          </div>
+        ) : booksData && booksData.results.length > 0 ? (
+          <DataTable
+            data={booksData?.results}
+            columns={columns}
+            isLoading={isLoading}
+            error={error}
+          />
+        ) : (
+          <div className="text-center text-gray-500 py-8">No data</div>
+        )}
+
+        {booksData && booksData.count > 0 && (
+          <Pagination
+            currentPage={currentPage}
+            totalItems={booksData.count}
+            pageSize={PAGE_SIZE}
+            onPageChange={handlePageChange}
+          />
+        )}
+
+     
+      </div>
+    </>
+  );
+};
+
+export default BorrowedBooksList;

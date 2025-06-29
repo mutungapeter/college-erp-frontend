@@ -12,19 +12,16 @@ import Select, { SingleValue } from "react-select";
 import {
   ProgrammeCohortType,
   ProgrammeType,
-  SemesterType
+  SemesterType,
 } from "@/definitions/curiculum";
-import {
-  CohortStatusOptions,
-  YearsOptions
-} from "@/lib/constants";
+import { CohortStatusOptions, YearsOptions } from "@/lib/constants";
 import { updateCohortSchema } from "@/schemas/curriculum/cohorts";
 import { useUpdateCohortMutation } from "@/store/services/curriculum/cohortsService";
-import {
-  useGetProgrammesQuery
-} from "@/store/services/curriculum/programmesService";
+import { useGetProgrammesQuery } from "@/store/services/curriculum/programmesService";
 import { useGetSemestersQuery } from "@/store/services/curriculum/semestersService";
 import { FiEdit } from "react-icons/fi";
+import { IntakeType } from "@/definitions/admissions";
+import { useGetIntakesQuery } from "@/store/services/admissions/admissionsService";
 type SchoolOption = {
   value: string;
   label: string;
@@ -37,7 +34,7 @@ const UpdateCohort = ({
   refetchData: () => void;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  //   console.log("data", data);
+    console.log("data", data);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -49,6 +46,10 @@ const UpdateCohort = ({
     { refetchOnMountOrArgChange: true }
   );
   const { data: programmesData } = useGetProgrammesQuery(
+    {},
+    { refetchOnMountOrArgChange: true }
+  );
+  const { data: intakesData } = useGetIntakesQuery(
     {},
     { refetchOnMountOrArgChange: true }
   );
@@ -67,6 +68,7 @@ const UpdateCohort = ({
       current_year: data?.current_year || "",
       current_semester: data?.current_semester.id || undefined,
       programme: data?.programme.id || undefined,
+      intake: data?.intake?.id || undefined,
     },
   });
   useEffect(() => {
@@ -89,6 +91,15 @@ const UpdateCohort = ({
       setValue("current_semester", Number(selected.value));
     } else {
       setValue("current_semester", null);
+    }
+  };
+  const handleIntakeChange = (
+    selected: SingleValue<{ value: number | null; label: string }>
+  ) => {
+    if (selected) {
+      setValue("intake", Number(selected.value));
+    } else {
+      setValue("intake", null);
     }
   };
 
@@ -183,7 +194,7 @@ const UpdateCohort = ({
                   </p>
                   <div className="flex justify-end cursor-pointer">
                     <IoCloseOutline
-                      size={30}
+                      size={20}
                       onClick={handleCloseModal}
                       className="text-gray-500  "
                     />
@@ -219,7 +230,7 @@ const UpdateCohort = ({
                           options={programmesData?.map(
                             (prog: ProgrammeType) => ({
                               value: prog.id,
-                              label: prog.name,
+                              label: `${prog.code} - ${prog.name}`,
                             })
                           )}
                           defaultValue={{
@@ -227,7 +238,7 @@ const UpdateCohort = ({
                             label: data?.programme?.name || "",
                           }}
                           menuPortalTarget={document.body}
-                        menuPlacement="auto"
+                          menuPlacement="auto"
                           styles={{
                             menuPortal: (base) => ({
                               ...base,
@@ -264,14 +275,16 @@ const UpdateCohort = ({
                         <Select
                           options={semeestersData?.map((sem: SemesterType) => ({
                             value: sem.id,
-                            label: sem.name,
+                            label: `${sem.name} -${sem.academic_year}`,
                           }))}
                           defaultValue={{
                             value: data?.current_semester?.id || null,
-                            label: data?.current_semester?.name || "",
+                            label:
+                              `${data?.current_semester?.name}-${data.current_semester.academic_year}` ||
+                              "",
                           }}
                           menuPortalTarget={document.body}
-                        menuPlacement="auto"
+                          menuPlacement="auto"
                           styles={{
                             menuPortal: (base) => ({
                               ...base,
@@ -344,52 +357,101 @@ const UpdateCohort = ({
                       )}
                     </div>
                     <div>
-                      <label className="block space-x-1  text-sm font-medium mb-2">
-                        Status
-                      </label>
-                      <Select
-                        options={CohortStatusOptions}
-                        onChange={handleStatusChange}
-                        menuPortalTarget={document.body}
-                        defaultValue={{
-                          value: data?.status || "",
-                          label: data?.status || "",
-                        }}
-                        menuPlacement="auto"
-                        styles={{
-                          menuPortal: (base) => ({
-                            ...base,
-                            zIndex: 9999,
-                          }),
-                          control: (base) => ({
-                            ...base,
-                            minHeight: "24px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
-                            },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
+                      <div>
+                        <label>Inatake</label>
+                        <Select
+                          options={intakesData?.map((item: IntakeType) => ({
+                            value: item.id,
+                            label: `${item.name} (${new Date(
+                              item.start_date
+                            ).getFullYear()})`,
+                          }))}
+                          defaultValue={{
+                            value: data?.intake?.id || null,
+                            label:
+                              `${data?.intake?.name} (${new Date(
+                                data?.intake?.start_date
+                              ).getFullYear()})` || "",
+                          }}
+                          menuPortalTarget={document.body}
+                          menuPlacement="auto"
+                          styles={{
+                            menuPortal: (base) => ({
+                              ...base,
+                              zIndex: 9999,
+                            }),
+                            control: (base) => ({
+                              ...base,
+                              minHeight: "24px",
+                              minWidth: "200px",
+                              borderColor: "#d1d5db",
                               boxShadow: "none",
-                            },
-                          }),
-                        }}
-                      />
-                      {errors.status && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {errors.status.message}
-                        </p>
-                      )}
+                              "&:hover": {
+                                borderColor: "#9ca3af",
+                              },
+                              "&:focus-within": {
+                                borderColor: "#9ca3af",
+                                boxShadow: "none",
+                              },
+                            }),
+                          }}
+                          onChange={handleIntakeChange}
+                        />
+
+                        {errors.intake && (
+                          <p className="text-red-500 text-sm mt-1">
+                            {errors.intake.message}
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </div>
+                  <div>
+                    <label className="block space-x-1  text-sm font-medium mb-2">
+                      Status
+                    </label>
+                    <Select
+                      options={CohortStatusOptions}
+                      onChange={handleStatusChange}
+                      menuPortalTarget={document.body}
+                      defaultValue={{
+                        value: data?.status || "",
+                        label: data?.status || "",
+                      }}
+                      menuPlacement="auto"
+                      styles={{
+                        menuPortal: (base) => ({
+                          ...base,
+                          zIndex: 9999,
+                        }),
+                        control: (base) => ({
+                          ...base,
+                          minHeight: "24px",
+                          minWidth: "200px",
+                          borderColor: "#d1d5db",
+                          boxShadow: "none",
+                          "&:hover": {
+                            borderColor: "#9ca3af",
+                          },
+                          "&:focus-within": {
+                            borderColor: "#9ca3af",
+                            boxShadow: "none",
+                          },
+                        }),
+                      }}
+                    />
+                    {errors.status && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.status.message}
+                      </p>
+                    )}
+                  </div>
 
-                  <div className="sticky bottom-0 bg-white z-40 flex md:px-6  gap-4 md:justify-end items-center py-3 ">
+                  <div className="sticky bottom-0 bg-white z-40 flex md:px-6  gap-4 md:justify-between items-center py-3 ">
                     <button
                       type="button"
                       onClick={handleCloseModal}
-                      className="border border-gray-300 bg-white shadow-sm text-gray-700 py-2 text-sm px-4 rounded-md w-full min-w-[100px] md:w-auto hover:bg-gray-50"
+                      className="border border-red-500 bg-white shadow-sm text-red-500 py-2 text-sm px-4 rounded-lg w-full min-w-[100px] md:w-auto hover:bg-red-500 hover:text-white"
                     >
                       Cancel
                     </button>

@@ -2,11 +2,7 @@ import { z } from "zod";
 
 
 export const UpdateUserInfoSchema = z.object({
-//   username: z.string()
-//     .min(1, "Username is required")
-//     .max(150, "Username cannot exceed 150 characters")
-//     .regex(/^[\w.@+-]+$/, "Username can only contain letters, digits, and @/./+/-/_ characters"),
-  
+
   first_name: z.string()
     .max(150, "First name cannot exceed 150 characters")
     .optional(),

@@ -1,9 +1,8 @@
 "use client";
-import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { FiPlus } from "react-icons/fi";
-import { IoCloseOutline } from "react-icons/io5";
 import Select from "react-select";
 import { z } from "zod";
 
@@ -40,7 +39,7 @@ const AddSemester = ({ refetchData }: { refetchData: () => void }) => {
     resolver: zodResolver(semesterSchema),
     defaultValues: {
       name: "",
-      academic_year: "",
+      // academic_year: "",
       start_date: "",
       end_date: "",
       status: "Active",
@@ -136,28 +135,28 @@ const AddSemester = ({ refetchData }: { refetchData: () => void }) => {
           >
             <div
               className="relative transform justify-center animate-fadeIn max-h-[90vh]
-                overflow-y-auto rounded-md bg-white text-left shadow-xl transition-all   
-                w-full sm:max-w-c-500 md:max-w-500 px-3"
+                overflow-y-auto rounded-xl bg-white text-left shadow-xl transition-all   
+                w-full sm:max-w-c-400 md:max-w-400 px-3"
             >
               <>
                 <div className="sticky top-0 bg-white z-40 flex sm:px-6 px-4 justify-between items-center py-3">
                   <p className="text-sm md:text-lg lg:text-lg font-semibold">
                     Add New Semester
                   </p>
-                  <div className="flex justify-end cursor-pointer">
+                  {/* <div className="flex justify-end cursor-pointer">
                     <IoCloseOutline
                       size={30}
                       onClick={handleCloseModal}
                       className="text-gray-500"
                     />
-                  </div>
+                  </div> */}
                 </div>
 
                 <form
                   onSubmit={handleSubmit(onSubmit)}
                   className="space-y-4 mt-2 p-4 md:p-4 lg:p-4"
                 >
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                 
                     <div>
                       <div>
                         <label className="block space-x-1 text-sm font-medium mb-2">
@@ -196,7 +195,7 @@ const AddSemester = ({ refetchData }: { refetchData: () => void }) => {
                         )}
                       </div>
                     </div>
-                    <div>
+                    {/* <div>
                       <div>
                         <label className="block space-x-1 text-sm font-medium mb-2">
                           Academic Year<span className="text-red-500">*</span>
@@ -213,8 +212,8 @@ const AddSemester = ({ refetchData }: { refetchData: () => void }) => {
                           </p>
                         )}
                       </div>
-                    </div>
-                  </div>
+                    </div> */}
+              
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -286,7 +285,7 @@ const AddSemester = ({ refetchData }: { refetchData: () => void }) => {
                     )}
                   </div>
 
-                  <div className="sticky bottom-0 bg-white z-40 flex md:px-6 gap-4 md:justify-end items-center py-3">
+                  <div className="sticky bottom-0 bg-white z-40 flex md:px-3 gap-4 md:justify-between items-center py-2">
                     <button
                       type="button"
                       onClick={handleCloseModal}

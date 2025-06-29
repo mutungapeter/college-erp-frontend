@@ -1,9 +1,14 @@
-import React from 'react'
+"use client";
+import PageLoadingSpinner from '@/components/common/spinners/pageLoadingSpinner';
+import Leaves from '@/components/staff/leaves';
+import { Suspense } from 'react';
 
-const StaffLeavesPage = () => {
+const LeavesPage = () => {
   return (
-    <div>StaffLeavesPage</div>
+          <Suspense fallback={<PageLoadingSpinner />}>
+                <Leaves />
+                </Suspense>
   )
 }
 
-export default StaffLeavesPage
+export default LeavesPage;

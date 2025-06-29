@@ -10,6 +10,19 @@ interface GetApplicationsTypes{
   intake?:string;
   status?:string;
 }
+interface GetEnrollmentsType{
+
+  intake?:string;
+  start_date?:string;
+  end_date?:string;
+}
+interface GetIntakesType{
+  page?:number;
+  page_size?:number;
+  start_date?:string;
+  end_date?:string;
+  closed?:string;
+}
 export const admissionsApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
   getApplicationsList: builder.query({
@@ -37,6 +50,7 @@ export const admissionsApi = apiSlice.injectEndpoints({
         };
       },
     }),
+ 
    
     makeApplication: builder.mutation({
       query: (data) => ({
@@ -67,11 +81,43 @@ export const admissionsApi = apiSlice.injectEndpoints({
         url: `admissions/education-history/${id}/update/`,
         method: "DELETE",        
       }),
+      
     }),
     getIntakes: builder.query({
-      query: () => ({
-        url: `admissions/intakes/`,
-        method: "GET",
+      
+      query: ({
+        page,
+        page_size,
+        closed
+      }: GetIntakesType = {}) => {
+        const queryParams: Record<string, string | number | boolean | undefined> = {};
+        if (page) queryParams.page = page;
+        if (page_size) queryParams.page_size = page_size;
+        if (closed === "true") queryParams.closed = true;
+        if (closed === "false") queryParams.closed = false;
+       
+        console.log("queryParams====",queryParams)
+  
+        return {
+          url: `admissions/intakes/`,
+          method: 'GET',
+          params: queryParams,
+        };
+      },
+    }),
+      createIntake: builder.mutation({
+      query: (data) => ({
+        url: `admissions/intakes/create/`,
+        method: "POST",
+        body: data,
+        
+      }),
+    }),
+      updateIntake: builder.mutation({
+      query: ({id, data}) => ({
+        url: `admissions/intakes/${id}/update/`,
+        method: "PATCH",
+        body: data,
         
       }),
     }),
@@ -83,6 +129,7 @@ export const admissionsApi = apiSlice.injectEndpoints({
         
       }),
     }),
+  
     updateApplication: builder.mutation({
       query: ({ id, data }) => ({
         url: `admissions/applications/${id}/update/`,
@@ -125,7 +172,25 @@ export const admissionsApi = apiSlice.injectEndpoints({
         method: "GET",
       }),
     }),
-    
+     getEnrollmentsMetrics: builder.query({
+      query: ({
+        start_date,
+        intake,
+        end_date
+      }: GetEnrollmentsType = {}) => {
+        const queryParams: Record<string, string | number | boolean | undefined> = {};
+        if (start_date) queryParams.start_date = start_date;
+        if (end_date) queryParams.end_date = end_date;
+        if (intake) queryParams.intake = intake;
+        console.log("queryParams====",queryParams)
+  
+        return {
+          url: `admissions/enrollments-metrics/`,
+          method: 'GET',
+          params: queryParams,
+        };
+      },
+    }),
    
    
   }),
@@ -143,6 +208,8 @@ useCreateApplicationDocumentMutation,
 useUpdateApplicationDocumentMutation,
 useEnrollApplicationMutation,
 useDeleteDocumentMutation,
-
-useDeleteEducationHistoryMutation
+useDeleteEducationHistoryMutation,
+useGetEnrollmentsMetricsQuery,
+useCreateIntakeMutation,
+useUpdateIntakeMutation
 } = admissionsApi;

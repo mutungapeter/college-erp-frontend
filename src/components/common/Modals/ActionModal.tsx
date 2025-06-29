@@ -12,7 +12,7 @@ interface ActionModalProps {
   isDeleting?: boolean;
   title?: string;
   actionText?: string;
-  actionType?: "delete" | "submit" | "create" | "update" ; 
+  actionType?: "delete" | "submit" | "create" | "update" | "cancel" ; 
 }
 
 const ActionModal = ({
@@ -47,10 +47,11 @@ const ActionModal = ({
               <div className="flex items-center mb-4">
                 <div className={`flex-shrink-0 rounded-full p-2 mr-3 ${
                   actionType === "delete" ? "bg-red-100" : 
+                  actionType === "cancel" ? "bg-red-100" :
                   actionType === "update" ? "bg-blue-100" : 
                   "bg-green-100"
                 }`}>
-                  {actionType === "delete" ? (
+                  {actionType === "delete" || actionType === "cancel" ? (
                     <FaExclamation className="h-6 w-6 text-red-600" />
                   ) : actionType === "update" ? (
                     <IoCheckmarkCircleOutline className="h-6 w-6 text-blue-600" />
@@ -93,7 +94,7 @@ const ActionModal = ({
                   type="button"
                   className={`px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white
                     transition-colors disabled:opacity-75 ${
-                      actionType === "delete" ? "bg-red-600 hover:bg-red-700" : 
+                      actionType === "delete" || actionType === "cancel" ? "bg-red-600 hover:bg-red-700" : 
                       actionType === "update" ? "bg-blue-600 hover:bg-blue-700" : 
                       "bg-green-600 hover:bg-green-700"
                     }`}
@@ -102,13 +103,22 @@ const ActionModal = ({
                     <span className="flex items-center">
                       <PiSpinnerGap className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" />
                       {actionText ? `${actionText}ing...` : 
+                      
                         actionType === "delete" ? "Deleting..." :
+                        actionType === "cancel" ? "Cancelling..." :
                         actionType === "submit" ? "Submitting..." :
                         actionType === "create" ? "Creating..." :
                         "Updating..."}
                     </span>
                   ) : (
-                    actionText || (actionType === "delete" ? "Delete" : "Confirm")
+                    actionText || (
+                      actionType === 'cancel' ? 'Cancel' 
+                      : actionType === 'submit' ? 'Submit'
+                       : actionType === 'create' ? 'Create' 
+                       : actionType === 'update' ? 'Update' 
+                       : actionType === 'delete' ? 'Delete'
+                       : "Save"  
+                    )
                   )}
                 </button>
               </div>

@@ -1,7 +1,7 @@
 "use client";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { FiPlus } from "react-icons/fi";
 import { IoCloseOutline } from "react-icons/io5";
 import Select from "react-select";
@@ -13,11 +13,11 @@ import SubmitSpinner from "@/components/common/spinners/submitSpinner";
 import { CourseType, ProgrammeCohortType } from "@/definitions/curiculum";
 
 
-import { useGetCoursesQuery } from "@/store/services/curriculum/coursesService";
-import { useGetCohortsQuery } from "@/store/services/curriculum/cohortsService";
-import { useCreateCourseSessionMutation } from "@/store/services/curriculum/courseSessionService";
 import { SessionStatusOptions } from "@/lib/constants";
 import { sessionsSchema } from "@/schemas/curriculum/Sessions";
+import { useGetCohortsQuery } from "@/store/services/curriculum/cohortsService";
+import { useCreateCourseSessionMutation } from "@/store/services/curriculum/courseSessionService";
+import { useGetCoursesQuery } from "@/store/services/curriculum/coursesService";
 
 
 type SelectOption = {
@@ -162,7 +162,7 @@ const AddCourseSession = ({ refetchData }: { refetchData: () => void }) => {
                   </p>
                   <div className="flex justify-end cursor-pointer">
                     <IoCloseOutline
-                      size={30}
+                      size={20}
                       onClick={handleCloseModal}
                       className="text-gray-500"
                     />
@@ -332,12 +332,12 @@ const AddCourseSession = ({ refetchData }: { refetchData: () => void }) => {
                     )}
                   </div>
 
-                  <div className="sticky bottom-0 bg-white z-40 flex md:px-6 gap-4 md:justify-end items-center py-3">
+                  <div className="sticky bottom-0 bg-white z-40 flex md:px-6 gap-4 md:justify-between items-center py-3">
                     <button
                       type="button"
                       onClick={handleCloseModal}
-                      className="border border-gray-300 bg-white shadow-sm text-gray-700 py-2 text-sm px-4 rounded-md w-full min-w-[100px] md:w-auto hover:bg-gray-50"
-                    >
+                                         className="border border-red-500 bg-white shadow-sm text-red-500 py-2 text-sm px-4 rounded-lg w-full min-w-[100px] md:w-auto hover:bg-red-500 hover:text-white"
+   >
                       Cancel
                     </button>
                     <button

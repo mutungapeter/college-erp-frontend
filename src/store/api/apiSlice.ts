@@ -11,7 +11,8 @@ export const apiSlice = createApi({
         'uploadStudents', 
         'updateApplicationDocument',
         'createApplicationDocument',
-        'uploadMarks'
+        'uploadMarks',
+        'uploadStaffDocument',
       ];
        if (endpointsUsingFormData.includes(endpoint)) {
         headers.delete('Content-Type'); 

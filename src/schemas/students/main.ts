@@ -6,16 +6,11 @@ export const userSchema = z.object({
   first_name: z.string().min(1, "First name is required").max(50, "First Name must be at most 50 characters"),
   last_name: z.string().min(1, "Last name is required").max(50, "Last Name must be at most 50 characters"),
   email: z.string().email("Invalid email address"),
-//   username: z.string().min(1, "Username is required").max(150, "Username must be at most 150 characters"),
   gender: z.string().min(1, "Gender is required"),
   phone_number: z.string().min(1, "Phone number is required"),
-//   id_number: z.string().nullable().optional(),
-//   passport_number: z.string().nullable().optional(),
   address: z.string().nullable().optional(),
   postal_code: z.string().nullable().optional(),
   city: z.string().nullable().optional(),
-//   state: z.string().nullable().optional(),
-//   country: z.string().nullable().optional(),
   date_of_birth: z.string().min(1, "Date of birth is required"),
 });
 
