@@ -3,17 +3,24 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { IoCloseOutline } from "react-icons/io5";
-import { z } from "zod";
 
 import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
 import SubmitSpinner from "@/components/common/spinners/submitSpinner";
 import Select, { SingleValue } from "react-select";
 
 import { DepartmentType, SchoolType } from "@/definitions/curiculum";
-import { updateDepartmentSchema } from "@/schemas/curriculum/departments";
+import { DepartmentTypeOptions } from "@/lib/constants";
+import { updateDepartmentFormData, updateDepartmentSchema } from "@/schemas/curriculum/departments";
 import { useUpdateDepartmentMutation } from "@/store/services/curriculum/departmentsService";
 import { useGetSchoolsQuery } from "@/store/services/curriculum/schoolSService";
 import { FiEdit } from "react-icons/fi";
+
+type SelectOption = {
+  value: string | number;
+  label: string;
+};
+
+
 const EditDepartment = ({
   department,
   refetchData,
@@ -41,11 +48,12 @@ const EditDepartment = ({
     setValue,
     formState: { isSubmitting, errors },
   } = useForm({
-    resolver: zodResolver(updateDepartmentSchema),
+    resolver: zodResolver<updateDepartmentFormData>(updateDepartmentSchema),
     defaultValues: {
       name: department?.name || "",
       school: department?.school?.id || undefined,
       office: department?.office || "",
+      department_type: department?.department_type || "",
     },
   });
   useEffect(() => {
@@ -71,7 +79,12 @@ const EditDepartment = ({
     }
   };
 
-  const onSubmit = async (formData: z.infer<typeof updateDepartmentSchema>) => {
+   const handleDepartmentTypeChange = (selected: SelectOption | null) => {
+    if (selected) {
+      setValue("department_type", String(selected.value));
+    }
+  };
+  const onSubmit = async (formData: updateDepartmentFormData) => {
     console.log("submitting form data");
 
     try {
@@ -231,7 +244,42 @@ const EditDepartment = ({
                       )}
                     </div>
                   </div>
-
+ <div>
+                    <label className="block space-x-1 text-sm font-medium mb-2">
+                      Department Type<span className="text-red-500">*</span>
+                    </label>
+                    <Select
+                      options={DepartmentTypeOptions}
+                    defaultValue={DepartmentTypeOptions.find(option => option.value === department.department_type)}
+                    
+                      onChange={handleDepartmentTypeChange}
+                      menuPortalTarget={document.body}
+                      styles={{
+                        menuPortal: (base) => ({
+                          ...base,
+                          zIndex: 9999,
+                        }),
+                        control: (base) => ({
+                          ...base,
+                          minHeight: "25px",
+                          borderColor: "#d1d5db",
+                          boxShadow: "none",
+                          "&:hover": {
+                            borderColor: "#9ca3af",
+                          },
+                          "&:focus-within": {
+                            borderColor: "#9ca3af",
+                            boxShadow: "none",
+                          },
+                        }),
+                      }}
+                    />
+                    {errors.department_type && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.department_type.message}
+                      </p>
+                    )}
+                  </div>
                   <div className="sticky bottom-0 bg-white z-40 flex md:px-6  gap-4 md:justify-between items-center py-3 ">
                     <button
                       type="button"

@@ -85,7 +85,7 @@ const FeeStructuresList = () => {
     {
       header: "Programme",
       accessor: "programme",
-      cell: (item: FeeStructure) => <span>{item.programme.name}</span>,
+      cell: (item: FeeStructure) => <span className="text-sm whitespace-normal break-words">{item.programme.name}</span>,
     },
     {
       header: "Year of Study",

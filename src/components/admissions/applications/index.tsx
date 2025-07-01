@@ -96,7 +96,7 @@ console.log("applicationsData",applicationsData)
       accessor: "first_choice_programme",
       cell: (item: ApplicationType) => (
         <span>
-          <span className="text-sm normal">{item.first_choice_programme.name}{item.first_choice_programme.level}</span>
+          <span className="text-sm normal whitespace-normal break-words">{item.first_choice_programme.name}{item.first_choice_programme.level}</span>
         </span>
       ),
     },

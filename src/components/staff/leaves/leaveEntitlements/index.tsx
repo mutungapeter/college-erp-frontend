@@ -80,6 +80,15 @@ const LeaveEntitlements = () => {
 
   const columns: Column<EntitlementType>[] = [
     {
+      header: "Year",
+      accessor: "year",
+      cell: (item: EntitlementType) => (
+        <span>
+          {item.year}
+        </span>
+      ),
+    },
+    {
       header: "Name",
       accessor: "staff",
       cell: (item: EntitlementType) => (

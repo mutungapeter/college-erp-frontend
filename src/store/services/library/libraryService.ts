@@ -58,6 +58,14 @@ export const libraryApi = apiSlice.injectEndpoints({
         
       }),
     }),
+     uploadBooks: builder.mutation({
+      query: (data) => ({
+        url: `library/books/upload/`,
+        method: "POST",
+        body: data,
+        
+      }),
+    }),
     getBookDetails: builder.query({
       query: (id) => ({
         url: `library/books/details/${id}/`,
@@ -225,5 +233,6 @@ useUpdateIssuedBookMutation,
 useCreateMemberMutation,
 useUpdateMemberMutation,
 useDeactivateMemberMutation,
-useActivateMemberMutation
+useActivateMemberMutation,
+useUploadBooksMutation
 } = libraryApi;

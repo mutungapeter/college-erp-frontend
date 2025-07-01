@@ -134,6 +134,7 @@ const UploadMarks = ({ refetchData }: Props) => {
     formData.append("file", file);
     formData.append("course", String(data.course));
     formData.append("semester", String(data.semester));
+    formData.append("cohort", String(data.cohort));
 
     console.log("formData", formData);
     try {
@@ -443,7 +444,7 @@ const UploadMarks = ({ refetchData }: Props) => {
 
               <div className="mb-6 text-center">
                 <a
-                  href="/templates/student_upload_template.xlsx"
+                  href="/students_marks.csv"
                   download
                   className="text-blue-600 hover:text-blue-800 text-sm underline"
                 >

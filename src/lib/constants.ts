@@ -27,6 +27,10 @@ export const SemesterStatusOptions: ProgramOption[] = [
   { value: "Active", label: "Active" },
   { value: "Closed", label: "Closed" },
 ];
+export const DepartmentTypeOptions = [
+  { value: "Academic", label: "Academic" },
+  { value: "Not Academic", label: "Not Academic" },
+];
 
 export const SemesterNameOptions: ProgramOption[] = [
   { value: "Semester One", label: "Semester One" },

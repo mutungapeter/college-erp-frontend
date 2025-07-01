@@ -60,13 +60,13 @@ const EditFeeStructureItem = ({ refetchData, data }: Props) => {
 
   const onSubmit = async (formData: FeeStructureItemFormData) => {
     console.log("submitting form data");
-    const payload = {
-      fee_structure: data.id,
-      ...formData,
-    };
-    console.log("payload", payload);
+   
+  
     try {
-      const response = await updateFeeStructureItem(payload).unwrap();
+      const response = await updateFeeStructureItem({
+        id: data.id,
+        data: formData
+      }).unwrap();
       console.log("response", response);
       setIsError(false);
       setSuccessMessage("Fee Stucture item Updated Successfully");
@@ -195,7 +195,7 @@ const EditFeeStructureItem = ({ refetchData, data }: Props) => {
                           <span>Updating...</span>
                         </span>
                       ) : (
-                        <span>Updated</span>
+                        <span>Update</span>
                       )}
                     </button>
                   </div>

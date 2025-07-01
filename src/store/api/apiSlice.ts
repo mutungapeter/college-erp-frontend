@@ -13,6 +13,7 @@ export const apiSlice = createApi({
         'createApplicationDocument',
         'uploadMarks',
         'uploadStaffDocument',
+        'uploadBooks'
       ];
        if (endpointsUsingFormData.includes(endpoint)) {
         headers.delete('Content-Type'); 

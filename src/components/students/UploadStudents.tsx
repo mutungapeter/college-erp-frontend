@@ -403,7 +403,7 @@ const StudentUploadButton = ({ refetchData }: Props) => {
 
               <div className="mb-6 text-center">
                 <a
-                  href="/templates/student_upload_template.xlsx"
+                  href="/students.csv"
                   download
                   className="text-blue-600 hover:text-blue-800 text-sm underline"
                 >

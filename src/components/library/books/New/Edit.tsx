@@ -150,7 +150,7 @@ const handleCategoryChange = (selected: SelectOption | null) => {
                   </p>
                   <div className="flex justify-end cursor-pointer">
                     <IoCloseOutline
-                      size={25}
+                      size={20}
                       onClick={handleCloseModal}
                       className="text-gray-500"
                     />
@@ -295,6 +295,7 @@ const handleCategoryChange = (selected: SelectOption | null) => {
                         </label>
                         <input
                           type="number"
+                           step="0.01"
                           className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                           placeholder="Ksh"
                           {...register("unit_price")}
@@ -307,11 +308,11 @@ const handleCategoryChange = (selected: SelectOption | null) => {
                       </div>
                
 
-                  <div className="sticky bottom-0 bg-white z-40 flex md:px-6 gap-4 md:justify-end items-center py-3">
+                  <div className="sticky bottom-0 bg-white z-40 flex md:px-6 gap-4 md:justify-between items-center py-3">
                     <button
                       type="button"
                       onClick={handleCloseModal}
-                      className="border border-gray-300 bg-white shadow-sm text-gray-700 py-2 text-sm px-4 rounded-md w-full min-w-[100px] md:w-auto hover:bg-gray-50"
+                      className="border border-red-500 bg-white shadow-sm text-red-700 py-2 text-sm px-4 rounded-md w-full min-w-[100px] md:w-auto hover:bg-red-500 hover:text-white "
                     >
                       Cancel
                     </button>

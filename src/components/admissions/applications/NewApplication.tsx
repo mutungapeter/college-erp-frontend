@@ -145,8 +145,8 @@ const CreateApplication = ({ refetchData }: { refetchData: () => void }) => {
         className="flex flex-col md:flex-row md:items-center gap-4 w-full md:w-auto"
       >
         <div
-          className="bg-blue-600 inline-flex cursor-pointer w-max 
-         items-center space-x-2 text-white px-2 py-2 rounded-md hover:bg-blue-700 transition duration-300"
+          className="bg-primary-600 inline-flex cursor-pointer w-max 
+         items-center space-x-2 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition duration-300"
         >
           <FiPlus className="text-lg" />
           <span className="text-xs font-medium">New Application</span>
@@ -355,7 +355,7 @@ const CreateApplication = ({ refetchData }: { refetchData: () => void }) => {
                       </div>
                     </div>
                
-                    <h3 className="font-medium text-gray-700 mb-3">Address Information</h3>
+                    
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block space-x-1 text-sm font-medium mb-2">

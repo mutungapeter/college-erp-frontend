@@ -48,13 +48,13 @@ const ActionModal = ({
                 <div className={`flex-shrink-0 rounded-full p-2 mr-3 ${
                   actionType === "delete" ? "bg-red-100" : 
                   actionType === "cancel" ? "bg-red-100" :
-                  actionType === "update" ? "bg-blue-100" : 
+                  actionType === "update" ? "bg-yellow-100" : 
                   "bg-green-100"
                 }`}>
                   {actionType === "delete" || actionType === "cancel" ? (
                     <FaExclamation className="h-6 w-6 text-red-600" />
                   ) : actionType === "update" ? (
-                    <IoCheckmarkCircleOutline className="h-6 w-6 text-blue-600" />
+                    <IoCheckmarkCircleOutline className="h-6 w-6 text-yellow-600" />
                   ) : (
                     <IoCheckmarkCircleOutline className="h-6 w-6 text-green-600" />
                   )}
@@ -67,7 +67,7 @@ const ActionModal = ({
                   className="absolute top-4 right-4 cursor-pointer"
                   onClick={onClose}
                 >
-                  <IoCloseOutline className="h-9 w-9 text-gray-500 hover:text-gray-500 transition-colors" />
+                  <IoCloseOutline size={20} className=" text-gray-500 hover:text-gray-500 transition-colors" />
                 </div>
               </div>
 
@@ -95,7 +95,7 @@ const ActionModal = ({
                   className={`px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white
                     transition-colors disabled:opacity-75 ${
                       actionType === "delete" || actionType === "cancel" ? "bg-red-600 hover:bg-red-700" : 
-                      actionType === "update" ? "bg-blue-600 hover:bg-blue-700" : 
+                      actionType === "update" ? "bg-yellow-600 hover:bg-yellow-700" : 
                       "bg-green-600 hover:bg-green-700"
                     }`}
                 >

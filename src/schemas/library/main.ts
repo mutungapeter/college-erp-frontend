@@ -61,14 +61,26 @@ export const IssueBookSchema = z.object({
   }, {
     message: "Due date must be today or in the future"
   }),
-  copy_number: z.string().min(1, "Copy Number is required"),
+  // copy_number: z.string().min(1, "Copy Number is required"),
   
 });
 export const MemberSchema = z.object({
   registration_number: z.string().nullable().optional(),
   staff_number: z.string().nullable().optional(),
 });
+
+export const uploadBooksSchema = z.object({
+
+ books_csv: z.instanceof(File)
+     .refine(file => {
+       const validTypes = ['text/csv'];
+       return validTypes.includes(file.type);
+     }, "Please upload a CSV file")
+     .refine(file => file.size <= 10 * 1024 * 1024, "File size should be less than 10MB")
+});
 export const IssueBookUpdateSchema = IssueBookBaseSchema.partial();
+
+export type UploadBooksFormData = z.infer<typeof uploadBooksSchema>;
 export type MemberCreateType = z.infer<typeof MemberSchema>;
 export type IssueBookUpdateType = z.infer<typeof IssueBookUpdateSchema>;
 export type IssueBookType = z.infer<typeof IssueBookSchema>;

@@ -34,3 +34,14 @@ export interface PaySlipType {
 	net_pay: string;
 	generated_at: string;
 }
+
+
+
+export interface OvertimePaymentType {
+	id: number;
+	date: string;
+	hours: string;
+	rate_per_hour: string;
+	approved: boolean;
+	staff: StaffType;
+}

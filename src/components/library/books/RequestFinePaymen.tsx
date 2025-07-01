@@ -224,11 +224,11 @@ const RequestFinePayment = ({ refetchData, data }: Props) => {
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                             <div>
                               <p className="text-gray-600">Fine per day</p>
-                              <p className="font-medium text-gray-900">${data?.fine_per_day}</p>
+                              <p className="font-medium text-gray-900">Ksh {data?.fine_per_day}</p>
                             </div>
                             <div>
                               <p className="text-gray-600">Total Fine</p>
-                              <p className="font-bold text-red-600 text-lg">${data?.calculated_fine}</p>
+                              <p className="font-bold text-red-600 text-lg">Ksh {data?.calculated_fine}</p>
                             </div>
                             <div>
                               <p className="text-gray-600">Status</p>

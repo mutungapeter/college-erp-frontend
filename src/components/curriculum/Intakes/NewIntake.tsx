@@ -62,7 +62,7 @@ const activeValue = watch("closed");
       setSuccessMessage("Intake added successfully!");
       setShowSuccessModal(true);
       reset();
-      refetchData();
+      // refetchData();
     } catch (error: unknown) {
       console.log("error", error);
       setIsError(true);
@@ -75,6 +75,8 @@ const activeValue = watch("closed");
         setSuccessMessage("Unexpected error occurred. Please try again.");
         setShowSuccessModal(true);
       }
+    }finally{
+      refetchData();
     }
   };
 

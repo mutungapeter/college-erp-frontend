@@ -147,7 +147,7 @@ const IssueBook = ({ refetchData, data }: IssueBookProps) => {
 
           <div
             className="fixed inset-0 min-h-full z-100 w-screen flex flex-col text-center md:items-center
-           justify-start overflow-y-auto p-2 md:p-3"
+           justify-center overflow-y-auto p-2 md:p-3"
           >
             <div
               className="relative transform justify-center animate-fadeIn max-h-[90vh]
@@ -161,7 +161,7 @@ const IssueBook = ({ refetchData, data }: IssueBookProps) => {
                   </p>
                   <div className="flex justify-end cursor-pointer">
                     <IoCloseOutline
-                      size={30}
+                      size={20}
                       onClick={handleCloseModal}
                       className="text-gray-500"
                     />
@@ -263,7 +263,7 @@ const IssueBook = ({ refetchData, data }: IssueBookProps) => {
                         </p>
                       )}
                     </div>
-                    <div>
+                    {/* <div>
                       <label className="block space-x-1 text-sm font-medium mb-2">
                         Copy No<span className="text-red-500">*</span>
                       </label>
@@ -278,8 +278,7 @@ const IssueBook = ({ refetchData, data }: IssueBookProps) => {
                           {errors.copy_number.message}
                         </p>
                       )}
-                    </div>
-                  </div>
+                    </div> */}
                     <div>
                       <label className="block space-x-1 text-sm font-medium mb-2">
                         Due Date
@@ -295,12 +294,13 @@ const IssueBook = ({ refetchData, data }: IssueBookProps) => {
                         </p>
                       )}
                     </div>
+                  </div>
 
-                  <div className="sticky bottom-0 bg-white z-40 flex space-x-3 gap-4 md:justify-end items-center py-3">
-                    <button
+                  <div className="sticky bottom-0 bg-white z-40 flex space-x-3 gap-4 md:justify-between items-center py-3">
+                   <button
                       type="button"
                       onClick={handleCloseModal}
-                      className="border border-gray-300 bg-white shadow-sm text-gray-700 py-2 text-sm px-4 rounded-md w-full min-w-[100px] md:w-auto hover:bg-gray-50"
+                      className="border border-red-500 bg-white shadow-sm text-red-700 py-2 text-sm px-4 rounded-md w-full min-w-[100px] md:w-auto hover:bg-red-500 hover:text-white "
                     >
                       Cancel
                     </button>

@@ -62,7 +62,7 @@ const DataTable = <T,>({
     return rowBgColor || 'bg-white';
   };
   return (
-    <div className="relative overflow-x-auto bg-white rounded-md border mt-5">
+    <div className="relative overflow-x-auto md:overflow-x-visible bg-white rounded-md border mt-5">
       <table className="w-full table-auto">
         <thead>
           <tr className={`"
@@ -102,13 +102,13 @@ const DataTable = <T,>({
             data.map((row, rowIndex) => (
               <tr
                 key={rowIndex}
-                className={`"border-b text-md font-thin border-gray-200  hover:bg-gray-100"
+                className={`"border-b text-sm font-thin border-gray-200  hover:bg-gray-100"
                   ${getRowBgColor(rowIndex)}`}
               >
                 {columns.map((column, colIndex) => (
                   <td
                     key={colIndex}
-                    className="px-3 py-2 text-left text-sm font-normal whitespace-nowrap"
+                    className="px-3 py-2 text-left text-sm font-normal whitespace-normal break-words"
                   >
                     {column.cell
                       ? column.cell(row)

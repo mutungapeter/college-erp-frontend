@@ -176,7 +176,7 @@ const AddProgramme = ({ refetchData }: { refetchData: () => void }) => {
                       id="name"
                       type="text"
                       {...register("name")}
-                      placeholder="e.g X Copmuter Science Department"
+                      placeholder="e.g X Copmuter Science"
                       className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                     />
                     {errors.name && (

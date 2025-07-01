@@ -133,23 +133,7 @@ const AddFeeStructureItem = ({ refetchData,buttonText, data }: Props) => {
                   onSubmit={handleSubmit(onSubmit)}
                   className="space-y-4   p-4 md:p-4 lg:p-4 "
                 >
-                  <div>
-                    <label className="block space-x-1  text-sm font-medium mb-2">
-                      Amount<span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      id="name"
-                      type="number"
-                      {...register("amount")}
-                      placeholder="Ksh"
-                      className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
-                    />
-                    {errors.amount && (
-                      <p className="text-red-500 text-sm">
-                        {errors.amount.message}
-                      </p>
-                    )}
-                  </div>
+                
                   <div>
                     <label className="block space-x-1  text-sm font-medium mb-2">
                       Description/What is the amount for
@@ -169,7 +153,23 @@ const AddFeeStructureItem = ({ refetchData,buttonText, data }: Props) => {
                       </p>
                     )}
                   </div>
-
+  <div>
+                    <label className="block space-x-1  text-sm font-medium mb-2">
+                      Amount<span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      id="name"
+                      type="number"
+                      {...register("amount")}
+                      placeholder="Ksh"
+                      className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
+                    />
+                    {errors.amount && (
+                      <p className="text-red-500 text-sm">
+                        {errors.amount.message}
+                      </p>
+                    )}
+                  </div>
                   <div className="sticky bottom-0 bg-white z-40 flex md:px-4  gap-4 md:justify-between items-center py-2 ">
                     <button
                       type="button"

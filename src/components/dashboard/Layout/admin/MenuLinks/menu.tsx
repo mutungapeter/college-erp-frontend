@@ -77,21 +77,31 @@ export const menuItems: MenuGroup[] = [
       },
     ],
   },
-  {
-    title: "Manage Students",
+    {
+    title: "Students",
     items: [
       {
         icon: <IoPeopleOutline />,
         label: "Students",
-        children: [
-          { label: "Students", href: "/dashboard/students" },
-          { label: "Attendance", href: "/dashboard/students/attendance" },
-          // { label: "Cohorts", href: "/dashboard/cohorts" },
-          { label: "Gate Check-Ins", href: "/dashboard/students/gate-checkins" },
-        ],
+        href: "/dashboard/students"
       },
     ],
   },
+  // {
+  //   title: "Manage Students",
+  //   items: [
+  //     {
+  //       icon: <IoPeopleOutline />,
+  //       label: "Students",
+  //       children: [
+  //         { label: "Students", href: "/dashboard/students" },
+  //         { label: "Attendance", href: "/dashboard/students/attendance" },
+  //         // { label: "Cohorts", href: "/dashboard/cohorts" },
+  //         { label: "Gate Check-Ins", href: "/dashboard/students/gate-checkins" },
+  //       ],
+  //     },
+  //   ],
+  // },
   {
     title: "Results ",
     items: [
@@ -115,7 +125,7 @@ export const menuItems: MenuGroup[] = [
         children: [
           { label: "Positions", href: "/dashboard/staff/positions" },
           { label: "All Staff", href: "/dashboard/staff" },
-          { label: "Attendance", href: "/dashboard/staff/attendance" },
+          // { label: "Attendance", href: "/dashboard/staff/attendance" },
         ],
       },
     ],
@@ -143,7 +153,7 @@ export const menuItems: MenuGroup[] = [
         children: [
           { label: "Payroll", href: "/dashboard/payroll" },
           { label: "Payslips", href: "/dashboard/payroll/payslips" },
-          { label: "P9 Forms", href: "/dashboard/payroll/p9-forms" },
+          { label: "Overtime Payments", href: "/dashboard/payroll/overtime-payments" },
         ],
       },
     ],

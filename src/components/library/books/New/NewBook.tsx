@@ -96,18 +96,15 @@ const CreateBook = ({ refetchData }: { refetchData: () => void }) => {
 
   return (
     <>
-      <div
+      <button
         onClick={handleOpenModal}
-        className="flex flex-col md:flex-row md:items-center gap-4 w-full md:w-auto"
+        title="Add Fee Item"
+        className="flex items-center space-x-2 px-4 py-2 bg-primary
+         hover:bg-primary-700 text-white   rounded-md transition duration-300 shadow-sm cursor-pointer"
       >
-        <div
-          className="bg-blue-600 inline-flex cursor-pointer w-max 
-         items-center space-x-2 text-white px-2 py-2 rounded-md hover:bg-blue-700 transition duration-300"
-        >
-          <FiPlus className="text-lg" />
-          <span className="text-xs font-medium">New Book</span>
-        </div>
-      </div>
+        <FiPlus className="text-sm" />
+        <span className="text-sm">Add Book</span>
+      </button>
 
       {isOpen && (
         <div
@@ -138,7 +135,7 @@ const CreateBook = ({ refetchData }: { refetchData: () => void }) => {
                   </p>
                   <div className="flex justify-end cursor-pointer">
                     <IoCloseOutline
-                      size={30}
+                      size={20}
                       onClick={handleCloseModal}
                       className="text-gray-500"
                     />
@@ -294,18 +291,18 @@ const CreateBook = ({ refetchData }: { refetchData: () => void }) => {
                       </div>
                
                   
-                  <div className="sticky bottom-0 bg-white z-40 flex space-x-3 gap-4 md:justify-end items-center py-3">
+                  <div className="sticky bottom-0 bg-white z-40 flex space-x-3 gap-4 md:justify-between items-center py-3">
                     <button
                       type="button"
                       onClick={handleCloseModal}
-                      className="border border-gray-300 bg-white shadow-sm text-gray-700 py-2 text-sm px-4 rounded-md w-full min-w-[100px] md:w-auto hover:bg-gray-50"
+                      className="border border-red-500 bg-white shadow-sm text-red-700 py-2 text-sm px-4 rounded-md w-full min-w-[100px] md:w-auto hover:bg-red-500 hover:text-white "
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
                       disabled={isSubmitting || isCreating}
-                      className="bg-primary-600 text-white py-2 hover:bg-blue-700 text-sm px-3 md:px-4 rounded-md w-full min-w-[100px] md:w-auto"
+                      className="bg-primary-600 text-white py-2 hover:bg-primary-700 text-sm px-3 md:px-4 rounded-md w-full min-w-[100px] md:w-auto"
                     >
                       {isSubmitting || isCreating ? (
                         <span className="flex items-center">

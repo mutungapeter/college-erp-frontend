@@ -245,6 +245,54 @@ export const staffApi = apiSlice.injectEndpoints({
         };
       },
     }),
+    getOvertimePayments: builder.query({
+      query: ({
+        page,
+        page_size,
+        status,
+        search,
+        department,
+      }: PayrollInterface = {}) => {
+        const queryParams: Record<string, string | number | boolean | undefined> = {};
+        if (page) queryParams.page = page;
+        if (page_size) queryParams.page_size = page_size;
+        if (search) queryParams.search = search;
+        if (status) queryParams.status = status;
+        if (department) queryParams.department = department;
+        
+      
+  
+        return {
+          url: `staff/overtime-payments/`,
+          method: 'GET',
+          params: queryParams,
+        };
+      },
+    }),
+     createOvertimePayment: builder.mutation({
+      query: (data) => ({
+        url: `staff/overtime-payments/create/`,
+        method: "POST",
+        body: data,
+        
+      }),
+    }),
+    updateOvertimePayment: builder.mutation({
+      query: ({id, data}) => ({
+        url: `staff/overtime-payments/${id}/update/`,
+        method: "PATCH",
+        body: data,
+        
+      }),
+    }),
+    approveOvertimePayment: builder.mutation({
+      query: ({id, data}) => ({
+        url: `staff/overtime-payments/${id}/approve/`,
+        method: "PATCH",
+        body: data,
+        
+      }),
+    }),
   }),
 });
 
@@ -267,5 +315,9 @@ useToggleStaffStatusMutation,
 useUpdateStaffToPayrollMutation,
 useCreatePositionMutation,
 useUpdatePositionMutation,
-useGetActiveStaffListQuery
+useGetActiveStaffListQuery,
+useGetOvertimePaymentsQuery,
+useCreateOvertimePaymentMutation,
+useUpdateOvertimePaymentMutation,
+useApproveOvertimePaymentMutation,
 } = staffApi;

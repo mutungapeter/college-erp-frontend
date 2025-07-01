@@ -16,4 +16,20 @@ export const paySlipSchema = z.object({
   }
 );
 
+export const overtimeRecordSchema = z.object({
+  staff: z.number().int().positive("Staff is required"),
+  date: z.string().min(1, "Date is required"),
+  hours: z.coerce.number()
+    .min(0.01, "Hours must be greater than 0")
+    .max(999.99, "Hours value too large"),
+  rate_per_hour: z.coerce.number()
+    .min(0.01, "Rate must be greater than 0")
+    .max(100000000, "Rate value too high"),
+  approved: z.boolean().optional(),
+});
+
+export const updateOvertimeRecordsSchema = overtimeRecordSchema.partial();
+
+export type OvertimeRecordsFormData = z.infer<typeof overtimeRecordSchema>;
+export type UpdateOvertimeRecordsFormData = z.infer<typeof updateOvertimeRecordsSchema>;
 export type PaySlipSchemaType = z.infer<typeof paySlipSchema>;

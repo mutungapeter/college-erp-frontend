@@ -16,6 +16,7 @@ import { GoSearch } from "react-icons/go";
 import EditBook from "./New/Edit";
 import CreateBook from "./New/NewBook";
 import IssueBook from "./New/NewBookIssueRecord";
+import UploadBooks from "./New/UploadBooks";
 
 
 const Books = () => {
@@ -133,8 +134,9 @@ console.log("booksData",booksData)
         <div className=" p-3  flex flex-col md:flex-row md:items-center lg:items-center md:gap-0 lg:gap-0 gap-4 lg:justify-between md:justify-between">
           <h2 className="font-semibold text-black text-xl">All Books</h2>
           
-         <div>
+         <div className="flex items-center space-x-4">
             <CreateBook refetchData={refetch} />
+            <UploadBooks refetchData={refetch} />
          </div>
         </div>
 

@@ -4,12 +4,11 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FiPlus } from "react-icons/fi";
 import { IoCloseOutline } from "react-icons/io5";
-import { z } from "zod";
 
 import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
 import SubmitSpinner from "@/components/common/spinners/submitSpinner";
 
-import campusSchema from "@/schemas/curriculum/campus";
+import { CampusTypeFormData, campusSchema } from "@/schemas/curriculum/campus";
 import { useCreateCampusMutation } from "@/store/services/curriculum/campusService";
 
 const AddCampus = ({ refetchData }: { refetchData: () => void }) => {
@@ -30,7 +29,7 @@ const AddCampus = ({ refetchData }: { refetchData: () => void }) => {
     reset,
     formState: { isSubmitting, errors },
   } = useForm({
-    resolver: zodResolver(campusSchema),
+    resolver: zodResolver<CampusTypeFormData>(campusSchema),
   });
   useEffect(() => {
     console.log("Form Errors:", errors);
@@ -48,7 +47,7 @@ const AddCampus = ({ refetchData }: { refetchData: () => void }) => {
   };
 
 
-  const onSubmit = async (formData: z.infer<typeof campusSchema>) => {
+  const onSubmit = async (formData: CampusTypeFormData) => {
     
 
    

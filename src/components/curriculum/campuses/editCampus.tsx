@@ -5,14 +5,13 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FiEdit } from "react-icons/fi";
 import { IoCloseOutline } from "react-icons/io5";
-import { z } from "zod";
 
 import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
 import { useUpateCampusMutation } from "@/store/services/curriculum/campusService";
 
 import SubmitSpinner from "@/components/common/spinners/submitSpinner";
 import { CampusType } from "@/definitions/curiculum";
-import campusSchema from "@/schemas/curriculum/campus";
+import { updateCampusSchema, updateCampusTypeFormData } from "@/schemas/curriculum/campus";
 
 const EditCampus = ({
   campus,
@@ -36,7 +35,7 @@ const EditCampus = ({
 
     formState: { isSubmitting, errors },
   } = useForm({
-    resolver: zodResolver(campusSchema),
+    resolver: zodResolver<updateCampusTypeFormData>(updateCampusSchema),
     defaultValues: {
       name: campus?.name || "",
       city: campus?.city || "",
@@ -59,7 +58,7 @@ const EditCampus = ({
     handleCloseModal();
   };
 
-  const onSubmit = async (formData: z.infer<typeof campusSchema>) => {
+  const onSubmit = async (formData: updateCampusTypeFormData) => {
     try {
       const response = await updateCampus({
         id: campus.id,

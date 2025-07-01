@@ -7,15 +7,12 @@ import { FiEdit } from "react-icons/fi";
 import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
 import SubmitSpinner from "@/components/common/spinners/submitSpinner";
 
-
 import { IntakeType } from "@/definitions/admissions";
 import {
-    UpdateIntakeFormData,
-    UpdateIntakeSchema
+  UpdateIntakeFormData,
+  UpdateIntakeSchema,
 } from "@/schemas/curriculum/intakes";
-import {
-    useUpdateIntakeMutation
-} from "@/store/services/admissions/admissionsService";
+import { useUpdateIntakeMutation } from "@/store/services/admissions/admissionsService";
 import { IoCloseOutline } from "react-icons/io5";
 
 interface Props {
@@ -28,7 +25,7 @@ const EditIntake = ({ refetchData, data }: Props) => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [isError, setIsError] = useState(false);
-
+  console.log("data", data);
   const [updateIntake, { isLoading: isCreating }] = useUpdateIntakeMutation();
 
   const {
@@ -51,6 +48,16 @@ const EditIntake = ({ refetchData, data }: Props) => {
   useEffect(() => {
     console.log("Form Errors:", errors);
   }, [errors]);
+  useEffect(() => {
+    if (data) {
+      reset({
+        name: data.name ?? "",
+        start_date: data.start_date ?? "",
+        end_date: data.end_date ?? "",
+        closed: data.closed ?? false,
+      });
+    }
+  }, [data, reset]);
 
   const handleCloseModal = () => {
     setIsOpen(false);
@@ -203,7 +210,7 @@ const EditIntake = ({ refetchData, data }: Props) => {
                     <input
                       type="checkbox"
                       id="closed"
-                      className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                      className="w-4 h-4 text-blue-600 cursor-pointer rounded focus:ring-blue-500"
                       {...register("closed")}
                     />
                     <label

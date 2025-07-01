@@ -4,21 +4,24 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FiPlus } from "react-icons/fi";
 import { IoCloseOutline } from "react-icons/io5";
-import { z } from "zod";
 
 import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
 import SubmitSpinner from "@/components/common/spinners/submitSpinner";
 import Select from "react-select";
 
-import {departmentSchema} from "@/schemas/curriculum/departments";
+import { SchoolType } from "@/definitions/curiculum";
+import { DepartmentTypeOptions } from "@/lib/constants";
+import {
+  createDepartmentFormData,
+  departmentSchema,
+} from "@/schemas/curriculum/departments";
 import { useCreateDepartmentMutation } from "@/store/services/curriculum/departmentsService";
 import { useGetSchoolsQuery } from "@/store/services/curriculum/schoolSService";
-import { SchoolType } from "@/definitions/curiculum";
 type SchoolOption = {
   value: string;
   label: string;
 };
-type FormValues = z.infer<typeof departmentSchema>;
+
 const AddDepartment = ({ refetchData }: { refetchData: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -29,9 +32,10 @@ const AddDepartment = ({ refetchData }: { refetchData: () => void }) => {
 
   const [createDepartment, { isLoading: isCreating }] =
     useCreateDepartmentMutation();
-  const {
-    data: schoolsData
-  } = useGetSchoolsQuery({}, { refetchOnMountOrArgChange: true });
+  const { data: schoolsData } = useGetSchoolsQuery(
+    {},
+    { refetchOnMountOrArgChange: true }
+  );
 
   const {
     register,
@@ -40,11 +44,12 @@ const AddDepartment = ({ refetchData }: { refetchData: () => void }) => {
     setValue,
     formState: { isSubmitting, errors },
   } = useForm({
-    resolver: zodResolver(departmentSchema),
+    resolver: zodResolver<createDepartmentFormData>(departmentSchema),
     defaultValues: {
       name: "",
       school: undefined,
-      office:""
+      office: "",
+      department_type: "",
     },
   });
   useEffect(() => {
@@ -66,8 +71,12 @@ const AddDepartment = ({ refetchData }: { refetchData: () => void }) => {
       setValue("school", schoolId);
     }
   };
-
-  const onSubmit = async (formData: FormValues) => {
+  const handleDepartmentTypeChange = (selected: SchoolOption | null) => {
+    if (selected) {
+      setValue("department_type", String(selected.value));
+    }
+  };
+  const onSubmit = async (formData: createDepartmentFormData) => {
     console.log("submitting form data");
 
     try {
@@ -168,7 +177,9 @@ const AddDepartment = ({ refetchData }: { refetchData: () => void }) => {
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2  gap-4">
                     <div>
-                      <label className="block space-x-1  text-sm font-medium mb-2">School</label>
+                      <label className="block space-x-1  text-sm font-medium mb-2">
+                        School
+                      </label>
                       <Select
                         options={schoolsData?.map((school: SchoolType) => ({
                           value: school.id,
@@ -224,13 +235,46 @@ const AddDepartment = ({ refetchData }: { refetchData: () => void }) => {
                       )}
                     </div>
                   </div>
-
+                  <div>
+                    <label className="block space-x-1 text-sm font-medium mb-2">
+                      Department Type<span className="text-red-500">*</span>
+                    </label>
+                    <Select
+                      options={DepartmentTypeOptions}
+                      onChange={handleDepartmentTypeChange}
+                      menuPortalTarget={document.body}
+                      styles={{
+                        menuPortal: (base) => ({
+                          ...base,
+                          zIndex: 9999,
+                        }),
+                        control: (base) => ({
+                          ...base,
+                          minHeight: "25px",
+                          borderColor: "#d1d5db",
+                          boxShadow: "none",
+                          "&:hover": {
+                            borderColor: "#9ca3af",
+                          },
+                          "&:focus-within": {
+                            borderColor: "#9ca3af",
+                            boxShadow: "none",
+                          },
+                        }),
+                      }}
+                    />
+                    {errors.department_type && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.department_type.message}
+                      </p>
+                    )}
+                  </div>
                   <div className="sticky bottom-0 bg-white z-40 flex md:px-6  gap-4 md:justify-between items-center py-3 ">
                     <button
                       type="button"
                       onClick={handleCloseModal}
-                                           className="border border-red-500 bg-white shadow-sm text-red-500 py-2 text-sm px-4 rounded-lg w-full min-w-[100px] md:w-auto hover:bg-red-500 hover:text-white"
-  >
+                      className="border border-red-500 bg-white shadow-sm text-red-500 py-2 text-sm px-4 rounded-lg w-full min-w-[100px] md:w-auto hover:bg-red-500 hover:text-white"
+                    >
                       Cancel
                     </button>
                     <button
