@@ -5,13 +5,10 @@ import Cookies from "js-cookie";
 export const authApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation({
-      query: ({ username, password }) => ({
+      query: (data) => ({
         url: `users/login/`,
         method: "POST",
-        body: {
-          username,
-          password,
-        },
+        body: data,
       }),
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
