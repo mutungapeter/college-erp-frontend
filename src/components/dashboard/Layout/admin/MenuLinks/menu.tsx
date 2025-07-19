@@ -9,14 +9,15 @@ import {
   IoHomeOutline,
   IoLibraryOutline,
   IoPeopleOutline,
-  IoSchoolOutline
+  IoSchoolOutline,
+  IoSettingsOutline
 } from "react-icons/io5";
 import { LuBookOpenCheck } from "react-icons/lu";
 import { PiUserList } from "react-icons/pi";
 import { RiMoneyDollarBoxLine } from "react-icons/ri";
 export const menuItems: MenuGroup[] = [
   {
-    title: "Dashboard",
+    title: "",
     items: [
       {
         icon: <IoHomeOutline />,
@@ -215,5 +216,20 @@ export const menuItems: MenuGroup[] = [
       },
     ],
   },
-
+  {
+    title: "Finance",
+    items: [
+      {
+        icon: <IoSettingsOutline />,
+        label: "Settings",
+        children: [
+          // { label: "Reports", href: "/dashboard/finance/reports" },
+          { label: "School Profile", href: "/dashboard/settings/school-settings" },
+          { label: "Library Settings", href: "/dashboard/settings/library-settings" },
+          // { label: "Budget", href: "/dashboard/finance/budget" },
+        ],
+      },
+    ],
+  },
+ 
 ];

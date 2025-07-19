@@ -371,23 +371,24 @@ const TranscriptPDF = ({ transcriptData }: Props) => {
     <Document>
       {transcriptData?.map((transcript: TranscriptType, index: number) => {
         return (
-          <Page size="A4" style={styles.page}
-          key={index}
-          >
+          <Page size="A4" style={styles.page} key={index}>
             <View style={styles.logoSection}>
               <View style={styles.logoContainer}>
                 {/* eslint-disable-next-line jsx-a11y/alt-text */}
-                <Image style={styles.logo}
-                 src="/logo/university_logo.png"
+                <Image
+                  style={styles.logo}
+                  src="/logo/university_logo.png"
                   // alt="Kathangaita University of Science and Technology Logo"
-                 />
+                />
                 <View style={styles.universityHeaderText}>
                   <Text style={styles.universityName}>
-                    Kathangaita Unisversity  of Science and Technology
+                    Kathangaita Unisversity of Science and Technology
                   </Text>
                 </View>
               </View>
-              <Text style={styles.contactInfo}>P.O. BOX. 190-50100 Kathangaita,</Text>
+              <Text style={styles.contactInfo}>
+                P.O. BOX. 190-50100 Kathangaita,
+              </Text>
               <Text style={styles.contactInfo}>
                 TEL: +057-250523646/3,0745535335, FAX: +056-30150
               </Text>
@@ -439,15 +440,21 @@ const TranscriptPDF = ({ transcriptData }: Props) => {
                 </View>
                 <View style={styles.infoRow}>
                   <Text style={styles.label}>Year Of study:</Text>
-                  <Text style={styles.value}>{transcript?.student?.cohort.current_year}</Text>
+                  <Text style={styles.value}>
+                    {transcript?.student?.cohort.current_year}
+                  </Text>
                 </View>
                 <View style={styles.infoRow}>
                   <Text style={styles.label}>Semester:</Text>
-                  <Text style={styles.value}>{transcript?.student?.cohort.current_semester.name}</Text>
+                  <Text style={styles.value}>
+                    {transcript?.student?.cohort.current_semester.name}
+                  </Text>
                 </View>
                 <View style={styles.infoRow}>
                   <Text style={styles.label}>Admission Year:</Text>
-                  <Text style={styles.value}>{CustomDate(transcript?.student?.created_on)}</Text>
+                  <Text style={styles.value}>
+                    {CustomDate(transcript?.student?.created_on)}
+                  </Text>
                 </View>
               </View>
             </View>
@@ -581,7 +588,8 @@ const TranscriptPDF = ({ transcriptData }: Props) => {
             {/* Footer */}
             <View style={styles.footer}>
               <Text>
-                This is an official transcript of the Kathangaita Unisversity  of Science and Technology.
+                This is an official transcript of the Kathangaita Unisversity of
+                Science and Technology.
               </Text>
               <Text>This document is void if altered in any way.</Text>
             </View>

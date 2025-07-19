@@ -10,9 +10,8 @@ import {
   LuLayoutDashboard,
 } from "react-icons/lu";
 import MetricCard from "./components/metrics/card";
-import FeeCollectionChart from "./components/metrics/FeesCollectedChart";
 import EnrollmentsBarChart from "./components/metrics/EnrollmentsChart";
-import RecentActivity from "./components/RecentActivity";
+import FeeCollectionChart from "./components/metrics/FeesCollectedChart";
 const Dashboard = () => {
   const { data, refetch } = useGetDashboardCountsQuery(
     {},
@@ -75,9 +74,9 @@ const Dashboard = () => {
           <FeeCollectionChart />
         </div>
         <div>
-          <RecentActivity 
+          {/* <RecentActivity 
            
-          />
+          /> */}
           
         </div>
       </div>

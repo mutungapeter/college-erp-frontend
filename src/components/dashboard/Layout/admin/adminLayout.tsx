@@ -21,7 +21,7 @@ export default function AdminDashboardLayout({
           <PageLoadingSpinner />
         </div>
       ) : (
-        <div className="flex h-screen w-full bg-[#E3EFFE]/40 overflow-hidden">
+        <div className="flex h-screen w-full bg-[#F5F5F5] overflow-hidden">
       
           <Menu
             isOpen={isSidebarOpen}

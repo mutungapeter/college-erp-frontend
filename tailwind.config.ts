@@ -17,31 +17,32 @@ export default {
     },
     extend: {
       colors: {
-        // Primary color changed to concentrated green
+
         primary: {
-          DEFAULT: "#059669", // Emerald-600 - concentrated green
+          DEFAULT: "#059669", 
+          //  DEFAULT: "#0D99FF",
           50: "#ECFDF5",
           100: "#D1FAE5",
           200: "#A7F3D0",
           300: "#6EE7B7",
           400: "#34D399",
           500: "#10B981",
-          600: "#059669", // Main green
+          600: "#059669",
           700: "#047857",
           800: "#065F46",
           900: "#064E3B",
           950: "#022C22",
         },
-        // Secondary color as teal complement
+       
         secondary: {
-          DEFAULT: "#0891B2", // Cyan-600 - concentrated teal
+          DEFAULT: "#0891B2", 
           50: "#ECFEFF",
           100: "#CFFAFE",
           200: "#A5F3FC",
           300: "#67E8F9",
           400: "#22D3EE",
           500: "#06B6D4",
-          600: "#0891B2", // Main teal
+          600: "#0891B2", 
           700: "#0E7490",
           800: "#155E75",
           900: "#164E63",
@@ -117,28 +118,28 @@ export default {
           900: "#164E63",
           950: "#083344",
         },
-        // Updated sidebar colors - keeping white background
+      
         sidebar: {
-          bg: "#FFFFFF", // White background
-          hover: "#F0FDF4", // Green-50 - light green hover
-          active: "#DCFCE7", // Green-100 - active state
-          text: "#374151", // Gray-700 - readable text
-          activeText: "#059669", // Primary green for active text
+          bg: "#FFFFFF", 
+          hover: "#F0FDF4", 
+          active: "#DCFCE7", 
+          text: "#374151", 
+          activeText: "#059669", 
         },
-        // Updated content colors
+       
         content: {
-          bg: "#F0FDF4", // Green-50 - main background
-          card: "#FFFFFF", // White cards for contrast
-          border: "#D1FAE5", // Green-100 - subtle borders
+          bg: "#F0FDF4", 
+          card: "#FFFFFF", 
+          border: "#D1FAE5", 
         },
-        // Updated theme colors
-        darkGreen: "#047857", // Green-700
-        lightGreen: "#F0FDF4", // Green-50
-        darkTeal: "#0E7490", // Cyan-700
-        lightTeal: "#ECFEFF", // Cyan-50
-        body: "#F0FDF4", // Green-50 - main body background
+      
+        darkGreen: "#047857", 
+        lightGreen: "#F0FDF4", 
+        darkTeal: "#0E7490",
+        lightTeal: "#ECFEFF", 
+        body: "#F0FDF4",
         white: "#FFFFFF",
-        textColor: "#1F2937", // Dark gray for good contrast
+        textColor: "#1F2937", 
       },
       spacing: {
         4.5: "1.125rem",

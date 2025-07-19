@@ -18,7 +18,7 @@ const Menu = ({
       className={`fixed bg-white shadow-sm left-0 top-0 z-[999] duration-300 ease-linear h-screen transition-all md:relative md:translate-x-0 
     ${isMobileOpen ? "translate-x-0 w-[80%]" : "-translate-x-full"}
     ${isOpen ? "md:w-[17%] lg:w-[17%]" : "md:w-[6%] lg:w-[6%]"} 
-    p-4 flex flex-col`}
+   px-4 py-3 flex flex-col`}
     >
       <div className="flex items-center justify-between">
         <div className="text-center">
@@ -53,6 +53,9 @@ const Menu = ({
         <div className="flex-1 overflow-y-auto pr-1">
           {menuItems.map((category) => (
             <div className="flex flex-col mb-5" key={category.title}>
+              {/* <h3 className="text-[10px] font-medium text-blue-500 uppercase mb-2">
+                {category.title}
+                </h3> */}
               <div className="space-y-1 flex flex-col">
                 {category.items.map((item) => (
                   <SidebarItem

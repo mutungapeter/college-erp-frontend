@@ -26,8 +26,8 @@ type FormValues = z.infer<typeof uploadStudentSchema>;
 const StudentUploadButton = ({ refetchData }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
-  const [error, setError] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [error, setError] = useState<string>("");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [isError, setIsError] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");

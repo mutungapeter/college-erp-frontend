@@ -37,7 +37,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
             transition-all duration-200 ease-in-out rounded-sm
             ${
               isActive(item.href)
-                ? "bg-primary-100 text-primary-700 font-medium border-l-4 border-primary-600"
+                ? "bg-[#F3FAFF] text-primary-700 font-medium "
                 : "text-gray-600 hover:bg-gray-100 hover:text-primary-600 cursor-pointer"
             }`}
           onClick={() => {
@@ -60,7 +60,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
             </span>
           )}
           <span
-            className={`ml-3 text-sm font-normal ${
+            className={`ml-3 text-sm font-medium ${
               isOpen ? "block" : "lg:hidden"
             } md:block`}
           >
@@ -96,7 +96,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
             </span>
           )}
           <span
-            className={`ml-3 text-sm font-normal ${
+            className={`ml-3 text-sm font-medium ${
               isOpen ? "block" : "lg:hidden"
             } md:block`}
           >
@@ -121,7 +121,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
             <Link
               href={child.href}
               key={child.label}
-              className={`group flex items-center px-3 py-2 rounded-sm text-sm transition-all duration-200 ease-in-out
+              className={`group flex items-center px-3 py-2 rounded-sm text-xs transition-all duration-200 ease-in-out
                 ${
                   isActive(child.href)
                     ? "bg-primary-100 text-primary-700 font-medium border-l-4 border-primary-600"
