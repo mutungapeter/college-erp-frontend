@@ -14,14 +14,14 @@ const nextConfig: NextConfig = {
   },
   
 
-  async rewrites() {
-    return [
-      {
-        source: '/media/:path*',
-        destination: `${isDev ? 'http://127.0.0.1:8000' : process.env.NEXT_PUBLIC_SERVER_URI}/media/:path*`,
-      },
-    ];
-  },
+  // async rewrites() {
+  //   return [
+  //     {
+  //       source: '/media/:path*',
+  //       destination: `${isDev ? 'http://127.0.0.1:8000' : process.env.NEXT_PUBLIC_SERVER_URI}/media/:path*`,
+  //     },
+  //   ];
+  // },
 };
 
 
