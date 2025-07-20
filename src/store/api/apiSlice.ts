@@ -4,6 +4,7 @@ export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_SERVER_URI,
+     credentials: "include",
     prepareHeaders: async (headers,  { endpoint }) => {
       const accessToken = Cookies.get("accessToken");
       const refreshToken = Cookies.get("refreshToken");
@@ -28,7 +29,7 @@ export const apiSlice = createApi({
 
       return headers;
     },
-    credentials: "include",
+   
   }),
   endpoints: () => ({}),
 });
