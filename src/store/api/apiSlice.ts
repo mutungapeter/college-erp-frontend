@@ -16,8 +16,10 @@ export const apiSlice = createApi({
         'uploadStaffDocument',
         'uploadBooks'
       ];
-       if (endpointsUsingFormData.includes(endpoint)) {
-        headers.delete('Content-Type'); 
+        if (endpointsUsingFormData.includes(endpoint)) {
+        headers.delete("Content-Type"); // Let browser set it automatically for FormData
+      } else {
+        headers.set("Content-Type", "application/json");
       }
       if (accessToken) {
         headers.set("Authorization", `Bearer ${accessToken}`);
