@@ -1,65 +1,62 @@
 "use client";
 
-
-import { useFilters } from "@/hooks/useFilters";
-
 import FilterSelect from "@/components/common/Select";
 import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
 import { LabelOptionsType } from "@/definitions/Labels/labelOptionsType";
 import { ProgrammeCohortType, ProgrammeDetailsType, SemesterType } from "@/definitions/curiculum";
 import { TranscriptType } from "@/definitions/transcripts";
+import { useFilters } from "@/hooks/useFilters";
 import { handleApiResponseError } from "@/lib/ApiError";
 import { PAGE_SIZE } from "@/lib/constants";
 import { useGetTranscriptMarksQuery } from "@/store/services/academics/acadmicsService";
 import { useGetCohortsQuery } from "@/store/services/curriculum/cohortsService";
 import { useGetProgrammesQuery } from "@/store/services/curriculum/programmesService";
 import { useGetSemestersQuery } from "@/store/services/curriculum/semestersService";
-import dynamic from "next/dynamic";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { GoSearch } from "react-icons/go";
+import TranscriptHTMLView from "./TranscriptHTMLView";
+import { exportTranscriptToPDF } from "./TranscriptsPdf";
 
 
-
-const PDFTranscriptViewer = dynamic(
-  () => import("./TranscriptsPdf").then((mod) => mod.PDFTranscriptViewer),
-  { 
-    ssr: false,
-    loading: () => (
-     <div className="fixed inset-0 bg-black  bg-opacity-50 flex items-center justify-center z-50">
-             <div className=" w-full md:max-w-c-500 p-6 rounded-lg shadow-lg">
-             <ContentSpinner />
-             </div>
-             
-           </div>
-    )
-  }
-);
 const Transcripts = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
- const [newData, setNewData] = useState<TranscriptType[]>([]);
- const [isDataLoaded, setIsDataLoaded] = useState(false);
- const [shouldFetchData, setShouldFetchData] = useState(false);
+  const [newData, setNewData] = useState<TranscriptType[]>([]);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const [shouldFetchData, setShouldFetchData] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
  
- const handleGenerate = () => {
+  const handleGenerate = () => {
     setShouldFetchData(true);
   };
 
-  const { filters, currentPage, handleFilterChange } =
-    useFilters({
-      initialFilters: {
-        reg_no: searchParams.get("reg_no") || "",
-        programme: searchParams.get("programme") || "",
-        cohort: searchParams.get("cohort") || "",
-        semester: searchParams.get("semester") || "",
-      },
-      initialPage: parseInt(searchParams.get("page") || "1", 10),
-      router,
-      debounceTime: 100,
-      debouncedFields: ["reg_no"],
-    });
+  const handleExportPDF = async () => {
+    if (newData.length === 0) return;
+    
+    setIsExporting(true);
+    try {
+      await exportTranscriptToPDF(newData);
+    } catch (error) {
+      console.error('Error exporting PDF:', error);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const { filters, currentPage, handleFilterChange } = useFilters({
+    initialFilters: {
+      reg_no: searchParams.get("reg_no") || "",
+      programme: searchParams.get("programme") || "",
+      cohort: searchParams.get("cohort") || "",
+      semester: searchParams.get("semester") || "",
+    },
+    initialPage: parseInt(searchParams.get("page") || "1", 10),
+    router,
+    debounceTime: 100,
+    debouncedFields: ["reg_no"],
+  });
 
   const queryParams = useMemo(
     () => ({
@@ -69,19 +66,16 @@ const Transcripts = () => {
     }),
     [currentPage, filters]
   );
-console.log("queryParams",queryParams)
-  
-  const { data:marksData, isLoading, error } = useGetTranscriptMarksQuery(
-queryParams,
-  {
-    refetchOnMountOrArgChange: true,
-    skip: !shouldFetchData, 
-  }
-  );
-  
 
-console.log("marksData",marksData)
-useEffect(() => {
+  const { data: marksData, isLoading, error } = useGetTranscriptMarksQuery(
+    queryParams,
+    {
+      refetchOnMountOrArgChange: true,
+      skip: !shouldFetchData, 
+    }
+  );
+
+  useEffect(() => {
     if (shouldFetchData && marksData && marksData.results) {
       setNewData(marksData.results);
       setIsDataLoaded(true);
@@ -93,70 +87,83 @@ useEffect(() => {
     }
   }, [marksData, shouldFetchData]);
 
- 
   useEffect(() => {
     setIsDataLoaded(false);
     setNewData([]);
     setShouldFetchData(false);
   }, [filters, currentPage]);
   
-  const { data:programmes } = useGetProgrammesQuery({}, {refetchOnMountOrArgChange: true,});
-  const { data:cohortsData } = useGetCohortsQuery({}, {refetchOnMountOrArgChange: true,});
-  const { data:semesters } = useGetSemestersQuery({}, {refetchOnMountOrArgChange: true,});
+  const { data: programmes } = useGetProgrammesQuery({}, {refetchOnMountOrArgChange: true});
+  const { data: cohortsData } = useGetCohortsQuery({}, {refetchOnMountOrArgChange: true});
+  const { data: semesters } = useGetSemestersQuery({}, {refetchOnMountOrArgChange: true});
    
-    
- 
-  const cohortsOptions = cohortsData?.map((item:ProgrammeCohortType) => ({
-      value: item.id, 
-      label: `${item.name}`,
-    })) || [];
-  const programmeOptions = programmes?.map((item:ProgrammeDetailsType) => ({
-      value: item.id, 
-      label: `${item.name} (${item.level})`,
-    })) || [];
-  const semestersOptions = semesters?.map((item:SemesterType) => ({
-      value: item.id, 
-      label: `${item.name} (${item.academic_year})`,
-    })) || [];
+  const cohortsOptions = cohortsData?.map((item: ProgrammeCohortType) => ({
+    value: item.id, 
+    label: `${item.name}`,
+  })) || [];
   
- const handleProgrammeChange = (selectedOption: LabelOptionsType | null) => {
-  const courseValue = selectedOption ? selectedOption.value : "";
-      handleFilterChange({
+  const programmeOptions = programmes?.map((item: ProgrammeDetailsType) => ({
+    value: item.id, 
+    label: `${item.name} (${item.level})`,
+  })) || [];
+  
+  const semestersOptions = semesters?.map((item: SemesterType) => ({
+    value: item.id, 
+    label: `${item.name} (${item.academic_year})`,
+  })) || [];
+  
+  const handleProgrammeChange = (selectedOption: LabelOptionsType | null) => {
+    const courseValue = selectedOption ? selectedOption.value : "";
+    handleFilterChange({
       programme: courseValue,
     });
-    };
- const handleCohortChange = (selectedOption: LabelOptionsType | null) => {
-  const cohortValue = selectedOption ? selectedOption.value : "";
-      handleFilterChange({
+  };
+  
+  const handleCohortChange = (selectedOption: LabelOptionsType | null) => {
+    const cohortValue = selectedOption ? selectedOption.value : "";
+    handleFilterChange({
       cohort: cohortValue,
     });
-};
- const handleSemesterChange = (selectedOption: LabelOptionsType | null) => {
-  const cohortValue = selectedOption ? selectedOption.value : "";
-      handleFilterChange({
-      semester: cohortValue,
+  };
+  
+  const handleSemesterChange = (selectedOption: LabelOptionsType | null) => {
+    const semesterValue = selectedOption ? selectedOption.value : "";
+    handleFilterChange({
+      semester: semesterValue,
     });
-};
- 
- console.log("newData", newData)
+  };
  
   return (
     <>
-      <div className="bg-white w-full  p-1 shadow-md rounded-lg font-nunito">
-        <div className=" p-3  flex flex-col md:flex-row md:items-center lg:items-center md:gap-0 lg:gap-0 gap-4 lg:justify-between md:justify-between">
+      <div className="bg-white w-full p-1 shadow-md rounded-lg font-nunito">
+        <div className="p-3 flex flex-col md:flex-row md:items-center lg:items-center md:gap-0 lg:gap-0 gap-4 lg:justify-between md:justify-between">
           <h2 className="font-semibold text-black text-xl">Academic Transcripts</h2>
      
-        <button
-                  onClick={handleGenerate}
-                  className="w-full sm:w-auto px-4 py-2 bg-primary text-white rounded-md hover:bg-blue-700 flex items-center justify-center"
-                  disabled={isLoading}
-                >
-                  {/* <FaRegHandPointRight className="mr-2" />  */}
-                  {isLoading ? 'Generating...' : 'Generate'}
-                </button>
+          <div className="flex gap-2">
+            <button
+              onClick={handleGenerate}
+              className="w-full sm:w-auto px-4 py-2 bg-primary text-white rounded-md hover:bg-blue-700 flex items-center justify-center"
+              disabled={isLoading}
+            >
+              {isLoading ? 'Generating...' : 'Generate'}
+            </button>
+            
+            {isDataLoaded && newData.length > 0 && (
+              
+              <button
+                        onClick={handleExportPDF}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <span>{isExporting ? 'Exporting...' : 'Export PDF'}</span>
+                      </button>
+            )}
+          </div>
         </div>
 
-        <div className="flex flex-col gap-4 mt-5 lg:gap-0 md:gap-0 lg:flex-row md:flex-row  md:items-center p-2 md:justify-between lg:items-center lg:justify-between">
+        <div className="flex flex-col gap-4 mt-5 lg:gap-0 md:gap-0 lg:flex-row md:flex-row md:items-center p-2 md:justify-between lg:items-center lg:justify-between">
           <div className="relative w-full md:w-auto md:min-w-[40%] flex-grow flex items-center gap-2 text-gray-500 focus-within:text-blue-600 px-2">
             <GoSearch size={20} className="" />
             <input
@@ -165,42 +172,42 @@ useEffect(() => {
               onChange={handleFilterChange}
               value={filters.reg_no}
               placeholder="generate by student's reg no"
-              className="w-full md:w-auto text-gray-900 md:min-w-[60%]  text-sm px-2 py-2 bg-transparent outline-none border-b border-gray-300 focus:border-blue-600"
+              className="w-full md:w-auto text-gray-900 md:min-w-[60%] text-sm px-2 py-2 bg-transparent outline-none border-b border-gray-300 focus:border-blue-600"
             />
           </div>
-          <div className="flex flex-col gap-3  lg:p-0 lg:flex-row md:flex-row md:items-center md:space-x-2 lg:items-center lg:space-x-5">
-             <FilterSelect
-            options={cohortsOptions}
-            value={cohortsOptions.find(
-              (option:LabelOptionsType) => option.value === filters.cohort  
-            ) || { value: "", label: "All Classes" }}
-            onChange={handleCohortChange}
-            placeholder=""
-            defaultLabel="All Classes"
-          />
-             <FilterSelect
-            options={programmeOptions}
-            value={programmeOptions.find(
-              (option:LabelOptionsType) => option.value === filters.programme  
-            ) || { value: "", label: "All Courses" }}
-            onChange={handleProgrammeChange}
-            placeholder=""
-            defaultLabel="All Courses"
-          />
-             <FilterSelect
-            options={semestersOptions}
-            value={semestersOptions.find(
-              (option:LabelOptionsType) => option.value === filters.semester  
-            ) || { value: "", label: "All Semesters" }}
-            onChange={handleSemesterChange}
-            placeholder=""
-            defaultLabel="All Semesters"
-          />
+          <div className="flex flex-col gap-3 lg:p-0 lg:flex-row md:flex-row md:items-center md:space-x-2 lg:items-center lg:space-x-5">
+            <FilterSelect
+              options={cohortsOptions}
+              value={cohortsOptions.find(
+                (option: LabelOptionsType) => option.value === filters.cohort  
+              ) || { value: "", label: "All Classes" }}
+              onChange={handleCohortChange}
+              placeholder=""
+              defaultLabel="All Classes"
+            />
+            <FilterSelect
+              options={programmeOptions}
+              value={programmeOptions.find(
+                (option: LabelOptionsType) => option.value === filters.programme  
+              ) || { value: "", label: "All Courses" }}
+              onChange={handleProgrammeChange}
+              placeholder=""
+              defaultLabel="All Courses"
+            />
+            <FilterSelect
+              options={semestersOptions}
+              value={semestersOptions.find(
+                (option: LabelOptionsType) => option.value === filters.semester  
+              ) || { value: "", label: "All Semesters" }}
+              onChange={handleSemesterChange}
+              placeholder=""
+              defaultLabel="All Semesters"
+            />
           </div>
         </div>
       </div>
         
-       {isLoading && !newData ? (
+      {isLoading && !newData ? (
         <div className="w-full mx-2 md:mx-auto lg:mx-auto flex justify-center lg:w-11/12 md:w-11/12 bg-white rounded-md shadow-md py-8">
           <ContentSpinner />
         </div>
@@ -209,11 +216,11 @@ useEffect(() => {
           <p className="text-sm lg:text-lg md:text-lg font-bold">{handleApiResponseError(error)}</p>
         </div>
       ) : isDataLoaded && newData.length > 0 ? (
-        <Suspense fallback={<ContentSpinner />}>
-          <PDFTranscriptViewer transcriptData={newData} />
-        </Suspense>
+        <div className="bg-gray-100 p-4">
+          <TranscriptHTMLView transcriptData={newData} />
+        </div>
       ) : (
-        <div className="text-center text-gray-600">
+        <div className="text-center text-gray-600 bg-white rounded-md shadow-md py-8">
           <h2>No data to show</h2>
         </div>
       )}  

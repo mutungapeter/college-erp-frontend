@@ -53,9 +53,9 @@ const Menu = ({
         <div className="flex-1 overflow-y-auto pr-1">
           {menuItems.map((category) => (
             <div className="flex flex-col mb-5" key={category.title}>
-              {/* <h3 className="text-[10px] font-medium text-blue-500 uppercase mb-2">
+              <h3 className="text-sm font-medium text-primary uppercase mb-2">
                 {category.title}
-                </h3> */}
+                </h3>
               <div className="space-y-1 flex flex-col">
                 {category.items.map((item) => (
                   <SidebarItem

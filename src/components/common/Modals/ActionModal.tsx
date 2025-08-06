@@ -71,13 +71,13 @@ const ActionModal = ({
                 </div>
               </div>
 
-              <div className="bg-gray-50 px-6 py-4 rounded-lg mb-5">
-                <p className="text-sm text-gray-600">
+              <div className="bg-gray-50 px-6 py-4 space-y-4 rounded-lg mb-5">
+                <p className="text-sm text-gray-900">
                   {confirmationMessage}
-                  <span className="font-medium text-gray-900 block mt-1">
+                </p>
+                  <span className="font-medium text-gray-600 block mt-1">
                     {deleteMessage}
                   </span>
-                </p>
               </div>
 
               <div className="flex justify-end space-x-3">

@@ -62,8 +62,8 @@ const DataTable = <T,>({
     return rowBgColor || 'bg-white';
   };
   return (
-    <div className="relative overflow-x-auto md:overflow-x-visible bg-white rounded-md border mt-5">
-      <table className="w-full table-auto">
+    <div className="relative overflow-x-auto md:overflow-x-visible bg-white p-3 rounded-md border mt-5">
+      <table className="w-full table-auto ">
         <thead>
           <tr className={`"
            text-gray-600 uppercase border-b text-xs font-semibold

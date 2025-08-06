@@ -14,10 +14,12 @@ export const apiSlice = createApi({
         'createApplicationDocument',
         'uploadMarks',
         'uploadStaffDocument',
-        'uploadBooks'
+        'uploadBooks',
+        'createTender',
+        'uploadTenderApplicationDocuments',
       ];
         if (endpointsUsingFormData.includes(endpoint)) {
-        headers.delete("Content-Type"); // Let browser set it automatically for FormData
+        headers.delete("Content-Type");
       } else {
         headers.set("Content-Type", "application/json");
       }

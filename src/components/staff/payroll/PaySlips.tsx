@@ -2,10 +2,10 @@
 
 import Pagination from "@/components/common/Pagination";
 
-import { useFilters } from "@/hooks/useFilters";
-
 import DataTable, { Column } from "@/components/common/Table/DataTable";
 import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
+import { useFilters } from "@/hooks/useFilters";
+
 
 import FilterSelect from "@/components/common/Select";
 import { LabelOptionsType } from "@/definitions/Labels/labelOptionsType";
