@@ -28,11 +28,13 @@ export interface PaySlipType {
 	total_overtime: string;
 	total_deductions: string;
 	payment_status: string;
+	payment_status_label:string;
     nssf:string;
     nhif: string;
     paye: string;
 	net_pay: string;
 	generated_at: string;
+	outstanding_balance: string;
 }
 
 

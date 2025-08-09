@@ -6,22 +6,27 @@ import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
 import { useFilters } from "@/hooks/useFilters";
 import { PAGE_SIZE } from "@/lib/constants";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
-import { FiChevronRight } from "react-icons/fi";
+import { useMemo, useState } from "react";
+import { FiChevronRight, FiTrash2 } from "react-icons/fi";
 
 import NoData from "@/components/common/NoData";
 
 
 import { LabelOptionsType } from "@/definitions/Labels/labelOptionsType";
-import { useGetInventoryItemsQuery } from "@/store/services/finance/inventoryService";
+import { useDeleteInventoryItemMutation, useGetInventoryItemsQuery } from "@/store/services/finance/inventoryService";
 import Link from "next/link";
 import { SlBasket } from "react-icons/sl";
 import FilterSelect from "../common/Select";
 import { CategoryTypeOptions, InventoryItem } from "./types";
+import NewInventoryItem from "./NewItem";
+import UpdateInventoryItem from "./EditItem";
+import { toast } from "react-toastify";
+import ActionModal from "../common/Modals/ActionModal";
 const InventoryItems = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedItem, setSelectedItem] = useState<number | null>(null);
   const { filters, currentPage, handleFilterChange, handlePageChange } =
     useFilters({
       initialFilters: {
@@ -44,15 +49,42 @@ const InventoryItems = () => {
   );
   console.log("queryParams", queryParams);
 
-  const { data, error, isLoading } = useGetInventoryItemsQuery(
+  const { data, error, isLoading, refetch } = useGetInventoryItemsQuery(
     queryParams,
     {
       refetchOnMountOrArgChange: true,
     }
   );
+    const [deleteInventoryItem, { isLoading: isDeleting }] =
+      useDeleteInventoryItemMutation();
   console.log("data", data);
+const openActionModal = (id: number) => {
+    setSelectedItem(id);
+    setIsModalOpen(true);
+  };
 
- 
+  const closeActionModal = () => {
+    setIsModalOpen(false);
+    setSelectedItem(null);
+  };
+
+   const handleDeleteInventoryItem = async () => {
+     try {
+       await deleteInventoryItem(selectedItem).unwrap();
+       toast.success("Inventory Item successfully deleted!");
+       closeActionModal();
+       refetch();
+     } catch (error: unknown) {
+       console.log("error", error);
+       if (error && typeof error === "object" && "data" in error && error.data) {
+         const errorData = (error as { data: { error: string } }).data;
+         console.log("errorData", errorData);
+         toast.error(errorData.error || "Error Deleting Inventory Item.");
+       } else {
+         toast.error("Unexpected Error occurred. Please try again.");
+       }
+     }
+   };
   
     const handleCategoryTypeChange = (selectedOption: LabelOptionsType | null) => {
         handleFilterChange({
@@ -69,13 +101,7 @@ const InventoryItems = () => {
         </span>
       ),
     },
-    {
-      header: "Category",
-      accessor: "category",
-      cell: (item: InventoryItem) => (
-        <span>{item.category.name}</span>
-      ),
-    },
+   
     {
       header: "Quantity",
       accessor: "quantity_in_stock",
@@ -108,30 +134,34 @@ const InventoryItems = () => {
       header: "Category",
       accessor: "category",
       cell: (item: InventoryItem) => (
-        <span>{item.category.name}</span>
+        <span className="text-xs whitespace-normal break-words">{item.category.name}({item.category.category_type_label})</span>
       ),
     },
-    {
-      header: "Category Type",
-      accessor: "category",
-      cell: (item: InventoryItem) => (
-        <span>{item.category.category_type_label}</span>
-      ),
-    },
+    
 
    
 
-    // {
-    //   header: "Actions",
-    //   accessor: "id",
-    //   cell: (item: InventoryItem) => (
-    //     <div className="flex items-center space-x-2">
-    //       {item.status === "pending" && (
-    //         <ReceiveOrder data={item} refetchData={refetch} />
-    //       )}
-    //     </div>
-    //   ),
-    // },
+    {
+      header: "Actions",
+      accessor: "id",
+      cell: (item: InventoryItem) => (
+        <div className="flex items-center space-x-2">
+          <div>
+          <UpdateInventoryItem data={item} refetchData={refetch} />
+          </div>
+           <button
+                          title="Delete Inventory Item"
+                          className="group relative p-2 bg-red-100 text-red-500 rounded-md hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md"
+                          onClick={() => openActionModal(item.id)}
+                        >
+                          <FiTrash2 className="w-4 h-4" />
+                          <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                            Delete Inventory Item
+                          </span>
+                        </button>
+        </div>
+      ),
+    },
   ];
   return (
     <div className=" w-full ">
@@ -140,10 +170,15 @@ const InventoryItems = () => {
         <div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Inventory/Store</h1>
         </div>
-        <div className="">
+        <div className="flex items-center space-x-2">
+          <div>
+            <NewInventoryItem  refetchData={refetch} />
+          </div>
+
           <Link
             href="/dashboard/procurement/orders/new-order"
-            className="bg-green-600 text-white flex items-center space-x-2 px-4 py-2 rounded-md hover:bg-green-700 focus:outline-none focus:ring focus:ring-green-300"
+            className="bg-blue-600 text-white flex items-center space-x-2 px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300"
+            // className="bg-green-600 text-white flex items-center space-x-2 px-4 py-2 rounded-md hover:bg-green-700 focus:outline-none focus:ring focus:ring-green-300"
           >
             <SlBasket className="text-sm text-white" />
             <span>Make New Order</span>
@@ -231,16 +266,16 @@ const InventoryItems = () => {
           />
         )}
       </div>
-      {/* <ActionModal
+        <ActionModal
         isOpen={isModalOpen}
         onClose={closeActionModal}
-        onDelete={handleReopenTender}
-        isDeleting={isUpdating}
-        confirmationMessage="Are you sure you want to Reopen this Tender?"
-        deleteMessage="The Tender  will be revoked from the current vendor and reopened for new applications."
-        title="Receive Goods"
-        actionText="Receive"
-      /> */}
+        onDelete={handleDeleteInventoryItem}
+        isDeleting={isDeleting}
+        confirmationMessage="Are you sure you want to delete this inventory item?"
+        deleteMessage="The inventory item will be permanently deleted."
+        title="Delete Inventory Item"
+        actionText="Delete"
+      />
     </div>
   );
 };

@@ -34,7 +34,7 @@ const WorkDetailsTab = ({ data, refetchData }: Props) => {
             { label: "Position", value: data.position.name },
             { label: "Department", value: data.department.name },
             { label: "Office", value: data.department.office },
-            { label: "System Role", value: data.user.role.name },
+            { label: "System Role", value: data.user?.role?.name },
 
           ]}
         />

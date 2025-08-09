@@ -26,7 +26,7 @@ export interface InventoryItem {
 	updated_on: string;
 	name: string;
 	description: string;
-  total_valuation?:string;
+  total_valuation?:string ;
   unit_valuation?:string;
 	quantity_in_stock: number;
 }

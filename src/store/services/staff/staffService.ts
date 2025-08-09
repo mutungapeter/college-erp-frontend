@@ -293,6 +293,14 @@ export const staffApi = apiSlice.injectEndpoints({
         
       }),
     }),
+    payWages: builder.mutation({
+      query: (data) => ({
+        url: `payroll/pay-wages/`,
+        method: "POST",
+        body: data,
+        
+      }),
+    }),
   }),
 });
 
@@ -320,4 +328,5 @@ useGetOvertimePaymentsQuery,
 useCreateOvertimePaymentMutation,
 useUpdateOvertimePaymentMutation,
 useApproveOvertimePaymentMutation,
+usePayWagesMutation,
 } = staffApi;

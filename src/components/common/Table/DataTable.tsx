@@ -66,7 +66,7 @@ const DataTable = <T,>({
       <table className="w-full table-auto ">
         <thead>
           <tr className={`"
-           text-gray-600 uppercase border-b text-xs font-semibold
+           text-gray-600 uppercase border-b text-[10px] font-semibold
             border-gray-200 leading-normal"
 
             ${columnBgColor ? columnBgColor : "bg-white"}
@@ -75,7 +75,7 @@ const DataTable = <T,>({
               <th
                 key={index}
                 scope="col"
-                className="px-4 py-3 text-xs text-left"
+                className="px-4 py-2 text-xs text-left"
               >
                 {column.header}
               </th>

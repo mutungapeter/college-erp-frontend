@@ -30,6 +30,16 @@ export const overtimeRecordSchema = z.object({
 
 export const updateOvertimeRecordsSchema = overtimeRecordSchema.partial();
 
+
+
+export const payWagesSchema = z.object({
+  payment_method: z.string().min(1, "Payment method is required"),
+  amount: z.coerce.number().gt(0, "Amount must be greater than 0"),
+   description: z.string().optional(),
+});
+
+
+export type PayWagesFormData = z.infer<typeof payWagesSchema>;
 export type OvertimeRecordsFormData = z.infer<typeof overtimeRecordSchema>;
 export type UpdateOvertimeRecordsFormData = z.infer<typeof updateOvertimeRecordsSchema>;
 export type PaySlipSchemaType = z.infer<typeof paySlipSchema>;

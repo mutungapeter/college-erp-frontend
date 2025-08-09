@@ -21,6 +21,7 @@ import { GoSearch } from "react-icons/go";
 import { PaySlipDownloadButton } from "./PaySlipPdf";
 import GeneratePaySlips from "./ProcessPaySlips";
 import PayslipDetailsModal from "./PaySlipDetails";
+import PayWages from "./PayWages";
 
 
 const AllPaySlips = () => {
@@ -133,15 +134,15 @@ const AllPaySlips = () => {
         </span>
       ),
     },
-    {
-      header: "Total Deductions",
-      accessor: "total_deductions",
-      cell: (item: PaySlipType) => (
-        <span>
-          <span className="text-xs font-bold">{formatCurrency(item.total_deductions)}</span>
-        </span>
-      ),
-    },
+    // {
+    //   header: "Total Deductions",
+    //   accessor: "total_deductions",
+    //   cell: (item: PaySlipType) => (
+    //     <span>
+    //       <span className="text-xs font-bold">{formatCurrency(item.total_deductions)}</span>
+    //     </span>
+    //   ),
+    // },
     {
       header: "Net Pay",
       accessor: "net_pay",
@@ -152,27 +153,39 @@ const AllPaySlips = () => {
       ),
     },
     {
+      header: "Balance",
+      accessor: "outstanding_balance",
+      cell: (item: PaySlipType) => (
+        <span>
+          <span className="text-xs font-bold">{formatCurrency(item.outstanding_balance)}</span>
+        </span>
+      ),
+    },
+    {
       header: "Payment Status",
       accessor: "payment_status",
       cell: (item: PaySlipType) => (
-        <span>
-          <span className={`
-          "text-sm font-semibold justify-center flex px-2 py-1 rounded-md text-center"
-            ${item.payment_status === "paid" 
-            ? "text-green-500 bg-green-100"
-            : item.payment_status === "pending"
-            ? "text-yellow-500 bg-yellow-100"
-            : item.payment_status === "failed"
-            ? "text-red-500 bg-red-100"
-            : item.payment_status === "processing"
-            ? "text-orange-500 bg-orange-100"
-            : item.payment_status === "reversed"
-            ? "bg-indigo-500 text-white"
-            : "text-white bg-gray-500"}
-            `}>
-            {item.payment_status}
-            </span>
-        </span>
+        // <div>
+         <span
+  className={`
+    text-[12px] justify-center flex px-2 whitespace-normal break-words py-1 rounded-md text-center
+    ${item.payment_status === "paid"
+      ? "text-green-500 bg-green-100"
+      : item.payment_status === "pending"
+      ? "text-yellow-500 bg-yellow-100"
+      : item.payment_status === "failed"
+      ? "text-red-500 bg-red-100"
+      : item.payment_status === "processing"
+      ? "text-orange-500 bg-orange-100"
+      : item.payment_status === "reversed"
+      ? "bg-indigo-500 text-white"
+      : "text-white bg-gray-500"}
+  `}
+>
+  {item.payment_status_label}
+</span>
+
+        // </div>
       ),
     },
    
@@ -182,8 +195,9 @@ const AllPaySlips = () => {
       cell: (item: PaySlipType) => (
         <div className="flex items-center justify-center space-x-2">
       <PayslipDetailsModal data={item} />
-
- 
+        {(item.payment_status === "pending" || item.payment_status === "partially_paid") && (
+          <PayWages data={item} refetchData={refetch} />
+        )}
       <PaySlipDownloadButton 
         payslip={item} 
         variant="button"

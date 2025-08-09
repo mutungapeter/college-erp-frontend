@@ -1,4 +1,3 @@
-
 import { apiSlice } from "../../api/apiSlice";
 
 interface GetInventoryInterface {
@@ -7,7 +6,6 @@ interface GetInventoryInterface {
   page?: number;
   page_size?: number;
 }
-
 
 interface GetVendors {
   vendor_no?: string;
@@ -26,7 +24,7 @@ export const inventoryApis = apiSlice.injectEndpoints({
         if (vendor_no) queryParams.vendor_no = vendor_no;
         if (page) queryParams.page = page;
         if (page_size) queryParams.page_size = page_size;
-        
+
         return {
           url: `inventory/categories/`,
           method: "GET",
@@ -34,41 +32,41 @@ export const inventoryApis = apiSlice.injectEndpoints({
         };
       },
     }),
-     createCategory: builder.mutation({
+    createCategory: builder.mutation({
       query: (data) => ({
         url: `inventory/categories/create/`,
         method: "POST",
         body: data,
       }),
     }),
-     createUnit: builder.mutation({
+    createUnit: builder.mutation({
       query: (data) => ({
         url: `inventory/units-of-measure/create/`,
         method: "POST",
         body: data,
       }),
     }),
-     updateUnit: builder.mutation({
-      query: ({id, data}) => ({
+    updateUnit: builder.mutation({
+      query: ({ id, data }) => ({
         url: `inventory/units-of-measure/${id}/`,
         method: "PATCH",
         body: data,
       }),
     }),
-     updateInventoryCategory: builder.mutation({
-      query: ({id, data}) => ({
+    updateInventoryCategory: builder.mutation({
+      query: ({ id, data }) => ({
         url: `inventory/categories/${id}/`,
         method: "PATCH",
         body: data,
       }),
     }),
-     deleteUnit: builder.mutation({
+    deleteUnit: builder.mutation({
       query: (id) => ({
         url: `inventory/units-of-measure/${id}/`,
         method: "DELETE",
       }),
     }),
-     deleteCategoryUnit: builder.mutation({
+    deleteCategoryUnit: builder.mutation({
       query: (id) => ({
         url: `inventory/categories/${id}/`,
         method: "DELETE",
@@ -83,7 +81,7 @@ export const inventoryApis = apiSlice.injectEndpoints({
         if (vendor_no) queryParams.vendor_no = vendor_no;
         if (page) queryParams.page = page;
         if (page_size) queryParams.page_size = page_size;
-        
+
         return {
           url: `inventory/units-of-measure/`,
           method: "GET",
@@ -92,7 +90,12 @@ export const inventoryApis = apiSlice.injectEndpoints({
       },
     }),
     getInventoryItems: builder.query({
-      query: ({ category,category_type, page, page_size }: GetInventoryInterface = {}) => {
+      query: ({
+        category,
+        category_type,
+        page,
+        page_size,
+      }: GetInventoryInterface = {}) => {
         const queryParams: Record<
           string,
           string | number | boolean | undefined
@@ -101,7 +104,7 @@ export const inventoryApis = apiSlice.injectEndpoints({
         if (category_type) queryParams.category_type = category_type;
         if (page) queryParams.page = page;
         if (page_size) queryParams.page_size = page_size;
-        
+
         return {
           url: `inventory/items/`,
           method: "GET",
@@ -109,19 +112,41 @@ export const inventoryApis = apiSlice.injectEndpoints({
         };
       },
     }),
-  
- 
+
+    createInventoryItem: builder.mutation({
+      query: (data) => ({
+        url: `inventory/items/create/`,
+        method: "POST",
+        body: data,
+      }),
+    }),
+    updateInventoryItem: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `inventory/items/${id}/`,
+        method: "PATCH",
+        body: data,
+      }),
+    }),
+    deleteInventoryItem: builder.mutation({
+      query: (id) => ({
+        url: `inventory/items/${id}/`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
 export const {
-useGetCategoriesQuery,
-useGetUnitsQuery,
-useGetInventoryItemsQuery,
-useCreateCategoryMutation,
-useCreateUnitMutation,
-useUpdateUnitMutation,
-useDeleteUnitMutation,
-useDeleteCategoryUnitMutation,
-useUpdateInventoryCategoryMutation,
+  useGetCategoriesQuery,
+  useGetUnitsQuery,
+  useGetInventoryItemsQuery,
+  useCreateCategoryMutation,
+  useCreateUnitMutation,
+  useUpdateUnitMutation,
+  useDeleteUnitMutation,
+  useDeleteCategoryUnitMutation,
+  useUpdateInventoryCategoryMutation,
+  useCreateInventoryItemMutation,
+  useUpdateInventoryItemMutation,
+  useDeleteInventoryItemMutation,
 } = inventoryApis;
