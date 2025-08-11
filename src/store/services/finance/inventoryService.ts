@@ -6,6 +6,12 @@ interface GetInventoryInterface {
   page?: number;
   page_size?: number;
 }
+interface GetInventoryIssueInterface {
+  search?: string;
+  department?: string;
+  page?: number;
+  page_size?: number;
+}
 
 interface GetVendors {
   vendor_no?: string;
@@ -42,6 +48,13 @@ export const inventoryApis = apiSlice.injectEndpoints({
     createUnit: builder.mutation({
       query: (data) => ({
         url: `inventory/units-of-measure/create/`,
+        method: "POST",
+        body: data,
+      }),
+    }),
+    issueInventory: builder.mutation({
+      query: (data) => ({
+        url: `inventory/items/issue/`,
         method: "POST",
         body: data,
       }),
@@ -112,6 +125,29 @@ export const inventoryApis = apiSlice.injectEndpoints({
         };
       },
     }),
+    getInventoryIssueRecords: builder.query({
+      query: ({
+        search,
+        department,
+        page,
+        page_size,
+      }: GetInventoryIssueInterface = {}) => {
+        const queryParams: Record<
+          string,
+          string | number | boolean | undefined
+        > = {};
+        if (search) queryParams.search = search;
+        if (department) queryParams.department = department;
+        if (page) queryParams.page = page;
+        if (page_size) queryParams.page_size = page_size;
+
+        return {
+          url: `inventory/items/issue/records/`,
+          method: "GET",
+          params: queryParams,
+        };
+      },
+    }),
 
     createInventoryItem: builder.mutation({
       query: (data) => ({
@@ -149,4 +185,7 @@ export const {
   useCreateInventoryItemMutation,
   useUpdateInventoryItemMutation,
   useDeleteInventoryItemMutation,
+  useIssueInventoryMutation,
+  useGetInventoryIssueRecordsQuery,
 } = inventoryApis;
+

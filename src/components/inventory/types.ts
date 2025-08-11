@@ -1,3 +1,6 @@
+import { DepartmentType } from "@/definitions/curiculum";
+import { UserType } from "@/definitions/students";
+
 export interface CategoryType {
   id: number;
   name: string;
@@ -40,3 +43,16 @@ export const CategoryTypeOptions: { value: string; label: string }[] = [
   { value: "inventory", label: "Inventory" },
   { value: "other", label: "Other" },
 ];
+
+
+
+
+export interface IssueRecord {
+	id: number;
+	inventory_item: InventoryItem;
+	quantity: number;
+	issued_to: DepartmentType;
+	issued_by: UserType;
+	remarks: string;
+	issued_on: string;
+}

@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   IoEyeOffOutline,
@@ -16,12 +16,14 @@ import {
 import { toast } from "react-toastify";
 import { z } from "zod";
 import SubmitSpinner from "../common/spinners/submitSpinner";
+import { useAppSelector } from "@/store/hooks";
+import { RootState } from "@/store/store";
 const Login = () => {
   const [showPassword, setShowPassword] = useState<boolean>(() => false);
   const [isRedirecting, setIsRedirecting] = useState<boolean>(false);
   const router = useRouter();
   const [login, { isLoading }] = useLoginMutation();
-
+  const { user } = useAppSelector((state: RootState) => state.auth);
   const {
     register,
     handleSubmit,
@@ -29,6 +31,11 @@ const Login = () => {
   } = useForm({
     resolver: zodResolver(loginSchema),
   });
+  useEffect(() => {
+    if (user && isRedirecting) {
+      router.push("/dashboard");
+    }
+  }, [user, isRedirecting, router]);
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     try {
       const response = await login(data).unwrap();
@@ -36,7 +43,7 @@ const Login = () => {
       const successMessage = response?.message || "Login successful";
       toast.success(successMessage);
       setIsRedirecting(true);
-      router.push("/dashboard/admin");
+      // router.push("/dashboard");
     } catch (error: unknown) {
       setIsRedirecting(false);
       console.log("error", error);
@@ -317,12 +324,12 @@ const Login = () => {
                       Remember me
                     </span>
                   </label>
-                  <Link
+                  {/* <Link
                     href="/forgot-password"
                     className="text-primary hover:text-primary-700 font-semibold transition-colors"
                   >
                     Forgot password?
-                  </Link>
+                  </Link> */}
                 </div>
 
                 <button

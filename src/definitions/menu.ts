@@ -9,6 +9,7 @@ export interface MenuGroup {
 export type MenuItem = {
   label: string;
   icon?: JSX.Element;
+  code?:string;
   href?: string;
   children?: { label: string; href: string }[];
 };

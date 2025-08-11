@@ -1,6 +1,7 @@
 import { apiSlice } from "@/store/api/apiSlice";
 import { userLoading, userLoggedIn, userLoggedOut, userRegistration } from "./authSlice";
 import Cookies from "js-cookie";
+import { User } from "@/store/definitions";
 
 export const authApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -14,7 +15,7 @@ export const authApi = apiSlice.injectEndpoints({
         try {
           dispatch(userLoading());
           const result = await queryFulfilled;
-      
+          console.log("Login successful:", result);
           Cookies.set("accessToken", result.data.access);
           Cookies.set("refreshToken", result.data.refresh);
             dispatch(
@@ -91,12 +92,19 @@ export const authApi = apiSlice.injectEndpoints({
         }
       },
     }),
+    getCurrentUser: builder.query<User, void>({
+  query: () => ({
+    url: `users/me/`,
+    method: "GET",
+  }),
+}),
   }),
 });
 
 
 export const { useLoginMutation, 
   useCreateAccountMutation, 
-  useLogoutUserMutation
+  useLogoutUserMutation,
+  useGetCurrentUserQuery
 } = authApi;
 

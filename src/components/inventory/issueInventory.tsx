@@ -8,17 +8,18 @@ import SubmitSpinner from "@/components/common/spinners/submitSpinner";
 import { IoCloseOutline } from "react-icons/io5";
 import Select from "react-select";
 
+import { DepartmentType } from "@/definitions/curiculum";
 import {
-    InventoryItemFormData,
-    inventoryItemSchema,
+  IssueInventoryItemFormData,
+  issueInventoryItemSchema,
 } from "@/schemas/inventory";
+import { useGetDepartmentsQuery } from "@/store/services/curriculum/departmentsService";
 import {
-    useCreateInventoryItemMutation,
-    useGetCategoriesQuery,
-    useGetUnitsQuery
+  useGetInventoryItemsQuery,
+  useIssueInventoryMutation,
 } from "@/store/services/finance/inventoryService";
 import { FiPlus } from "react-icons/fi";
-import { CategoryType, InventoryUnitType } from "./types";
+import { InventoryItem } from "./types";
 type SchoolOption = {
   value: string;
   label: string;
@@ -26,63 +27,48 @@ type SchoolOption = {
 interface Props {
   refetchData: () => void;
 }
-const NewInventoryItem = ({ refetchData }: Props) => {
+const IssueInventoryItem = ({ refetchData }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [isError, setIsError] = useState(false);
 
-  const [createInventoryItem, { isLoading: isCreating }] =
-    useCreateInventoryItemMutation();
+  const [issueInventory, { isLoading: isCreating }] =
+    useIssueInventoryMutation();
 
   const {
     register,
     handleSubmit,
     reset,
     setValue,
-    watch,
     formState: { isSubmitting, errors },
-  } = useForm<InventoryItemFormData>({
-    resolver: zodResolver(inventoryItemSchema),
+  } = useForm<IssueInventoryItemFormData>({
+    resolver: zodResolver(issueInventoryItemSchema),
   });
-  const quantityInStock = watch("quantity_in_stock");
-  const unitValuation = watch("unit_valuation");
-   useEffect(() => {
-    if (quantityInStock && unitValuation) {
-      const quantity = parseFloat(quantityInStock.toString());
-      const unitPrice = parseFloat(unitValuation.toString());
-      
-      if (!isNaN(quantity) && !isNaN(unitPrice)) {
-        const totalValuation = quantity * unitPrice;
-        setValue("total_valuation", totalValuation)
-      }
-    } else {
-      setValue("total_valuation", 0)
-    }
-  }, [quantityInStock, unitValuation, setValue]);
+
   useEffect(() => {
     console.log("Form Errors:", errors);
   }, [errors]);
-  const { data: catData } = useGetCategoriesQuery(
+  const { data: inventoryData } = useGetInventoryItemsQuery(
     {},
     { refetchOnMountOrArgChange: true }
   );
-  const { data: unitsData } = useGetUnitsQuery(
+  const { data: departmentsData } = useGetDepartmentsQuery(
     {},
     { refetchOnMountOrArgChange: true }
   );
 
-  const handleCategoryChange = (selected: SchoolOption | null) => {
+  const handleInventoryItemChange = (selected: SchoolOption | null) => {
     if (selected) {
-      const categoryId = Number(selected.value);
-      setValue("category", categoryId);
+      const inventoryItemId = Number(selected.value);
+      setValue("inventory_item", inventoryItemId);
     }
   };
-  const handleUnitChange = (selected: SchoolOption | null) => {
+  const handleIssuedToChange = (selected: SchoolOption | null) => {
     if (selected) {
-      const unitId = Number(selected.value);
-      setValue("unit", unitId);
+      const issuedToId = Number(selected.value);
+      setValue("issued_to", issuedToId);
     }
   };
   const handleCloseModal = () => {
@@ -95,15 +81,15 @@ const NewInventoryItem = ({ refetchData }: Props) => {
     handleCloseModal();
   };
 
-  const onSubmit = async (formData: InventoryItemFormData) => {
+  const onSubmit = async (formData: IssueInventoryItemFormData) => {
     console.log("submitting form data");
 
     console.log("formData", formData);
     try {
-      const response = await createInventoryItem(formData).unwrap();
+      const response = await issueInventory(formData).unwrap();
       console.log("response", response);
       setIsError(false);
-      setSuccessMessage("Inventory Added Successfully");
+      setSuccessMessage("Inventory Issued Successfully");
       setShowSuccessModal(true);
       reset();
       refetchData();
@@ -126,12 +112,12 @@ const NewInventoryItem = ({ refetchData }: Props) => {
     <>
       <div
         onClick={handleOpenModal}
-        className="bg-green-600 inline-flex cursor-pointer w-max 
+        className="bg-yellow-600 inline-flex cursor-pointer w-max 
    items-center space-x-2 text-white px-4 py-2 rounded-md shadow-md hover:shadow-lg
-    hover:bg-green-800 transition duration-300"
+    hover:bg-yellow-800 transition duration-300"
       >
-        <FiPlus className="text-sm" />
-        <span className="font-medium text-xs">New Inventory</span>
+        <FiPlus className="text-xs" />
+        <span className="font-medium text-xs">Issue Inventory</span>
       </div>
 
       {isOpen && (
@@ -159,7 +145,7 @@ const NewInventoryItem = ({ refetchData }: Props) => {
               <>
                 <div className="sticky top-0 bg-white z-40 flex  px-4 justify-between items-center py-4 ">
                   <p className="text-sm md:text-lg lg:text-lg font-semibold ">
-                    Create New Category
+                    Issue Inventory
                   </p>
                   <IoCloseOutline
                     size={20}
@@ -172,33 +158,15 @@ const NewInventoryItem = ({ refetchData }: Props) => {
                   onSubmit={handleSubmit(onSubmit)}
                   className="space-y-4   p-4 md:p-4 lg:p-4 "
                 >
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block space-x-1  text-sm font-medium mb-2">
-                        Name<span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        id="name"
-                        type="text"
-                        {...register("name")}
-                        placeholder="Name"
-                        className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
-                      />
-                      {errors.name && (
-                        <p className="text-red-500 text-sm">
-                          {errors.name.message}
-                        </p>
-                      )}
-                    </div>
-                    <div>
-                      <label className="block space-x-1  text-sm font-medium mb-2">
-                        Category
+                        InventoryItem
                         <span className="text-red-500 mb-2">*</span>
                       </label>
                       <Select
-                        options={catData?.map((item: CategoryType) => ({
+                        options={inventoryData?.map((item: InventoryItem) => ({
                           value: item.id.toString(),
-                          label: `${item.name} (${item.category_type_label})`,
+                          label: `${item.name} (Remaining: ${item.quantity_in_stock} ${item.unit.name})`,
                         }))}
                         menuPortalTarget={document.body}
                         menuPlacement="auto"
@@ -222,106 +190,73 @@ const NewInventoryItem = ({ refetchData }: Props) => {
                             },
                           }),
                         }}
-                        onChange={handleCategoryChange}
+                        onChange={handleInventoryItemChange}
                       />
 
-                      {errors.category && (
+                      {errors.inventory_item && (
                         <p className="text-red-500 text-sm mt-1">
-                          {errors.category.message}
+                          {errors.inventory_item.message}
                         </p>
                       )}
                     </div>
-                     <div>
-                    <label className="block space-x-1  text-sm font-medium mb-2">
-                      Unit of Measure
-                      <span className="text-red-500 mb-2">*</span>
-                    </label>
-                    <Select
-                      options={unitsData?.map((unit: InventoryUnitType) => ({
-                        value: unit.id.toString(),
-                        label: `${unit.name}`,
-                      }))}
-                      menuPortalTarget={document.body}
-                      menuPlacement="auto"
-                      styles={{
-                        menuPortal: (base) => ({
-                          ...base,
-                          zIndex: 9999,
-                        }),
-                        control: (base) => ({
-                          ...base,
-                          minHeight: "24px",
-                          minWidth: "200px",
-                          borderColor: "#d1d5db",
-                          boxShadow: "none",
-                          "&:hover": {
-                            borderColor: "#9ca3af",
-                          },
-                          "&:focus-within": {
-                            borderColor: "#9ca3af",
-                            boxShadow: "none",
-                          },
-                        }),
-                      }}
-                      onChange={handleUnitChange}
-                    />
-
-                    {errors.unit && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.unit.message}
-                      </p>
-                    )}
-                  </div>
-                      <div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
                       <label className="block space-x-1  text-sm font-medium mb-2">
-                        Quantity<span className="text-red-500">*</span>
+                        Department/Office Issuing To
+                        <span className="text-red-500 mb-2">*</span>
+                      </label>
+                      <Select
+                        options={departmentsData?.map(
+                          (item: DepartmentType) => ({
+                            value: item.id.toString(),
+                            label: `${item.name} ${item.office}(${item.department_type})`,
+                          })
+                        )}
+                        menuPortalTarget={document.body}
+                        menuPlacement="auto"
+                        styles={{
+                          menuPortal: (base) => ({
+                            ...base,
+                            zIndex: 9999,
+                          }),
+                          control: (base) => ({
+                            ...base,
+                            minHeight: "24px",
+                            minWidth: "200px",
+                            borderColor: "#d1d5db",
+                            boxShadow: "none",
+                            "&:hover": {
+                              borderColor: "#9ca3af",
+                            },
+                            "&:focus-within": {
+                              borderColor: "#9ca3af",
+                              boxShadow: "none",
+                            },
+                          }),
+                        }}
+                        onChange={handleIssuedToChange}
+                      />
+
+                      {errors.issued_to && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.issued_to.message}
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <label className="block space-x-1  text-sm font-medium mb-2">
+                        Quantity Issuing<span className="text-red-500">*</span>
                       </label>
                       <input
-                        id="quantity_in_stock"
-                        type="text"
-                        {...register("quantity_in_stock")}
+                        id="quantity"
+                        type="number"
+                        {...register("quantity")}
                         placeholder="0"
                         className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                       />
-                      {errors.quantity_in_stock && (
+                      {errors.quantity && (
                         <p className="text-red-500 text-sm">
-                          {errors.quantity_in_stock.message}
-                        </p>
-                      )}
-                    </div>
-                    <div>
-                      <label className="block space-x-1  text-sm font-medium mb-2">
-                        Unit Valuation(Ksh)
-                      </label>
-                      <input
-                        id="unit_valuation"
-                        type="text"
-                        step="0.01"
-                        {...register("unit_valuation")}
-                        placeholder="Ksh 0.00"
-                        className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
-                      />
-                      {errors.unit_valuation && (
-                        <p className="text-red-500 text-sm">
-                          {errors.unit_valuation.message}
-                        </p>
-                      )}
-                    </div>
-                    <div>
-                      <label className="block space-x-1  text-sm font-medium mb-2">
-                        Total Valuation(Ksh)
-                      </label>
-                      <input
-                        id="total_valuation"
-                        type="text"
-                        step="0.01"
-                        {...register("total_valuation")}
-                        placeholder="Ksh 0.00"
-                        className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
-                      />
-                      {errors.total_valuation && (
-                        <p className="text-red-500 text-sm">
-                          {errors.total_valuation.message}
+                          {errors.quantity.message}
                         </p>
                       )}
                     </div>
@@ -331,15 +266,15 @@ const NewInventoryItem = ({ refetchData }: Props) => {
                       Description
                     </label>
                     <textarea
-                      id="name"
-                      {...register("description")}
+                      id="remarks"
+                      {...register("remarks")}
                       placeholder="Description optional"
                       rows={3}
                       cols={5}
                       className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                     />
                   </div>
-                 
+
                   <div className="sticky bottom-0 bg-white z-40 flex md:px-4  gap-4 md:justify-between items-center py-2 ">
                     <button
                       type="button"
@@ -359,7 +294,7 @@ const NewInventoryItem = ({ refetchData }: Props) => {
                           <span>Processing...</span>
                         </span>
                       ) : (
-                        <span>Submit</span>
+                        <span>Issue</span>
                       )}
                     </button>
                   </div>
@@ -380,4 +315,4 @@ const NewInventoryItem = ({ refetchData }: Props) => {
     </>
   );
 };
-export default NewInventoryItem;
+export default IssueInventoryItem;

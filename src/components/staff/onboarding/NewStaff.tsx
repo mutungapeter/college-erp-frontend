@@ -8,6 +8,7 @@ import { IoCloseOutline } from "react-icons/io5";
 import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
 import SubmitSpinner from "@/components/common/spinners/submitSpinner";
 import Select from "react-select";
+import { useGetUserRolesQuery } from "@/store/services/permissions/permissionsService";
 
 import {
   DepartmentType
@@ -15,9 +16,10 @@ import {
 import { Position } from "@/definitions/staff";
 import { GenderOptions } from "@/lib/constants";
 import { createStaffSchema, CreateStaffType } from "@/schemas/staff/main";
-import { useGetRolesQuery } from "@/store/services/curriculum/campusService";
+// import { useGetRolesQuery } from "@/store/services/curriculum/campusService";
 import { useGetDepartmentsQuery } from "@/store/services/curriculum/departmentsService";
 import { useCreateStaffMutation, useGetPositionsQuery } from "@/store/services/staff/staffService";
+import { RoleType } from "@/components/accounts/permissions/types";
 
 type SelectOption = {
   value: string | number;
@@ -41,7 +43,7 @@ const CreateStaff = ({ refetchData }: { refetchData: () => void }) => {
     {},
     { refetchOnMountOrArgChange: true }
   );
-  const { data: rolesData } = useGetRolesQuery(
+  const { data: rolesData } = useGetUserRolesQuery(
     {},
     { refetchOnMountOrArgChange: true }
   );
@@ -90,12 +92,12 @@ console.log("rolesData", rolesData);
       setValue("department", departId);
     }
   };
-  // const handleRoleChange = (selected: SelectOption | null) => {
-  //   if (selected) {
-  //     const roleId = Number(selected.value);
-  //     setValue("role", roleId);
-  //   }
-  // };
+  const handleRoleChange = (selected: SelectOption | null) => {
+    if (selected) {
+      const roleId = Number(selected.value);
+      setValue("role", roleId);
+    }
+  };
   
  
   const onSubmit = async (formData: CreateStaffType) => {
@@ -131,10 +133,11 @@ console.log("rolesData", rolesData);
         className="flex flex-col md:flex-row md:items-center gap-4 w-full md:w-auto"
       >
         <div
-          className="bg-blue-600 inline-flex cursor-pointer w-max 
-         items-center space-x-2 text-white px-4 py-2 rounded-xl hover:bg-blue-700 shadow-md transition duration-300"
+          className="bg-primary-600 inline-flex cursor-pointer w-max 
+         items-center space-x-2 text-white px-4 py-2 rounded-md hover:bg-primary-700 
+         shadow-md transition duration-300"
         >
-          <FiPlus className="text-lg" />
+          <FiPlus className="text-sm" />
           <span className="text-xs font-medium">Add Staff</span>
         </div>
       </div>
@@ -443,7 +446,7 @@ console.log("rolesData", rolesData);
                       </div>
                     </div>
                   </div>
-                {/* <div className="relative">
+                <div className="relative">
                       <label className="block space-x-1 text-sm font-medium mb-2">
                         Role<span className="text-red-500">*</span>
                       </label>
@@ -487,7 +490,7 @@ console.log("rolesData", rolesData);
                           {errors.role.message}
                         </p>
                       )}
-                    </div> */}
+                    </div>
                   
                   <div className="sticky bottom-0 bg-white z-40 flex  space-x-3 gap-4 md:justify-end items-center py-3">
                     <button
@@ -500,7 +503,7 @@ console.log("rolesData", rolesData);
                     <button
                       type="submit"
                       disabled={isSubmitting || isCreating}
-                      className="bg-primary-600 text-white py-2 hover:bg-blue-700 text-sm px-3 md:px-4 rounded-md w-full min-w-[100px] md:w-auto"
+                      className="bg-primary-600 text-white py-2 hover:bg-primary-700 text-sm px-3 md:px-4 rounded-md w-full min-w-[100px] md:w-auto"
                     >
                       {isSubmitting || isCreating ? (
                         <span className="flex items-center">

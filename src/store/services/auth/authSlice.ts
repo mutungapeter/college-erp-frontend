@@ -50,7 +50,7 @@ const authSlice = createSlice({
         action: PayloadAction<{
           accessToken: string;
           refreshToken: string;
-          user: null;
+          user: User;
         }>
       ) => {
         state.accessToken = action.payload.accessToken;
@@ -78,28 +78,49 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload;  
       },
-      loadUser: (state) => {
-        // console.log("Loading user...");
-        state.loading = true;
-        const accessToken = Cookies.get("accessToken");
-        const refreshToken = Cookies.get("refreshToken");
+      // loadUser: (state) => {
+      //   // console.log("Loading user...");
+      //   state.loading = true;
+      //   const accessToken = Cookies.get("accessToken");
+      //   const refreshToken = Cookies.get("refreshToken");
   
-        if (accessToken && refreshToken) {
-          const decodedToken: DecodedToken = jwtDecode(accessToken);
-          // console.log("decodedTOken", decodedToken)
-          state.accessToken = accessToken;
-          state.refreshToken = refreshToken;
-          state.user = decodedToken.user;  
-          state.tokenExpiry = decodedToken.exp * 1000;
-          state.loading = false;
-        } else {
-          state.accessToken = "";
-          state.refreshToken = "";
-          state.user = null;
-          state.tokenExpiry = null;
-        }
-        state.loading = false;
-      },
+      //   if (accessToken && refreshToken) {
+      //     const decodedToken: DecodedToken = jwtDecode(accessToken);
+      //     // console.log("decodedTOken", decodedToken)
+      //     state.accessToken = accessToken;
+      //     state.refreshToken = refreshToken;
+      //     state.user = decodedToken.user;  
+      //     state.tokenExpiry = decodedToken.exp * 1000;
+      //     state.loading = false;
+      //   } else {
+      //     state.accessToken = "";
+      //     state.refreshToken = "";
+      //     state.user = null;
+      //     state.tokenExpiry = null;
+      //   }
+      //   state.loading = false;
+      // },
+      loadUser: (state) => {
+  const accessToken = Cookies.get("accessToken");
+  const refreshToken = Cookies.get("refreshToken");
+
+  if (accessToken && refreshToken) {
+    state.accessToken = accessToken;
+    state.refreshToken = refreshToken;
+
+    const decoded = jwtDecode<DecodedToken>(accessToken);
+    state.tokenExpiry = decoded.exp ? decoded.exp * 1000 : null;
+
+    state.loading = true; // we'll fetch user next
+  } else {
+    state.accessToken = "";
+    state.refreshToken = "";
+    state.user = null;
+    state.tokenExpiry = null;
+    state.loading = false;
+  }
+}
+
     }
 })
 

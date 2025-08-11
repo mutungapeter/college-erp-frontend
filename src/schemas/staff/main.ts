@@ -42,7 +42,7 @@ export const staffBaseSchema = z.object({
   date_of_birth: z.string().min(1, "Date of birth is required"),
   department: z.number().int().positive("Department is required"),
   position: z.number().int().positive("Position is required"),
-  // role: z.number().int().positive("Role is required"),
+  role: z.number().int().positive("Role is required"),
   address: z.string().min(1, "Address is required"),
   
 
