@@ -52,6 +52,7 @@ export default function RoleWithPermissionsDetails({ role_id }: Props) {
     data: role,
     isLoading,
     error,
+    refetch,
   } = useGetRolesPermissionsQuery(role_id, {
     skip: !role_id,
   });
@@ -101,11 +102,14 @@ export default function RoleWithPermissionsDetails({ role_id }: Props) {
       setIsError(false);
       setSuccessMessage("Permissions updated successfully");
       setShowSuccessModal(true);
+      refetch();
     } catch (err) {
       console.error(err);
       setIsError(true);
       setSuccessMessage("Failed to update permissions");
       setShowSuccessModal(true);
+    }finally{
+      refetch();
     }
   };
 
