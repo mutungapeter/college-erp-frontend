@@ -48,16 +48,18 @@ export default function EnrollmentsBarChart() {
   const options: ApexOptions = {
     chart: {
       type: "bar",
-      height: 350,
+      height: 300,
       fontFamily: "Outfit, sans-serif",
       toolbar: { show: false },
     },
     plotOptions: {
-      bar: {
-        horizontal: false,
-        columnWidth: "45%",
-        borderRadius: 4,
-      },
+       bar: {
+    columnWidth: "20%",
+    distributed: true, 
+    borderRadius: 4,
+    borderRadiusApplication: "end",
+  },
+   
     },
     dataLabels: {
       enabled: false,
@@ -123,7 +125,8 @@ export default function EnrollmentsBarChart() {
           options={options}
           series={[{ name: "Enrollments", data: seriesData }]}
           type="bar"
-          height={350}
+          height={300}
+          width={"100%"}
         />
       )}
     </div>

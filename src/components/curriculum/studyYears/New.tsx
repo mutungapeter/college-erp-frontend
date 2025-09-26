@@ -7,14 +7,11 @@ import { IoCloseOutline } from "react-icons/io5";
 import { z } from "zod";
 
 import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
 
-
-
+import IconButton from "@/components/common/IconButton";
+import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
 import { studyYearSchema } from "@/schemas/curriculum/studyYears";
 import { useCreateAcademicYearMutation } from "@/store/services/curriculum/academicYearsService";
-
-
 
 type FormValues = z.infer<typeof studyYearSchema>;
 
@@ -24,7 +21,8 @@ const AddNewStudyYear = ({ refetchData }: { refetchData: () => void }) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [isError, setIsError] = useState(false);
 
-  const [createAcademicYear, { isLoading: isCreating }] = useCreateAcademicYearMutation();
+  const [createAcademicYear, { isLoading: isCreating }] =
+    useCreateAcademicYearMutation();
 
   const {
     register,
@@ -36,8 +34,7 @@ const AddNewStudyYear = ({ refetchData }: { refetchData: () => void }) => {
     resolver: zodResolver(studyYearSchema),
     defaultValues: {
       name: "",
-      
-    }
+    },
   });
 
   useEffect(() => {
@@ -50,14 +47,13 @@ const AddNewStudyYear = ({ refetchData }: { refetchData: () => void }) => {
   };
 
   const handleOpenModal = () => setIsOpen(true);
-  
+
   const handleCloseSuccessModal = () => {
     setShowSuccessModal(false);
     setIsError(false);
     handleCloseModal();
   };
-  
- 
+
   const onSubmit = async (formData: FormValues) => {
     console.log("submitting form data", formData);
 
@@ -86,18 +82,13 @@ const AddNewStudyYear = ({ refetchData }: { refetchData: () => void }) => {
 
   return (
     <>
-      <div
+      <IconButton
         onClick={handleOpenModal}
-        className="flex flex-col md:flex-row md:items-center gap-4 w-full md:w-auto"
-      >
-        <div
-          className="bg-blue-600 inline-flex cursor-pointer w-max 
-         items-center space-x-2 text-white px-2 py-2 rounded-md hover:bg-blue-700 transition duration-300"
-        >
-          <FiPlus className="text-lg" />
-          <span className="text-xs font-medium">New Study Year</span>
-        </div>
-      </div>
+        title="Add New"
+        label="New Academic Year"
+        icon={<FiPlus className="w-4 h-4" />}
+        className="bg-primary-500 text-white px-4 py-2 hover:bg-primary-600 focus:ring-primary-500 focus:ring-offset-1"
+      />
 
       {isOpen && (
         <div
@@ -139,53 +130,31 @@ const AddNewStudyYear = ({ refetchData }: { refetchData: () => void }) => {
                   onSubmit={handleSubmit(onSubmit)}
                   className="space-y-4 mt-2 p-4 md:p-4 lg:p-4"
                 >
-                  
+                  <div>
                     <div>
-                      <div>
-                        <label className="block space-x-1 text-sm font-medium mb-2">
-                          Name<span className="text-red-500">*</span>
-                        </label>
-                        
- <input
-                          type="text"
-                          className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
-                          placeholder="e.g. First Year, Second Year"
-                          {...register("name")}
-                        />
-                        {errors.name && (
-                          <p className="text-red-500 text-sm mt-1">
-                            {errors.name.message}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                 
-                  
-                
+                      <label className="block space-x-1 text-sm font-medium mb-2">
+                        Name<span className="text-red-500">*</span>
+                      </label>
 
-                  <div className="sticky bottom-0 bg-white z-40 flex md:px-6 gap-4 md:justify-end items-center py-3">
-                    <button
-                      type="button"
-                      onClick={handleCloseModal}
-                      className="border border-gray-300 bg-white shadow-sm text-gray-700 py-2 text-sm px-4 rounded-md w-full min-w-[100px] md:w-auto hover:bg-gray-50"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting || isCreating}
-                      className="bg-primary-600 text-white py-2 hover:bg-blue-700 text-sm px-3 md:px-4 rounded-md w-full min-w-[100px] md:w-auto"
-                    >
-                      {isSubmitting || isCreating ? (
-                        <span className="flex items-center">
-                          <SubmitSpinner />
-                          <span>Adding...</span>
-                        </span>
-                      ) : (
-                        <span>Add</span>
+                      <input
+                        type="text"
+                        className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
+                        placeholder="e.g. First Year, Second Year"
+                        {...register("name")}
+                      />
+                      {errors.name && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.name.message}
+                        </p>
                       )}
-                    </button>
+                    </div>
                   </div>
+
+                  <ModalBottomButton
+                    onCancel={handleCloseModal}
+                    isSubmitting={isSubmitting}
+                    isProcessing={isCreating}
+                  />
                 </form>
               </>
             </div>

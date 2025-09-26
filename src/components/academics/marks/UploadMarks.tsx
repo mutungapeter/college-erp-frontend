@@ -13,12 +13,13 @@ import {
 } from "@/definitions/curiculum";
 import { uploadMarksSchema } from "@/schemas/exams/main";
 import { useUploadMarksMutation } from "@/store/services/academics/acadmicsService";
+import { useGetCohortsQuery } from "@/store/services/curriculum/cohortsService";
 import { useGetCoursesQuery } from "@/store/services/curriculum/coursesService";
 import { useGetSemestersQuery } from "@/store/services/curriculum/semestersService";
 import { useForm } from "react-hook-form";
+import { MdOutlineCloudUpload } from "react-icons/md";
 import Select from "react-select";
 import { z } from "zod";
-import { useGetCohortsQuery } from "@/store/services/curriculum/cohortsService";
 interface Props {
   refetchData: () => void;
 }
@@ -184,32 +185,33 @@ const UploadMarks = ({ refetchData }: Props) => {
     <>
       <div
         onClick={openModal}
-        className="flex items-center space-x-2 md:p-2 p-1 bg-blue-600
-         hover:bg-blue-700 text-white   rounded-md transition duration-300 shadow-sm cursor-pointer"
+        className="flex items-center space-x-2 px-4 py-2 bg-primary-50
+         hover:bg-primary-30 text-primary border-2 border-primary   rounded-md 
+         transition duration-300 shadow-sm cursor-pointer"
       >
-        <FiUpload className="text-sm" />
-        <span className="text-xs">Upload Bulky Marks</span>
+        <MdOutlineCloudUpload className="text-lg md:text-xl" />
+        <span className="text-sm md:text-lg">Upload  Marks</span>
       </div>
 
       {isModalOpen && (
         <div
           className="fixed inset-0
-         bg-black bg-opacity-50 z-40
+         bg-black bg-opacity-50 z-999
          flex items-center justify-center p-4"
         >
           <div
-            className="bg-white rounded-lg
+            className="bg-white rounded-2xl
            shadow-xl 
           w-full md:max-w-c-500 p-6 relative"
           >
             <button
               onClick={closeModal}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+              className="absolute top-4 right-4 py-5 text-gray-500 hover:text-gray-700"
             >
               <FiX size={20} />
             </button>
 
-            <h3 className="text-xl font-bold text-gray-800 mb-6">
+            <h3 className="text-xl font-bold py-5 text-gray-800 mb-6">
               Upload students marks
             </h3>
 
@@ -382,10 +384,10 @@ const UploadMarks = ({ refetchData }: Props) => {
                 className={`border-2 border-dashed rounded-lg p-8 flex flex-col items-center justify-center cursor-pointer mb-6
                   ${
                     file
-                      ? "border-green-400 bg-green-50"
+                      ? "border-primary-400 bg-primary-50"
                       : error
                       ? "border-red-400 bg-red-50"
-                      : "border-gray-300 hover:border-blue-400 hover:bg-blue-50"
+                      : "border-gray-300 hover:border-secondary-400 hover:bg-secondary-50"
                   }`}
                 onClick={triggerFileInput}
                 onDrop={onDrop}
@@ -402,7 +404,7 @@ const UploadMarks = ({ refetchData }: Props) => {
                 {file ? (
                   <>
                     <div className="flex flex-col items-center relative w-full">
-                      <FiCheckCircle className="text-green-500 text-4xl mb-3" />
+                      <FiCheckCircle className="text-primary text-4xl mb-3" />
                       <p className="text-gray-700 font-medium">{file.name}</p>
                       <p className="text-gray-500 text-sm mt-1">
                         {(file.size / 1024).toFixed(2)} KB
@@ -421,9 +423,9 @@ const UploadMarks = ({ refetchData }: Props) => {
                   </>
                 ) : (
                   <>
-                    <FiUpload
+                    <MdOutlineCloudUpload
                       className={`text-4xl mb-3 ${
-                        error ? "text-red-500" : "text-blue-500"
+                        error ? "text-red-500" : "text-primary"
                       }`}
                     />
                     <p className="text-gray-700 font-medium">

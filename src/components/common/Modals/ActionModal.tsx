@@ -56,7 +56,7 @@ const ActionModal = ({
                   ) : actionType === "update" ? (
                     <IoCheckmarkCircleOutline className="h-6 w-6 text-yellow-600" />
                   ) : (
-                    <IoCheckmarkCircleOutline className="h-6 w-6 text-green-600" />
+                    <IoCheckmarkCircleOutline className="h-6 w-6 text-primary" />
                   )}
                 </div>
                 <h3 className="text-lg font-medium text-gray-900">
@@ -80,11 +80,11 @@ const ActionModal = ({
                   </span>
               </div>
 
-              <div className="flex justify-end space-x-3">
+              <div className="flex justify-between  space-x-3">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
+                  className="px-4 py-2 bg-white min-w-[180px] border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
                 >
                   Cancel
                 </button>
@@ -92,11 +92,11 @@ const ActionModal = ({
                   onClick={onDelete}
                   disabled={isDeleting}
                   type="button"
-                  className={`px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white
+                  className={`px-4 py-2 border border-transparent min-w-[180px] rounded-md text-sm font-medium text-white
                     transition-colors disabled:opacity-75 ${
                       actionType === "delete" || actionType === "cancel" ? "bg-red-600 hover:bg-red-700" : 
                       actionType === "update" ? "bg-yellow-600 hover:bg-yellow-700" : 
-                      "bg-green-600 hover:bg-green-700"
+                      "bg-primary hover:bg-primary-700"
                     }`}
                 >
                   {isDeleting ? (

@@ -136,13 +136,16 @@ const EditProgramme = ({
 
   return (
     <>
-      <div
-        onClick={handleOpenModal}
-        className="p-2 rounded-xl  text-blue-600 hover:bg-blue-200 hover:text-blue-700 cursor-pointer transition duration-200 shadow-sm"
-        title="Edit Depart"
-      >
-        <FiEdit className="text-sm" />
-      </div>
+     <button
+                   onClick={handleOpenModal}
+                   title="Edit "
+                   className="group relative p-2 bg-amber-100 text-amber-500 rounded-md hover:bg-amber-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md"
+                 >
+                   <FiEdit className="w-4 h-4" />
+                   <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                     Edit 
+                   </span>
+                 </button>
 
       {isOpen && (
         <div

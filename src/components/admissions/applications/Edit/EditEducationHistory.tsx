@@ -16,11 +16,13 @@ import { EducationHistoryOptions } from "@/lib/constants";
 import { updateApplicationEducationHistorySchema } from "@/schemas/admissions/main";
 import Select from "react-select";
 import { useUpdateEducationHistoryMutation } from "@/store/services/admissions/admissionsService";
+import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
+import IconButton from "@/components/common/IconButton";
 
 const EditEducationHistory = ({
   data,
   refetchData,
-  application_id
+  application_id,
 }: {
   data: Application_education_history | null;
   application_id: number | null;
@@ -32,7 +34,8 @@ const EditEducationHistory = ({
 
   const [isError, setIsError] = useState(false);
 
-  const [updateEducationHistory, { isLoading: isUpdating }] = useUpdateEducationHistoryMutation();
+  const [updateEducationHistory, { isLoading: isUpdating }] =
+    useUpdateEducationHistoryMutation();
   console.log("data", data);
   type FormValues = z.infer<typeof updateApplicationEducationHistorySchema>;
   const {
@@ -52,13 +55,13 @@ const EditEducationHistory = ({
       graduated: data?.graduated || false,
     },
   });
-const graduatedValue = watch("graduated");
+  const graduatedValue = watch("graduated");
   const handleLevelChange = (selected: LabelOptionsType | null) => {
     if (selected && selected.value) {
       setValue("level", String(selected.value));
     }
   };
-  
+
   useEffect(() => {
     console.log("Form Errors:", errors);
   }, [errors]);
@@ -77,11 +80,11 @@ const graduatedValue = watch("graduated");
 
   const onSubmit = async (formData: FormValues) => {
     console.log("submitting form data for update", formData);
-   
+
     const submissionData = {
       student_application: application_id,
       ...formData,
-    }
+    };
     console.log("submissionData", submissionData);
 
     try {
@@ -116,13 +119,13 @@ const graduatedValue = watch("graduated");
 
   return (
     <>
-      <div
+      <IconButton
         onClick={handleOpenModal}
-        className="p-2 rounded-xl  text-blue-600 hover:bg-blue-200 hover:text-blue-700 cursor-pointer transition duration-200 shadow-sm"
         title="Edit"
-      >
-        <FiEdit className="text-sm" />
-      </div>
+        icon={<FiEdit className="text-sm" />}
+        className="group relative p-2 bg-amber-100 text-amber-500 hover:bg-amber-600 hover:text-white focus:ring-amber-500"
+        tooltip="Edit"
+      />
 
       {isOpen && (
         <div
@@ -143,11 +146,11 @@ const graduatedValue = watch("graduated");
           >
             <div
               className="relative transform justify-center animate-fadeIn max-h-[90vh]
-                overflow-y-auto rounded-md bg-white text-left shadow-xl transition-all   
-                w-full sm:max-w-c-550 md:max-w-550 px-3"
+                overflow-y-auto rounded-2xl bg-white text-left shadow-xl transition-all   
+                w-full sm:max-w-c-500 md:max-w-500 px-3"
             >
               <>
-                <div className="sticky top-0 bg-white z-40 flex sm:px-6 px-4 justify-between items-center py-2 ">
+                <div className="sticky top-0 bg-white z-40 flex sm:px-6 px-4 justify-between items-center py-6 ">
                   <p className="text-sm md:text-lg lg:text-lg font-bold ">
                     Edit Education History
                   </p>
@@ -247,10 +250,8 @@ const graduatedValue = watch("graduated");
                         options={EducationHistoryOptions}
                         onChange={handleLevelChange}
                         defaultValue={{
-                          value:
-                            data?.level || "",
-                          label:
-                            data?.level || "",
+                          value: data?.level || "",
+                          label: data?.level || "",
                         }}
                         menuPortalTarget={document.body}
                         menuPlacement="auto"
@@ -290,7 +291,7 @@ const graduatedValue = watch("graduated");
                       )}
                     </div>
                   </div>
-                   <div className="mt-2">
+                  <div className="mt-2">
                     <div className="flex items-center">
                       <input
                         type="checkbox"
@@ -298,7 +299,10 @@ const graduatedValue = watch("graduated");
                         className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
                         {...register("graduated")}
                       />
-                       <label htmlFor="graduated" className="ml-2 text-sm font-medium text-gray-700">
+                      <label
+                        htmlFor="graduated"
+                        className="ml-2 text-sm font-medium text-gray-700"
+                      >
                         Graduated {graduatedValue ? "(Yes)" : "(No)"}
                       </label>
                     </div>
@@ -309,29 +313,11 @@ const graduatedValue = watch("graduated");
                     )}
                   </div>
 
-                  <div className="sticky bottom-0 bg-white z-40 flex md:px-6 gap-4 md:justify-end items-center py-3">
-                    <button
-                      type="button"
-                      onClick={handleCloseModal}
-                      className="border border-gray-300 bg-white shadow-sm text-gray-700 py-2 text-sm px-4 rounded-md w-full min-w-[100px] md:w-auto hover:bg-gray-50"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting || isUpdating}
-                      className="bg-blue-500 text-white py-2 text-sm px-3 md:px-4 rounded-md w-full min-w-[100px] md:w-auto"
-                    >
-                      {isSubmitting || isUpdating ? (
-                        <span className="flex items-center">
-                          <SubmitSpinner />
-                          Updating
-                        </span>
-                      ) : (
-                        <span>Update</span>
-                      )}
-                    </button>
-                  </div>
+                  <ModalBottomButton
+                    onCancel={handleCloseModal}
+                    isSubmitting={isSubmitting}
+                    isProcessing={isUpdating}
+                  />
                 </form>
               </>
             </div>

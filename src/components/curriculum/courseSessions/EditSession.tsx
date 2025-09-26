@@ -1,22 +1,23 @@
 "use client";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { FiEdit } from "react-icons/fi";
 import { IoCloseOutline } from "react-icons/io5";
 import Select from "react-select";
 import { z } from "zod";
 
 import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
 
 import { CourseSessionType, CourseType, ProgrammeCohortType } from "@/definitions/curiculum";
 
-import { useGetCohortsQuery } from "@/store/services/curriculum/cohortsService";
-import { useGetCoursesQuery } from "@/store/services/curriculum/coursesService";
-import { updateSessionsSchema } from "@/schemas/curriculum/Sessions";
-import { useUpdateCourseSessionMutation } from "@/store/services/curriculum/courseSessionService";
+import IconButton from "@/components/common/IconButton";
 import { SessionStatusOptions } from "@/lib/constants";
+import { updateSessionsSchema } from "@/schemas/curriculum/Sessions";
+import { useGetCohortsQuery } from "@/store/services/curriculum/cohortsService";
+import { useUpdateCourseSessionMutation } from "@/store/services/curriculum/courseSessionService";
+import { useGetCoursesQuery } from "@/store/services/curriculum/coursesService";
+import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
 
 
 export type SelectOption = {
@@ -149,12 +150,13 @@ const EditCourseSession = ({ data, refetchData }: EditCourseSessionProps) => {
 
   return (
     <>
-      <button
+     <IconButton
         onClick={handleOpenModal}
-        className="text-blue-600 hover:text-blue-800 hover:rounded-xl p-2 rounded-full hover:bg-blue-100"
-      >
-        <FiEdit className="text-sm" />
-      </button>
+        title="Edit"
+        icon={<FiEdit className="w-4 h-4" />}
+        className="group relative p-2 bg-amber-100 text-amber-500 hover:bg-amber-600 hover:text-white focus:ring-amber-500"
+        tooltip="Edit"
+      />
 
       {isOpen && (
         <div
@@ -367,29 +369,11 @@ const EditCourseSession = ({ data, refetchData }: EditCourseSessionProps) => {
                     )}
                   </div>
 
-                  <div className="sticky bottom-0 bg-white z-40 flex md:px-6 gap-4 md:justify-between items-center py-3">
-                    <button
-                      type="button"
-                      onClick={handleCloseModal}
-                                       className="border border-red-500 bg-white shadow-sm text-red-500 py-2 text-sm px-4 rounded-lg w-full min-w-[100px] md:w-auto hover:bg-red-500 hover:text-white"
-  >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting || isUpdating}
-                      className="bg-primary-600 text-white py-2 hover:bg-blue-700 text-sm px-3 md:px-4 rounded-md w-full min-w-[100px] md:w-auto"
-                    >
-                      {isSubmitting || isUpdating ? (
-                        <span className="flex items-center">
-                          <SubmitSpinner />
-                          <span>Updating...</span>
-                        </span>
-                      ) : (
-                        <span>Update</span>
-                      )}
-                    </button>
-                  </div>
+                     <ModalBottomButton
+                                     onCancel={handleCloseModal}
+                                     isSubmitting={isSubmitting}
+                                     isProcessing={isUpdating}
+                                   />
                 </form>
               </>
             </div>

@@ -6,9 +6,11 @@ import { IoCloseOutline } from "react-icons/io5";
 import { z } from "zod";
 
 import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
 import Select, { SingleValue } from "react-select";
 
+import IconButton from "@/components/common/IconButton";
+import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
+import { IntakeType } from "@/definitions/admissions";
 import {
   ProgrammeCohortType,
   ProgrammeType,
@@ -16,12 +18,11 @@ import {
 } from "@/definitions/curiculum";
 import { CohortStatusOptions, YearsOptions } from "@/lib/constants";
 import { updateCohortSchema } from "@/schemas/curriculum/cohorts";
+import { useGetIntakesQuery } from "@/store/services/admissions/admissionsService";
 import { useUpdateCohortMutation } from "@/store/services/curriculum/cohortsService";
 import { useGetProgrammesQuery } from "@/store/services/curriculum/programmesService";
 import { useGetSemestersQuery } from "@/store/services/curriculum/semestersService";
 import { FiEdit } from "react-icons/fi";
-import { IntakeType } from "@/definitions/admissions";
-import { useGetIntakesQuery } from "@/store/services/admissions/admissionsService";
 type SchoolOption = {
   value: string;
   label: string;
@@ -34,7 +35,7 @@ const UpdateCohort = ({
   refetchData: () => void;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-    console.log("data", data);
+  console.log("data", data);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -157,13 +158,13 @@ const UpdateCohort = ({
 
   return (
     <>
-      <div
+      <IconButton
         onClick={handleOpenModal}
-        className="p-2 rounded-xl  text-blue-600 hover:bg-blue-200 hover:text-blue-700 cursor-pointer transition duration-200 shadow-sm"
-        title="Edit Depart"
-      >
-        <FiEdit className="text-sm" />
-      </div>
+        title="Edit"
+        icon={<FiEdit className="w-4 h-4" />}
+        className="group relative p-2 bg-amber-100 text-amber-500 hover:bg-amber-600 hover:text-white focus:ring-amber-500"
+        tooltip="Edit"
+      />
 
       {isOpen && (
         <div
@@ -447,29 +448,11 @@ const UpdateCohort = ({
                     )}
                   </div>
 
-                  <div className="sticky bottom-0 bg-white z-40 flex md:px-6  gap-4 md:justify-between items-center py-3 ">
-                    <button
-                      type="button"
-                      onClick={handleCloseModal}
-                      className="border border-red-500 bg-white shadow-sm text-red-500 py-2 text-sm px-4 rounded-lg w-full min-w-[100px] md:w-auto hover:bg-red-500 hover:text-white"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting || isUpdating}
-                      className="bg-primary-600 text-white py-2 hover:bg-blue-700 text-sm px-3 md:px-4 rounded-md w-full min-w-[100px] md:w-auto"
-                    >
-                      {isSubmitting || isUpdating ? (
-                        <span className="flex items-center">
-                          <SubmitSpinner />
-                          <span>Editing...</span>
-                        </span>
-                      ) : (
-                        <span>Edit</span>
-                      )}
-                    </button>
-                  </div>
+                  <ModalBottomButton
+                    onCancel={handleCloseModal}
+                    isSubmitting={isSubmitting}
+                    isProcessing={isUpdating}
+                  />
                 </form>
               </>
             </div>

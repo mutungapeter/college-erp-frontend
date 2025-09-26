@@ -18,6 +18,8 @@ import { StudentDetailsType } from "@/definitions/students";
 
 import { useUpdateStudentMutation } from "@/store/services/students/studentsService";
 import { updateGurdianDetailsSchema } from "@/schemas/students/main";
+import IconButton from "@/components/common/IconButton";
+import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
 
 
 const EditGuardianDetails = ({
@@ -108,16 +110,13 @@ const EditGuardianDetails = ({
 
   return (
     <>
-      <div
-        onClick={handleOpenModal}
-        className="px-3 py-1 rounded-lg inline-flex items-center space-x-3
-         bg-blue-100 text-blue-600 hover:bg-blue-200
-          hover:text-blue-700 cursor-pointer transition duration-200 shadow-sm"
-        title="Edit Event"
-      >
-        <FiEdit className="text-sm" />
-        <span>Edit</span>
-      </div>
+      <IconButton
+              onClick={handleOpenModal}
+              title="Edit"
+              icon={<FiEdit className="w-4 h-4" />}
+              className="group relative p-2 bg-amber-100 text-amber-500 hover:bg-amber-600 hover:text-white focus:ring-amber-500"
+              tooltip="Edit"
+            />
 
       {isOpen && (
         <div
@@ -231,29 +230,11 @@ const EditGuardianDetails = ({
                       )}
                     </div>
                     </div>
-                  <div className="sticky bottom-0 bg-white z-40 flex md:px-6 gap-4 md:justify-end items-center py-3">
-                    <button
-                      type="button"
-                      onClick={handleCloseModal}
-                      className="border border-gray-300 bg-white shadow-sm text-gray-700 py-2 text-sm px-4 rounded-md w-full min-w-[100px] md:w-auto hover:bg-gray-50"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting || isUpdating}
-                      className="bg-blue-500 text-white py-2 text-sm px-3 md:px-4 rounded-md w-full min-w-[100px] md:w-auto"
-                    >
-                      {isSubmitting || isUpdating ? (
-                        <span className="flex items-center">
-                         <SubmitSpinner />
-                          Updating
-                        </span>
-                      ) : (
-                        <span>Update</span>
-                      )}
-                    </button>
-                  </div>
+                   <ModalBottomButton
+                                     onCancel={handleCloseModal}
+                                     isSubmitting={isSubmitting}
+                                     isProcessing={isUpdating}
+                                   />
                 </form>
               </>
             </div>

@@ -48,7 +48,7 @@ export default function FeeCollectionChart() {
     chart: {
       fontFamily: "Outfit, sans-serif",
       type: "donut",
-      height: 350,
+      height: 300,
     },
     legend: {
       position: "bottom",
@@ -64,7 +64,7 @@ export default function FeeCollectionChart() {
             total: {
               show: true,
               label: "Total Collected",
-              fontSize: "16px",
+              fontSize: "14px",
               fontFamily: "Outfit, sans-serif",
               formatter: function () {
                 return formatCurrency(totalCollected);
@@ -136,7 +136,7 @@ export default function FeeCollectionChart() {
           options={options}
           series={seriesData}
           type="donut"
-          height={350}
+          height={300}
         />
       )}
     </div>

@@ -79,18 +79,15 @@ const AddCampus = ({ refetchData }: { refetchData: () => void }) => {
 
   return (
     <>
-      <div
+      <button
         onClick={handleOpenModal}
-        className="flex flex-col md:flex-row md:items-center gap-4 w-full md:w-auto"
+        title="Add Fee Item"
+        className="flex items-center space-x-2 px-4 py-2 bg-emerald-500 text-white rounded-md hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md"
       >
-        <div
-          className="bg-blue-600 inline-flex cursor-pointer w-max 
-         items-center space-x-2 text-white px-2 py-2 rounded-md hover:bg-blue-700 transition duration-300"
-        >
-          <FiPlus className="text-lg" />
-          <span className="text-xs font-medium">New Campus</span>
-        </div>
-      </div>
+        <FiPlus className="w-4 h-4" />
+        <span>New Campus</span>
+      </button>
+
 
       {isOpen && (
         <div
@@ -237,7 +234,7 @@ const AddCampus = ({ refetchData }: { refetchData: () => void }) => {
                     <button
                       type="submit"
                       disabled={isSubmitting || isCreating}
-                      className="bg-primary-600 text-white py-2 hover:bg-blue-700 text-sm px-3 md:px-4 rounded-md w-full min-w-[100px] md:w-auto"
+                      className="bg-primary-600 text-white py-2 hover:bg-primary-700 text-sm px-3 md:px-4 rounded-md w-full min-w-[100px] md:w-auto"
                     >
                       {isSubmitting || isCreating ? (
                         <span className="flex items-center">
@@ -245,7 +242,7 @@ const AddCampus = ({ refetchData }: { refetchData: () => void }) => {
                           <span>Adding...</span>
                         </span>
                       ) : (
-                        <span>Add</span>
+                        <span>Submit</span>
                       )}
                     </button>
                   </div>

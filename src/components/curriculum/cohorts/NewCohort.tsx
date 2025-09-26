@@ -10,14 +10,16 @@ import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
 import SubmitSpinner from "@/components/common/spinners/submitSpinner";
 import Select from "react-select";
 
+import IconButton from "@/components/common/IconButton";
+import { IntakeType } from "@/definitions/admissions";
 import { ProgrammeType, SemesterType } from "@/definitions/curiculum";
 import { CohortStatusOptions, YearsOptions } from "@/lib/constants";
 import { cohortSchema } from "@/schemas/curriculum/cohorts";
+import { useGetIntakesQuery } from "@/store/services/admissions/admissionsService";
 import { useCreateCohortMutation } from "@/store/services/curriculum/cohortsService";
 import { useGetProgrammesQuery } from "@/store/services/curriculum/programmesService";
 import { useGetSemestersQuery } from "@/store/services/curriculum/semestersService";
-import { useGetIntakesQuery } from "@/store/services/admissions/admissionsService";
-import { IntakeType } from "@/definitions/admissions";
+import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
 type SchoolOption = {
   value: string;
   label: string;
@@ -134,18 +136,13 @@ const AddCohort = ({ refetchData }: { refetchData: () => void }) => {
 
   return (
     <>
-      <div
+      <IconButton
         onClick={handleOpenModal}
-        className="flex flex-col md:flex-row md:items-center gap-4 w-full md:w-auto"
-      >
-        <div
-          className="bg-blue-600 inline-flex cursor-pointer w-max 
-         items-center space-x-2 text-white px-2 py-2 rounded-md hover:bg-blue-700 transition duration-300"
-        >
-          <FiPlus className="text-lg" />
-          <span className="text-xs font-medium">New Cohort/Class</span>
-        </div>
-      </div>
+        title="Add New"
+        label="New Cohort"
+        icon={<FiPlus className="w-4 h-4" />}
+        className="bg-primary-500 text-white px-4 py-2 hover:bg-primary-600 focus:ring-primary-500 focus:ring-offset-1"
+      />
 
       {isOpen && (
         <div
@@ -293,7 +290,9 @@ const AddCohort = ({ refetchData }: { refetchData: () => void }) => {
                         <Select
                           options={intakesData?.map((item: IntakeType) => ({
                             value: item.id,
-                           label: `${item.name} (${new Date(item.start_date).getFullYear()})`
+                            label: `${item.name} (${new Date(
+                              item.start_date
+                            ).getFullYear()})`,
                           }))}
                           menuPortalTarget={document.body}
                           menuPlacement="auto"
@@ -365,66 +364,48 @@ const AddCohort = ({ refetchData }: { refetchData: () => void }) => {
                       )}
                     </div>
                   </div>
-                    <div>
-                      <label className="block space-x-1  text-sm font-medium mb-2">
-                        Status
-                      </label>
-                      <Select
-                        options={CohortStatusOptions}
-                        onChange={handleStatusChange}
-                        menuPortalTarget={document.body}
-                        menuPlacement="auto"
-                        styles={{
-                          menuPortal: (base) => ({
-                            ...base,
-                            zIndex: 9999,
-                          }),
-                          control: (base) => ({
-                            ...base,
-                            minHeight: "24px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
+                  <div>
+                    <label className="block space-x-1  text-sm font-medium mb-2">
+                      Status
+                    </label>
+                    <Select
+                      options={CohortStatusOptions}
+                      onChange={handleStatusChange}
+                      menuPortalTarget={document.body}
+                      menuPlacement="auto"
+                      styles={{
+                        menuPortal: (base) => ({
+                          ...base,
+                          zIndex: 9999,
+                        }),
+                        control: (base) => ({
+                          ...base,
+                          minHeight: "24px",
+                          minWidth: "200px",
+                          borderColor: "#d1d5db",
+                          boxShadow: "none",
+                          "&:hover": {
+                            borderColor: "#9ca3af",
+                          },
+                          "&:focus-within": {
+                            borderColor: "#9ca3af",
                             boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
-                            },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
-                            },
-                          }),
-                        }}
-                      />
-                      {errors.status && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {errors.status.message}
-                        </p>
-                      )}
-                    </div>
-
-                  <div className="sticky bottom-0 bg-white z-40 flex md:px-6  gap-4 md:justify-between items-center py-3 ">
-                    <button
-                      type="button"
-                      onClick={handleCloseModal}
-                      className="border border-red-500 bg-white shadow-sm text-red-500 py-2 text-sm px-4 rounded-lg w-full min-w-[100px] md:w-auto hover:bg-red-500 hover:text-white"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting || isCreating}
-                      className="bg-primary-600 text-white py-2 hover:bg-blue-700 text-sm px-3 md:px-4 rounded-md w-full min-w-[100px] md:w-auto"
-                    >
-                      {isSubmitting || isCreating ? (
-                        <span className="flex items-center">
-                          <SubmitSpinner />
-                          <span>Adding...</span>
-                        </span>
-                      ) : (
-                        <span>Add</span>
-                      )}
-                    </button>
+                          },
+                        }),
+                      }}
+                    />
+                    {errors.status && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.status.message}
+                      </p>
+                    )}
                   </div>
+
+                      <ModalBottomButton
+                    onCancel={handleCloseModal}
+                    isSubmitting={isSubmitting}
+                    isProcessing={isCreating}
+                  />
                 </form>
               </>
             </div>

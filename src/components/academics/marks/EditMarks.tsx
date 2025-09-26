@@ -5,11 +5,12 @@ import { useForm } from "react-hook-form";
 import { FiEdit } from "react-icons/fi";
 
 import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
 
 import { IoCloseOutline } from "react-icons/io5";
 import { z } from "zod";
 
+import IconButton from "@/components/common/IconButton";
+import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
 import { MarksType } from "@/definitions/academics";
 import { updateExamDataSchema } from "@/schemas/exams/main";
 import { useUpdateMarksMutation } from "@/store/services/academics/acadmicsService";
@@ -94,15 +95,14 @@ const EditMarks = ({
 
   return (
     <>
-      <div
-        onClick={handleOpenModal}
-        className="p-2 rounded-lg inline-flex items-center space-x-3
-          text-blue-600 hover:bg-blue-200
-          hover:text-blue-700 cursor-pointer transition duration-200 shadow-sm"
-        title="Edit"
-      >
-        <FiEdit className="text-sm" />
-      </div>
+        <IconButton
+              onClick={handleOpenModal}
+              title="Edit"
+              icon={<FiEdit className="w-3 h-4" />}
+              className="group relative p-2 bg-amber-100 text-amber-500 hover:bg-amber-600 hover:text-white focus:ring-amber-500"
+              tooltip="Edit"
+            />
+      
 
       {isOpen && (
         <div
@@ -123,11 +123,13 @@ const EditMarks = ({
           >
             <div
               className="relative transform justify-center animate-fadeIn max-h-[90vh]
-                overflow-y-auto rounded-md bg-white text-left shadow-xl transition-all   
+                overflow-y-auto rounded-2xl
+                 bg-white text-left shadow-xl transition-all   
                 w-full sm:max-w-c-450 md:max-w-450 px-3"
             >
               <>
-                <div className="sticky top-0 bg-white z-40 flex sm:px-6 px-4 justify-between items-center py-2 ">
+                <div className="sticky top-0 bg-white z-40
+                 flex sm:px-6 px-4 justify-between items-center py-6 ">
                   <p className="text-sm md:text-lg lg:text-lg font-bold ">
                     Edit Marks
                   </p>
@@ -247,29 +249,11 @@ const EditMarks = ({
                       </p>
                     )}
                   </div>
-                  <div className="sticky bottom-0 bg-white z-40 flex md:px-6 gap-4 md:justify-end items-center py-3">
-                    <button
-                      type="button"
-                      onClick={handleCloseModal}
-                      className="border border-gray-300 bg-white shadow-sm text-gray-700 py-2 text-sm px-4 rounded-md w-full min-w-[100px] md:w-auto hover:bg-gray-50"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting || isUpdating}
-                      className="bg-blue-500 text-white py-2 text-sm px-3 md:px-4 rounded-md w-full min-w-[100px] md:w-auto"
-                    >
-                      {isSubmitting || isUpdating ? (
-                        <span className="flex items-center">
-                          <SubmitSpinner />
-                          Updating
-                        </span>
-                      ) : (
-                        <span>Update</span>
-                      )}
-                    </button>
-                  </div>
+                  <ModalBottomButton
+                                     onCancel={handleCloseModal}
+                                     isSubmitting={isSubmitting}
+                                     isProcessing={isUpdating}
+                                   />
                 </form>
               </>
             </div>

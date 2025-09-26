@@ -5,10 +5,11 @@ import { useForm } from "react-hook-form";
 import { FiPlus } from "react-icons/fi";
 
 import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
 
 
 
+import IconButton from "@/components/common/IconButton";
+import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
 import { CreateIntakeFormData, CreateIntakeSchema } from "@/schemas/curriculum/intakes";
 import { useCreateIntakeMutation } from "@/store/services/admissions/admissionsService";
 import { IoCloseOutline } from "react-icons/io5";
@@ -82,18 +83,13 @@ const activeValue = watch("closed");
 
   return (
     <>
-      <div
+       <IconButton
         onClick={handleOpenModal}
-        className="flex flex-col md:flex-row md:items-center gap-4 w-full md:w-auto"
-      >
-        <div
-          className="bg-blue-600 inline-flex cursor-pointer w-max 
-         items-center space-x-2 text-white px-2 py-2 rounded-md hover:bg-blue-700 transition duration-300"
-        >
-          <FiPlus className="text-lg" />
-          <span className="text-xs font-medium">New Intake</span>
-        </div>
-      </div>
+        title="Add New"
+        label="New Intake"
+        icon={<FiPlus className="w-4 h-4" />}
+        className="bg-primary-500 text-white px-4 py-2 hover:bg-primary-600 focus:ring-primary-500 focus:ring-offset-1"
+      />
 
       {isOpen && (
         <div
@@ -204,29 +200,11 @@ const activeValue = watch("closed");
                     </label>
                   </div>
 
-                  <div className="sticky bottom-0 bg-white z-40 flex md:px-3 gap-4 md:justify-between items-center py-2">
-                    <button
-                      type="button"
-                      onClick={handleCloseModal}
-                      className="border border-gray-300 bg-white shadow-sm text-gray-700 py-2 text-sm px-4 rounded-md w-full min-w-[100px] md:w-auto hover:bg-gray-50"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting || isCreating}
-                      className="bg-primary-600 text-white py-2 hover:bg-blue-700 text-sm px-3 md:px-4 rounded-md w-full min-w-[100px] md:w-auto"
-                    >
-                      {isSubmitting || isCreating ? (
-                        <span className="flex items-center">
-                          <SubmitSpinner />
-                          <span>Adding...</span>
-                        </span>
-                      ) : (
-                        <span>Add</span>
-                      )}
-                    </button>
-                  </div>
+                  <ModalBottomButton
+                                                        onCancel={handleCloseModal}
+                                                        isSubmitting={isSubmitting}
+                                                        isProcessing={isCreating}
+                                                      />
                 </form>
               </>
             </div>

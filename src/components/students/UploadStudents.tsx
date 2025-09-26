@@ -1,20 +1,21 @@
-import { useState, useRef, useEffect } from "react";
-import { FiUpload, FiCheckCircle, FiX } from "react-icons/fi";
+import { useEffect, useRef, useState } from "react";
+import { FiCheckCircle, FiUpload, FiUploadCloud, FiX } from "react-icons/fi";
 import { PiSpinnerGap } from "react-icons/pi";
 import { toast } from "react-toastify";
 
 import { uploadStudentSchema } from "@/schemas/students/main";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { useUploadStudentsMutation } from "@/store/services/students/studentsService";
 import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import { useGetProgrammesQuery } from "@/store/services/curriculum/programmesService";
 import { CampusType, ProgrammeCohortType, ProgrammeType } from "@/definitions/curiculum";
-import Select from "react-select";
-import { useGetCohortsQuery } from "@/store/services/curriculum/cohortsService";
 import { useGetCampusesQuery } from "@/store/services/curriculum/campusService";
+import { useGetCohortsQuery } from "@/store/services/curriculum/cohortsService";
+import { useGetProgrammesQuery } from "@/store/services/curriculum/programmesService";
+import { useUploadStudentsMutation } from "@/store/services/students/studentsService";
+import { useForm } from "react-hook-form";
+import Select from "react-select";
+import { z } from "zod";
+import IconButton from "../common/IconButton";
 interface Props {
   refetchData: () => void;
 }
@@ -178,6 +179,21 @@ const StudentUploadButton = ({ refetchData }: Props) => {
 
   return (
     <>
+    <IconButton
+            onClick={openModal}
+            title="Add New"
+            label="Upload Students"
+            icon={<FiUploadCloud className="w-4 h-4" />}
+                    className="flex items-center space-x-2 px-4 py-2 border-2 border-secondary-500 text-secondary-600 hover:bg-secondary-50 hover:border-secondary-600 hover:text-secondary-700 rounded-md transition duration-300 cursor-pointer"
+
+          />
+     {/* <div
+        onClick={openModal}
+        className="flex items-center space-x-2 px-4 py-2 border-2 border-secondary-500 text-secondary-600 hover:bg-secondary-50 hover:border-secondary-600 hover:text-secondary-700 rounded-md transition duration-300 cursor-pointer"
+      >
+        <FiUploadCloud className="w-4 h-4" />
+        <span className="text-sm">Upload Students</span>
+      </div>
       <div
         onClick={openModal}
         className="flex items-center space-x-2 md:p-2 p-1 bg-blue-600
@@ -185,7 +201,7 @@ const StudentUploadButton = ({ refetchData }: Props) => {
       >
         <FiUpload className="text-sm" />
         <span className="text-xs">Upload Students</span>
-      </div>
+      </div> */}
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4">
@@ -198,7 +214,7 @@ const StudentUploadButton = ({ refetchData }: Props) => {
             </button>
 
             <h3 className="text-xl font-bold text-gray-800 mb-6">
-              Admit Students
+              Upload Bulky Students
             </h3>
 
             <form
@@ -411,7 +427,7 @@ const StudentUploadButton = ({ refetchData }: Props) => {
                 </a>
               </div>
 
-              <div className="flex justify-end gap-3">
+              <div className="flex justify-between gap-3">
                 <button
                   type="button"
                   onClick={closeModal}

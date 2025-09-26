@@ -41,28 +41,35 @@ const Dashboard = () => {
 
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 md:gap-6">
           <MetricCard
-            icon={<LuGraduationCap size={25} className="text-white" />}
-            title="Students"
+            icon={<LuGraduationCap size={25} className="text-blue-600" />}
+            title="Active Students"
             count={data?.data.active_students}
-            iconBgColor="bg-blue-500"
+            iconBgColor="bg-blue-100"
+            href="/dashboard/students"
+
           />
           <MetricCard
-            icon={<HiOutlineUserGroup size={25} className="text-white" />}
-            title="Staff"
+            icon={<HiOutlineUserGroup size={25} className="text-green-600" />}
+            title="Active Staff"
             count={data?.data.active_staff}
-            iconBgColor="bg-green-500"
+            iconBgColor="bg-green-100"
+            href="/dashboard/staff"
+
           />
           <MetricCard
-            icon={<LuBriefcase size={25} className="text-white" />}
+            icon={<LuBriefcase size={25} className="text-purple-500" />}
             title="Programmes"
             count={data?.data.total_programmes}
-            iconBgColor="bg-purple-500"
+            iconBgColor="bg-purple-100"
+            href="/dashboard/curriculum/programmes"
+
           />
           <MetricCard
-            icon={<LuLayoutDashboard size={25} className="text-white" />}
+            icon={<LuLayoutDashboard size={25} className="text-yellow-600" />}
             title="Departments"
             count={data?.data.total_departments}
-            iconBgColor="bg-yellow-500"
+            iconBgColor="bg-yellow-100"
+            href="/dashboard/curriculum/departments"
           />
         </div>
 

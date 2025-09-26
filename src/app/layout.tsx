@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import "../styles/css/fonts.css";
 import "../styles/css/nunito.css";
 import "../styles/css/satoshi.css";
 import "../styles/css/style.css";

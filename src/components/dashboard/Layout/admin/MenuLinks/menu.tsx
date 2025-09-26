@@ -54,6 +54,7 @@ export const menuItems: MenuGroup[] = [
       { code: "academics_programmes", icon: <IoSchoolOutline />, label: "Programmes", href: "/dashboard/curriculum/programmes" },
       { code: "academics_units", icon: <BiBookBookmark />, label: "Units", href: "/dashboard/curriculum/units" },
       { code: "academics_cohorts", icon: <BsClipboardData />, label: "Cohorts", href: "/dashboard/curriculum/cohorts" },
+      { code: "intakes", icon: <BsClipboardData />, label: "Intakes", href: "/dashboard/curriculum/intakes" },
       { code: "academics_sessions", icon: <IoDocumentTextOutline />, label: "Sessions", href: "/dashboard/curriculum/course-sessions" },
       { code: "academics_semesters", icon: <TbFileInvoice />, label: "Semesters", href: "/dashboard/curriculum/semesters" },
       { code: "academics_academic_years", icon: <IoCalendarClearOutline />, label: "Academic Years", href: "/dashboard/curriculum/academic-years" },
@@ -152,7 +153,7 @@ export const menuItems: MenuGroup[] = [
     items: [
       // There is a module "settings_settings" in your module list.
       // If you later create a dedicated module for roles & permissions use that code instead.
-      { code: "settings_settings", icon: <IoSettingsOutline />, label: "Roles & Permissions", href: "/dashboard/permissions/roles" },
+      { code: "settings_settings", icon: <IoSettingsOutline />, label: "Roles & Permissions", href: "/dashboard/permissions" },
     ],
   },
 ];

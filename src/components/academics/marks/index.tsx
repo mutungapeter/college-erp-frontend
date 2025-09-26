@@ -6,7 +6,7 @@ import { useFilters } from "@/hooks/useFilters";
 
 import DataTable, { Column } from "@/components/common/Table/DataTable";
 import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
-
+import { BsStars } from "react-icons/bs";
 import FilterSelect from "@/components/common/Select";
 import { LabelOptionsType } from "@/definitions/Labels/labelOptionsType";
 import { MarksType } from "@/definitions/academics";
@@ -170,9 +170,9 @@ console.log("marksData",marksData)
          <div className="flex md:items-center md:flex-row flex-col gap-4">
           <UploadMarks refetchData={refetch} />
           <Link href="/dashboard/academics/marks/assessment-list" className="flex space-x-2 items-center 
-          bg-success-600 hover:bg-success-700 rounded-md md:p-2 p-1"> 
-            <FaRegHandPointRight   className=" text-sm text-white"/>
-            <span className="text-white text-xs">Adding Single Mark</span>
+          bg-primary hover:bg-success-700 rounded-md px-4 py-2"> 
+            <BsStars   className=" text-lg md:text-xl text-white"/>
+            <span className="text-white text-sm md:text-lg">Adding Single Mark</span>
           </Link>
          </div>
         </div>

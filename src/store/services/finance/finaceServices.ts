@@ -20,13 +20,7 @@ export const finaceApi = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
-    createFeeStructureItem: builder.mutation({
-      query: (data) => ({
-        url: `finance/fee-structure-items/create/`,
-        method: "POST",
-        body: data,
-      }),
-    }),
+   
     createFeeStructure: builder.mutation({
       query: (data) => ({
         url: `finance/fee-structures/create/`,
@@ -41,25 +35,14 @@ export const finaceApi = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
-    updateFeeStructureItem: builder.mutation({
-      query: ({id, data}) => ({
-        url: `finance/fee-structure-items/${id}/update/`,
-        method: "PATCH",
-        body: data,
-      }),
-    }),
+     
     deleteFeeStructure: builder.mutation({
       query: (id) => ({
         url: `finance/fee-structures/${id}/delete/`,
         method: "DELETE",
       }),
     }),
-    deleteFeeStructureItem: builder.mutation({
-      query: (id) => ({
-        url: `finance/fee-structure-items/${id}/delete/`,
-        method: "DELETE",
-      }),
-    }),
+   
     getFeeStructuresList: builder.query({
       query: ({ semester, page, page_size }: FeeStructureInterface = {}) => {
         const queryParams: Record<
@@ -95,6 +78,26 @@ export const finaceApi = apiSlice.injectEndpoints({
           params: queryParams,
         };
       },
+    }),
+     createFeeStructureItem: builder.mutation({
+      query: (data) => ({
+        url: `finance/fee-structure-items/create/`,
+        method: "POST",
+        body: data,
+      }),
+    }),
+    updateFeeStructureItem: builder.mutation({
+      query: ({id, data}) => ({
+        url: `finance/fee-structure-items/${id}/update/`,
+        method: "PATCH",
+        body: data,
+      }),
+    }),
+    deleteFeeStructureItem: builder.mutation({
+      query: (id) => ({
+        url: `finance/fee-structure-items/${id}/delete/`,
+        method: "DELETE",
+      }),
     }),
   }),
 });

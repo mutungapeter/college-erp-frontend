@@ -7,13 +7,13 @@ import { IoCloseOutline } from "react-icons/io5";
 import { z } from "zod";
 
 import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
 
 import { StudyYearType } from "@/definitions/curiculum";
 
-import { useUpdateAcademicYearMutation } from "@/store/services/curriculum/academicYearsService";
+import IconButton from "@/components/common/IconButton";
+import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
 import { studyYearSchema } from "@/schemas/curriculum/studyYears";
-
+import { useUpdateAcademicYearMutation } from "@/store/services/curriculum/academicYearsService";
 
 type FormValues = z.infer<typeof studyYearSchema>;
 
@@ -28,9 +28,8 @@ const EditStudyYear = ({ data, refetchData }: EditStudyYearProps) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [isError, setIsError] = useState(false);
 
-  const [updateAcademicYear, { isLoading: isUpdating }] = useUpdateAcademicYearMutation();
-
-
+  const [updateAcademicYear, { isLoading: isUpdating }] =
+    useUpdateAcademicYearMutation();
 
   const {
     register,
@@ -40,11 +39,8 @@ const EditStudyYear = ({ data, refetchData }: EditStudyYearProps) => {
     resolver: zodResolver(studyYearSchema),
     defaultValues: {
       name: data.name,
-      
-    }
+    },
   });
-
- 
 
   useEffect(() => {
     console.log("Form Errors:", errors);
@@ -55,14 +51,12 @@ const EditStudyYear = ({ data, refetchData }: EditStudyYearProps) => {
   };
 
   const handleOpenModal = () => setIsOpen(true);
-  
+
   const handleCloseSuccessModal = () => {
     setShowSuccessModal(false);
     setIsError(false);
     handleCloseModal();
   };
-  
-
 
   const onSubmit = async (formData: FormValues) => {
     console.log("submitting form data", formData);
@@ -94,15 +88,15 @@ const EditStudyYear = ({ data, refetchData }: EditStudyYearProps) => {
 
   return (
     <>
-      <button
+      <IconButton
         onClick={handleOpenModal}
-         className="p-2 rounded-xl  text-blue-600 hover:bg-blue-200 hover:text-blue-700 cursor-pointer transition duration-200 shadow-sm"
-            title="Edit Cohort"
-      >
-        <FiEdit className="text-sm" />
-      </button>
+        title="Edit"
+        icon={<FiEdit className="w-4 h-4" />}
+        className="group relative p-2 bg-amber-100 text-amber-500 hover:bg-amber-600 hover:text-white focus:ring-amber-500"
+        tooltip="Edit"
+      />
 
-            {isOpen && (
+      {isOpen && (
         <div
           className="relative z-9999 animate-fadeIn"
           aria-labelledby="modal-title"
@@ -115,7 +109,7 @@ const EditStudyYear = ({ data, refetchData }: EditStudyYearProps) => {
             aria-hidden="true"
           ></div>
 
-         <div
+          <div
             className="fixed inset-0 min-h-full z-100 w-screen flex flex-col text-center md:items-center
            justify-center overflow-y-auto p-2 md:p-3"
           >
@@ -138,55 +132,35 @@ const EditStudyYear = ({ data, refetchData }: EditStudyYearProps) => {
                   </div>
                 </div>
 
-               <form
+                <form
                   onSubmit={handleSubmit(onSubmit)}
                   className="space-y-4 mt-2 p-4 md:p-4 lg:p-4 "
                 >
-                   <div>
-                      <div>
-                        <label className="block space-x-1 text-sm font-medium mb-2">
-                          Name<span className="text-red-500">*</span>
-                        </label>
-                        
- <input
-                          type="text"
-                          className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
-                          placeholder="e.g. First Year, Second Year"
-                          {...register("name")}
-                        />
-                        {errors.name && (
-                          <p className="text-red-500 text-sm mt-1">
-                            {errors.name.message}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                 
-                  
+                  <div>
+                    <div>
+                      <label className="block space-x-1 text-sm font-medium mb-2">
+                        Name<span className="text-red-500">*</span>
+                      </label>
 
-                  <div className="sticky bottom-0 bg-white z-40 flex md:px-6 gap-4 md:justify-end items-center py-3">
-                    <button
-                      type="button"
-                      onClick={handleCloseModal}
-                      className="border border-gray-300 bg-white shadow-sm text-gray-700 py-2 text-sm px-4 rounded-md w-full min-w-[100px] md:w-auto hover:bg-gray-50"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting || isUpdating}
-                      className="bg-primary-600 text-white py-2 hover:bg-blue-700 text-sm px-3 md:px-4 rounded-md w-full min-w-[100px] md:w-auto"
-                    >
-                      {isSubmitting || isUpdating ? (
-                        <span className="flex items-center">
-                          <SubmitSpinner />
-                          <span>Updating...</span>
-                        </span>
-                      ) : (
-                        <span>Update</span>
+                      <input
+                        type="text"
+                        className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
+                        placeholder="e.g. First Year, Second Year"
+                        {...register("name")}
+                      />
+                      {errors.name && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.name.message}
+                        </p>
                       )}
-                    </button>
+                    </div>
                   </div>
+
+                  <ModalBottomButton
+                    onCancel={handleCloseModal}
+                    isSubmitting={isSubmitting}
+                    isProcessing={isUpdating}
+                  />
                 </form>
               </>
             </div>

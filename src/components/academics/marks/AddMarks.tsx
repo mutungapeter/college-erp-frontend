@@ -6,14 +6,15 @@ import { FiPlus } from "react-icons/fi";
 import { IoCloseOutline } from "react-icons/io5";
 
 import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
 
 import {
   CourseType,
   ProgrammeCohortType,
-  SemesterType
+  SemesterType,
 } from "@/definitions/curiculum";
 
+import IconButton from "@/components/common/IconButton";
+import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
 import { StudentDetailsType } from "@/definitions/students";
 import { ExamDataCreate, examDataCreateSchema } from "@/schemas/exams/main";
 import { useAddMarksMutation } from "@/store/services/academics/acadmicsService";
@@ -39,7 +40,7 @@ const AddMarks = ({
   const [isError, setIsError] = useState(false);
 
   const [addMarks, { isLoading: isCreating }] = useAddMarksMutation();
-  
+
   const {
     register,
     handleSubmit,
@@ -79,7 +80,7 @@ const AddMarks = ({
   const onSubmit = async (formData: ExamDataCreate) => {
     const submissionData = {
       student: student.id,
-    //   programme: programme.id,
+      //   programme: programme.id,
       course: course.id,
       semester: semester.id,
       cohort: cohort.id,
@@ -111,18 +112,13 @@ const AddMarks = ({
 
   return (
     <>
-      <div
+      <IconButton
         onClick={handleOpenModal}
-        className="flex flex-col md:flex-row md:items-center gap-4 w-full md:w-auto"
-      >
-        <div
-          className="bg-teal-600 inline-flex cursor-pointer w-max 
-         items-center space-x-2 text-white px-2 py-2 rounded-md hover:bg-teal-700  transform scale-105 transition duration-300"
-        >
-          <FiPlus className="text-sm" />
-          <span className="text-xs font-medium">Add Marks</span>
-        </div>
-      </div>
+        title="Add New"
+        label="Add Marks"
+        icon={<FiPlus className="w-4 h-4" />}
+        className="bg-primary-500 text-white px-4 py-2 hover:bg-primary-600 focus:ring-primary-500 focus:ring-offset-1"
+      />
 
       {isOpen && (
         <div
@@ -139,80 +135,78 @@ const AddMarks = ({
 
           <div
             className="fixed inset-0 min-h-full z-100 w-screen flex flex-col text-center md:items-center
-           justify-start overflow-y-auto p-2 md:p-3"
+           justify-center overflow-y-auto p-2 md:p-3"
           >
             <div
               className="relative transform justify-center animate-fadeIn max-h-[90vh]
-                overflow-y-auto rounded-md bg-white text-left shadow-xl transition-all   
+                overflow-y-auto rounded-2xl bg-white text-left shadow-xl transition-all   
                 w-full sm:max-w-c-450 md:max-w-450 px-3"
             >
               <>
-                <div className="sticky top-0 bg-white z-40 flex px-4 justify-between items-center py-3">
+                <div className="sticky top-0 bg-white z-40 flex px-4
+                 justify-between items-center py-6">
                   <p className="text-sm md:text-lg lg:text-lg font-semibold">
                     Add Marks
                   </p>
                   <div className="flex justify-end cursor-pointer">
                     <IoCloseOutline
-                      size={30}
+                      size={20}
                       onClick={handleCloseModal}
                       className="text-gray-500"
                     />
                   </div>
                 </div>
                 <div className="p-3 space-y-2">
-<div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Student Name
-                    </label>
-                    <input
-                      type="text"
-                      value={`${student?.user.first_name} ${student?.user.last_name}`}
-                      readOnly
-                        className="w-full py-2 px-4 border bg-gray-200 placeholder:text-sm rounded-md focus:outline-none"
-                   />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Registration Number
-                    </label>
-                    <input
-                      type="text"
-                      value={student?.registration_number}
-                      readOnly
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Student Name
+                      </label>
+                      <input
+                        type="text"
+                        value={`${student?.user.first_name} ${student?.user.last_name}`}
+                        readOnly
                         className="w-full py-2 px-4 border bg-gray-200 placeholder:text-sm rounded-md focus:outline-none"
                       />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Registration Number
+                      </label>
+                      <input
+                        type="text"
+                        value={student?.registration_number}
+                        readOnly
+                        className="w-full py-2 px-4 border bg-gray-200 placeholder:text-sm rounded-md focus:outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Cohort/Class
+                      </label>
+                      <input
+                        type="text"
+                        value={cohort?.name}
+                        readOnly
+                        className="w-full py-2 px-4 border bg-gray-200 placeholder:text-sm rounded-md focus:outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Semester
+                      </label>
+                      <input
+                        type="text"
+                        value={`${semester?.name} (${semester?.academic_year})`}
+                        readOnly
+                        className="w-full py-2 px-4 border bg-gray-200 placeholder:text-sm rounded-md focus:outline-none"
+                      />
+                    </div>
                   </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Cohort/Class
-                    </label>
-                    <input
-                      type="text"
-                      value={cohort?.name}
-                      readOnly
-                    className="w-full py-2 px-4 border bg-gray-200 placeholder:text-sm rounded-md focus:outline-none"
-
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Semester
-                    </label>
-                    <input
-                      type="text"
-                      value={`${semester?.name} (${semester?.academic_year})`}
-                      readOnly
-                    className="w-full py-2 px-4 border bg-gray-200 placeholder:text-sm rounded-md focus:outline-none"
-
-                    />
-                  </div>
-
-                </div>
-                 <div className="">
+                  <div className="">
                     <label className="block text-sm font-medium text-gray-700">
                       Unit
                     </label>
@@ -220,8 +214,7 @@ const AddMarks = ({
                       type="text"
                       value={`${course?.course_code} - ${course?.name}`}
                       readOnly
-                    className="w-full py-2 px-4 border bg-gray-200 placeholder:text-sm rounded-md focus:outline-none"
-
+                      className="w-full py-2 px-4 border bg-gray-200 placeholder:text-sm rounded-md focus:outline-none"
                     />
                   </div>
                 </div>
@@ -239,10 +232,10 @@ const AddMarks = ({
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                       />
                       {errors.cat_one && (
-                          <p className="text-red-500 text-sm mt-1">
-                            {errors.cat_one.message}
-                          </p>
-                        )}
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.cat_one.message}
+                        </p>
+                      )}
                     </div>
                     <div>
                       <label className="block text-sm">Cat Two</label>
@@ -252,10 +245,10 @@ const AddMarks = ({
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                       />
                       {errors.cat_two && (
-                          <p className="text-red-500 text-sm mt-1">
-                            {errors.cat_two.message}
-                          </p>
-                        )}
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.cat_two.message}
+                        </p>
+                      )}
                     </div>
                     <div>
                       <label className="block text-sm">Exam Marks</label>
@@ -265,10 +258,10 @@ const AddMarks = ({
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                       />
                       {errors.exam_marks && (
-                          <p className="text-red-500 text-sm mt-1">
-                            {errors.exam_marks.message}
-                          </p>
-                        )}
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.exam_marks.message}
+                        </p>
+                      )}
                     </div>
                     <div className="">
                       <label className="block text-sm font-medium text-gray-700">
@@ -283,29 +276,11 @@ const AddMarks = ({
                     </div>
                   </div>
 
-                  <div className="sticky bottom-0 bg-white z-40 flex space-x-3 gap-4 md:justify-end items-center py-3">
-                    <button
-                      type="button"
-                      onClick={handleCloseModal}
-                      className="border border-gray-300 bg-white shadow-sm text-gray-700 py-2 text-sm px-4 rounded-md w-full min-w-[100px] md:w-auto hover:bg-gray-50"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting || isCreating}
-                      className="bg-primary-600 text-white py-2 hover:bg-blue-700 text-sm px-3 md:px-4 rounded-md w-full min-w-[100px] md:w-auto"
-                    >
-                      {isSubmitting || isCreating ? (
-                        <span className="flex items-center">
-                          <SubmitSpinner />
-                          <span>Submitting...</span>
-                        </span>
-                      ) : (
-                        <span>Add</span>
-                      )}
-                    </button>
-                  </div>
+                  <ModalBottomButton
+                    onCancel={handleCloseModal}
+                    isSubmitting={isSubmitting}
+                    isProcessing={isCreating}
+                  />
                 </form>
               </>
             </div>

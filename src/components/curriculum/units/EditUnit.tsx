@@ -6,9 +6,10 @@ import { IoCloseOutline } from "react-icons/io5";
 import { z } from "zod";
 
 import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
 import Select, { SingleValue } from "react-select";
 
+import IconButton from "@/components/common/IconButton";
+import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
 import {
   CourseType,
   DepartmentType,
@@ -140,13 +141,13 @@ const UpdateUnit = ({
 
   return (
     <>
-      <div
-        onClick={handleOpenModal}
-        className="p-2 rounded-xl  text-blue-600 hover:bg-blue-200 hover:text-blue-700 cursor-pointer transition duration-200 shadow-sm"
-        title="Edit"
-      >
-        <FiEdit className="text-sm" />
-      </div>
+         <IconButton
+              onClick={handleOpenModal}
+              title="Edit"
+              icon={<FiEdit className="w-4 h-4" />}
+              className="group relative p-2 bg-amber-100 text-amber-500 hover:bg-amber-600 hover:text-white focus:ring-amber-500"
+              tooltip="Edit"
+            />
 
       {isOpen && (
         <div
@@ -353,29 +354,11 @@ const UpdateUnit = ({
                     </div>
                   </div>
 
-                  <div className="sticky bottom-0 bg-white z-40 flex md:px-6  gap-4 md:justify-between items-center py-3 ">
-                    <button
-                      type="button"
-                      onClick={handleCloseModal}
-                      className="border border-red-500 bg-white shadow-sm text-red-500 py-2 text-sm px-4 rounded-lg w-full min-w-[100px] md:w-auto hover:bg-red-500 hover:text-white"
-  >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting || isUpdating}
-                      className="bg-primary-600 text-white py-2 hover:bg-blue-700 text-sm px-3 md:px-4 rounded-md w-full min-w-[100px] md:w-auto"
-                    >
-                      {isSubmitting || isUpdating ? (
-                        <span className="flex items-center">
-                          <SubmitSpinner />
-                          <span>Editing...</span>
-                        </span>
-                      ) : (
-                        <span>Edit</span>
-                      )}
-                    </button>
-                  </div>
+                  <ModalBottomButton
+                    onCancel={handleCloseModal}
+                    isSubmitting={isSubmitting}
+                    isProcessing={isUpdating}
+                  />
                 </form>
               </>
             </div>

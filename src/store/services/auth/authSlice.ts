@@ -107,11 +107,10 @@ const authSlice = createSlice({
   if (accessToken && refreshToken) {
     state.accessToken = accessToken;
     state.refreshToken = refreshToken;
-
     const decoded = jwtDecode<DecodedToken>(accessToken);
     state.tokenExpiry = decoded.exp ? decoded.exp * 1000 : null;
-
-    state.loading = true; // we'll fetch user next
+    state.user = decoded.user; 
+    state.loading = false;  
   } else {
     state.accessToken = "";
     state.refreshToken = "";

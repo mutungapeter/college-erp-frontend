@@ -17,6 +17,8 @@ import {
 import { enrollStudentSchema } from "@/schemas/admissions/main";
 import { useEnrollApplicationMutation } from "@/store/services/admissions/admissionsService";
 import { useGetCohortsQuery } from "@/store/services/curriculum/cohortsService";
+import IconButton from "@/components/common/IconButton";
+import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
 
 type SelectOption = {
   value: string | number;
@@ -108,20 +110,15 @@ const EnrollStudent = ({ refetchData, data }:Props) => {
 
   return (
     <>
-     <div
-  onClick={handleOpenModal}
-  className="flex flex-col md:flex-row md:items-center gap-4 w-full md:w-auto"
->
-  <div
-    className="bg-green-600 inline-flex cursor-pointer w-max 
-    items-center space-x-2 text-white px-2 py-2
-     rounded-md hover:bg-green-700 transition duration-300"
-  >
-    <FiUserPlus className="text-sm" />  
-    <span className="text-sm font-medium">Enroll Applicant</span>  
-  </div>
-</div>
-
+    
+ 
+<IconButton
+        onClick={handleOpenModal}
+        title="Add New"
+        label="Enroll Applicant"
+        icon={<FiUserPlus className="w-4 h-4" />}
+        className="bg-primary text-white px-4 py-2 hover:bg-primary-600 focus:ring-primary-500 focus:ring-offset-1"
+      />
       {isOpen && (
         <div
           className="relative z-9999 animate-fadeIn"
@@ -137,21 +134,22 @@ const EnrollStudent = ({ refetchData, data }:Props) => {
 
           <div
             className="fixed inset-0 min-h-full z-100 w-screen flex flex-col text-center md:items-center
-           justify-start overflow-y-auto p-2 md:p-3"
+           justify-center overflow-y-auto p-2 md:p-3"
           >
             <div
               className="relative transform justify-center animate-fadeIn max-h-[90vh]
-                overflow-y-auto rounded-md bg-white text-left shadow-xl transition-all   
-                w-full sm:max-w-c-500 md:max-w-500 px-3"
+                overflow-y-auto rounded-2xl bg-white text-left shadow-xl transition-all   
+                w-full sm:max-w-c-450 md:max-w-450 px-3"
             >
               <>
-                <div className="sticky top-0 bg-white z-40 flex  px-4 justify-between items-center py-3">
+                <div className="sticky top-0 bg-white z-40 
+                flex  px-4 justify-between items-center py-6">
                   <p className="text-sm md:text-lg lg:text-lg font-semibold">
                     Enroll Applicant
                   </p>
                   <div className="flex justify-end cursor-pointer">
                     <IoCloseOutline
-                      size={30}
+                      size={20}
                       onClick={handleCloseModal}
                       className="text-gray-500"
                     />
@@ -211,29 +209,11 @@ const EnrollStudent = ({ refetchData, data }:Props) => {
                     </div>
                   
                 
-                  <div className="sticky bottom-0 bg-white z-40 flex  space-x-3 gap-4 md:justify-end items-center py-3">
-                    <button
-                      type="button"
-                      onClick={handleCloseModal}
-                      className="border border-gray-300 bg-white shadow-sm text-gray-700 py-2 text-sm px-4 rounded-md w-full min-w-[100px] md:w-auto hover:bg-gray-50"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting || isCreating}
-                      className="bg-success-600 text-white py-2 hover:bg-success-700 text-sm px-3 md:px-4 rounded-md w-full min-w-[100px] md:w-auto"
-                    >
-                      {isSubmitting || isCreating ? (
-                        <span className="flex items-center">
-                          <SubmitSpinner />
-                          <span>Enrolling...</span>
-                        </span>
-                      ) : (
-                        <span>Enroll</span>
-                      )}
-                    </button>
-                  </div>
+                 <ModalBottomButton
+                                      onCancel={handleCloseModal}
+                                      isSubmitting={isSubmitting}
+                                      isProcessing={isCreating}
+                                    />
                 </form>
               </>
             </div>

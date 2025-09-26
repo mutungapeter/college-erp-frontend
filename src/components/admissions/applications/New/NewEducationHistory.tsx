@@ -7,13 +7,14 @@ import { IoCloseOutline } from "react-icons/io5";
 import { z } from "zod";
 
 import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
 import Select from "react-select";
 
+import IconButton from "@/components/common/IconButton";
+import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
+import { ApplicationType } from "@/definitions/admissions";
 import { EducationHistoryOptions } from "@/lib/constants";
 import { applicationEducationHistoryCreateSchema } from "@/schemas/admissions/main";
 import { useCreateEducationHistoryMutation } from "@/store/services/admissions/admissionsService";
-import { ApplicationType } from "@/definitions/admissions";
 
 type SelectOption = {
   value: string | number;
@@ -95,18 +96,13 @@ const NewEducationHistory = ({ refetchData, data }: { refetchData: () => void; d
 
   return (
     <>
-      <div
+      <IconButton
         onClick={handleOpenModal}
-        className="flex flex-col md:flex-row md:items-center gap-4 w-full md:w-auto"
-      >
-        <div
-          className="bg-blue-600 inline-flex cursor-pointer w-max 
-         items-center space-x-2 text-white px-2 py-2 rounded-md hover:bg-blue-700 transition duration-300"
-        >
-          <FiPlus className="text-lg" />
-          <span className="text-xs font-medium">Add New</span>
-        </div>
-      </div>
+        title="Add New"
+        label="Add New"
+        icon={<FiPlus className="w-4 h-4" />}
+        className="bg-primary text-white px-4 py-2 hover:bg-primary-600 focus:ring-primary-500 focus:ring-offset-1"
+      />
 
       {isOpen && (
         <div
@@ -123,21 +119,21 @@ const NewEducationHistory = ({ refetchData, data }: { refetchData: () => void; d
 
           <div
             className="fixed inset-0 min-h-full z-100 w-screen flex flex-col text-center md:items-center
-           justify-start overflow-y-auto p-2 md:p-3"
+           justify-center overflow-y-auto p-2 md:p-3"
           >
             <div
               className="relative transform justify-center animate-fadeIn max-h-[90vh]
-                overflow-y-auto rounded-md bg-white text-left shadow-xl transition-all   
+                overflow-y-auto rounded-2xl bg-white text-left  shadow-xl transition-all   
                 w-full sm:max-w-c-500 md:max-w-500 px-3"
             >
               <>
-                <div className="sticky top-0 bg-white z-40 flex  px-4 justify-between items-center py-3">
+                <div className="sticky top-0 bg-white z-40 flex  px-4 justify-between items-center py-6">
                   <p className="text-sm md:text-lg lg:text-lg font-semibold">
                     Add New Education History
                   </p>
                   <div className="flex justify-end cursor-pointer">
                     <IoCloseOutline
-                      size={30}
+                      size={20}
                       onClick={handleCloseModal}
                       className="text-gray-500"
                     />
@@ -159,12 +155,12 @@ const NewEducationHistory = ({ refetchData, data }: { refetchData: () => void; d
                           placeholder="e.g. Masinde Muliro University of Science and Technology"
                           {...register("institution")}
                         />
+                      </div>
                         {errors.institution && (
                           <p className="text-red-500 text-sm mt-1">
                             {errors.institution.message}
                           </p>
                         )}
-                      </div>
                     </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     
@@ -247,7 +243,7 @@ const NewEducationHistory = ({ refetchData, data }: { refetchData: () => void; d
                           }),
                           control: (base) => ({
                             ...base,
-                            minHeight: "44px",
+                            minHeight: "24px",
                             minWidth: "200px",
                             borderColor: "#d1d5db",
                             boxShadow: "none",
@@ -287,29 +283,11 @@ const NewEducationHistory = ({ refetchData, data }: { refetchData: () => void; d
                       </p>
                     )}
                   </div>
-                  <div className="sticky bottom-0 bg-white z-40 flex  space-x-3 gap-4 md:justify-end items-center py-3">
-                    <button
-                      type="button"
-                      onClick={handleCloseModal}
-                      className="border border-gray-300 bg-white shadow-sm text-gray-700 py-2 text-sm px-4 rounded-md w-full min-w-[100px] md:w-auto hover:bg-gray-50"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting || isCreating}
-                      className="bg-primary-600 text-white py-2 hover:bg-blue-700 text-sm px-3 md:px-4 rounded-md w-full min-w-[100px] md:w-auto"
-                    >
-                      {isSubmitting || isCreating ? (
-                        <span className="flex items-center">
-                          <SubmitSpinner />
-                          <span>Admitting...</span>
-                        </span>
-                      ) : (
-                        <span>Admit</span>
-                      )}
-                    </button>
-                  </div>
+                  <ModalBottomButton
+                                      onCancel={handleCloseModal}
+                                      isSubmitting={isSubmitting}
+                                      isProcessing={isCreating}
+                                    />
                 </form>
               </>
             </div>

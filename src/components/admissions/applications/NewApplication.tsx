@@ -8,11 +8,12 @@ import Select from "react-select";
 import { z } from "zod";
 
 import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
 
 import { GenderOptions } from "@/lib/constants";
 import { useGetProgrammesQuery } from "@/store/services/curriculum/programmesService";
 
+import IconButton from "@/components/common/IconButton";
+import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
 import { IntakeType } from "@/definitions/admissions";
 import {
   CampusType,
@@ -65,7 +66,7 @@ const CreateApplication = ({ refetchData }: { refetchData: () => void }) => {
 
   const handleCloseModal = () => {
     setIsOpen(false);
-    reset();
+  
   };
 
   const handleOpenModal = () => setIsOpen(true);
@@ -123,6 +124,7 @@ const CreateApplication = ({ refetchData }: { refetchData: () => void }) => {
       setShowSuccessModal(true);
       reset();
       refetchData();
+      
     } catch (error: unknown) {
       console.log("error", error);
       setIsError(true);
@@ -135,23 +137,22 @@ const CreateApplication = ({ refetchData }: { refetchData: () => void }) => {
         setSuccessMessage("Unexpected error occurred. Please try again.");
         setShowSuccessModal(true);
       }
+    }finally{
+      setShowSuccessModal(false);
+      reset();
+      handleCloseModal();
     }
   };
 
   return (
     <>
-      <div
+       <IconButton
         onClick={handleOpenModal}
-        className="flex flex-col md:flex-row md:items-center gap-4 w-full md:w-auto"
-      >
-        <div
-          className="bg-primary-600 inline-flex cursor-pointer w-max 
-         items-center space-x-2 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition duration-300"
-        >
-          <FiPlus className="text-lg" />
-          <span className="text-xs font-medium">New Application</span>
-        </div>
-      </div>
+        title="Add New"
+        label="New Application"
+        icon={<FiPlus className="w-4 h-4" />}
+        className="bg-primary-500 text-white px-4 py-2 hover:bg-primary-600 focus:ring-primary-500 focus:ring-offset-1"
+      />
 
       {isOpen && (
         <div
@@ -173,7 +174,7 @@ const CreateApplication = ({ refetchData }: { refetchData: () => void }) => {
             <div
               className="relative transform justify-center animate-fadeIn max-h-[90vh]
                 overflow-y-auto rounded-md bg-white text-left shadow-xl transition-all   
-                w-full sm:max-w-c-600 md:max-w-600 px-3"
+                w-full sm:max-w-c-500 md:max-w-500 px-3"
             >
               <>
                 <div className="sticky top-0 bg-white z-40 flex px-4 justify-between items-center py-3">
@@ -182,7 +183,7 @@ const CreateApplication = ({ refetchData }: { refetchData: () => void }) => {
                   </p>
                   <div className="flex justify-end cursor-pointer">
                     <IoCloseOutline
-                      size={30}
+                      size={20}
                       onClick={handleCloseModal}
                       className="text-gray-500"
                     />
@@ -293,11 +294,11 @@ const CreateApplication = ({ refetchData }: { refetchData: () => void }) => {
                               position: "absolute",
                               width: "max-content",
                               minWidth: "100%",
-                              minHeight: "50px",
+                              minHeight: "24px",
                             }),
                             control: (base) => ({
                               ...base,
-                              minHeight: "44px",
+                              minHeight: "24px",
                               minWidth: "200px",
                               borderColor: "#d1d5db",
                               boxShadow: "none",
@@ -512,7 +513,7 @@ const CreateApplication = ({ refetchData }: { refetchData: () => void }) => {
                             }),
                             control: (base) => ({
                               ...base,
-                              minHeight: "44px",
+                              minHeight: "24px",
                               minWidth: "200px",
                               borderColor: "#d1d5db",
                               boxShadow: "none",
@@ -555,7 +556,7 @@ const CreateApplication = ({ refetchData }: { refetchData: () => void }) => {
                             }),
                             control: (base) => ({
                               ...base,
-                              minHeight: "44px",
+                              minHeight: "24px",
                               minWidth: "200px",
                               borderColor: "#d1d5db",
                               boxShadow: "none",
@@ -598,7 +599,7 @@ const CreateApplication = ({ refetchData }: { refetchData: () => void }) => {
                             }),
                             control: (base) => ({
                               ...base,
-                              minHeight: "44px",
+                              minHeight: "24px",
                               minWidth: "200px",
                               borderColor: "#d1d5db",
                               boxShadow: "none",
@@ -637,7 +638,7 @@ const CreateApplication = ({ refetchData }: { refetchData: () => void }) => {
                             }),
                             control: (base) => ({
                               ...base,
-                              minHeight: "44px",
+                              minHeight: "24px",
                               minWidth: "200px",
                               borderColor: "#d1d5db",
                               boxShadow: "none",
@@ -661,29 +662,11 @@ const CreateApplication = ({ refetchData }: { refetchData: () => void }) => {
                       
                       
                     </div>
-                  <div className="sticky bottom-0 bg-white z-40 flex space-x-3 gap-4 md:justify-end items-center py-3">
-                    <button
-                      type="button"
-                      onClick={handleCloseModal}
-                      className="border border-gray-300 bg-white shadow-sm text-gray-700 py-2 text-sm px-4 rounded-md w-full min-w-[100px] md:w-auto hover:bg-gray-50"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting || isCreating}
-                      className="bg-primary-600 text-white py-2 hover:bg-blue-700 text-sm px-3 md:px-4 rounded-md w-full min-w-[100px] md:w-auto"
-                    >
-                      {isSubmitting || isCreating ? (
-                        <span className="flex items-center">
-                          <SubmitSpinner />
-                          <span>Submitting...</span>
-                        </span>
-                      ) : (
-                        <span>Submit Application</span>
-                      )}
-                    </button>
-                  </div>
+                   <ModalBottomButton
+                                                        onCancel={handleCloseModal}
+                                                        isSubmitting={isSubmitting}
+                                                        isProcessing={isCreating}
+                                                      />
                 </form>
               </>
             </div>

@@ -1,16 +1,17 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import IconButton from "@/components/common/IconButton";
+import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
+import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
+import { ApplicationType } from "@/definitions/admissions";
+import { updateApplicationPersonalInfoSchema } from "@/schemas/admissions/main";
+import { useUpdateApplicationMutation } from "@/store/services/admissions/admissionsService";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FiEdit } from "react-icons/fi";
 import { IoCloseOutline } from "react-icons/io5";
 import { z } from "zod";
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
-import { ApplicationType } from "@/definitions/admissions";
-import { updateApplicationPersonalInfoSchema } from "@/schemas/admissions/main";
-import { useUpdateApplicationMutation } from "@/store/services/admissions/admissionsService";
 
 const EditStudentApplicationPersonalInfo = ({
   data,
@@ -106,16 +107,13 @@ const EditStudentApplicationPersonalInfo = ({
 
   return (
     <>
-      <div
+      <IconButton
         onClick={handleOpenModal}
-        className="px-3 py-1 rounded-lg inline-flex items-center space-x-3
-         bg-blue-100 text-blue-600 hover:bg-blue-200
-          hover:text-blue-700 cursor-pointer transition duration-200 w-max shadow-sm"
-        title="Edit Event"
-      >
-        <FiEdit className="text-sm" />
-        <span>Update</span>
-      </div>
+        title="Edit"
+        icon={<FiEdit className="w-4 h-4" />}
+        className="group relative p-2 bg-amber-100 text-amber-500 hover:bg-amber-600 hover:text-white focus:ring-amber-500"
+        tooltip="Edit"
+      />
 
       {isOpen && (
         <div
@@ -135,12 +133,15 @@ const EditStudentApplicationPersonalInfo = ({
            justify-center overflow-y-auto p-2 md:p-3"
           >
             <div
-              className="relative transform justify-center animate-fadeIn max-h-[90vh]
-                overflow-y-auto rounded-md bg-white text-left shadow-xl transition-all   
-                w-full sm:max-w-c-550 md:max-w-550 px-3"
+              className="relative transform justify-center
+               animate-fadeIn max-h-[90vh]
+                overflow-y-auto rounded-2xl bg-white text-left
+                 shadow-xl transition-all   
+                w-full sm:max-w-c-500 md:max-w-500 px-3"
             >
               <>
-                <div className="sticky top-0 bg-white z-40 flex sm:px-6 px-4 justify-between items-center py-2 ">
+                <div className="sticky top-0 bg-white z-40 flex  px-2
+                justify-between items-center py-6 ">
                   <p className="text-sm md:text-lg lg:text-lg font-bold ">
                     Edit Personal Information
                   </p>
@@ -301,29 +302,11 @@ const EditStudentApplicationPersonalInfo = ({
                     </div>
                   </div>
 
-                  <div className="sticky bottom-0 bg-white z-40 flex md:px-6 gap-4 md:justify-end items-center py-3">
-                    <button
-                      type="button"
-                      onClick={handleCloseModal}
-                      className="border border-gray-300 bg-white shadow-sm text-gray-700 py-2 text-sm px-4 rounded-md w-full min-w-[100px] md:w-auto hover:bg-gray-50"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting || isUpdating}
-                      className="bg-blue-500 text-white py-2 text-sm px-3 md:px-4 rounded-md w-full min-w-[100px] md:w-auto"
-                    >
-                      {isSubmitting || isUpdating ? (
-                        <span className="flex items-center">
-                          <SubmitSpinner />
-                          Updating
-                        </span>
-                      ) : (
-                        <span>Update</span>
-                      )}
-                    </button>
-                  </div>
+                  <ModalBottomButton
+                    onCancel={handleCloseModal}
+                    isSubmitting={isSubmitting}
+                    isProcessing={isUpdating}
+                  />
                 </form>
               </>
             </div>

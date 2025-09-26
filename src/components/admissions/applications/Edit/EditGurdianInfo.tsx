@@ -11,6 +11,8 @@ import SubmitSpinner from "@/components/common/spinners/submitSpinner";
 import { ApplicationType } from "@/definitions/admissions";
 import { updateGurdianSchema } from "@/schemas/admissions/main";
 import { useUpdateApplicationMutation } from "@/store/services/admissions/admissionsService";
+import IconButton from "@/components/common/IconButton";
+import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
 
 const EditGuardianApplicationPersonalInfo = ({
   data,
@@ -60,9 +62,7 @@ const EditGuardianApplicationPersonalInfo = ({
     handleCloseModal();
   };
 
-  const onSubmit = async (
-    formData: z.infer<typeof updateGurdianSchema>
-  ) => {
+  const onSubmit = async (formData: z.infer<typeof updateGurdianSchema>) => {
     console.log("submitting form data for update", formData);
     console.log("data", formData);
     try {
@@ -99,16 +99,13 @@ const EditGuardianApplicationPersonalInfo = ({
 
   return (
     <>
-      <div
+      <IconButton
         onClick={handleOpenModal}
-        className="px-3 py-1 rounded-lg inline-flex items-center space-x-3
-         bg-blue-100 text-blue-600 hover:bg-blue-200
-          hover:text-blue-700 cursor-pointer transition duration-200 shadow-sm"
-        title="Edit Event"
-      >
-        <FiEdit className="text-sm" />
-        <span>Update</span>
-      </div>
+        title="Edit"
+        icon={<FiEdit className="w-4 h-4" />}
+        className="group relative p-2 bg-amber-100 text-amber-500 hover:bg-amber-600 hover:text-white focus:ring-amber-500"
+        tooltip="Edit"
+      />
 
       {isOpen && (
         <div
@@ -124,18 +121,24 @@ const EditGuardianApplicationPersonalInfo = ({
           ></div>
 
           <div
-            className="fixed inset-0 min-h-full z-100 w-screen flex flex-col text-center md:items-center
+            className="fixed inset-0 min-h-full z-100 w-screen 
+            flex flex-col text-center md:items-center
            justify-center overflow-y-auto p-2 md:p-3"
           >
             <div
-              className="relative transform justify-center animate-fadeIn max-h-[90vh]
-                overflow-y-auto rounded-md bg-white text-left shadow-xl transition-all   
-                w-full sm:max-w-c-550 md:max-w-550 px-3"
+              className="relative transform justify-center 
+              animate-fadeIn max-h-[90vh]
+                overflow-y-auto rounded-2xl bg-white 
+                text-left shadow-xl transition-all   
+                w-full sm:max-w-c-450 md:max-w-450 px-3"
             >
               <>
-                <div className="sticky top-0 bg-white z-40 flex sm:px-6 px-4 justify-between items-center py-2 ">
+                <div
+                  className="sticky top-0 bg-white z-40 flex px-2 
+                justify-between items-center py-6 "
+                >
                   <p className="text-sm md:text-lg lg:text-lg font-bold ">
-                    Edit Personal Information
+                    Edit Guardian Information
                   </p>
                   <div className="flex justify-end cursor-pointer">
                     <IoCloseOutline
@@ -148,31 +151,30 @@ const EditGuardianApplicationPersonalInfo = ({
 
                 <form
                   onSubmit={handleSubmit(onSubmit)}
-                  className="space-y-3 mt-2 p-3"
+                  className="space-y-5 mt-2 p-3"
                 >
-                  <div className="grid grid-cols-1 md:grid-cols-2 md:gap-2 gap-2">
-                    <div>
-                      <label className="block space-x-1 text-xs font-bold mb-2">
-                        Guardian name<span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        id="guardian_name"
-                        type="text"
-                        {...register("guardian_name")}
-                        placeholder="Enter new First name"
-                        className="w-full py-2 px-4  text-sm font-light border placeholder:text-sm rounded-md focus:outline-none"
-                      />
-                      {errors.guardian_name && (
-                        <p className="text-red-500 text-sm">
-                          {errors.guardian_name.message}
-                        </p>
-                      )}
-                    </div>
+                  <div>
+                    <label className="block space-x-1 text-sm font-bold mb-2">
+                      Guardian name<span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      id="guardian_name"
+                      type="text"
+                      {...register("guardian_name")}
+                      placeholder="Enter new First name"
+                      className="w-full py-2 px-4 text-sm bg-slate-50 border font-light placeholder:text-sm rounded-md focus:outline-none"
+                    />
+                    {errors.guardian_name && (
+                      <p className="text-red-500 text-sm">
+                        {errors.guardian_name.message}
+                      </p>
+                    )}
+                  </div>
 
-                    
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-bold mb-2">
-                       Guardian email
+                      <label className="block text-sm font-medium mb-2">
+                        Guardian email
                         <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -180,7 +182,7 @@ const EditGuardianApplicationPersonalInfo = ({
                         type="email"
                         {...register("guardian_email")}
                         placeholder="e.g user@example.com"
-                        className="w-full py-2 px-4 text-sm border  font-light placeholder:text-sm rounded-md focus:outline-none"
+                        className="w-full py-2 px-4 text-sm bg-slate-50 border font-light placeholder:text-sm rounded-md focus:outline-none"
                       />
                       {errors.guardian_email && (
                         <p className="text-red-500 text-sm">
@@ -190,15 +192,16 @@ const EditGuardianApplicationPersonalInfo = ({
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold mb-2">
-                        Guardian relationship<span className="text-red-500"></span>
+                      <label className="block text-sm font-medium mb-2">
+                        Guardian relationship
+                        <span className="text-red-500"></span>
                       </label>
                       <input
                         id="guardian_relationship"
                         type="text"
                         {...register("guardian_relationship")}
                         placeholder="e.g Father , Mother ,Uncle etc"
-                        className="w-full py-2 px-4 text-sm border font-light placeholder:text-sm rounded-md focus:outline-none"
+                        className="w-full py-2 px-4 text-sm bg-slate-50 border font-light placeholder:text-sm rounded-md focus:outline-none"
                       />
                       {errors.guardian_relationship && (
                         <p className="text-red-500 text-sm">
@@ -206,50 +209,31 @@ const EditGuardianApplicationPersonalInfo = ({
                         </p>
                       )}
                     </div>
-                    <div>
-                      <label className="block text-xs font-bold mb-2">
-                        Guardian Phone<span className="text-red-500"></span>
-                      </label>
-                      <input
-                        id="guardian_phone_number"
-                        type="text"
-                        {...register("guardian_phone_number")}
-                        placeholder="e.g 07xxxxxxxxx"
-                        className="w-full py-2 px-4 text-sm border font-light placeholder:text-sm rounded-md focus:outline-none"
-                      />
-                      {errors.guardian_phone_number && (
-                        <p className="text-red-500 text-sm">
-                          {errors.guardian_phone_number.message}
-                        </p>
-                      )}
-                    </div>
-
-                    
                   </div>
 
-                  <div className="sticky bottom-0 bg-white z-40 flex md:px-6 gap-4 md:justify-end items-center py-3">
-                    <button
-                      type="button"
-                      onClick={handleCloseModal}
-                      className="border border-gray-300 bg-white shadow-sm text-gray-700 py-2 text-sm px-4 rounded-md w-full min-w-[100px] md:w-auto hover:bg-gray-50"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting || isUpdating}
-                      className="bg-blue-500 text-white py-2 text-sm px-3 md:px-4 rounded-md w-full min-w-[100px] md:w-auto"
-                    >
-                      {isSubmitting || isUpdating ? (
-                        <span className="flex items-center">
-                          <SubmitSpinner />
-                          Updating
-                        </span>
-                      ) : (
-                        <span>Update</span>
-                      )}
-                    </button>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Guardian Phone<span className="text-red-500"></span>
+                    </label>
+                    <input
+                      id="guardian_phone_number"
+                      type="text"
+                      {...register("guardian_phone_number")}
+                      placeholder="e.g 07xxxxxxxxx"
+                      className="w-full py-2 px-4 text-sm bg-slate-50 border font-light placeholder:text-sm rounded-md focus:outline-none"
+                    />
+                    {errors.guardian_phone_number && (
+                      <p className="text-red-500 text-sm">
+                        {errors.guardian_phone_number.message}
+                      </p>
+                    )}
                   </div>
+
+                  <ModalBottomButton
+                    onCancel={handleCloseModal}
+                    isSubmitting={isSubmitting}
+                    isProcessing={isUpdating}
+                  />
                 </form>
               </>
             </div>

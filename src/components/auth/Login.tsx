@@ -9,10 +9,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import {
-  IoEyeOffOutline,
-  IoEyeOutline
-} from "react-icons/io5";
+import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { toast } from "react-toastify";
 import { z } from "zod";
 import SubmitSpinner from "../common/spinners/submitSpinner";
@@ -65,187 +62,63 @@ const Login = () => {
 
   return (
     <>
-      {/* {isRedirecting ? (
-        <>
-          <PageLoadingSpinner />
-        </>
-      ) : (
-        <div className="bg-[#F4F7FA] min-h-screen flex items-center 
-        w-full justify-center md:px-0 px-4 py-4 font-nunito">
-          <div className="bg-white rounded-sm shadow-lg -md w-full max-w-c-350 
-           overflow-hidden   flex flex-col md:flex-row">
-            <div className="p-5 w-full">
-              <div className="flex items-center md:items-start justify-center mb-4 ">
-                <Link href="/" className="cursor-pointer"></Link>
-                <div className="flex flex-col text-center">
-                  <h2 className="text-xl font-bold tracking-tight text-primary ">
-                    College Admin
-                  </h2>
-                 
-                </div>
-              </div>
-
-              <div>
-                
-                <div className="flex items-center py-3">
-                  <hr className="flex-grow border-gray-300" />
-                  <h3 className="px-4  text-center">Sign in</h3>
-                  <hr className="flex-grow border-gray-300" />
-                </div>
-                
-                <form
-                  onSubmit={handleSubmit(onSubmit)}
-                  className="flex flex-col gap-4"
-                >
-                  <div>
-                    <label
-                      htmlFor="username"
-                      className="text-base mb-2 block font-medium text-gray-700"
-                    >
-                      Username
-                    </label>
-                    <div className="relative">
-                      <span className="absolute px-3 inset-y-0 left-0 flex items-center text-gray-400">
-                        <BiUser size={20} />
-                      </span>
-                      <input
-                        id="username"
-                        className="w-full placeholder:capitalize px-10 py-2 border border-gray-300 focus:outline-none focus:border-blue-300 focus:bg-white text-base text-gray-900 rounded-md"
-                        type="text"
-                        {...register("username")}
-                        placeholder="Enter username"
-                      />
-                    </div>
-                    {errors.username && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {String(errors.username.message)}
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="text-base mb-2 block font-medium text-gray-700">
-                      Password
-                    </label>
-                    <div className="relative">
-                      <span className="absolute px-3 inset-y-0 left-0 flex items-center text-gray-400">
-                        <IoLockClosedOutline size={20} />
-                      </span>
-                      <input
-                        className="w-full placeholder:capitalize px-10 text-gray-500 py-2 border border-gray-300 focus:border-blue-300 focus:outline-none focus:bg-white text-base rounded-md"
-                        type={showPassword ? "text" : "password"}
-                        {...register("password")}
-                        placeholder="Enter password"
-                      />
-                    </div>
-                    {errors.password && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {String(errors.password.message)}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="flex items-center justify-between py-2">
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        className="w-4 h-4"
-                        onChange={() => setShowPassword(!showPassword)}
-                      />
-                      <span className="text-gray-700 text-sm md:text-md">
-                        Show Password
-                      </span>
-                    </div>
-                    <Link
-                      href="/forgot-password"
-                      className="text-primary cursor-pointer text-sm md:text-md"
-                    >
-                      <span>Forgot password?</span>
-                    </Link>
-                  </div>
-
-                  <button
-                    type="submit"
-                    className={`${
-                      isLoading ? "bg-primary  border" : "bg-primary"
-                    } text-lg font-medium py-2 rounded-lg w-full flex items-center justify-center opacity-90 hover:opacity-100 transition-opacity mt-2`}
-                  >
-                    {isLoading ? (
-                      <div className="flex justify-center items-center space-x-2 ">
-                        <SubmitSpinner />
-                        
-                      </div>
-                    ) : (
-                      <div className="flex items-center">
-                       
-                        <span className="text-sm text-white font-medium uppercase">
-                          Login
-                        </span>
-                      </div>
-                    )}
-                  </button>
-                </form>
-              </div>
-
-              <div className="mt-4 flex  items-center justify-center space-x-3">
-                <p className="text-gray-600">Don&apos;t have account?</p>
-                <Link
-                  href="/register"
-                  className="text-blue-600 cursor-pointer font-semibold"
-                >
-                  Register
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      )} */}
       {isRedirecting ? (
         <PageLoadingSpinner />
       ) : (
-        <div
-          className="min-h-screen bg-gradient-to-br from-primary-50 font-nunito via-white to-secondary-50 
-        flex items-center justify-center p-4 relative overflow-hidden"
-        >
-          {/* Background Pattern */}
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-0 left-0 w-72 h-72 bg-primary rounded-full mix-blend-multiply filter blur-xl -translate-x-1/2 -translate-y-1/2"></div>
-            <div className="absolute top-0 right-0 w-72 h-72 bg-secondary rounded-full mix-blend-multiply filter blur-xl translate-x-1/2 -translate-y-1/2"></div>
-            <div className="absolute bottom-0 left-1/2 w-72 h-72 bg-primary-300 rounded-full mix-blend-multiply filter blur-xl -translate-x-1/2 translate-y-1/2"></div>
-          </div>
+       <div className="min-h-screen flex items-center justify-center p-5 relative overflow-hidden bg-slate-100">
 
-          {/* Grid Pattern Overlay */}
-          <div className="absolute inset-0 opacity-5">
+  {/* <div className="absolute top-0 left-0 w-72 h-72 opacity-10 pointer-events-none">
+    <svg viewBox="0 0 100 100" className="w-full h-full">
+      <path
+        d="M10,50 C20,0 80,0 90,50 C80,100 20,100 10,50 Z"
+        stroke="gray"
+        strokeWidth="2"
+        fill="none"
+      />
+    </svg>
+  </div>
+
+ 
+  <div className="absolute bottom-0 right-0 w-72 h-72 opacity-10 pointer-events-none">
+    <svg viewBox="0 0 100 100" className="w-full h-full">
+      <path
+        d="M10,50 C20,0 80,0 90,50 C80,100 20,100 10,50 Z"
+        stroke="gray"
+        strokeWidth="2"
+        fill="none"
+        transform="rotate(180 50 50)"
+      />
+    </svg>
+  </div> */}
+          <div className="relative z-20  w-full max-w-c-350">
             <div
-              className="w-full h-full"
-              style={{
-                backgroundImage: `radial-gradient(circle at 1px 1px, rgba(0,0,0,0.15) 1px, transparent 0)`,
-                backgroundSize: "20px 20px",
-              }}
-            ></div>
-          </div>
-          <div className="relative w-full max-w-c-400">
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 p-6 relative">
-              <div className="text-center mb-6">
-                <div className="flex items-center justify-center space-x-3 mb-4">
-                  <div className="flex-shrink-0">
+              className="bg-white  rounded-2xl shadow-lg  
+            border border-white/20 p-6 px-3 relative"
+            >
+              <div className="text-center mb">
+                <div className="flex items-center justify-center  mb-2">
+                  <div className="w-[120px] h-[120px] flex-shrink-0 ">
                     <Image
-                      src="/logo/logo.png"
-                      alt="University Logo"
-                      width={40}
-                      height={40}
-                      className="w-15 h-15 object-contain"
+                      src="/logo/university_logo.png"
+                      alt="logo"
+                      width={100}
+                      height={100}
+                      className="object-cover h-full w-full"
                     />
                   </div>
-                  <div className="text-left">
+
+                  {/* <div className="text-left">
                     <h1 className="text-lg md:text-2xl  font-bold leading-tight uppercase">
-                      College ERP
+                      Kwamwatu
                     </h1>
-                  </div>
+                  </div> */}
                 </div>
               </div>
+              <h1 className="text-lg md:text-xl text-center  font-bold leading-tight uppercase">
+                Maweng College 
+              </h1>
 
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-4">
                 <div>
                   <label
                     htmlFor="username"
@@ -254,14 +127,11 @@ const Login = () => {
                     Username
                   </label>
                   <div className="relative">
-                    {/* <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <BiUser className="text-xl text-gray-400" />
-                    </div> */}
                     <input
                       id="username"
                       type="text"
                       {...register("username")}
-                      className="block w-full pl-6 pr-4 py-3 border border-gray-300 rounded-md text-sm
+                      className="block w-full px-4  py-2 border border-gray-300 rounded-md text-sm
                        placeholder-gray-500  focus:border-primary focus:outline-none
                         
                         backdrop-blur-sm transition-all duration-200 "
@@ -283,14 +153,11 @@ const Login = () => {
                     Password
                   </label>
                   <div className="relative">
-                    {/* <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <IoLockClosedOutline className="h-5 w-5 text-gray-400" />
-                    </div> */}
                     <input
                       id="password"
                       type={showPassword ? "text" : "password"}
                       {...register("password")}
-                      className="block w-full pl-6 px-4 py-3 border border-gray-400 rounded-md text-sm placeholder-gray-500 focus:outline-none  
+                      className="block w-full px-4 py-2 border border-gray-400 rounded-md text-sm placeholder-gray-500 focus:outline-none  
                         focus:border-primary  backdrop-blur-sm transition-all duration-200 hover:bg-white/80"
                       placeholder="Enter your password"
                     />
@@ -324,19 +191,19 @@ const Login = () => {
                       Remember me
                     </span>
                   </label>
-                  {/* <Link
-                    href="/forgot-password"
+                  <Link
+                    href="/reset-password-request"
                     className="text-primary hover:text-primary-700 font-semibold transition-colors"
                   >
                     Forgot password?
-                  </Link> */}
+                  </Link>
                 </div>
 
                 <button
                   type="submit"
                   disabled={isLoading}
                   className="w-full flex justify-center py-3 px-4 border 
-                  border-transparent rounded-xl shadow-lg text-sm font-semibold text-white bg-primary
+                  border-transparent rounded-xl shadow-sm text-sm font-semibold text-white bg-primary
                    hover:to-secondary-700 focus:outline-none focus:ring-2 focus:ring-offset-2
                     focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed
                      transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
@@ -351,24 +218,6 @@ const Login = () => {
                   )}
                 </button>
               </form>
-
-              <div className="mt-6 pt-4 border-t border-gray-200">
-                <p className="text-center text-sm text-gray-600">
-                  Don&apos;t have an account?{" "}
-                  <Link
-                    href="#"
-                    className="text-primary hover:text-primary-700 font-semibold transition-colors"
-                  >
-                    Contact Administrator
-                  </Link>
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-6 text-center">
-              <p className="text-xs text-gray-500">
-                © 2024 College Management System. All rights reserved.
-              </p>
             </div>
           </div>
         </div>

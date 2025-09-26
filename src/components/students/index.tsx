@@ -20,7 +20,6 @@ import { GoSearch } from "react-icons/go";
 import AdmitStudent from "./NewStudent";
 import StudentUploadButton from "./UploadStudents";
 
-
 export type DepartmentOption = {
   value: string;
   label: string;
@@ -52,34 +51,43 @@ const Students = () => {
     [currentPage, filters]
   );
 
-  
-  const { data:studentsData, isLoading, error, refetch } = useGetStudentsQuery(queryParams, {
+  const {
+    data: studentsData,
+    isLoading,
+    error,
+    refetch,
+  } = useGetStudentsQuery(queryParams, {
     refetchOnMountOrArgChange: true,
   });
-  console.log("studentsData", studentsData)
-  const { data:programmes } = useGetProgrammesQuery({}, {refetchOnMountOrArgChange: true,});
- 
-   console.log("programmes", programmes)
-const programmeOptions = programmes?.map((item:ProgrammeType) => ({
-    value: item.id, 
-    label: `${item.name}(${item.level})`,
-  })) || [];
+  console.log("studentsData", studentsData);
+  const { data: programmes } = useGetProgrammesQuery(
+    {},
+    { refetchOnMountOrArgChange: true }
+  );
 
-  
+  console.log("programmes", programmes);
+  const programmeOptions =
+    programmes?.map((item: ProgrammeType) => ({
+      value: item.id,
+      label: `${item.name}(${item.level})`,
+    })) || [];
 
- 
   const handleDepartmentChange = (selectedOption: DepartmentOption | null) => {
-      handleFilterChange({
-        // department: selectedOption ? selectedOption.value : "",
-        programme: selectedOption ? selectedOption.value : "",
-      });
-    };
- 
+    handleFilterChange({
+      // department: selectedOption ? selectedOption.value : "",
+      programme: selectedOption ? selectedOption.value : "",
+    });
+  };
+
   const columns: Column<StudentType>[] = [
     {
       header: "Name",
       accessor: "user",
-      cell: (item: StudentType) => <span>{item.user.first_name} {item.user.last_name}</span>,
+      cell: (item: StudentType) => (
+        <span>
+          {item.user.first_name} {item.user.last_name}
+        </span>
+      ),
     },
     {
       header: "REG NO",
@@ -113,30 +121,24 @@ const programmeOptions = programmes?.map((item:ProgrammeType) => ({
         </span>
       ),
     },
-   
 
-   
     {
       header: "Actions",
       accessor: "id",
       cell: (prog: StudentType) => (
         <div className="flex items-center justify-center space-x-2">
-         
-           <Link
+          <Link
             href={`/dashboard/students/${prog.id}`}
             className="flex items-center justify-center p-2 rounded-xl bg-indigo-100 text-indigo-600 hover:bg-indigo-500 hover:text-white transition duration-200 shadow-sm hover:shadow-md"
             title="View Event Details"
           >
             <FiEye className="text-sm" />
           </Link>
-         
-
-       
         </div>
       ),
     },
   ];
- 
+
   console.log("data", studentsData);
   return (
     <>
@@ -148,11 +150,9 @@ const programmeOptions = programmes?.map((item:ProgrammeType) => ({
               <AdmitStudent refetchData={refetch} />
             </div>
             <div>
- <StudentUploadButton refetchData={refetch} />
+              <StudentUploadButton refetchData={refetch} />
             </div>
-           
           </div>
-         
         </div>
 
         <div className="flex flex-col gap-4 mt-5 lg:gap-0 md:gap-0 lg:flex-row md:flex-row  md:items-center p-2 md:justify-between lg:items-center lg:justify-between">
@@ -168,15 +168,18 @@ const programmeOptions = programmes?.map((item:ProgrammeType) => ({
             />
           </div>
           <div className="flex flex-col gap-3  lg:p-0 lg:flex-row md:flex-row md:items-center md:space-x-2 lg:items-center lg:space-x-5">
-             <FilterSelect
-            options={programmeOptions}
-            value={programmeOptions.find(
-              (option:DepartmentOption) => option.value === filters.programme
-            ) || { value: "", label: "All Programmes" }}
-            onChange={handleDepartmentChange}
-            placeholder=""
-            defaultLabel="All Programmes"
-          />
+            <FilterSelect
+              options={programmeOptions}
+              value={
+                programmeOptions.find(
+                  (option: DepartmentOption) =>
+                    option.value === filters.programme
+                ) || { value: "", label: "All Programmes" }
+              }
+              onChange={handleDepartmentChange}
+              placeholder=""
+              defaultLabel="All Programmes"
+            />
           </div>
         </div>
         {isLoading ? (
@@ -206,8 +209,6 @@ const programmeOptions = programmes?.map((item:ProgrammeType) => ({
             onPageChange={handlePageChange}
           />
         )}
-
-     
       </div>
     </>
   );

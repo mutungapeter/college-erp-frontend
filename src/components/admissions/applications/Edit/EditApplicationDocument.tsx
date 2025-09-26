@@ -1,19 +1,20 @@
-import { useState, useRef, useEffect } from "react";
-import { FiEdit2, FiCheckCircle, FiX, FiEdit } from "react-icons/fi";
-import { PiSpinnerGap } from "react-icons/pi";
-import { toast } from "react-toastify";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Select from "react-select";
-import { useUpdateApplicationDocumentMutation } from "@/store/services/admissions/admissionsService";
+import IconButton from "@/components/common/IconButton";
+import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
+import { Application_document } from "@/definitions/admissions";
+import { handleApiError } from "@/lib/ApiError";
+import { ApplicationDocumentOptions } from "@/lib/constants";
 import {
   ApplicationDocumentUpdate,
   applicationDocumentUpdateSchema,
 } from "@/schemas/admissions/applicationDocuments";
-import { ApplicationDocumentOptions } from "@/lib/constants";
-import { Application_document } from "@/definitions/admissions";
+import { useUpdateApplicationDocumentMutation } from "@/store/services/admissions/admissionsService";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { FiCheckCircle, FiEdit, FiEdit2, FiX } from "react-icons/fi";
 import { IoCloseOutline } from "react-icons/io5";
-import { handleApiError } from "@/lib/ApiError";
+import Select from "react-select";
+import { toast } from "react-toastify";
 
 interface Props {
   currentDocument: Application_document;
@@ -168,12 +169,13 @@ const ApplicationDocumentUpdateButton = ({
 
   return (
     <>
-      <div
+      <IconButton
         onClick={openModal}
-        className="flex items-center space-x-2 md:p-2 p-1 text-amber-600 bg-amber-100 hover:bg-amber-700 hover:text-white rounded-md transition duration-300 shadow-sm cursor-pointer"
-      >
-        <FiEdit className="text-sm" />
-      </div>
+        title="Edit"
+        icon={<FiEdit className="w-4 h-4" />}
+        className="group relative p-2 bg-amber-100 text-amber-500 hover:bg-amber-600 hover:text-white focus:ring-amber-500"
+        tooltip="Edit"
+      />
       {isModalOpen && (
         <div
           className="relative z-9999 animate-fadeIn"
@@ -189,21 +191,24 @@ const ApplicationDocumentUpdateButton = ({
 
           <div
             className="fixed inset-0 min-h-full z-100 w-screen flex flex-col text-center md:items-center
-           justify-start overflow-y-auto p-2 md:p-3"
+           justify-center overflow-y-auto p-2 md:p-3"
           >
             <div
-              className="relative transform justify-center animate-fadeIn max-h-[90vh]
-                overflow-y-auto rounded-md bg-white text-left shadow-xl transition-all   
+              className="relative transform justify-center 
+              animate-fadeIn max-h-[90vh]
+                overflow-y-auto rounded-2xl bg-white text-left 
+                shadow-xl transition-all   
                 w-full sm:max-w-c-500 md:max-w-500 px-3"
             >
               <>
-                <div className="sticky top-0 bg-white z-40 flex  px-4 justify-between items-center py-3">
+                <div className="sticky top-0 bg-white z-40 flex  px-4 
+                justify-between items-center py-6">
                   <p className="text-sm md:text-lg lg:text-lg font-semibold">
                     Edit Application Document
                   </p>
                   <div className="flex justify-end cursor-pointer">
                     <IoCloseOutline
-                      size={30}
+                      size={20}
                       onClick={closeModal}
                       className="text-gray-500"
                     />
@@ -343,32 +348,11 @@ const ApplicationDocumentUpdateButton = ({
                     </div>
                   )}
 
-                  <div className="flex justify-end gap-3 py-2">
-                    <button
-                      type="button"
-                      onClick={closeModal}
-                      className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 font-medium"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting || isUpdating}
-                      className={`px-4 py-2 rounded-md text-white font-medium flex items-center gap-2
-                    ${
-                      isUpdating
-                        ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-amber-600 hover:bg-amber-700"
-                    }`}
-                    >
-                      {isUpdating ? (
-                        <PiSpinnerGap className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" />
-                      ) : (
-                        <FiEdit2 />
-                      )}
-                      Update
-                    </button>
-                  </div>
+                  <ModalBottomButton
+                                     onCancel={closeModal}
+                                     isSubmitting={isSubmitting}
+                                     isProcessing={isUpdating}
+                                   />
                 </form>
               </>
             </div>

@@ -6,21 +6,45 @@ import { useState } from "react";
 import Navbar from "../common/Header/Header";
 import Menu from "../common/Sidebar/Sidebar";
 import PageLoadingSpinner from "@/components/common/spinners/pageLoadingSpinner";
+import { usePermissions } from "@/hooks/getPermissions";
 
 export default function AdminDashboardLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true); 
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false); 
-  const { loading, user } = useAppSelector((state: RootState) => state.auth);
+  const { user, loading } = useAppSelector((state: RootState) => state.auth);
+    const { isLoadingPermissions, permissionsError, retryPermissions } = usePermissions();
 
+  // Show loading if auth is loading or permissions are loading
+  const isLoading = loading || isLoadingPermissions;
+
+  if (isLoading || !user) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <PageLoadingSpinner />
+      </div>
+    );
+  }
+  if (permissionsError) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <button
+          className="bg-red-500 text-white px-4 py-2 rounded"
+          onClick={retryPermissions}
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
   return (
     <>
-      {loading || !user ? (
+      {/* {loading || !user ? (
         <div className="flex justify-center items-center h-screen">
           <PageLoadingSpinner />
         </div>
-      ) : (
+      ) : ( */}
         <div className="flex h-screen w-full bg-[#F5F5F5] overflow-hidden">
       
           <Menu
@@ -43,8 +67,8 @@ export default function AdminDashboardLayout({
               isMobileSidebarOpen
                 ? "md:block"
                 : isSidebarOpen
-                ? "md:w-[83%] lg:w-[83%]" 
-                : "md:w-[94%] lg:w-[94%]" 
+                ? "md:w-[80%] lg:w-[80%]"
+                : "md:w-[94%] lg:w-[94%]"
             }`}
           >
            
@@ -61,7 +85,7 @@ export default function AdminDashboardLayout({
             </main>
           </div>
         </div>
-      )}
+      {/* )} */}
     </>
   );
 }

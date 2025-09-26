@@ -108,12 +108,12 @@ const ApplicationDetails = ({ application_id }: Props) => {
           {applicationDetails.status === "Incomplete" && (
          
              <div
-                className="bg-green-600 inline-flex cursor-pointer w-max 
-                items-center space-x-2 text-white px-2 py-2
-                 rounded-xl hover:bg-green-700 transition duration-300"
+                className="bg-primary inline-flex cursor-pointer w-max 
+                items-center space-x-2 text-white px-4 py-2
+                 rounded-md hover:bg-primary-700 transition duration-300"
                  onClick={openSubmitModal}
               >
-                <LuSend className="text-sm" />  
+                <LuSend className="w-4 h-4" />  
                 <span className="text-sm font-medium">Submit Application</span>  
               </div>
           )}
@@ -126,12 +126,12 @@ const ApplicationDetails = ({ application_id }: Props) => {
               className="flex flex-col md:flex-row md:items-center gap-4 w-full md:w-auto"
             >
               <div
-                className="bg-green-600 inline-flex cursor-pointer w-max 
-                items-center space-x-2 text-white px-2 py-2
-                 rounded-xl hover:bg-green-700 transition duration-300"
+                className="bg-primary inline-flex cursor-pointer w-max 
+                items-center space-x-2 text-white px-4 py-2
+                 rounded-md hover:bg-primary-700 transition duration-300"
                  onClick={openAcceptModal}
               >
-                <FiCheckCircle className="text-sm" />  
+                <FiCheckCircle className="text-lg text-white" />  
                 <span className="text-sm font-medium">Accept Applicant</span>  
               </div>
             </div>

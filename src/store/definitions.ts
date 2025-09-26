@@ -1,27 +1,3 @@
-// export type User = {
- 
-//     id: number;
-//     username: string;
-//     email: string;
-//     first_name: string;
-//     last_name: string;
-//     role: UserRole;
-   
-    
-//   };
-// export type UserRole={
-//     id: number;
-//     name: string;
-// }
-  
-//   export type AuthState = {
-//     accessToken: string | null;
-//     refreshToken: string | null;
-//     user: User | null;
-//     loading: boolean;
-//     error: string | null;
-//   };
-
   export type Module = {
   id: number;
   name: string;
@@ -38,6 +14,8 @@ export type RolePermission = {
   can_approve: boolean;
   can_export: boolean;
   can_print: boolean;
+  can_view_all:boolean;
+
 };
 
 export type UserRole = {
@@ -45,6 +23,8 @@ export type UserRole = {
   name: string;
   permissions: RolePermission[];
 };
+
+
 
 export type User = {
   id: number;
@@ -54,12 +34,4 @@ export type User = {
   last_name: string;
   phone_number?: string; 
   role: UserRole | null; 
-};
-
-export type AuthState = {
-  accessToken: string | null;
-  refreshToken: string | null;
-  user: User | null;
-  loading: boolean;
-  error: string | null;
 };

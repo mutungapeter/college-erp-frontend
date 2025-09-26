@@ -170,10 +170,7 @@ const Cohorts = () => {
           >
             <FiTrash2 className="text-sm" />
           </div>
-          {cohort.status === "Active" &&
-            cohort.current_semester.status === "Closed" && (
-              <PromoteCohort data={cohort} refetchData={refetch} />
-            )}
+          
         </div>
       ),
     },

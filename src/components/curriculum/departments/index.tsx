@@ -215,7 +215,7 @@ console.log("schools",schools)
               confirmationMessage="Are you sure you want to Delete this Department ?"
               deleteMessage="This action cannot be undone."
               title="Delete Department"
-              actionText="Delete Department"
+              actionText="Delete"
            />
       </div>
     </>

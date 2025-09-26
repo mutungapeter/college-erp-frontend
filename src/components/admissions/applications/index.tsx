@@ -118,21 +118,21 @@ console.log("applicationsData",applicationsData)
         <div className="flex items-center justify-center">
   <span
     className={`
-    px-2 py-1 rounded-md font-medium text-xs  ${
+    px-2 py-1 rounded-md border font-medium text-xs  ${
       item.status === "Under Review"
-        ? "bg-blue-100 text-blue-800"
+        ? "bg-blue-100 text-blue-500 border-blue-500"
         : item.status === "Declined"
-        ? "bg-red-100 text-red-800"
+        ? "bg-red-100 text-red-500 border-red-500"
         : item.status === "Info Requested"
-        ? "bg-amber-100 text-amber-800"
+        ? "bg-amber-100 text-amber-500 border-amber500"
         : item.status === "Accepted"
-        ? "bg-yellow-100 text-yellow-800"
+        ? "bg-yellow-100 text-yellow-500 border-yellow-500"
         : item.status === "Draft"
-        ? "bg-slate-100 text-slate-800"
+        ? "bg-slate-100 text-slate-500 border-slate-500"
         : item.status === "Enrolled"
-        ? "bg-green-600 text-white"
+        ? "bg-green-100 text-green-500 border-green-500 "
         : item.status === "Incomplete"
-        ? "bg-orange-100 text-orange-800"
+        ? "bg-orange-100 text-orange-500 border-orange-500"
         : "bg-gray-100 text-gray-800"
     }`}
   >
@@ -170,7 +170,10 @@ console.log("applicationsData",applicationsData)
       <div className="bg-white w-full  p-1 shadow-md rounded-lg font-nunito">
         <div className=" p-3  flex flex-col md:flex-row md:items-center lg:items-center md:gap-0 lg:gap-0 gap-4 lg:justify-between md:justify-between">
           <h2 className="font-semibold text-black text-xl">All Applications</h2>
-          <CreateApplication refetchData={refetch} />
+          <div>
+<CreateApplication refetchData={refetch} />
+          </div>
+          
          
         </div>
 

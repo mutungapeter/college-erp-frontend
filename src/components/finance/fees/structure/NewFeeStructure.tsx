@@ -123,7 +123,7 @@ const AddFeeStructure = ({ refetchData }: Props) => {
       <button
         onClick={handleOpenModal}
         title="Add Fee Item"
-        className="flex items-center space-x-2 p-2 bg-emerald-500 text-white rounded-md hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md"
+        className="flex items-center space-x-2 px-4 py-2 bg-emerald-500 text-white rounded-md hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md"
       >
         <FiPlus className="w-4 h-4" />
         <span>Add Fee Structure</span>

@@ -14,12 +14,16 @@ export default {
       nunitoSans: ['Nunito Sans', 'sans-serif'],
       pacifico: ['Pacifico', 'cursive'],
       roboto: ['Roboto', 'sans-serif'],
+      inter: ["Inter", "sans-serif"],      
+      montserrat: ["Montserrat", "sans-serif"], 
+      poppins: ["Poppins", "sans-serif"],   
+      firaCode: ["Fira Code", "monospace"],
     },
     extend: {
       colors: {
 
         primary: {
-          DEFAULT: "#059669", 
+          DEFAULT: "#17AE9E", 
           //  DEFAULT: "#0D99FF",
           50: "#ECFDF5",
           100: "#D1FAE5",

@@ -8,12 +8,13 @@ import Select from "react-select";
 import { z } from "zod";
 
 import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
 
 import { SemesterType } from "@/definitions/curiculum";
 import { SemesterNameOptions, SemesterStatusOptions } from "@/lib/constants";
 import { updateSemesterSchema } from "@/schemas/curriculum/semesters";
 import { useUpdateSemesterMutation } from "@/store/services/curriculum/semestersService";
+import IconButton from "@/components/common/IconButton";
+import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
 
 
 type SelectOption = {
@@ -127,12 +128,13 @@ const EditSemester = ({ data, refetchData }: EditSemesterProps) => {
 
   return (
     <>
-      <button
-        onClick={handleOpenModal}
-        className="text-blue-600 p-2 hover:text-blue-800 hover:rounded-xl rounded-full hover:bg-blue-100"
-      >
-        <FiEdit className="text-sm" />
-      </button>
+     <IconButton
+             onClick={handleOpenModal}
+             title="Edit"
+             icon={<FiEdit className="w-4 h-4" />}
+             className="group relative p-2 bg-amber-100 text-amber-500 hover:bg-amber-600 hover:text-white focus:ring-amber-500"
+             tooltip="Edit"
+           />
 
             {isOpen && (
         <div
@@ -163,7 +165,7 @@ const EditSemester = ({ data, refetchData }: EditSemesterProps) => {
                   </p>
                   <div className="flex justify-end cursor-pointer">
                     <IoCloseOutline
-                      size={30}
+                      size={20}
                       onClick={handleCloseModal}
                       className="text-gray-500"
                     />
@@ -291,29 +293,11 @@ const EditSemester = ({ data, refetchData }: EditSemesterProps) => {
                     )}
                   </div>
 
-                  <div className="sticky bottom-0 bg-white z-40 flex md:px-6 gap-4 md:justify-end items-center py-3">
-                    <button
-                      type="button"
-                      onClick={handleCloseModal}
-                      className="border border-gray-300 bg-white shadow-sm text-gray-700 py-2 text-sm px-4 rounded-md w-full min-w-[100px] md:w-auto hover:bg-gray-50"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting || isUpdating}
-                      className="bg-primary-600 text-white py-2 hover:bg-blue-700 text-sm px-3 md:px-4 rounded-md w-full min-w-[100px] md:w-auto"
-                    >
-                      {isSubmitting || isUpdating ? (
-                        <span className="flex items-center">
-                          <SubmitSpinner />
-                          <span>Updating...</span>
-                        </span>
-                      ) : (
-                        <span>Update</span>
-                      )}
-                    </button>
-                  </div>
+                  <ModalBottomButton
+                                     onCancel={handleCloseModal}
+                                     isSubmitting={isSubmitting}
+                                     isProcessing={isUpdating}
+                                   />
                 </form>
               </>
             </div>

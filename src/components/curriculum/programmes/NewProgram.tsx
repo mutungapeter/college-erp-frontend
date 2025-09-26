@@ -115,18 +115,14 @@ const AddProgramme = ({ refetchData }: { refetchData: () => void }) => {
 
   return (
     <>
-      <div
-        onClick={handleOpenModal}
-        className="flex flex-col md:flex-row md:items-center gap-4 w-full md:w-auto"
-      >
-        <div
-          className="bg-blue-600 inline-flex cursor-pointer w-max 
-         items-center space-x-2 text-white px-2 py-2 rounded-md hover:bg-blue-700 transition duration-300"
-        >
-          <FiPlus className="text-lg" />
-          <span className="text-xs font-medium">New Programme</span>
-        </div>
-      </div>
+        <button
+                  onClick={handleOpenModal}
+                  title="Add New"
+                  className="flex items-center space-x-2 px-4 py-2 bg-emerald-500 text-white rounded-md hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md"
+                >
+                  <FiPlus className="w-4 h-4" />
+                  <span>New Program</span>
+                </button>
 
       {isOpen && (
         <div
