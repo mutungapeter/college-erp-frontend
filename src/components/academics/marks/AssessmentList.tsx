@@ -86,7 +86,7 @@ const ExamAssessmentList = () => {
   const semesterOptions =
     semesters?.map((item: SemesterType) => ({
       value: item.id,
-      label: `${item.name}(${item.academic_year})`,
+      label: `${item.name}(${item.academic_year.name})`,
     })) || [];
   const coursesOptions =
     courses?.map((item: CourseType) => ({
@@ -96,7 +96,7 @@ const ExamAssessmentList = () => {
   const cohortsOptions =
     cohorts?.map((item: ProgrammeCohortType) => ({
       value: item.id,
-      label: `${item.name}(${item.current_year})`,
+      label: `${item.name}(${item.current_year.name})`,
     })) || [];
 
   console.log('error', error);
