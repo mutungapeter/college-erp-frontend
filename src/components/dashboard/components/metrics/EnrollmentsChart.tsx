@@ -103,7 +103,7 @@ export default function EnrollmentsBarChart() {
           <option value="">Filter by intake</option>
           {intakesData?.map((item: IntakeType) => (
             <option key={item.id} value={item.id}>
-              {item.name} {item.academic_year.name} 
+              {item?.name ?? ""} {item?.academic_year?.name ?? ""} 
             </option>
           ))}
         </select>

@@ -116,7 +116,7 @@ export default function FeeCollectionChart() {
           <option value="">Current Semester</option>
           {semestersData?.map((semester: SemesterType) => (
             <option key={semester.id} value={semester.id}>
-              {semester.name} - {semester.academic_year.name}
+              {semester?.name ?? ""} {semester?.academic_year?.name ?? ""}
             </option>
           ))}
         </select>
