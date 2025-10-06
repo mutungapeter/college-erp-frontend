@@ -3,6 +3,13 @@ import { z } from 'zod';
 export const CreateIntakeSchema = z
   .object({
     name: z.string().min(1, 'Intake name is required'),
+    academic_year: z.coerce
+        .number({
+          required_error: 'Academic Year is required',
+          invalid_type_error: 'Please select a Next Study Year',
+        })
+        .int()
+        .positive().nullable().optional(),
     start_date: z.string().min(1, 'Start date is required'),
     end_date: z.string().min(1, 'End date is required'),
     closed: z.boolean().default(false),
@@ -24,6 +31,13 @@ export const UpdateIntakeSchema = z
     name: z.string().min(1, 'Intake name is required'),
     start_date: z.string().nullable().optional(),
     end_date: z.string().nullable().optional(),
+    academic_year: z.coerce
+        .number({
+          required_error: 'Academic Year is required',
+          invalid_type_error: 'Please select a Next Study Year',
+        })
+        .int()
+        .positive().nullable().optional(),
     closed: z.boolean().optional(),
   })
   .refine(

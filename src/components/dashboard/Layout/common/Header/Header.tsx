@@ -37,7 +37,7 @@ const Navbar = ({
           <div className="flex items-center justify-center space-x-3 mb-4">
             <div className="flex-shrink-0">
               <Image
-                src="/logo/logo.png"
+            src="/logo/university_logo.png"
                 alt="University Logo"
                 width={40}
                 height={40}
@@ -46,7 +46,7 @@ const Navbar = ({
             </div>
             <div className="text-left">
               <h1 className="text-lg md:text-2xl  font-bold leading-tight uppercase">
-                College ERP
+                Maweng College
               </h1>
             </div>
           </div>

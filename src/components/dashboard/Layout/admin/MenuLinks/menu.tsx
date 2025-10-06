@@ -8,8 +8,7 @@ import { BiBuilding, BiReceipt } from 'react-icons/bi';
 import {
   BsBoxSeam,
   BsCalendarCheck,
-  BsClipboardData,
-  BsReceipt,
+  BsReceipt
 } from 'react-icons/bs';
 import { FaRegUser } from 'react-icons/fa';
 import { FiLayers } from 'react-icons/fi';
@@ -106,7 +105,7 @@ export const menuItems: MenuGroup[] = [
       },
       {
         code: 'intakes',
-        icon: <BsClipboardData />,
+        icon: <LuLayoutList />,
         label: 'Intakes',
         href: '/dashboard/curriculum/intakes',
       },
