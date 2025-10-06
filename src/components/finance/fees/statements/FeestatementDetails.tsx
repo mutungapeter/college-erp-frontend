@@ -24,6 +24,7 @@ import { useGetAcademicYearsQuery } from "@/store/services/curriculum/academicYe
 import { useGetCohortsQuery } from "@/store/services/curriculum/cohortsService";
 import { useGetFeeStamentsReportsQuery } from "@/store/services/finance/feesService";
 import { RootState } from "@/store/store";
+import { AcademicYearType } from "@/components/curriculum/acadmicyYears/types";
 const FeeStatementsDetails = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -122,7 +123,7 @@ const FeeStatementsDetails = () => {
       label: `${item.name} ${item.current_semester.academic_year.name}`,
     })) || [];
   const yearOptions =
-    yearsData?.map((item: ProgrammeCohortType) => ({
+    yearsData?.map((item: AcademicYearType) => ({
       value: item.id,
       label: `${item.name}`,
     })) || [];
@@ -273,9 +274,9 @@ const FeeStatementsDetails = () => {
             <FilterSelect
               options={yearOptions}
              value={
-                cohortsOptions.find(
+                yearOptions.find(
                   (option: LabelOptionsType) =>
-                    option.value === filters.cohort
+                    option.value === filters.academic_year
                 ) || { value: "", label: "Academic Year" }
               }
               onChange={handleAcademicYearChange}
