@@ -12,7 +12,6 @@ import { Controller, useForm } from 'react-hook-form';
 import { FiArrowLeft } from 'react-icons/fi';
 import { z } from 'zod';
 import { Permission } from './types';
-import { Module } from '@/store/definitions';
 
 // Permission fields array
 const PERMISSION_FIELDS = [
@@ -47,7 +46,18 @@ type PermissionsFormData = z.infer<typeof permissionsSchema>;
 interface Props {
   role_id: string | number | null;
 }
-
+export interface ModuleType {
+	module_id: number;
+	module_name: string;
+	can_view: boolean;
+	can_view_all: boolean;
+	can_create: boolean;
+	can_edit: boolean;
+	can_delete: boolean;
+	can_approve: boolean;
+	can_export: boolean;
+	can_print: boolean;
+}
 export default function RoleWithPermissionsDetails({ role_id }: Props) {
   const {
     data: role,
@@ -155,9 +165,9 @@ export default function RoleWithPermissionsDetails({ role_id }: Props) {
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-6 font-montserrat max-h-[80vh] overflow-y-auto"
       >
-        {role.permissions.map((module: Module, i: number) => (
-          <div key={module.id} className="border rounded p-3">
-            <h3 className="font-semibold">{module.name}</h3>
+        {role.permissions.map((module: ModuleType, i: number) => (
+          <div key={module.module_id} className="border rounded p-3">
+            <h3 className="font-semibold">{module.module_name}</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-2">
               {PERMISSION_FIELDS.map(({ key, label }) => (
                 <Controller
