@@ -1,6 +1,14 @@
 // CashflowPDFDocument.tsx
 import React from 'react';
-import { Document, Page, Text, View, StyleSheet, pdf, Image } from '@react-pdf/renderer';
+import {
+  Document,
+  Page,
+  Text,
+  View,
+  StyleSheet,
+  pdf,
+  Image,
+} from '@react-pdf/renderer';
 
 // Define types
 interface Transaction {
@@ -58,14 +66,14 @@ const styles = StyleSheet.create({
     borderBottomStyle: 'solid',
     paddingBottom: 10,
   },
-   logoSection: {
+  logoSection: {
     marginBottom: 15,
-    flexDirection: "column",
-    alignItems: "center",
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   logoContainer: {
-    flexDirection: "column",
-    alignItems: "center",
+    flexDirection: 'column',
+    alignItems: 'center',
     marginBottom: 10,
   },
   logo: {
@@ -74,33 +82,33 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   universityHeaderText: {
-    alignItems: "center",
+    alignItems: 'center',
   },
   universityName: {
     fontSize: 14,
-    fontWeight: "bold",
-    textAlign: "center",
+    fontWeight: 'bold',
+    textAlign: 'center',
     marginBottom: 3,
   },
   contactInfo: {
     fontSize: 8,
-    textAlign: "center",
+    textAlign: 'center',
     marginBottom: 2,
     lineHeight: 1.2,
   },
   officeTitle: {
     fontSize: 12,
-    fontWeight: "bold",
-    textAlign: "center",
+    fontWeight: 'bold',
+    textAlign: 'center',
     marginTop: 8,
     marginBottom: 3,
   },
   documentType: {
     fontSize: 14,
-    fontWeight: "bold",
-    textAlign: "center",
+    fontWeight: 'bold',
+    textAlign: 'center',
     marginBottom: 10,
-    marginTop:10,
+    marginTop: 10,
   },
   title: {
     fontSize: 24,
@@ -216,33 +224,39 @@ interface CashflowPDFDocumentProps {
   periodText: string;
 }
 
-const CashflowPDFDocument: React.FC<CashflowPDFDocumentProps> = ({ data,periodText }) => {
+const CashflowPDFDocument: React.FC<CashflowPDFDocumentProps> = ({
+  data,
+  periodText,
+}) => {
   const formatCurrency = (amount: string): string => {
     const num = parseFloat(amount);
     return `KES ${num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   };
-
-
 
   interface ActivitySectionProps {
     title: string;
     activityData: ActivityData;
   }
 
-  const ActivitySection: React.FC<ActivitySectionProps> = ({ title, activityData }) => (
+  const ActivitySection: React.FC<ActivitySectionProps> = ({
+    title,
+    activityData,
+  }) => (
     <View style={styles.section}>
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>{title} Activities</Text>
-        <Text style={[
-          styles.sectionAmount,
-          parseFloat(activityData.totals.net_cash_flow) >= 0 
-            ? styles.positiveAmount 
-            : styles.negativeAmount
-        ]}>
+        <Text
+          style={[
+            styles.sectionAmount,
+            parseFloat(activityData.totals.net_cash_flow) >= 0
+              ? styles.positiveAmount
+              : styles.negativeAmount,
+          ]}
+        >
           {formatCurrency(activityData.totals.net_cash_flow)}
         </Text>
       </View>
-      
+
       <View style={styles.totalsGrid}>
         <View style={styles.totalItem}>
           <Text style={styles.totalLabel}>Total Inflows:</Text>
@@ -258,12 +272,14 @@ const CashflowPDFDocument: React.FC<CashflowPDFDocumentProps> = ({ data,periodTe
         </View>
         <View style={styles.totalItem}>
           <Text style={styles.totalLabel}>Net {title}:</Text>
-          <Text style={[
-            styles.totalAmount,
-            parseFloat(activityData.totals.net_cash_flow) >= 0 
-              ? styles.positiveAmount 
-              : styles.negativeAmount
-          ]}>
+          <Text
+            style={[
+              styles.totalAmount,
+              parseFloat(activityData.totals.net_cash_flow) >= 0
+                ? styles.positiveAmount
+                : styles.negativeAmount,
+            ]}
+          >
             {formatCurrency(activityData.totals.net_cash_flow)}
           </Text>
         </View>
@@ -275,31 +291,31 @@ const CashflowPDFDocument: React.FC<CashflowPDFDocumentProps> = ({ data,periodTe
     <Document>
       <Page size="A4" style={styles.page}>
         {/* Header */}
-       <View style={styles.logoSection}>
-                 <View style={styles.logoContainer}>
-                  {/* eslint-disable-next-line jsx-a11y/alt-text */}
-                   <Image style={styles.logo} src="/logo/university_logo.png" />
-                   <View style={styles.universityHeaderText}>
-                     <Text style={styles.universityName}>
-                       Kathangaita University of Science and Technology
-                     </Text>
-                   </View>
-                 </View>
-                 <Text style={styles.contactInfo}>
-                   P.O. BOX. 190-50100 Kathangaita,
-                 </Text>
-                 <Text style={styles.contactInfo}>
-                   TEL: +057-250523646/3,0745535335, FAX: +056-30150
-                 </Text>
-                 <Text style={styles.contactInfo}>
-                   Email: info@kaust.ac.ke, web: www.kaust.ac.ke
-                 </Text>
-                 {/* <Text style={styles.officeTitle}>
+        <View style={styles.logoSection}>
+          <View style={styles.logoContainer}>
+            {/* eslint-disable-next-line jsx-a11y/alt-text */}
+            <Image style={styles.logo} src="/logo/university_logo.png" />
+            <View style={styles.universityHeaderText}>
+              <Text style={styles.universityName}>
+                Kathangaita University of Science and Technology
+              </Text>
+            </View>
+          </View>
+          <Text style={styles.contactInfo}>
+            P.O. BOX. 190-50100 Kathangaita,
+          </Text>
+          <Text style={styles.contactInfo}>
+            TEL: +057-250523646/3,0745535335, FAX: +056-30150
+          </Text>
+          <Text style={styles.contactInfo}>
+            Email: info@kaust.ac.ke, web: www.kaust.ac.ke
+          </Text>
+          {/* <Text style={styles.officeTitle}>
                              OFFICE OF THE REGISTRAR - ACADEMICS
                            </Text> */}
-                 <Text style={styles.documentType}>Income Statement</Text>
-                  <Text style={styles.subtitle}>{periodText}</Text>
-               </View>
+          <Text style={styles.documentType}>Income Statement</Text>
+          <Text style={styles.subtitle}>{periodText}</Text>
+        </View>
 
         {/* Activity Sections */}
         <ActivitySection title="Operating" activityData={data.Operating} />
@@ -311,7 +327,7 @@ const CashflowPDFDocument: React.FC<CashflowPDFDocumentProps> = ({ data,periodTe
           <View style={styles.summaryHeader}>
             <Text style={styles.summaryTitle}>Overview</Text>
           </View>
-          
+
           <View style={styles.summaryGrid}>
             <View style={styles.summaryRow}>
               <Text style={styles.summaryLabel}>
@@ -322,33 +338,35 @@ const CashflowPDFDocument: React.FC<CashflowPDFDocumentProps> = ({ data,periodTe
                 {formatCurrency(data.summary.opening_balance)}
               </Text>
             </View>
-            
+
             <View style={styles.summaryRow}>
               <Text style={styles.summaryLabel}>Gross Cash Inflow</Text>
               <Text style={[styles.summaryAmount, styles.positiveAmount]}>
                 {formatCurrency(data.summary.gross_inflows)}
               </Text>
             </View>
-            
+
             <View style={styles.summaryRow}>
               <Text style={styles.summaryLabel}>Gross Cash Outflow</Text>
               <Text style={[styles.summaryAmount, styles.negativeAmount]}>
                 {formatCurrency(data.summary.gross_outflows)}
               </Text>
             </View>
-            
+
             <View style={styles.summaryRow}>
               <Text style={styles.summaryLabel}>Net Cash Change</Text>
-              <Text style={[
-                styles.summaryAmount,
-                parseFloat(data.summary.net_cash_change) >= 0 
-                  ? styles.positiveAmount 
-                  : styles.negativeAmount
-              ]}>
+              <Text
+                style={[
+                  styles.summaryAmount,
+                  parseFloat(data.summary.net_cash_change) >= 0
+                    ? styles.positiveAmount
+                    : styles.negativeAmount,
+                ]}
+              >
                 {formatCurrency(data.summary.net_cash_change)}
               </Text>
             </View>
-            
+
             <View style={styles.summaryRowLast}>
               <Text style={styles.summaryLabel}>
                 Ending Balance{' '}
@@ -365,12 +383,14 @@ const CashflowPDFDocument: React.FC<CashflowPDFDocumentProps> = ({ data,periodTe
   );
 };
 
-
-export const exportCashflowToPDF = async (data: CashFlowData, periodText: string): Promise<void> => {
+export const exportCashflowToPDF = async (
+  data: CashFlowData,
+  periodText: string,
+): Promise<void> => {
   const doc = <CashflowPDFDocument data={data} periodText={periodText} />;
   const asPdf = pdf(doc);
   const blob = await asPdf.toBlob();
-  
+
   // Create download link
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');

@@ -1,22 +1,30 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FiPlus } from "react-icons/fi";
-import { IoCloseOutline } from "react-icons/io5";
-import { z } from "zod";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiPlus } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
+import { z } from 'zod';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import Select from "react-select";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import Select from 'react-select';
 
-import IconButton from "@/components/common/IconButton";
-import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
-import { DepartmentType, ProgrammeType, SchoolType } from "@/definitions/curiculum";
-import { unitSchema } from "@/schemas/curriculum/courses";
-import { useCreateCourseMutation } from "@/store/services/curriculum/coursesService";
-import { useGetDepartmentsQuery } from "@/store/services/curriculum/departmentsService";
-import { useGetProgrammesQuery } from "@/store/services/curriculum/programmesService";
-import { useGetSchoolsQuery } from "@/store/services/curriculum/schoolSService";
+import CreateAndUpdateButton from '@/components/common/CreateAndUpdateButton';
+import ModalBottomButton from '@/components/common/StickyModalFooterButtons';
+import {
+  DepartmentType,
+  ProgrammeType,
+  SchoolType,
+  SemesterType,
+  StudyYearType,
+} from '@/definitions/curiculum';
+import { unitSchema } from '@/schemas/curriculum/courses';
+import { useCreateCourseMutation } from '@/store/services/curriculum/coursesService';
+import { useGetDepartmentsQuery } from '@/store/services/curriculum/departmentsService';
+import { useGetProgrammesQuery } from '@/store/services/curriculum/programmesService';
+import { useGetSchoolsQuery } from '@/store/services/curriculum/schoolSService';
+import { useGetStudyYearsQuery } from '@/store/services/curriculum/academicYearsService';
+import { useGetSemestersQuery } from '@/store/services/curriculum/semestersService';
 type SchoolOption = {
   value: string;
   label: string;
@@ -27,14 +35,31 @@ const AddUnit = ({ refetchData }: { refetchData: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
 
   const [isError, setIsError] = useState(false);
 
   const [createCourse, { isLoading: isCreating }] = useCreateCourseMutation();
-  const { data: schoolsData, } = useGetSchoolsQuery({}, { refetchOnMountOrArgChange: true });
-const { data: departmentsData } = useGetDepartmentsQuery({}, { refetchOnMountOrArgChange: true });
-const { data: programmesData } = useGetProgrammesQuery({}, { refetchOnMountOrArgChange: true });
+  const { data: schoolsData } = useGetSchoolsQuery(
+    {},
+    { refetchOnMountOrArgChange: true },
+  );
+  const { data: departmentsData } = useGetDepartmentsQuery(
+    {},
+    { refetchOnMountOrArgChange: true },
+  );
+  const { data: programmesData } = useGetProgrammesQuery(
+    {},
+    { refetchOnMountOrArgChange: true },
+  );
+  const { data: studyYears } = useGetStudyYearsQuery(
+    {},
+    { refetchOnMountOrArgChange: true },
+  );
+  const { data: semesters } = useGetSemestersQuery(
+    {},
+    { refetchOnMountOrArgChange: true },
+  );
   const {
     register,
     handleSubmit,
@@ -44,16 +69,16 @@ const { data: programmesData } = useGetProgrammesQuery({}, { refetchOnMountOrArg
   } = useForm({
     resolver: zodResolver(unitSchema),
     defaultValues: {
-      name: "",
-      course_code: "",
+      name: '',
+      course_code: '',
       school: undefined,
       department: undefined,
       programme: undefined,
-     
+      semester: undefined,
     },
   });
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -65,47 +90,59 @@ const { data: programmesData } = useGetProgrammesQuery({}, { refetchOnMountOrArg
     setIsError(false);
     handleCloseModal();
   };
+  const handleStudyYearChange = (selected: SchoolOption | null) => {
+    if (selected) {
+      const itemId = Number(selected.value);
+      setValue('study_year', itemId);
+    }
+  };
+  const handleSemesterYearChange = (selected: SchoolOption | null) => {
+    if (selected) {
+      const itemId = Number(selected.value);
+      setValue('semester', itemId);
+    }
+  };
   const handleSchoolChange = (selected: SchoolOption | null) => {
     if (selected) {
       const schoolId = Number(selected.value);
-      setValue("school", schoolId);
+      setValue('school', schoolId);
     }
   };
   const handleDepartmentChange = (selected: SchoolOption | null) => {
     if (selected) {
       const departmentId = Number(selected.value);
-      setValue("department", departmentId);
+      setValue('department', departmentId);
     }
   };
   const handleProgrammeChange = (selected: SchoolOption | null) => {
     if (selected) {
       const programmeId = Number(selected.value);
-      setValue("programme", programmeId);
+      setValue('programme', programmeId);
     }
   };
- 
+
   const onSubmit = async (formData: FormValues) => {
-    console.log("submitting form data");
+    console.log('submitting form data');
 
     try {
       const response = await createCourse(formData).unwrap();
-      console.log("response", response);
+      console.log('response', response);
 
       setIsError(false);
-      setSuccessMessage("Course added successfully!");
+      setSuccessMessage('Course added successfully!');
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(`Failed to add Course: ${errorData.error}`);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occured. Please try again.");
+        setSuccessMessage('Unexpected error occured. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -113,7 +150,7 @@ const { data: programmesData } = useGetProgrammesQuery({}, { refetchOnMountOrArg
 
   return (
     <>
-      <IconButton
+      <CreateAndUpdateButton
         onClick={handleOpenModal}
         title="Add New"
         label="New Unit"
@@ -139,9 +176,9 @@ const { data: programmesData } = useGetProgrammesQuery({}, { refetchOnMountOrArg
            justify-center overflow-y-auto p-2 md:p-3"
           >
             <div
-              className="relative transform justify-center animate-fadeIn max-h-[90vh]
-                overflow-y-auto rounded-md  bg-white text-left shadow-xl transition-all   
-                w-full sm:max-w-c-500 md:max-w-500 px-3"
+              className="relative transform font-inter justify-center animate-fadeIn max-h-[90vh]
+                overflow-y-auto rounded-2xl  bg-white text-left shadow-xl transition-all   
+                w-full sm:max-w-c-550 md:max-w-550 px-3"
             >
               <>
                 <div className="sticky top-0 bg-white z-40 flex sm:px-6 px-4 justify-between items-center py-3 ">
@@ -168,7 +205,7 @@ const { data: programmesData } = useGetProgrammesQuery({}, { refetchOnMountOrArg
                     <input
                       id="name"
                       type="text"
-                      {...register("name")}
+                      {...register('name')}
                       placeholder="e.g Web programming "
                       className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                     />
@@ -194,16 +231,16 @@ const { data: programmesData } = useGetProgrammesQuery({}, { refetchOnMountOrArg
                           }),
                           control: (base) => ({
                             ...base,
-                            minHeight: "25px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
+                            minHeight: '25px',
+                            minWidth: '200px',
+                            borderColor: '#d1d5db',
+                            boxShadow: 'none',
+                            '&:hover': {
+                              borderColor: '#9ca3af',
                             },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
+                            '&:focus-within': {
+                              borderColor: '#9ca3af',
+                              boxShadow: 'none',
                             },
                           }),
                         }}
@@ -216,13 +253,15 @@ const { data: programmesData } = useGetProgrammesQuery({}, { refetchOnMountOrArg
                         </p>
                       )}
                     </div>
-<div>
+                    <div>
                       <label>Department</label>
                       <Select
-                        options={departmentsData?.map((depart: DepartmentType) => ({
-                          value: depart.id,
-                          label: depart.name,
-                        }))}
+                        options={departmentsData?.map(
+                          (depart: DepartmentType) => ({
+                            value: depart.id,
+                            label: depart.name,
+                          }),
+                        )}
                         menuPortalTarget={document.body}
                         menuPlacement="auto"
                         styles={{
@@ -232,16 +271,16 @@ const { data: programmesData } = useGetProgrammesQuery({}, { refetchOnMountOrArg
                           }),
                           control: (base) => ({
                             ...base,
-                            minHeight: "25px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
+                            minHeight: '25px',
+                            minWidth: '200px',
+                            borderColor: '#d1d5db',
+                            boxShadow: 'none',
+                            '&:hover': {
+                              borderColor: '#9ca3af',
                             },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
+                            '&:focus-within': {
+                              borderColor: '#9ca3af',
+                              boxShadow: 'none',
                             },
                           }),
                         }}
@@ -261,7 +300,7 @@ const { data: programmesData } = useGetProgrammesQuery({}, { refetchOnMountOrArg
                       <input
                         id="course_code"
                         type="text"
-                        {...register("course_code")}
+                        {...register('course_code')}
                         placeholder="e.g BIT"
                         className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                       />
@@ -271,8 +310,10 @@ const { data: programmesData } = useGetProgrammesQuery({}, { refetchOnMountOrArg
                         </p>
                       )}
                     </div>
-                   <div>
-                      <label>Course/Programme</label>
+                    <div>
+                      <label className="block space-x-1  text-sm font-medium mb-2">
+                        Course/Programme
+                      </label>
                       <Select
                         options={programmesData?.map((prog: ProgrammeType) => ({
                           value: prog.id,
@@ -287,16 +328,16 @@ const { data: programmesData } = useGetProgrammesQuery({}, { refetchOnMountOrArg
                           }),
                           control: (base) => ({
                             ...base,
-                            minHeight: "25px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
+                            minHeight: '25px',
+                            minWidth: '200px',
+                            borderColor: '#d1d5db',
+                            boxShadow: 'none',
+                            '&:hover': {
+                              borderColor: '#9ca3af',
                             },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
+                            '&:focus-within': {
+                              borderColor: '#9ca3af',
+                              boxShadow: 'none',
                             },
                           }),
                         }}
@@ -309,13 +350,117 @@ const { data: programmesData } = useGetProgrammesQuery({}, { refetchOnMountOrArg
                         </p>
                       )}
                     </div>
+                    <div className="relative">
+                      <label className="block space-x-1 text-sm font-medium mb-2">
+                        Study Year<span className="text-red-500">*</span>
+                      </label>
+                      <Select
+                        options={studyYears?.map((item: StudyYearType) => ({
+                          value: item.id,
+                          label: `${item.name}`,
+                        }))}
+                        menuPortalTarget={document.body}
+                        menuPlacement="auto"
+                        isClearable={true}
+                        isSearchable={true}
+                        styles={{
+                          menuPortal: (base) => ({
+                            ...base,
+                            zIndex: 9999,
+                          }),
+                          control: (base) => ({
+                            ...base,
+                            minHeight: '26px',
+                            minWidth: '200px',
+                            borderColor: '#d1d5db',
+                            boxShadow: 'none',
+                            cursor: 'pointer',
+                            '&:hover': {
+                              borderColor: '#9ca3af',
+                            },
+                            '&:focus-within': {
+                              borderColor: '#9ca3af',
+                              boxShadow: 'none',
+                            },
+                          }),
+                          menu: (base) => ({
+                            ...base,
+                            zIndex: 9999,
+                            cursor: 'pointer',
+                          }),
+                          option: (base) => ({
+                            ...base,
+                            cursor: 'pointer',
+                          }),
+                        }}
+                        onChange={handleStudyYearChange}
+                      />
+
+                      {errors.study_year && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.study_year.message}
+                        </p>
+                      )}
+                    </div>
+                    <div className="relative">
+                      <label className="block space-x-1 text-sm font-medium mb-2">
+                        Semeseter<span className="text-red-500"></span>
+                      </label>
+                      <Select
+                        options={semesters?.map((item: SemesterType) => ({
+                          value: item.id,
+                          label: `${item.name}`,
+                        }))}
+                        menuPortalTarget={document.body}
+                        menuPlacement="auto"
+                        isClearable={true}
+                        isSearchable={true}
+                        styles={{
+                          menuPortal: (base) => ({
+                            ...base,
+                            zIndex: 9999,
+                          }),
+                          control: (base) => ({
+                            ...base,
+                            minHeight: '26px',
+                            minWidth: '200px',
+                            borderColor: '#d1d5db',
+                            boxShadow: 'none',
+                            cursor: 'pointer',
+                            '&:hover': {
+                              borderColor: '#9ca3af',
+                            },
+                            '&:focus-within': {
+                              borderColor: '#9ca3af',
+                              boxShadow: 'none',
+                            },
+                          }),
+                          menu: (base) => ({
+                            ...base,
+                            zIndex: 9999,
+                            cursor: 'pointer',
+                          }),
+                          option: (base) => ({
+                            ...base,
+                            cursor: 'pointer',
+                          }),
+                        }}
+                        onChange={handleSemesterYearChange}
+                      />
+
+                      {errors.semester && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.semester.message}
+                        </p>
+                      )}
+                    </div>
                   </div>
 
                   <ModalBottomButton
-                                      onCancel={handleCloseModal}
-                                      isSubmitting={isSubmitting}
-                                      isProcessing={isCreating}
-                                    />
+                    onCancel={handleCloseModal}
+                    isSubmitting={isSubmitting}
+                    isProcessing={isCreating}
+                  />
                 </form>
               </>
             </div>

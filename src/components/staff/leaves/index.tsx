@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
-import Pagination from "@/components/common/Pagination";
+import Pagination from '@/components/common/Pagination';
 
-import { useFilters } from "@/hooks/useFilters";
+import { useFilters } from '@/hooks/useFilters';
 
-import DataTable, { Column } from "@/components/common/Table/DataTable";
-import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
+import DataTable, { Column } from '@/components/common/Table/DataTable';
+import ContentSpinner from '@/components/common/spinners/dataLoadingSpinner';
 
-import FilterSelect from "@/components/common/Select";
-import { LabelOptionsType } from "@/definitions/Labels/labelOptionsType";
-import { DepartmentType } from "@/definitions/curiculum";
-import { LeaveType } from "@/definitions/leaves";
-import { PAGE_SIZE } from "@/lib/constants";
-import { useGetDepartmentsQuery } from "@/store/services/curriculum/departmentsService";
-import { useGetLeavesQuery } from "@/store/services/staff/leaveService";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
-import { GoSearch } from "react-icons/go";
+import FilterSelect from '@/components/common/Select';
+import { LabelOptionsType } from '@/definitions/Labels/labelOptionsType';
+import { DepartmentType } from '@/definitions/curiculum';
+import { LeaveType } from '@/definitions/leaves';
+import { PAGE_SIZE } from '@/lib/constants';
+import { useGetDepartmentsQuery } from '@/store/services/curriculum/departmentsService';
+import { useGetLeavesQuery } from '@/store/services/staff/leaveService';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMemo } from 'react';
+import { GoSearch } from 'react-icons/go';
 
 const Leaves = () => {
   const router = useRouter();
@@ -24,14 +24,14 @@ const Leaves = () => {
   const { filters, currentPage, handleFilterChange, handlePageChange } =
     useFilters({
       initialFilters: {
-        search: searchParams.get("search") || "",
-        department: searchParams.get("department") || "",
-        status: searchParams.get("status") || "",
+        search: searchParams.get('search') || '',
+        department: searchParams.get('department') || '',
+        status: searchParams.get('status') || '',
       },
-      initialPage: parseInt(searchParams.get("page") || "1", 10),
+      initialPage: parseInt(searchParams.get('page') || '1', 10),
       router,
       debounceTime: 100,
-      debouncedFields: ["search"],
+      debouncedFields: ['search'],
     });
 
   const queryParams = useMemo(
@@ -40,9 +40,9 @@ const Leaves = () => {
       page_size: PAGE_SIZE,
       ...filters,
     }),
-    [currentPage, filters]
+    [currentPage, filters],
   );
-  console.log("queryParams", queryParams);
+  console.log('queryParams', queryParams);
 
   const {
     data: leavesData,
@@ -52,14 +52,14 @@ const Leaves = () => {
     refetchOnMountOrArgChange: true,
   });
 
-  console.log("leavesData", leavesData);
+  console.log('leavesData', leavesData);
 
   const { data: departmentsData } = useGetDepartmentsQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
 
-  console.log("departmentsData", departmentsData);
+  console.log('departmentsData', departmentsData);
   const departmentOptions =
     departmentsData?.map((item: DepartmentType) => ({
       value: item.id,
@@ -67,7 +67,7 @@ const Leaves = () => {
     })) || [];
 
   const handleIntakeChange = (selectedOption: LabelOptionsType | null) => {
-    const departmentValue = selectedOption ? selectedOption.value : "";
+    const departmentValue = selectedOption ? selectedOption.value : '';
     handleFilterChange({
       department: departmentValue,
     });
@@ -75,35 +75,38 @@ const Leaves = () => {
 
   const columns: Column<LeaveType>[] = [
     {
-      header: "Name",
-      accessor: "application",
+      header: 'Name',
+      accessor: 'application',
       cell: (item: LeaveType) => (
         <span>
-          {item.application.staff.user.first_name} {item.application.staff.user.last_name}(
+          {item.application.staff.user.first_name}{' '}
+          {item.application.staff.user.last_name}(
           {item.application.staff.staff_number})
         </span>
       ),
     },
 
     {
-      header: "Type",
-      accessor: "application",
+      header: 'Type',
+      accessor: 'application',
       cell: (item: LeaveType) => (
         <span className="text-sm">{item.application.leave_type}</span>
       ),
     },
     {
-      header: "Reason",
-      accessor: "application",
+      header: 'Reason',
+      accessor: 'application',
       cell: (item: LeaveType) => (
         <span>
-          <span className="text-sm whitespace-normal break-words">{item.application.reason}</span>
+          <span className="text-sm whitespace-normal break-words">
+            {item.application.reason}
+          </span>
         </span>
       ),
     },
     {
-      header: "Duration",
-      accessor: "application",
+      header: 'Duration',
+      accessor: 'application',
       cell: (item: LeaveType) => (
         <span>
           <span className="text-sm">
@@ -113,25 +116,22 @@ const Leaves = () => {
       ),
     },
 
-   
-   
-
     {
-      header: "Application Status",
-      accessor: "status",
+      header: 'Application Status',
+      accessor: 'status',
       cell: (item: LeaveType) => (
         <div className="text-center">
           <span
             className={`
           "text-sm font-semibold justify-center w-fit flex px-2 py-1 rounded-md text-center"
             ${
-              item.status === "Active"
-                ? "text-green-500 bg-green-100"
-                : item.status === "Pending"
-                ? "text-yellow-500 bg-yellow-100"
-                : item.status === "Cancelled"
-                ? "text-red-500 bg-red-100"
-                : "text-white bg-gray-500"
+              item.status === 'Active'
+                ? 'text-green-500 bg-green-100'
+                : item.status === 'Pending'
+                  ? 'text-yellow-500 bg-yellow-100'
+                  : item.status === 'Cancelled'
+                    ? 'text-red-500 bg-red-100'
+                    : 'text-white bg-gray-500'
             }
             `}
           >
@@ -140,21 +140,15 @@ const Leaves = () => {
         </div>
       ),
     },
-
-    
   ];
 
-  console.log("leavesData", leavesData);
+  console.log('leavesData', leavesData);
   return (
     <>
       <div className="bg-white w-full  p-1 shadow-md rounded-lg font-nunito">
         <div className=" p-3  flex flex-col md:flex-row md:items-center lg:items-center md:gap-0 lg:gap-0 gap-4 lg:justify-between md:justify-between">
-          <h2 className="font-semibold text-black text-xl">
-            Approved Leaves
-          </h2>
-          <div>
-            
-          </div>
+          <h2 className="font-semibold text-black text-xl">Approved Leaves</h2>
+          <div></div>
         </div>
 
         <div className="flex flex-col gap-4 mt-5 lg:gap-0 md:gap-0 lg:flex-row md:flex-row space-x-4  md:items-center p-2 md:justify-between lg:items-center lg:justify-between">
@@ -176,8 +170,8 @@ const Leaves = () => {
               value={
                 departmentOptions.find(
                   (option: LabelOptionsType) =>
-                    option.value === filters.department
-                ) || { value: "", label: "All Departments" }
+                    option.value === filters.department,
+                ) || { value: '', label: 'All Departments' }
               }
               onChange={handleIntakeChange}
               placeholder=""

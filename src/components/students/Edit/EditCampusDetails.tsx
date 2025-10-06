@@ -1,22 +1,21 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FiEdit } from "react-icons/fi";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiEdit } from 'react-icons/fi';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
-import { StudentDetailsType } from "@/definitions/students";
-import { updateCampusSchema } from "@/schemas/students/main";
-import { useUpdateStudentMutation } from "@/store/services/students/studentsService";
-import { IoCloseOutline, IoInformationCircleOutline } from "react-icons/io5";
-import { z } from "zod";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import { StudentDetailsType } from '@/definitions/students';
+import { updateCampusSchema } from '@/schemas/students/main';
+import { useUpdateStudentMutation } from '@/store/services/students/studentsService';
+import { IoCloseOutline, IoInformationCircleOutline } from 'react-icons/io5';
+import { z } from 'zod';
 
-import { CampusType } from "@/definitions/curiculum";
-import { useGetCampusesQuery } from "@/store/services/curriculum/campusService";
-import Select, { SingleValue } from "react-select";
-import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
-import IconButton from "@/components/common/IconButton";
+import CreateAndUpdateButton from '@/components/common/CreateAndUpdateButton';
+import ModalBottomButton from '@/components/common/StickyModalFooterButtons';
+import { CampusType } from '@/definitions/curiculum';
+import { useGetCampusesQuery } from '@/store/services/curriculum/campusService';
+import Select, { SingleValue } from 'react-select';
 
 type CampusSelection = {
   value: number | undefined;
@@ -33,14 +32,14 @@ const EditCampusDetails = ({
   const [isOpen, setIsOpen] = useState(false);
   const [isExpandedNote, setIsExpandedNote] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
 
   const [isError, setIsError] = useState(false);
 
   const [updateStudent, { isLoading: isUpdating }] = useUpdateStudentMutation();
   const { data: campusData } = useGetCampusesQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
   type FormValues = z.infer<typeof updateCampusSchema>;
   const {
@@ -56,12 +55,12 @@ const EditCampusDetails = ({
   const handleCampusChange = (selected: SingleValue<CampusSelection>) => {
     if (selected) {
       const campusId = Number(selected.value);
-      setValue("campus", campusId);
+      setValue('campus', campusId);
     }
   };
   const toggleNoteExpansion = () => setIsExpandedNote(!isExpandedNote);
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -77,31 +76,31 @@ const EditCampusDetails = ({
   };
 
   const onSubmit = async (formData: FormValues) => {
-    console.log("submitting form data for update", formData);
-    console.log("data", formData);
+    console.log('submitting form data for update', formData);
+    console.log('data', formData);
     try {
       const response = await updateStudent({
         id: data?.id,
         data: formData,
       }).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Student  Academic details updated successfully!");
+      setSuccessMessage('Student  Academic details updated successfully!');
       setShowSuccessModal(true);
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      console.log('error', error);
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
-        console.log("errorData", errorData);
+        console.log('errorData', errorData);
         setIsError(true);
         setSuccessMessage(
-          "An error occured while updating Student Academic details.Please try again!."
+          'An error occured while updating Student Academic details.Please try again!.',
         );
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occured. Please try again.");
+        setSuccessMessage('Unexpected error occured. Please try again.');
         setShowSuccessModal(true);
       }
     } finally {
@@ -111,7 +110,7 @@ const EditCampusDetails = ({
 
   return (
     <>
-      <IconButton
+      <CreateAndUpdateButton
         onClick={handleOpenModal}
         title="Edit"
         icon={<FiEdit className="w-4 h-4" />}
@@ -159,7 +158,7 @@ const EditCampusDetails = ({
                 <div className="px-4 sm:px-6 pt-4">
                   <div
                     className={`rounded-md bg-blue-50 border border-blue-200 transition-all ${
-                      isExpandedNote ? "mb-4" : "mb-2"
+                      isExpandedNote ? 'mb-4' : 'mb-2'
                     }`}
                   >
                     <div className="flex p-3">
@@ -180,7 +179,7 @@ const EditCampusDetails = ({
                             onClick={toggleNoteExpansion}
                             className="ml-3 flex-shrink-0 text-blue-500 hover:text-blue-600 text-xs underline"
                           >
-                            {isExpandedNote ? "Show less" : "Show more"}
+                            {isExpandedNote ? 'Show less' : 'Show more'}
                           </button>
                         </div>
 
@@ -237,16 +236,16 @@ const EditCampusDetails = ({
                           }),
                           control: (base) => ({
                             ...base,
-                            minHeight: "44px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
+                            minHeight: '44px',
+                            minWidth: '200px',
+                            borderColor: '#d1d5db',
+                            boxShadow: 'none',
+                            '&:hover': {
+                              borderColor: '#9ca3af',
                             },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
+                            '&:focus-within': {
+                              borderColor: '#9ca3af',
+                              boxShadow: 'none',
                             },
                           }),
                         }}

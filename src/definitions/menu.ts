@@ -1,17 +1,13 @@
-import { JSX } from "react";
-
-
+import { JSX } from 'react';
 
 export interface MenuGroup {
-    title?: string;
-    items: MenuItem[];
-  }
+  title?: string;
+  items: MenuItem[];
+}
 export type MenuItem = {
   label: string;
   icon?: JSX.Element;
-  code?:string;
+  code?: string;
   href?: string;
   children?: { label: string; href: string }[];
 };
-
-

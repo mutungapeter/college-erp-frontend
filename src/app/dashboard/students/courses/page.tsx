@@ -1,8 +1,4 @@
-const MyCoursesPage=()=>{
-    return (
-        <>
-        
-        </>
-    )
-}
-export default MyCoursesPage
+const MyCoursesPage = () => {
+  return <></>;
+};
+export default MyCoursesPage;

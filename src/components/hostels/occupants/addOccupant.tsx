@@ -1,25 +1,23 @@
-"use client";
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { IoCloseOutline } from "react-icons/io5";
-import { TbCalendarUser } from "react-icons/tb";
+'use client';
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { IoCloseOutline } from 'react-icons/io5';
+import { TbCalendarUser } from 'react-icons/tb';
 
-import { HostelRoomsType } from "@/definitions/hostels";
-import { LabelOptionsType } from "@/definitions/Labels/labelOptionsType";
-import { StudentDetailsType } from "@/definitions/students";
+import { HostelRoomsType } from '@/definitions/hostels';
+import { LabelOptionsType } from '@/definitions/Labels/labelOptionsType';
+import { StudentDetailsType } from '@/definitions/students';
 import {
   addRoomOccupantSchema,
-  AddRoomOccupantTye
-} from "@/schemas/hostels/main";
-import {
-  useAddHostelRoomOccupantMutation
-} from "@/store/services/hostels/hostelService";
-import { useGetStudentsQuery } from "@/store/services/students/studentsService";
+  AddRoomOccupantTye,
+} from '@/schemas/hostels/main';
+import { useAddHostelRoomOccupantMutation } from '@/store/services/hostels/hostelService';
+import { useGetStudentsQuery } from '@/store/services/students/studentsService';
 
-import Select from "react-select";
+import Select from 'react-select';
 interface Props {
   data: HostelRoomsType;
   refetchData: () => void;
@@ -27,14 +25,17 @@ interface Props {
 const AddOccuppant = ({ refetchData, data }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
   const [addHostelRoomOccupant, { isLoading: isCreating }] =
     useAddHostelRoomOccupantMutation();
-    const { data: studentsData } = useGetStudentsQuery({}, { refetchOnMountOrArgChange: true });
-    
-  console.log("data", data);
+  const { data: studentsData } = useGetStudentsQuery(
+    {},
+    { refetchOnMountOrArgChange: true },
+  );
+
+  console.log('data', data);
   const {
     handleSubmit,
     reset,
@@ -48,7 +49,7 @@ const AddOccuppant = ({ refetchData, data }: Props) => {
   });
 
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -57,10 +58,10 @@ const AddOccuppant = ({ refetchData, data }: Props) => {
   };
 
   const handleOpenModal = () => setIsOpen(true);
-const handleStudentChange = (selected: LabelOptionsType | null) => {
+  const handleStudentChange = (selected: LabelOptionsType | null) => {
     if (selected) {
       const studentId = Number(selected.value);
-      setValue("student", studentId);
+      setValue('student', studentId);
     }
   };
   const handleCloseSuccessModal = () => {
@@ -70,30 +71,31 @@ const handleStudentChange = (selected: LabelOptionsType | null) => {
   };
 
   const onSubmit = async (formData: AddRoomOccupantTye) => {
-    console.log("submitting form data", formData);
+    console.log('submitting form data', formData);
     const submissionData = {
-    
       hostel_room: data.id,
       ...formData,
     };
     try {
       const response = await addHostelRoomOccupant(submissionData).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Occupant   added successfully to the given room!");
+      setSuccessMessage('Occupant   added successfully to the given room!');
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
-        setSuccessMessage(`Failed to add  occupant to the given  Room: ${errorData.error}`);
+        setSuccessMessage(
+          `Failed to add  occupant to the given  Room: ${errorData.error}`,
+        );
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occurred. Please try again.");
+        setSuccessMessage('Unexpected error occurred. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -162,8 +164,6 @@ const handleStudentChange = (selected: LabelOptionsType | null) => {
                       />
                     </div>
 
-                    
-
                     <div>
                       <label className="block text-sm font-medium text-gray-700">
                         Hostels Gender
@@ -175,7 +175,6 @@ const handleStudentChange = (selected: LabelOptionsType | null) => {
                         className="w-full py-2 px-4 border bg-gray-200 placeholder:text-sm rounded-md focus:outline-none"
                       />
                     </div>
-                   
                   </div>
                 </div>
                 <form
@@ -183,45 +182,45 @@ const handleStudentChange = (selected: LabelOptionsType | null) => {
                   className="space-y-2 mt-2 p-4 "
                 >
                   <div>
-
-                      <label>Student/Occupant</label>
-                      <Select
-                        options={studentsData?.map((item: StudentDetailsType) => ({
+                    <label>Student/Occupant</label>
+                    <Select
+                      options={studentsData?.map(
+                        (item: StudentDetailsType) => ({
                           value: item.id,
-                          label: `${item.user.first_name + " " + item.user.last_name} -  ${item.registration_number})`,
-                        }))}
-                        menuPortalTarget={document.body}
-                        menuPlacement="auto"
-
-                        styles={{
-                          menuPortal: (base) => ({
-                            ...base,
-                            zIndex: 9999,
-                          }),
-                          control: (base) => ({
-                            ...base,
-                            minHeight: "24px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
-                            },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
-                            },
-                          }),
-                        }}
-                        onChange={handleStudentChange}
-                      />
-
-                      {errors.student && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {errors.student.message}
-                        </p>
+                          label: `${item.user.first_name + ' ' + item.user.last_name} -  ${item.registration_number})`,
+                        }),
                       )}
-  </div>
+                      menuPortalTarget={document.body}
+                      menuPlacement="auto"
+                      styles={{
+                        menuPortal: (base) => ({
+                          ...base,
+                          zIndex: 9999,
+                        }),
+                        control: (base) => ({
+                          ...base,
+                          minHeight: '24px',
+                          minWidth: '200px',
+                          borderColor: '#d1d5db',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: '#9ca3af',
+                          },
+                          '&:focus-within': {
+                            borderColor: '#9ca3af',
+                            boxShadow: 'none',
+                          },
+                        }),
+                      }}
+                      onChange={handleStudentChange}
+                    />
+
+                    {errors.student && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.student.message}
+                      </p>
+                    )}
+                  </div>
                   <div className="sticky bottom-0 bg-white z-40 flex space-x-3 gap-4 md:justify-end items-center py-3">
                     <button
                       type="button"

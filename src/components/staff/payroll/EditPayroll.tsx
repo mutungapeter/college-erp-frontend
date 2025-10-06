@@ -1,17 +1,15 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { IoCloseOutline } from "react-icons/io5";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { IoCloseOutline } from 'react-icons/io5';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
-import { PayrollType } from "@/definitions/payroll";
-import { payrollUpdateSchema, PayrollUpdateType } from "@/schemas/staff/main";
-import { useUpdateStaffToPayrollMutation } from "@/store/services/staff/staffService";
-import { FiEdit } from "react-icons/fi";
-
-
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
+import { PayrollType } from '@/definitions/payroll';
+import { payrollUpdateSchema, PayrollUpdateType } from '@/schemas/staff/main';
+import { useUpdateStaffToPayrollMutation } from '@/store/services/staff/staffService';
+import { FiEdit } from 'react-icons/fi';
 
 interface Props {
   refetchData: () => void;
@@ -19,13 +17,14 @@ interface Props {
 }
 
 const UpdateStaffPayroll = ({ refetchData, data }: Props) => {
-    console.log("data", data)
+  console.log('data', data);
   const [isOpen, setIsOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
-  const [updateStaffPayroll, { isLoading: isCreating }] = useUpdateStaffToPayrollMutation();
+  const [updateStaffPayroll, { isLoading: isCreating }] =
+    useUpdateStaffToPayrollMutation();
 
   const {
     register,
@@ -35,23 +34,21 @@ const UpdateStaffPayroll = ({ refetchData, data }: Props) => {
   } = useForm<PayrollUpdateType>({
     resolver: zodResolver(payrollUpdateSchema),
     defaultValues: {
-       basic_salary: Number(data?.basic_salary ?? 0),
-       house_allowance: Number(data?.house_allowance ?? 0),
-       transport_allowance: Number(data?.transport_allowance ?? 0),
-       other_allowances: Number(data?.other_allowances ?? 0),
-       nssf_number: data?.nssf_number ?? "",
-       nhif_number: data?.nhif_number ?? "",
-       kra_pin: data?.kra_pin ?? "",
-       bank_name: data?.bank_name ?? "",
-       bank_account_number: data?.bank_account_number ?? "",
-       mpesa_number: data?.mpesa_number ?? "",
-
-
+      basic_salary: Number(data?.basic_salary ?? 0),
+      house_allowance: Number(data?.house_allowance ?? 0),
+      transport_allowance: Number(data?.transport_allowance ?? 0),
+      other_allowances: Number(data?.other_allowances ?? 0),
+      nssf_number: data?.nssf_number ?? '',
+      nhif_number: data?.nhif_number ?? '',
+      kra_pin: data?.kra_pin ?? '',
+      bank_name: data?.bank_name ?? '',
+      bank_account_number: data?.bank_account_number ?? '',
+      mpesa_number: data?.mpesa_number ?? '',
     },
   });
 
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -68,32 +65,35 @@ const UpdateStaffPayroll = ({ refetchData, data }: Props) => {
   };
 
   const onSubmit = async (formData: PayrollUpdateType) => {
-    console.log("submitting form data", formData);
+    console.log('submitting form data', formData);
     const submissionData = {
-        id:data.id,
-         ...formData };
-         console.log("submissionData", submissionData);
+      id: data.id,
+      ...formData,
+    };
+    console.log('submissionData', submissionData);
     try {
       const response = await updateStaffPayroll({
         id: data.id,
-        data: formData
+        data: formData,
       }).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Staff payroll  updated  successfully!");
+      setSuccessMessage('Staff payroll  updated  successfully!');
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
-        setSuccessMessage(`${errorData.error}` || "Failed to update staff payroll");
+        setSuccessMessage(
+          `${errorData.error}` || 'Failed to update staff payroll',
+        );
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occurred. Please try again.");
+        setSuccessMessage('Unexpected error occurred. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -101,16 +101,12 @@ const UpdateStaffPayroll = ({ refetchData, data }: Props) => {
 
   return (
     <>
-      <div
-        onClick={handleOpenModal}
-        className=" "
-      >
+      <div onClick={handleOpenModal} className=" ">
         <div
           className="hover:bg-blue-200 inline-flex w-fit cursor-pointer
          items-center  text-white px-2 py-2 rounded-xl  shadow-sm hover:text-blue-700 transition duration-300"
         >
           <FiEdit className="text-sm text-blue-600" />
-          
         </div>
       </div>
 
@@ -139,7 +135,7 @@ const UpdateStaffPayroll = ({ refetchData, data }: Props) => {
               <>
                 <div className="sticky top-0 bg-white z-40 flex  px-4 justify-between items-center py-3">
                   <p className="text-sm md:text-lg lg:text-lg font-semibold">
-                    Edit  Staff Payroll Configuration
+                    Edit Staff Payroll Configuration
                   </p>
                   <div className="flex justify-end cursor-pointer">
                     <IoCloseOutline
@@ -164,7 +160,7 @@ const UpdateStaffPayroll = ({ refetchData, data }: Props) => {
                           type="number"
                           className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                           placeholder="Ksh 0"
-                          {...register("basic_salary")}
+                          {...register('basic_salary')}
                         />
                         {errors.basic_salary && (
                           <p className="text-red-500 text-sm mt-1">
@@ -182,7 +178,7 @@ const UpdateStaffPayroll = ({ refetchData, data }: Props) => {
                           type="number"
                           className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                           placeholder="e.g Ksh 5000 "
-                          {...register("house_allowance")}
+                          {...register('house_allowance')}
                         />
                         {errors.house_allowance && (
                           <p className="text-red-500 text-sm mt-1">
@@ -201,7 +197,7 @@ const UpdateStaffPayroll = ({ refetchData, data }: Props) => {
                           type="number"
                           className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                           placeholder="e.g. Ksh 8000"
-                          {...register("transport_allowance")}
+                          {...register('transport_allowance')}
                         />
                         {errors.transport_allowance && (
                           <p className="text-red-500 text-sm mt-1">
@@ -220,7 +216,7 @@ const UpdateStaffPayroll = ({ refetchData, data }: Props) => {
                           type="number"
                           className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                           placeholder="e.g Ksh 1000"
-                          {...register("other_allowances")}
+                          {...register('other_allowances')}
                         />
                         {errors.other_allowances && (
                           <p className="text-red-500 text-sm mt-1">
@@ -236,7 +232,7 @@ const UpdateStaffPayroll = ({ refetchData, data }: Props) => {
                       <input
                         type="text"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
-                        {...register("kra_pin")}
+                        {...register('kra_pin')}
                         placeholder="Enter valid KRA pin"
                       />
                       {errors.kra_pin && (
@@ -255,7 +251,7 @@ const UpdateStaffPayroll = ({ refetchData, data }: Props) => {
                           type="text"
                           className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                           placeholder="e.g. ADXXXXX"
-                          {...register("nssf_number")}
+                          {...register('nssf_number')}
                         />
                         {errors.nssf_number && (
                           <p className="text-red-500 text-sm mt-1">
@@ -273,7 +269,7 @@ const UpdateStaffPayroll = ({ refetchData, data }: Props) => {
                           type="text"
                           className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                           placeholder="e.g. 346XXXX"
-                          {...register("nhif_number")}
+                          {...register('nhif_number')}
                         />
                         {errors.nhif_number && (
                           <p className="text-red-500 text-sm mt-1">
@@ -291,7 +287,7 @@ const UpdateStaffPayroll = ({ refetchData, data }: Props) => {
                           type="text"
                           className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                           placeholder="e.g KCB, EQUITY"
-                          {...register("bank_name")}
+                          {...register('bank_name')}
                         />
                         {errors.bank_name && (
                           <p className="text-red-500 text-sm mt-1">
@@ -309,7 +305,7 @@ const UpdateStaffPayroll = ({ refetchData, data }: Props) => {
                           type="text"
                           className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                           placeholder="e.g  12348XXXX"
-                          {...register("bank_account_number")}
+                          {...register('bank_account_number')}
                         />
                         {errors.bank_account_number && (
                           <p className="text-red-500 text-sm mt-1">
@@ -327,7 +323,7 @@ const UpdateStaffPayroll = ({ refetchData, data }: Props) => {
                           type="text"
                           className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                           placeholder="e.g 07xxxx"
-                          {...register("mpesa_number")}
+                          {...register('mpesa_number')}
                         />
                         {errors.mpesa_number && (
                           <p className="text-red-500 text-sm mt-1">

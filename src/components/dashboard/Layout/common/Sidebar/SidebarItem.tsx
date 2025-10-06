@@ -33,12 +33,12 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         <Link
           href={item.href}
           key={item.label}
-          className={`group flex items-center px-2 py-2.5 w-full text-left
-            transition-all duration-200 ease-in-out rounded-sm
+          className={`group flex items-center px-3 py-2 font-inter  w-full text-left
+            transition-all duration-200 ease-in-out rounded-[12px]
             ${
               isActive(item.href)
-                ? "bg-[#F3FAFF] text-primary-700 font-medium "
-                : "text-gray-600 hover:bg-gray-100 hover:text-primary-600 cursor-pointer"
+                ? "bg-[#17AE9E] text-white font-medium rounded-[12px]"
+                : "text-[#636363] hover:bg-gray-100 hover:text-primary-600 cursor-pointer"
             }`}
           onClick={() => {
             if (item.children) {
@@ -50,9 +50,9 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         >
           {item.icon && (
             <span
-              className={`text-xl ${
+              className={`text-lg ${
                 isActive(item.href)
-                  ? "text-primary-600"
+                  ? "text-white"
                   : "text-gray-500 group-hover:text-primary-500"
               }`}
             >
@@ -60,7 +60,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
             </span>
           )}
           <span
-            className={`ml-3 text-sm font-medium ${
+            className={`ml-3 text-[14px] font-inter font-normal${
               isOpen ? "block" : "lg:hidden"
             } md:block`}
           >
@@ -80,7 +80,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         <div
           key={item.label}
           className={`group flex items-center px-2 py-2.5 w-full text-left
-            transition-all duration-200 ease-in-out rounded-sm
+            transition-all duration-200 ease-in-out rounded-[12px]
             text-gray-600 hover:bg-gray-100 hover:text-primary-600 cursor-pointer`}
           onClick={() => {
             if (item.children) {
@@ -96,7 +96,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
             </span>
           )}
           <span
-            className={`ml-3 text-sm font-medium ${
+            className={`ml-3 text-sm font-inter font-normal ${
               isOpen ? "block" : "lg:hidden"
             } md:block`}
           >
@@ -121,7 +121,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
             <Link
               href={child.href}
               key={child.label}
-              className={`group flex items-center px-3 py-2 rounded-sm text-xs transition-all duration-200 ease-in-out
+              className={`group flex items-center px-3 py-2 rounded-[12px] text-xs transition-all duration-200 ease-in-out
                 ${
                   isActive(child.href)
                     ? "bg-primary-100 text-primary-700 font-medium border-l-4 border-primary-600"
@@ -138,3 +138,4 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
 };
 
 export default SidebarItem;
+

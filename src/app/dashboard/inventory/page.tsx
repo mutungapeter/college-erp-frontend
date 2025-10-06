@@ -1,9 +1,7 @@
-
-
-"use client";
-import PageLoadingSpinner from "@/components/common/spinners/pageLoadingSpinner";
-import InventoryItems from "@/components/inventory/store";
-import { Suspense } from "react";
+'use client';
+import PageLoadingSpinner from '@/components/common/spinners/pageLoadingSpinner';
+import InventoryItems from '@/components/inventory/store';
+import { Suspense } from 'react';
 
 const InventoryItemsPage = () => {
   return (

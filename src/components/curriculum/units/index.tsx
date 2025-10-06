@@ -1,45 +1,52 @@
-"use client";
+'use client';
 
-import Pagination from "@/components/common/Pagination";
-
-import { useFilters } from "@/hooks/useFilters";
-
-import ActionModal from "@/components/common/Modals/ActionModal";
-import FilterSelect from "@/components/common/Select";
-import DataTable, { Column } from "@/components/common/Table/DataTable";
-import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
-import { CourseType, DepartmentType } from "@/definitions/curiculum";
-import { PAGE_SIZE } from "@/lib/constants";
-import { useDeleteCourseMutation, useGetCoursesQuery } from "@/store/services/curriculum/coursesService";
-import { useGetDepartmentsQuery } from "@/store/services/curriculum/departmentsService";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
-import { FiTrash2 } from "react-icons/fi";
-import { GoSearch } from "react-icons/go";
-import { toast } from "react-toastify";
-
-
-import { LabelOptionsType } from "@/definitions/Labels/labelOptionsType";
-import UpdateUnit from "./EditUnit";
-import AddUnit from "./NewUnit";
-
-
+import Pagination from '@/components/common/Pagination';
+import { useFilters } from '@/hooks/useFilters';
+import ActionModal from '@/components/common/Modals/ActionModal';
+import FilterSelect from '@/components/common/Select';
+import DataTable, { Column } from '@/components/common/Table/DataTable';
+import ContentSpinner from '@/components/common/spinners/dataLoadingSpinner';
+import { CourseType, DepartmentType } from '@/definitions/curiculum';
+import { PAGE_SIZE } from '@/lib/constants';
+import {
+  useDeleteCourseMutation,
+  useGetCoursesQuery,
+} from '@/store/services/curriculum/coursesService';
+import { useGetDepartmentsQuery } from '@/store/services/curriculum/departmentsService';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMemo, useState } from 'react';
+import { FiTrash2 } from 'react-icons/fi';
+import { GoSearch } from 'react-icons/go';
+import { toast } from 'react-toastify';
+import { useAppSelector } from '@/store/hooks';
+import { RootState } from '@/store/store';
+import { LabelOptionsType } from '@/definitions/Labels/labelOptionsType';
+import UpdateUnit from './EditUnit';
+import AddUnit from './NewUnit';
+import { RolePermission } from '@/store/definitions';
+import ButtonDropdown from '@/components/common/ActionsPopover';
 
 const Units = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [selectedCourse, setSelectedCourse] = useState<number | null>(null);
+  const [selectedCourse, setSelectedCourse] = useState<number | null>(null);
+  const { user } = useAppSelector((state: RootState) => state.auth);
+
+  const permissions: RolePermission[] = useMemo(() => {
+    return user?.role?.permissions ?? [];
+  }, [user?.role?.permissions]);
+  console.log('permissions', permissions);
   const { filters, currentPage, handleFilterChange, handlePageChange } =
     useFilters({
       initialFilters: {
-        course_name: searchParams.get("course_name") || "",
-        department: searchParams.get("department") || "",
+        course_name: searchParams.get('course_name') || '',
+        department: searchParams.get('department') || '',
       },
-      initialPage: parseInt(searchParams.get("page") || "1", 10),
+      initialPage: parseInt(searchParams.get('page') || '1', 10),
       router,
       debounceTime: 100,
-      debouncedFields: ["course_name"],
+      debouncedFields: ['course_name'],
     });
 
   const queryParams = useMemo(
@@ -48,21 +55,33 @@ const Units = () => {
       page_size: PAGE_SIZE,
       ...filters,
     }),
-    [currentPage, filters]
+    [currentPage, filters],
   );
+  const accountsPermissions = useMemo(() => {
+    return permissions.find((permission) => permission.module.code === 'units');
+  }, [permissions]);
 
   const { data, isLoading, error, refetch } = useGetCoursesQuery(queryParams, {
     refetchOnMountOrArgChange: true,
   });
-  console.log("data",data)
-  const [deleteCourse, {isLoading:isDeleting}] = useDeleteCourseMutation();   
-  const { data:departments } = useGetDepartmentsQuery({}, {refetchOnMountOrArgChange: true,});
-const departmentOptions = departments?.map((depart:DepartmentType) => ({
-    value: depart.id, 
-    label: depart.name,
-  })) || [];
+  console.log('data', data);
+  const [deleteCourse, { isLoading: isDeleting }] = useDeleteCourseMutation();
+  const { data: departments } = useGetDepartmentsQuery(
+    {},
+    { refetchOnMountOrArgChange: true },
+  );
+  // Permission checks
+  const canCreate = accountsPermissions?.can_create ?? false;
+  const canEdit = accountsPermissions?.can_edit ?? false;
+  const canDelete = accountsPermissions?.can_delete ?? false;
+  const hasActions = canEdit || canDelete;
+  const departmentOptions =
+    departments?.map((depart: DepartmentType) => ({
+      value: depart.id,
+      label: depart.name,
+    })) || [];
 
-   const openDeleteModal = (prog_id: number) => {
+  const openDeleteModal = (prog_id: number) => {
     setSelectedCourse(prog_id);
     setIsDeleteModalOpen(true);
   };
@@ -72,91 +91,96 @@ const departmentOptions = departments?.map((depart:DepartmentType) => ({
     setSelectedCourse(null);
   };
   const handleDepartmentChange = (selectedOption: LabelOptionsType | null) => {
-      handleFilterChange({
-        department: selectedOption ? selectedOption.value : "",
-      });
-    };
- const handleDeleteCampus = async () => {
+    handleFilterChange({
+      department: selectedOption ? selectedOption.value : '',
+    });
+  };
+  const handleDeleteCampus = async () => {
     try {
       await deleteCourse(selectedCourse).unwrap();
-      toast.success("Unit Deleted successfully!");
+      toast.success('Unit Deleted successfully!');
       closeDeleteModal();
       refetch();
     } catch (error: unknown) {
-      console.log("error", error);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      console.log('error', error);
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
-        console.log("errorData", errorData);
-        toast.error(errorData.error || "Error Deleting Unit!.");
+        console.log('errorData', errorData);
+        toast.error(errorData.error || 'Error Deleting Unit!.');
       } else {
-        toast.error("Unexpected Error occured. Please try again.");
+        toast.error('Unexpected Error occured. Please try again.');
       }
     }
   };
   const columns: Column<CourseType>[] = [
     {
-      header: "Name",
-      accessor: "name",
-      cell: (prog: CourseType) => <span>{prog.name}</span>,
+      header: 'Name',
+      accessor: 'name',
+      cell: (prog: CourseType) => <span className="text-md">{prog.name}</span>,
     },
     {
-      header: "Code",
-      accessor: "course_code",
+      header: 'Code',
+      accessor: 'course_code',
       cell: (course: CourseType) => (
-        <span className="text-sm font-normal">{course.course_code}</span>
+        <span className="text-md font-normal">{course.course_code}</span>
       ),
     },
     {
-      header: "School",
-      accessor: "school",
+      header: 'School',
+      accessor: 'school',
       cell: (course: CourseType) => (
-        <span className="text-sm font-normal">{course.school.name}</span>
+        <span className="text-md font-normal">{course.school.name}</span>
       ),
     },
     {
-      header: "Programme",
-      accessor: "programme",
+      header: 'Programme',
+      accessor: 'programme',
       cell: (course: CourseType) => (
         <span>
-          <span className="text-sm">{course.programme.name}</span>
+          <span className="text-md">{course.programme.name}</span>
         </span>
       ),
     },
-    
-   
+    ...(hasActions
+      ? ([
+          {
+            header: 'Actions',
+            accessor: 'id',
+            cell: (programme: CourseType) => (
+              <>
+                <ButtonDropdown>
+                  {canEdit && (
+                    <UpdateUnit data={programme} refetchData={refetch} />
+                  )}
 
-   
-    {
-      header: "Actions",
-      accessor: "id",
-      cell: (programme: CourseType) => (
-        <div className="flex items-center justify-center space-x-2">
-          <div>
-            <UpdateUnit data={programme} refetchData={refetch} />
-          </div>
-          <div
-                  onClick={()=>openDeleteModal(programme.id)}
-                  className="p-2 rounded-xl bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700 cursor-pointer transition duration-200 shadow-sm"
-            title="Edit Cohort"
-                >
-                  <FiTrash2 className="text-sm" />
-                </div>
-
-       
-        </div>
-      ),
-    },
+                  {canDelete && (
+                    <button
+                      onClick={() => openDeleteModal(programme.id)}
+                      className="flex items-center space-x-2"
+                    >
+                      <FiTrash2 className="text-lg" />
+                      <span className="text-red-600">Delete</span>
+                    </button>
+                  )}
+                </ButtonDropdown>
+              </>
+            ),
+          },
+        ] as Column<CourseType>[])
+      : []),
   ];
- 
-  console.log("data", data);
+
+  console.log('data', data);
   return (
     <>
-      <div className="bg-white w-full  p-1 shadow-md rounded-lg font-nunito">
+      <div className="bg-white w-full  p-1 shadow-md rounded-lg font-inter">
         <div className=" p-3  flex flex-col md:flex-row md:items-center lg:items-center md:gap-0 lg:gap-0 gap-4 lg:justify-between md:justify-between">
           <h2 className="font-semibold text-black text-xl">All Units</h2>
+          {canCreate && (
           <div>
             <AddUnit refetchData={refetch} />
           </div>
+          )}
         </div>
 
         <div className="flex flex-col gap-4 mt-5 lg:gap-0 md:gap-0 lg:flex-row md:flex-row  md:items-center p-2 md:justify-between lg:items-center lg:justify-between">
@@ -171,15 +195,18 @@ const departmentOptions = departments?.map((depart:DepartmentType) => ({
             />
           </div>
           <div className="flex flex-col gap-3  lg:p-0 lg:flex-row md:flex-row md:items-center md:space-x-2 lg:items-center lg:space-x-5">
-             <FilterSelect
-            options={departmentOptions}
-            value={departmentOptions.find(
-              (option:LabelOptionsType) => option.value === filters.department
-            ) || { value: "", label: "All Departments" }}
-            onChange={handleDepartmentChange}
-            placeholder=""
-            defaultLabel="All Departments"
-          />
+            <FilterSelect
+              options={departmentOptions}
+              value={
+                departmentOptions.find(
+                  (option: LabelOptionsType) =>
+                    option.value === filters.department,
+                ) || { value: '', label: 'All Departments' }
+              }
+              onChange={handleDepartmentChange}
+              placeholder=""
+              defaultLabel="All Departments"
+            />
           </div>
         </div>
         {isLoading ? (
@@ -211,15 +238,15 @@ const departmentOptions = departments?.map((depart:DepartmentType) => ({
         )}
 
         <ActionModal
-              isOpen={isDeleteModalOpen}
-              onClose={closeDeleteModal}
-              onDelete={handleDeleteCampus}
-              isDeleting={isDeleting}
-              confirmationMessage="Are you sure you want to Delete this Unit ?"
-              deleteMessage="This action cannot be undone."
-              title="Delete Unit"
-              actionText="Delete Unit"
-           />
+          isOpen={isDeleteModalOpen}
+          onClose={closeDeleteModal}
+          onDelete={handleDeleteCampus}
+          isDeleting={isDeleting}
+          confirmationMessage="Are you sure you want to Delete this Unit ?"
+          deleteMessage="This action cannot be undone."
+          title="Delete Unit"
+          actionText="Delete Unit"
+        />
       </div>
     </>
   );

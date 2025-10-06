@@ -1,15 +1,18 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
-import { IoCloseOutline } from "react-icons/io5";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
+import { IoCloseOutline } from 'react-icons/io5';
 
-import { UnitOfMeasureFormData, unitofMeasureSchema } from "@/schemas/inventory";
-import { useCreateUnitMutation } from "@/store/services/finance/inventoryService";
-import { FiPlus } from "react-icons/fi";
+import {
+  UnitOfMeasureFormData,
+  unitofMeasureSchema,
+} from '@/schemas/inventory';
+import { useCreateUnitMutation } from '@/store/services/finance/inventoryService';
+import { FiPlus } from 'react-icons/fi';
 
 interface Props {
   refetchData: () => void;
@@ -18,11 +21,11 @@ const NewUnitOfMeasure = ({ refetchData }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
   const [createUnit, { isLoading: isCreating }] = useCreateUnitMutation();
- 
+
   const {
     register,
     handleSubmit,
@@ -32,9 +35,9 @@ const NewUnitOfMeasure = ({ refetchData }: Props) => {
     resolver: zodResolver(unitofMeasureSchema),
   });
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
-    const handleCloseModal = () => {
+  const handleCloseModal = () => {
     setIsOpen(false);
   };
   const handleOpenModal = () => setIsOpen(true);
@@ -45,45 +48,43 @@ const NewUnitOfMeasure = ({ refetchData }: Props) => {
   };
 
   const onSubmit = async (formData: UnitOfMeasureFormData) => {
-    console.log("submitting form data");
+    console.log('submitting form data');
 
-    console.log("formData", formData);
+    console.log('formData', formData);
     try {
       const response = await createUnit(formData).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Unit of Measure  Added Successfully");
+      setSuccessMessage('Unit of Measure  Added Successfully');
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(errorData.error);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occured. Please try again.");
+        setSuccessMessage('Unexpected error occured. Please try again.');
         setShowSuccessModal(true);
       }
     }
   };
- 
 
   return (
     <>
-    
       <div
         onClick={handleOpenModal}
-  className="bg-green-600 inline-flex cursor-pointer w-max 
+        className="bg-green-600 inline-flex cursor-pointer w-max 
    items-center space-x-2 text-white px-4 py-2 rounded-lg shadow-md hover:shadow-lg
     hover:bg-green-800 transition duration-300"
->
-  <FiPlus size={18} />
-  <span className="text-sm font-medium">New Unit of Measure</span>
-</div>
+      >
+        <FiPlus size={18} />
+        <span className="text-sm font-medium">New Unit of Measure</span>
+      </div>
 
       {isOpen && (
         <div
@@ -123,26 +124,23 @@ const NewUnitOfMeasure = ({ refetchData }: Props) => {
                   onSubmit={handleSubmit(onSubmit)}
                   className="space-y-4   p-4 md:p-4 lg:p-4 "
                 >
-            
-                 
-                      <div>
-                      <label className="block space-x-1  text-sm font-medium mb-2">
-                        Name<span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        id="name"
-                        type="text"
-                        {...register("name")}
-                        placeholder="Name"
-                        className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
-                      />
-                      {errors.name && (
-                        <p className="text-red-500 text-sm">
-                          {errors.name.message}
-                        </p>
-                      )}
-                    </div>
-                
+                  <div>
+                    <label className="block space-x-1  text-sm font-medium mb-2">
+                      Name<span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      id="name"
+                      type="text"
+                      {...register('name')}
+                      placeholder="Name"
+                      className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
+                    />
+                    {errors.name && (
+                      <p className="text-red-500 text-sm">
+                        {errors.name.message}
+                      </p>
+                    )}
+                  </div>
 
                   <div className="sticky bottom-0 bg-white z-40 flex md:px-4  gap-4 md:justify-between items-center py-2 ">
                     <button

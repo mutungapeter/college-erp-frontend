@@ -1,25 +1,28 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { IoCloseOutline } from "react-icons/io5";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { IoCloseOutline } from 'react-icons/io5';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
-import Select, { SingleValue } from "react-select";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
+import Select, { SingleValue } from 'react-select';
 
-import { DepartmentType, SchoolType } from "@/definitions/curiculum";
-import { DepartmentTypeOptions } from "@/lib/constants";
-import { updateDepartmentFormData, updateDepartmentSchema } from "@/schemas/curriculum/departments";
-import { useUpdateDepartmentMutation } from "@/store/services/curriculum/departmentsService";
-import { useGetSchoolsQuery } from "@/store/services/curriculum/schoolSService";
-import { FiEdit } from "react-icons/fi";
+import CreateAndUpdateButton from '@/components/common/CreateAndUpdateButton';
+import { DepartmentType, SchoolType } from '@/definitions/curiculum';
+import { DepartmentTypeOptions } from '@/lib/constants';
+import {
+  updateDepartmentFormData,
+  updateDepartmentSchema,
+} from '@/schemas/curriculum/departments';
+import { useUpdateDepartmentMutation } from '@/store/services/curriculum/departmentsService';
+import { useGetSchoolsQuery } from '@/store/services/curriculum/schoolSService';
+import { FiEdit } from 'react-icons/fi';
 
 type SelectOption = {
   value: string | number;
   label: string;
 };
-
 
 const EditDepartment = ({
   department,
@@ -29,9 +32,9 @@ const EditDepartment = ({
   refetchData: () => void;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  console.log("department", department);
+  console.log('department', department);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
 
   const [isError, setIsError] = useState(false);
 
@@ -39,9 +42,9 @@ const EditDepartment = ({
     useUpdateDepartmentMutation();
   const { data: schoolsData } = useGetSchoolsQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
-  console.log("schoolsData", schoolsData);
+  console.log('schoolsData', schoolsData);
   const {
     register,
     handleSubmit,
@@ -50,14 +53,14 @@ const EditDepartment = ({
   } = useForm({
     resolver: zodResolver<updateDepartmentFormData>(updateDepartmentSchema),
     defaultValues: {
-      name: department?.name || "",
+      name: department?.name || '',
       school: department?.school?.id || undefined,
-      office: department?.office || "",
-      department_type: department?.department_type || "",
+      office: department?.office || '',
+      department_type: department?.department_type || '',
     },
   });
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -70,45 +73,45 @@ const EditDepartment = ({
     handleCloseModal();
   };
   const handleSchoolChange = (
-    selected: SingleValue<{ value: number | null; label: string }>
+    selected: SingleValue<{ value: number | null; label: string }>,
   ) => {
     if (selected) {
-      setValue("school", Number(selected.value));
+      setValue('school', Number(selected.value));
     } else {
-      setValue("school", null);
+      setValue('school', null);
     }
   };
 
-   const handleDepartmentTypeChange = (selected: SelectOption | null) => {
+  const handleDepartmentTypeChange = (selected: SelectOption | null) => {
     if (selected) {
-      setValue("department_type", String(selected.value));
+      setValue('department_type', String(selected.value));
     }
   };
   const onSubmit = async (formData: updateDepartmentFormData) => {
-    console.log("submitting form data");
+    console.log('submitting form data');
 
     try {
       const response = await updateDepartment({
         id: department.id,
         data: formData,
       }).unwrap();
-      console.log("response", response);
+      console.log('response', response);
 
       setIsError(false);
-      setSuccessMessage("Department Updated successfully!");
+      setSuccessMessage('Department Updated successfully!');
       setShowSuccessModal(true);
 
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(`Failed to update Department: ${errorData.error}`);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Failed to update Department. Please try again.");
+        setSuccessMessage('Failed to update Department. Please try again.');
         setShowSuccessModal(true);
       }
     } finally {
@@ -118,16 +121,22 @@ const EditDepartment = ({
 
   return (
     <>
-     <button
-                   onClick={handleOpenModal}
-                   title="Edit "
-                   className="group relative p-2 bg-amber-100 text-amber-500 rounded-md hover:bg-amber-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md"
-                 >
-                   <FiEdit className="w-4 h-4" />
-                   <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                     Edit 
-                   </span>
-                 </button>
+      <CreateAndUpdateButton
+        onClick={handleOpenModal}
+        // title="Edit"
+        label="Edit"
+        icon={<FiEdit className="w-4 h-4 text-amber-500" />}
+        className="
+    px-4 py-2 w-full 
+    border-none 
+    focus:outline-none 
+    focus:border-transparent 
+    focus:ring-0 
+    active:outline-none 
+    active:ring-0
+    hover:bg-gray-100
+  "
+      />
 
       {isOpen && (
         <div
@@ -149,7 +158,7 @@ const EditDepartment = ({
             <div
               className="relative transform justify-center animate-fadeIn max-h-[90vh]
                 overflow-y-auto rounded-md  bg-white text-left shadow-xl transition-all   
-                w-full sm:max-w-c-500 md:max-w-c-500 px-3"
+                w-full sm:max-w-c-500 md:max-w-500 px-3"
             >
               <>
                 <div className="sticky top-0 bg-white z-40 flex sm:px-6 px-4 justify-between items-center py-3 ">
@@ -176,7 +185,7 @@ const EditDepartment = ({
                     <input
                       id="name"
                       type="text"
-                      {...register("name")}
+                      {...register('name')}
                       placeholder="e.g X Copmuter Science Department"
                       className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                     />
@@ -188,7 +197,9 @@ const EditDepartment = ({
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2  gap-4">
                     <div>
-                      <label className="block mb-2 text-sm font-medium">School</label>
+                      <label className="block mb-2 text-sm font-medium">
+                        School
+                      </label>
                       <Select
                         options={schoolsData?.map((school: SchoolType) => ({
                           value: school.id.toString(),
@@ -197,7 +208,7 @@ const EditDepartment = ({
                         menuPortalTarget={document.body}
                         defaultValue={{
                           value: department?.school?.id || null,
-                          label: department?.school?.name || "",
+                          label: department?.school?.name || '',
                         }}
                         styles={{
                           menuPortal: (base) => ({
@@ -206,16 +217,16 @@ const EditDepartment = ({
                           }),
                           control: (base) => ({
                             ...base,
-                            minHeight: "25px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
+                            minHeight: '25px',
+                            minWidth: '200px',
+                            borderColor: '#d1d5db',
+                            boxShadow: 'none',
+                            '&:hover': {
+                              borderColor: '#9ca3af',
                             },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
+                            '&:focus-within': {
+                              borderColor: '#9ca3af',
+                              boxShadow: 'none',
                             },
                           }),
                         }}
@@ -236,7 +247,7 @@ const EditDepartment = ({
                       <input
                         id="office"
                         type="text"
-                        {...register("office")}
+                        {...register('office')}
                         placeholder="e.g Greec Towers, 5th Floor"
                         className="w-full py-2 px-4 border placeholder:text-sm text-gray-500  rounded-md focus:outline-none "
                       />
@@ -247,14 +258,15 @@ const EditDepartment = ({
                       )}
                     </div>
                   </div>
- <div>
+                  <div>
                     <label className="block space-x-1 text-sm font-medium mb-2">
                       Department Type<span className="text-red-500">*</span>
                     </label>
                     <Select
                       options={DepartmentTypeOptions}
-                    defaultValue={DepartmentTypeOptions.find(option => option.value === department.department_type)}
-                    
+                      defaultValue={DepartmentTypeOptions.find(
+                        (option) => option.value === department.department_type,
+                      )}
                       onChange={handleDepartmentTypeChange}
                       menuPortalTarget={document.body}
                       styles={{
@@ -264,15 +276,15 @@ const EditDepartment = ({
                         }),
                         control: (base) => ({
                           ...base,
-                          minHeight: "25px",
-                          borderColor: "#d1d5db",
-                          boxShadow: "none",
-                          "&:hover": {
-                            borderColor: "#9ca3af",
+                          minHeight: '25px',
+                          borderColor: '#d1d5db',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: '#9ca3af',
                           },
-                          "&:focus-within": {
-                            borderColor: "#9ca3af",
-                            boxShadow: "none",
+                          '&:focus-within': {
+                            borderColor: '#9ca3af',
+                            boxShadow: 'none',
                           },
                         }),
                       }}
@@ -287,8 +299,8 @@ const EditDepartment = ({
                     <button
                       type="button"
                       onClick={handleCloseModal}
-                                          className="border border-red-500 bg-white shadow-sm text-red-500 py-2 text-sm px-4 rounded-lg w-full min-w-[100px] md:w-auto hover:bg-red-500 hover:text-white"
-   >
+                      className="border border-red-500 bg-white shadow-sm text-red-500 py-2 text-sm px-4 rounded-lg w-full min-w-[100px] md:w-auto hover:bg-red-500 hover:text-white"
+                    >
                       Cancel
                     </button>
                     <button

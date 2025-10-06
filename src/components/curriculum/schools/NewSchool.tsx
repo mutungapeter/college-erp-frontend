@@ -1,30 +1,27 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FiPlus } from "react-icons/fi";
-import { IoCloseOutline } from "react-icons/io5";
-import { z } from "zod";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiPlus } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
+import { z } from 'zod';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
 
-
-import schoolSchema from "@/schemas/curriculum/school";
-import { useCreateSchoolMutation } from "@/store/services/curriculum/schoolSService";
+import schoolSchema from '@/schemas/curriculum/school';
+import { useCreateSchoolMutation } from '@/store/services/curriculum/schoolSService';
 
 const AddSchool = ({ refetchData }: { refetchData: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
- 
+  const [successMessage, setSuccessMessage] = useState('');
+
   const [isError, setIsError] = useState(false);
 
+  const [createSchool, { isLoading: isCreating }] = useCreateSchoolMutation();
 
-  const [createSchool, {isLoading:isCreating}] = useCreateSchoolMutation();
-
- 
   const {
     register,
     handleSubmit,
@@ -34,9 +31,8 @@ const AddSchool = ({ refetchData }: { refetchData: () => void }) => {
     resolver: zodResolver(schoolSchema),
   });
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
-  
 
   const handleCloseModal = () => {
     setIsOpen(false);
@@ -48,32 +44,28 @@ const AddSchool = ({ refetchData }: { refetchData: () => void }) => {
     handleCloseModal();
   };
 
-
   const onSubmit = async (formData: z.infer<typeof schoolSchema>) => {
-    
-
-   
-    console.log("submitting form data");
+    console.log('submitting form data');
 
     try {
       const response = await createSchool(formData).unwrap();
-      console.log("response", response);
+      console.log('response', response);
 
       setIsError(false);
-      setSuccessMessage("School added successfully!");
+      setSuccessMessage('School added successfully!');
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(`Failed to add School: ${errorData.error}`);
         setShowSuccessModal(true);
-      }else {
+      } else {
         setIsError(true);
-        setSuccessMessage("Failed to add school. Please try again.");
+        setSuccessMessage('Failed to add school. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -81,7 +73,7 @@ const AddSchool = ({ refetchData }: { refetchData: () => void }) => {
 
   return (
     <>
-       <button
+      <button
         onClick={handleOpenModal}
         title="Add New"
         className="flex items-center space-x-2 px-4 py-2 bg-emerald-500 text-white rounded-md hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md"
@@ -130,25 +122,24 @@ const AddSchool = ({ refetchData }: { refetchData: () => void }) => {
                   onSubmit={handleSubmit(onSubmit)}
                   className="space-y-4 mt-2  p-4 md:p-4 lg:p-4 "
                 >
-                 <div>
-                      <label className="block space-x-1  text-sm font-medium mb-2">
-                        School name<span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        id="name"
-                        type="text"
-                        {...register("name")}
-                        placeholder="e.g X School of computing"
-                        className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
-                      />
-                      {errors.name && (
-                        <p className="text-red-500 text-sm">
-                          {errors.name.message}
-                        </p>
-                      )}
-                    </div>
+                  <div>
+                    <label className="block space-x-1  text-sm font-medium mb-2">
+                      School name<span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      id="name"
+                      type="text"
+                      {...register('name')}
+                      placeholder="e.g X School of computing"
+                      className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
+                    />
+                    {errors.name && (
+                      <p className="text-red-500 text-sm">
+                        {errors.name.message}
+                      </p>
+                    )}
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-2  gap-4">
-                  
                     <div>
                       <label className="block space-x-1  text-sm font-medium mb-2">
                         Phone<span className="text-red-500">*</span>
@@ -156,7 +147,7 @@ const AddSchool = ({ refetchData }: { refetchData: () => void }) => {
                       <input
                         id="phone"
                         type="text"
-                        {...register("phone")}
+                        {...register('phone')}
                         placeholder="e.g Nairobi"
                         className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                       />
@@ -173,7 +164,7 @@ const AddSchool = ({ refetchData }: { refetchData: () => void }) => {
                       <input
                         id="location"
                         type="text"
-                        {...register("location")}
+                        {...register('location')}
                         placeholder="e.g Greec Towers, 5th Floor"
                         className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                       />
@@ -183,33 +174,31 @@ const AddSchool = ({ refetchData }: { refetchData: () => void }) => {
                         </p>
                       )}
                     </div>
-                       
                   </div>
                   <div>
-                      <label className="block space-x-1  text-sm font-medium mb-2">
-                        Email<span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        id="email"
-                        type="email"
-                        {...register("email")}
-                        placeholder="e.g inform@x.com"
-                        className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
-                      />
-                      {errors.email && (
-                        <p className="text-red-500 text-sm">
-                          {errors.email.message}
-                        </p>
-                      )}
-                    </div>
-                  
+                    <label className="block space-x-1  text-sm font-medium mb-2">
+                      Email<span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      id="email"
+                      type="email"
+                      {...register('email')}
+                      placeholder="e.g inform@x.com"
+                      className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
+                    />
+                    {errors.email && (
+                      <p className="text-red-500 text-sm">
+                        {errors.email.message}
+                      </p>
+                    )}
+                  </div>
+
                   <div className="sticky bottom-0 bg-white z-40 flex md:px-6  gap-4 md:justify-between items-center py-3 ">
                     <button
                       type="button"
                       onClick={handleCloseModal}
                       className="border border-red-500 bg-white shadow-sm text-red-500 py-2 text-sm px-4 rounded-lg w-full min-w-[100px] md:w-auto hover:bg-red-500 hover:text-white"
-
-                       >
+                    >
                       Cancel
                     </button>
                     <button

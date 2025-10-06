@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import PageLoadingSpinner from "@/components/common/spinners/pageLoadingSpinner";
-import loginSchema from "@/schemas/auth/login";
-import { useLoginMutation } from "@/store/services/auth/authService";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
-import { toast } from "react-toastify";
-import { z } from "zod";
-import SubmitSpinner from "../common/spinners/submitSpinner";
-import { useAppSelector } from "@/store/hooks";
-import { RootState } from "@/store/store";
+import PageLoadingSpinner from '@/components/common/spinners/pageLoadingSpinner';
+import loginSchema from '@/schemas/auth/login';
+import { useLoginMutation } from '@/store/services/auth/authService';
+import { zodResolver } from '@hookform/resolvers/zod';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { IoEyeOffOutline, IoEyeOutline } from 'react-icons/io5';
+import { toast } from 'react-toastify';
+import { z } from 'zod';
+import SubmitSpinner from '../common/spinners/submitSpinner';
+import { useAppSelector } from '@/store/hooks';
+import { RootState } from '@/store/store';
 const Login = () => {
   const [showPassword, setShowPassword] = useState<boolean>(() => false);
   const [isRedirecting, setIsRedirecting] = useState<boolean>(false);
@@ -30,32 +30,32 @@ const Login = () => {
   });
   useEffect(() => {
     if (user && isRedirecting) {
-      router.push("/dashboard");
+      router.push('/dashboard');
     }
   }, [user, isRedirecting, router]);
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     try {
       const response = await login(data).unwrap();
-      console.log("response", response);
-      const successMessage = response?.message || "Login successful";
+      console.log('response', response);
+      const successMessage = response?.message || 'Login successful';
       toast.success(successMessage);
       setIsRedirecting(true);
       // router.push("/dashboard");
     } catch (error: unknown) {
       setIsRedirecting(false);
-      console.log("error", error);
+      console.log('error', error);
       if (
         error &&
-        typeof error === "object" &&
-        "data" in error &&
-        "detail" in (error as { data: { detail: string } }).data
+        typeof error === 'object' &&
+        'data' in error &&
+        'detail' in (error as { data: { detail: string } }).data
       ) {
         const errorMessage = (error as { data: { detail: string } }).data
           .detail;
-        console.log("Error Message:", errorMessage);
+        console.log('Error Message:', errorMessage);
         toast.error(errorMessage);
       } else {
-        toast.error("Failed to Login. Please try again.");
+        toast.error('Failed to Login. Please try again.');
       }
     }
   };
@@ -65,9 +65,8 @@ const Login = () => {
       {isRedirecting ? (
         <PageLoadingSpinner />
       ) : (
-       <div className="min-h-screen flex items-center justify-center p-5 relative overflow-hidden bg-slate-100">
-
-  {/* <div className="absolute top-0 left-0 w-72 h-72 opacity-10 pointer-events-none">
+        <div className="min-h-screen flex items-center justify-center p-5 relative overflow-hidden bg-slate-100">
+          {/* <div className="absolute top-0 left-0 w-72 h-72 opacity-10 pointer-events-none">
     <svg viewBox="0 0 100 100" className="w-full h-full">
       <path
         d="M10,50 C20,0 80,0 90,50 C80,100 20,100 10,50 Z"
@@ -115,7 +114,7 @@ const Login = () => {
                 </div>
               </div>
               <h1 className="text-lg md:text-xl text-center  font-bold leading-tight uppercase">
-                Maweng College 
+                Maweng College
               </h1>
 
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-4">
@@ -130,7 +129,7 @@ const Login = () => {
                     <input
                       id="username"
                       type="text"
-                      {...register("username")}
+                      {...register('username')}
                       className="block w-full px-4  py-2 border border-gray-300 rounded-md text-sm
                        placeholder-gray-500  focus:border-primary focus:outline-none
                         
@@ -155,8 +154,8 @@ const Login = () => {
                   <div className="relative">
                     <input
                       id="password"
-                      type={showPassword ? "text" : "password"}
-                      {...register("password")}
+                      type={showPassword ? 'text' : 'password'}
+                      {...register('password')}
                       className="block w-full px-4 py-2 border border-gray-400 rounded-md text-sm placeholder-gray-500 focus:outline-none  
                         focus:border-primary  backdrop-blur-sm transition-all duration-200 hover:bg-white/80"
                       placeholder="Enter your password"
@@ -214,7 +213,7 @@ const Login = () => {
                       <span className="ml-2">Signing in...</span>
                     </div>
                   ) : (
-                    "Sign In"
+                    'Sign In'
                   )}
                 </button>
               </form>

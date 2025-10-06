@@ -1,19 +1,17 @@
-"use client";
-import PageLoadingSpinner from "@/components/common/spinners/pageLoadingSpinner";
+'use client';
+import PageLoadingSpinner from '@/components/common/spinners/pageLoadingSpinner';
 
-import {
-  useCreateAccountMutation
-} from "@/store/services/auth/authService";
-import registerSchema from "@/schemas/auth/register";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { IoLockClosedOutline } from "react-icons/io5";
-import { toast } from "react-toastify";
-import { z } from "zod";
-import SubmitSpinner from "../common/spinners/submitSpinner";
+import { useCreateAccountMutation } from '@/store/services/auth/authService';
+import registerSchema from '@/schemas/auth/register';
+import { zodResolver } from '@hookform/resolvers/zod';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { IoLockClosedOutline } from 'react-icons/io5';
+import { toast } from 'react-toastify';
+import { z } from 'zod';
+import SubmitSpinner from '../common/spinners/submitSpinner';
 const Register = () => {
   const [showPassword, setShowPassword] = useState<boolean>(() => false);
   const [isRedirecting, setIsRedirecting] = useState<boolean>(false);
@@ -33,28 +31,27 @@ const Register = () => {
     const { confirmPassword: _confirmPassword, ...userData } = data;
     try {
       const response = await createAccount(userData).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       const successMessage =
-        response?.message || "Account created successfully";
+        response?.message || 'Account created successfully';
       toast.success(successMessage);
       reset();
       setIsRedirecting(true);
-      router.push("/login");
+      router.push('/login');
     } catch (error: unknown) {
       setIsRedirecting(false);
-      console.log("error", error);
+      console.log('error', error);
       if (
         error &&
-        typeof error === "object" &&
-        "data" in error &&
-        "error" in (error as { data: { error: string } }).data
+        typeof error === 'object' &&
+        'data' in error &&
+        'error' in (error as { data: { error: string } }).data
       ) {
-        const errorMessage = (error as { data: { error: string } }).data
-          .error;
-        console.log("Error Message:", errorMessage);
+        const errorMessage = (error as { data: { error: string } }).data.error;
+        console.log('Error Message:', errorMessage);
         toast.error(errorMessage);
       } else {
-        toast.error("Failed to CreateAccount. Please try again.");
+        toast.error('Failed to CreateAccount. Please try again.');
       }
     }
   };
@@ -108,7 +105,7 @@ const Register = () => {
            py-2 border border-gray-300 focus:outline-none
             focus:border-blue-300 focus:bg-white text-sm text-gray-900 rounded-md"
                         type="text"
-                        {...register("username")}
+                        {...register('username')}
                         placeholder="e.g John"
                       />
                     </div>
@@ -133,7 +130,7 @@ const Register = () => {
            py-2 border border-gray-300 focus:outline-none
             focus:border-blue-300 focus:bg-white text-sm text-gray-900 rounded-md"
                           type="text"
-                          {...register("first_name")}
+                          {...register('first_name')}
                           placeholder="e.g John"
                         />
                       </div>
@@ -157,7 +154,7 @@ const Register = () => {
            border-gray-300 focus:outline-none focus:border-blue-300 focus:bg-white 
             text-gray-900 rounded-md"
                           type="text"
-                          {...register("last_name")}
+                          {...register('last_name')}
                           placeholder="e.g Mwango"
                         />
                       </div>
@@ -180,7 +177,7 @@ const Register = () => {
                           id="email"
                           type="email"
                           className="w-full placeholder px-2 py-2 border border-gray-300 focus:outline-none focus:border-blue-300 focus:bg-white text-sm text-gray-900 rounded-md"
-                          {...register("email")}
+                          {...register('email')}
                           placeholder="e.g johnmwango@gmail.com"
                         />
                       </div>
@@ -203,7 +200,7 @@ const Register = () => {
                           id="phone_number"
                           type="text"
                           className="w-full  px-2 py-2 border border-gray-300 focus:outline-none focus:border-blue-300 focus:bg-white text-sm text-gray-900 rounded-md"
-                          {...register("phone_number")}
+                          {...register('phone_number')}
                           placeholder="e.g +2547"
                         />
                       </div>
@@ -222,8 +219,8 @@ const Register = () => {
                     <div className="relative">
                       <input
                         className="w-full  px-2 text-gray-500 py-2 border border-gray-300 focus:border-blue-300 focus:outline-none focus:bg-white text-sm rounded-md"
-                        type={showPassword ? "text" : "password"}
-                        {...register("password")}
+                        type={showPassword ? 'text' : 'password'}
+                        {...register('password')}
                         placeholder="Enter password"
                       />
                     </div>
@@ -240,8 +237,8 @@ const Register = () => {
                     <div className="relative">
                       <input
                         className="w-full  px-2 text-gray-500 py-2 border border-gray-300 focus:border-blue-300 focus:outline-none focus:bg-white text-sm rounded-md"
-                        type={showPassword ? "text" : "password"}
-                        {...register("confirmPassword")}
+                        type={showPassword ? 'text' : 'password'}
+                        {...register('confirmPassword')}
                         placeholder="Confirm your password"
                       />
                     </div>
@@ -274,7 +271,7 @@ const Register = () => {
                   <button
                     type="submit"
                     className={`${
-                      isLoading ? "bg-primary  border" : "bg-primary"
+                      isLoading ? 'bg-primary  border' : 'bg-primary'
                     } text-lg font-medium py-3 rounded-lg w-full flex items-center justify-center opacity-90 hover:opacity-100 transition-opacity mt-2`}
                   >
                     {isLoading ? (

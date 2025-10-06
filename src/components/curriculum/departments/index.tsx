@@ -1,24 +1,28 @@
-"use client";
+'use client';
 
-import Pagination from "@/components/common/Pagination";
+import Pagination from '@/components/common/Pagination';
 
-import { useFilters } from "@/hooks/useFilters";
+import { useFilters } from '@/hooks/useFilters';
 
-import ActionModal from "@/components/common/Modals/ActionModal";
-import FilterSelect from "@/components/common/Select";
-import DataTable, { Column } from "@/components/common/Table/DataTable";
-import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
-import { DepartmentType, SchoolType } from "@/definitions/curiculum";
-import { PAGE_SIZE } from "@/lib/constants";
-import { useDeleteDepartmentMutation, useGetDepartmentsQuery } from "@/store/services/curriculum/departmentsService";
-import { useGetSchoolsQuery } from "@/store/services/curriculum/schoolSService";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
-import { FiTrash2 } from "react-icons/fi";
-import { GoSearch } from "react-icons/go";
-import { toast } from "react-toastify";
-import EditDepartment from "./EditDepart";
-import AddDepartment from "./NewDeprt";
+import ActionModal from '@/components/common/Modals/ActionModal';
+import FilterSelect from '@/components/common/Select';
+import DataTable, { Column } from '@/components/common/Table/DataTable';
+import ContentSpinner from '@/components/common/spinners/dataLoadingSpinner';
+import { DepartmentType, SchoolType } from '@/definitions/curiculum';
+import { PAGE_SIZE } from '@/lib/constants';
+import {
+  useDeleteDepartmentMutation,
+  useGetDepartmentsQuery,
+} from '@/store/services/curriculum/departmentsService';
+import { useGetSchoolsQuery } from '@/store/services/curriculum/schoolSService';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMemo, useState } from 'react';
+import { FiTrash2 } from 'react-icons/fi';
+import { GoSearch } from 'react-icons/go';
+import { toast } from 'react-toastify';
+import EditDepartment from './EditDepart';
+import AddDepartment from './NewDeprt';
+import ButtonDropdown from '@/components/common/ActionsPopover';
 export type SchoolOption = {
   value: string;
   label: string;
@@ -27,18 +31,20 @@ const Departments = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [selectedDepartment, setSelectedDepartment] = useState<number | null>(null);
+  const [selectedDepartment, setSelectedDepartment] = useState<number | null>(
+    null,
+  );
   const { filters, currentPage, handleFilterChange, handlePageChange } =
     useFilters({
       initialFilters: {
-        department_name: searchParams.get("department_name") || "",
-        school: searchParams.get("school") || "",
-        status: searchParams.get("status") || "",
+        department_name: searchParams.get('department_name') || '',
+        school: searchParams.get('school') || '',
+        status: searchParams.get('status') || '',
       },
-      initialPage: parseInt(searchParams.get("page") || "1", 10),
+      initialPage: parseInt(searchParams.get('page') || '1', 10),
       router,
       debounceTime: 100,
-      debouncedFields: ["department_name"],
+      debouncedFields: ['department_name'],
     });
 
   const queryParams = useMemo(
@@ -47,113 +53,129 @@ const Departments = () => {
       page_size: PAGE_SIZE,
       ...filters,
     }),
-    [currentPage, filters]
+    [currentPage, filters],
   );
 
-  const { data, isLoading, error, refetch } = useGetDepartmentsQuery(queryParams, {refetchOnMountOrArgChange: true,});
-  const { data:schools} = useGetSchoolsQuery({}, {refetchOnMountOrArgChange: true,});
-const [deletDepartment, {isLoading:isDeleting}] = useDeleteDepartmentMutation();   
-console.log("schools",schools)
-  const schoolOptions = schools?.map((school:SchoolType) => ({
-  value: school.id, 
-  label: school.name,
-})) || [];
-   const openDeleteModal = (depart_id: number) => {
+  const { data, isLoading, error, refetch } = useGetDepartmentsQuery(
+    queryParams,
+    { refetchOnMountOrArgChange: true },
+  );
+  const { data: schools } = useGetSchoolsQuery(
+    {},
+    { refetchOnMountOrArgChange: true },
+  );
+  const [deletDepartment, { isLoading: isDeleting }] =
+    useDeleteDepartmentMutation();
+  console.log('schools', schools);
+  const schoolOptions =
+    schools?.map((school: SchoolType) => ({
+      value: school.id,
+      label: school.name,
+    })) || [];
+  const openDeleteModal = (depart_id: number) => {
     setSelectedDepartment(depart_id);
     setIsDeleteModalOpen(true);
   };
 
-  console.log("data", data)
+  console.log('data', data);
   const closeDeleteModal = () => {
     setIsDeleteModalOpen(false);
     setSelectedDepartment(null);
   };
- const handleDeleteCampus = async () => {
+  const handleDeleteCampus = async () => {
     try {
       await deletDepartment(selectedDepartment).unwrap();
-      toast.success("Department Deleted successfully!");
+      toast.success('Department Deleted successfully!');
       closeDeleteModal();
       refetch();
     } catch (error: unknown) {
-      console.log("error", error);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      console.log('error', error);
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
-        console.log("errorData", errorData);
-        toast.error(errorData.error || "Error Deleting Department!.");
+        console.log('errorData', errorData);
+        toast.error(errorData.error || 'Error Deleting Department!.');
       } else {
-        toast.error("Unexpected Error occured. Please try again.");
+        toast.error('Unexpected Error occured. Please try again.');
       }
     }
   };
   const columns: Column<DepartmentType>[] = [
     {
-      header: "Name",
-      accessor: "name",
-      cell: (depart: DepartmentType) => <span >{depart?.name ?? "-"}</span>,
+      header: 'Name',
+      accessor: 'name',
+      cell: (depart: DepartmentType) => <span>{depart?.name ?? '-'}</span>,
     },
     {
-      header: "School",
-      accessor: "school",
+      header: 'School',
+      accessor: 'school',
       cell: (depart: DepartmentType) => (
-        <span className="text-sm font-normal">{depart?.school?.name ?? "-"}</span>
+        <span className="text-sm font-normal">
+          {depart?.school?.name ?? '-'}
+        </span>
       ),
     },
     {
-      header: "Department Type",
-      accessor: "department_type",
+      header: 'Department Type',
+      accessor: 'department_type',
       cell: (depart: DepartmentType) => (
         <span className="text-sm font-normal">{depart.department_type}</span>
       ),
     },
     {
-      header: "Office",
-      accessor: "office",
+      header: 'Office',
+      accessor: 'office',
       cell: (depart: DepartmentType) => (
         <span className="text-sm font-normal">{depart.office}</span>
       ),
     },
-   
-   
-   
-   
-    {
-      header: "Actions",
-      accessor: "id",
-      cell: (depart: DepartmentType) => (
-        <div className="flex items-center justify-center space-x-2">
-         <div>
-          <EditDepartment
-            department={depart}
-            refetchData={refetch}
-          />
-         </div>
-          <div
-                  onClick={()=>openDeleteModal(depart.id)}
-                  className="p-2 rounded-xl bg-red-100 text-red-600 hover:bg-blue-200 hover:text-red-700 cursor-pointer transition duration-200 shadow-sm"
-            title="Delete department"
-                >
-                  <FiTrash2 className="text-sm" />
-                </div>
 
-       
-        </div>
+    {
+      header: 'Actions',
+      accessor: 'id',
+      cell: (depart: DepartmentType) => (
+        // <div className="flex items-center justify-center space-x-2">
+        //  <div>
+        //   <EditDepartment
+        //     department={depart}
+        //     refetchData={refetch}
+        //   />
+        //  </div>
+        //   <div
+        //           onClick={()=>openDeleteModal(depart.id)}
+        //           className="p-2 rounded-xl bg-red-100 text-red-600 hover:bg-blue-200 hover:text-red-700 cursor-pointer transition duration-200 shadow-sm"
+        //     title="Delete department"
+        //         >
+        //           <FiTrash2 className="text-sm" />
+        //         </div>
+
+        // </div>
+        <ButtonDropdown>
+          <EditDepartment department={depart} refetchData={refetch} />
+          <button
+            onClick={() => openDeleteModal(depart.id)}
+            className="flex items-center space-x-2"
+          >
+            <FiTrash2 className="text-lg text-red-500" />
+            <span className="text-red-600">Delete</span>
+          </button>
+        </ButtonDropdown>
       ),
     },
   ];
   const handleSchoolChange = (selectedOption: SchoolOption | null) => {
     handleFilterChange({
-      school: selectedOption ? selectedOption.value : "",
+      school: selectedOption ? selectedOption.value : '',
     });
   };
-  console.log("data", data);
+  console.log('data', data);
   return (
     <>
       <div className="bg-white w-full  p-1 shadow-md rounded-lg font-nunito">
         <div className=" p-3  flex flex-col md:flex-row md:items-center lg:items-center md:gap-0 lg:gap-0 gap-4 lg:justify-between md:justify-between">
           <h2 className="font-semibold text-black text-xl">All Departments</h2>
-        <div>
-          <AddDepartment refetchData={refetch} />
-        </div>
+          <div>
+            <AddDepartment refetchData={refetch} />
+          </div>
         </div>
 
         <div className="flex flex-col gap-4 mt-5 lg:gap-0 md:gap-0 lg:flex-row md:flex-row  md:items-center p-2 md:justify-between lg:items-center lg:justify-between">
@@ -168,15 +190,17 @@ console.log("schools",schools)
             />
           </div>
           <div className="flex flex-col gap-3  lg:p-0 lg:flex-row md:flex-row md:items-center md:space-x-2 lg:items-center lg:space-x-5">
-             <FilterSelect
-            options={schoolOptions}
-            value={schoolOptions.find(
-              (option:SchoolOption) => option.value === filters.school
-            ) || { value: "", label: "All Schools" }}
-            onChange={handleSchoolChange}
-            placeholder=""
-            defaultLabel="All Schools"
-          />
+            <FilterSelect
+              options={schoolOptions}
+              value={
+                schoolOptions.find(
+                  (option: SchoolOption) => option.value === filters.school,
+                ) || { value: '', label: 'All Schools' }
+              }
+              onChange={handleSchoolChange}
+              placeholder=""
+              defaultLabel="All Schools"
+            />
           </div>
         </div>
         {isLoading ? (
@@ -208,15 +232,15 @@ console.log("schools",schools)
         )}
 
         <ActionModal
-              isOpen={isDeleteModalOpen}
-              onClose={closeDeleteModal}
-              onDelete={handleDeleteCampus}
-              isDeleting={isDeleting}
-              confirmationMessage="Are you sure you want to Delete this Department ?"
-              deleteMessage="This action cannot be undone."
-              title="Delete Department"
-              actionText="Delete"
-           />
+          isOpen={isDeleteModalOpen}
+          onClose={closeDeleteModal}
+          onDelete={handleDeleteCampus}
+          isDeleting={isDeleting}
+          confirmationMessage="Are you sure you want to Delete this Department ?"
+          deleteMessage="This action cannot be undone."
+          title="Delete Department"
+          actionText="Delete"
+        />
       </div>
     </>
   );

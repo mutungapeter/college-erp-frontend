@@ -1,4 +1,4 @@
-import { apiSlice } from "../../api/apiSlice";
+import { apiSlice } from '../../api/apiSlice';
 
 interface FeeStructureInterface {
   semester?: string;
@@ -16,33 +16,33 @@ export const finaceApi = apiSlice.injectEndpoints({
     payLibraryFine: builder.mutation({
       query: (data) => ({
         url: `finance/library/process-payment/`,
-        method: "POST",
+        method: 'POST',
         body: data,
       }),
     }),
-   
+
     createFeeStructure: builder.mutation({
       query: (data) => ({
         url: `finance/fee-structures/create/`,
-        method: "POST",
+        method: 'POST',
         body: data,
       }),
     }),
     UpdateFeeStructure: builder.mutation({
-      query: ({id, data}) => ({
+      query: ({ id, data }) => ({
         url: `finance/fee-structures/${id}/update/`,
-        method: "PATCH",
+        method: 'PATCH',
         body: data,
       }),
     }),
-     
+
     deleteFeeStructure: builder.mutation({
       query: (id) => ({
         url: `finance/fee-structures/${id}/delete/`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
     }),
-   
+
     getFeeStructuresList: builder.query({
       query: ({ semester, page, page_size }: FeeStructureInterface = {}) => {
         const queryParams: Record<
@@ -56,47 +56,51 @@ export const finaceApi = apiSlice.injectEndpoints({
         // console.log("query made");
         return {
           url: `finance/fee-structures/`,
-          method: "GET",
+          method: 'GET',
           params: queryParams,
         };
       },
     }),
     getFeeStructureItems: builder.query({
-      query: ({ fee_structure_id, page, page_size }: FeeStructureItemsInterface = {}) => {
+      query: ({
+        fee_structure_id,
+        page,
+        page_size,
+      }: FeeStructureItemsInterface = {}) => {
         const queryParams: Record<
           string,
           string | number | boolean | undefined
         > = {};
-      
+
         if (page) queryParams.page = page;
         if (page_size) queryParams.page_size = page_size;
         // console.log("queryParams====", queryParams);
         // console.log("query made");
         return {
           url: `finance/fee-structures/${fee_structure_id}/items/`,
-          method: "GET",
+          method: 'GET',
           params: queryParams,
         };
       },
     }),
-     createFeeStructureItem: builder.mutation({
+    createFeeStructureItem: builder.mutation({
       query: (data) => ({
         url: `finance/fee-structure-items/create/`,
-        method: "POST",
+        method: 'POST',
         body: data,
       }),
     }),
     updateFeeStructureItem: builder.mutation({
-      query: ({id, data}) => ({
+      query: ({ id, data }) => ({
         url: `finance/fee-structure-items/${id}/update/`,
-        method: "PATCH",
+        method: 'PATCH',
         body: data,
       }),
     }),
     deleteFeeStructureItem: builder.mutation({
       query: (id) => ({
         url: `finance/fee-structure-items/${id}/delete/`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
     }),
   }),

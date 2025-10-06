@@ -1,21 +1,21 @@
-import React, { JSX } from "react";
-import ContentSpinner from "../spinners/dataLoadingSpinner";
+import React, { JSX } from 'react';
+import ContentSpinner from '../spinners/dataLoadingSpinner';
 
 function renderCellValue(value: unknown): React.ReactNode {
   if (
-    typeof value === "string" ||
-    typeof value === "number" ||
-    typeof value === "boolean"
+    typeof value === 'string' ||
+    typeof value === 'number' ||
+    typeof value === 'boolean'
   ) {
     return value.toString();
   }
 
   if (Array.isArray(value)) {
-    return value.join(", ");
+    return value.join(', ');
   }
 
   if (value === null || value === undefined) {
-    return "-";
+    return '-';
   }
 
   // Optionally, format Date or Object
@@ -36,11 +36,11 @@ interface DataTableProps<T> {
   columns: Column<T>[];
   isLoading: boolean;
   error: unknown;
-   rowBgColor?: string;
-   columnBgColor?: string;
-   columnTextColor?: string;
+  rowBgColor?: string;
+  columnBgColor?: string;
+  columnTextColor?: string;
   //  rowTextColor?: string;
-   stripedRows?: boolean;
+  stripedRows?: boolean;
   stripeColor?: string;
 }
 const DataTable = <T,>({
@@ -55,7 +55,7 @@ const DataTable = <T,>({
   stripeColor = 'bg-gray-50',
   // rowTextColor,
 }: DataTableProps<T>): JSX.Element => {
-   const getRowBgColor = (index: number): string => {
+  const getRowBgColor = (index: number): string => {
     if (stripedRows) {
       return index % 2 === 0 ? 'bg-white' : stripeColor;
     }
@@ -65,12 +65,14 @@ const DataTable = <T,>({
     <div className="relative overflow-x-auto md:overflow-x-visible bg-white p-3 rounded-md border mt-5">
       <table className="w-full table-auto ">
         <thead>
-          <tr className={`"
+          <tr
+            className={`"
            text-gray-600 uppercase border-b text-[10px] font-semibold
             border-gray-200 leading-normal"
 
-            ${columnBgColor ? columnBgColor : "bg-white"}
-            ${columnTextColor ? columnTextColor : "text-gray-600"}`}>
+            ${columnBgColor ? columnBgColor : 'bg-white'}
+            ${columnTextColor ? columnTextColor : 'text-gray-600'}`}
+          >
             {columns.map((column, index) => (
               <th
                 key={index}

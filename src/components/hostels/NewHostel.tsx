@@ -1,19 +1,20 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FiPlus } from "react-icons/fi";
-import { IoCloseOutline } from "react-icons/io5";
-import Select from "react-select";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiPlus } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
+import Select from 'react-select';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
 
-import { CampusType } from "@/definitions/curiculum";
-import { HostelGenderOptions } from "@/lib/constants";
-import { HostelCreateType, hostelCreateSchema } from "@/schemas/hostels/main";
-import { useGetCampusesQuery } from "@/store/services/curriculum/campusService";
-import { useCreateHostelsMutation } from "@/store/services/hostels/hostelService";
+import { CampusType } from '@/definitions/curiculum';
+import { HostelGenderOptions } from '@/lib/constants';
+import { HostelCreateType, hostelCreateSchema } from '@/schemas/hostels/main';
+import { useGetCampusesQuery } from '@/store/services/curriculum/campusService';
+import { useCreateHostelsMutation } from '@/store/services/hostels/hostelService';
+import CreateAndUpdateButton from '../common/CreateAndUpdateButton';
+import ModalBottomButton from '../common/StickyModalFooterButtons';
 
 type SelectOption = {
   value: string | number;
@@ -23,14 +24,14 @@ type SelectOption = {
 const AddHostel = ({ refetchData }: { refetchData: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
   const [createHostels, { isLoading: isCreating }] = useCreateHostelsMutation();
 
   const { data: campusData } = useGetCampusesQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
   const {
     register,
@@ -41,9 +42,9 @@ const AddHostel = ({ refetchData }: { refetchData: () => void }) => {
   } = useForm<HostelCreateType>({
     resolver: zodResolver(hostelCreateSchema),
     defaultValues: {
-      name: "",
+      name: '',
       campus: undefined,
-      gender: "",
+      gender: '',
       rooms: 0,
       capacity: 0,
       room_cost: 0,
@@ -51,7 +52,7 @@ const AddHostel = ({ refetchData }: { refetchData: () => void }) => {
   });
 
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -69,38 +70,38 @@ const AddHostel = ({ refetchData }: { refetchData: () => void }) => {
 
   const handleGenderChange = (selected: SelectOption | null) => {
     if (selected && selected.value) {
-      setValue("gender", String(selected.value));
+      setValue('gender', String(selected.value));
     }
   };
 
   const handleCampusChange = (selected: SelectOption | null) => {
     if (selected) {
       const campusId = Number(selected.value);
-      setValue("campus", campusId);
+      setValue('campus', campusId);
     }
   };
 
   const onSubmit = async (formData: HostelCreateType) => {
-    console.log("submitting form data", formData);
+    console.log('submitting form data', formData);
 
     try {
       const response = await createHostels(formData).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Hostel added successfully!");
+      setSuccessMessage('Hostel added successfully!');
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(`Failed to add  Hostel: ${errorData.error}`);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occurred. Please try again.");
+        setSuccessMessage('Unexpected error occurred. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -108,18 +109,17 @@ const AddHostel = ({ refetchData }: { refetchData: () => void }) => {
 
   return (
     <>
-      <div
+      <CreateAndUpdateButton
         onClick={handleOpenModal}
-        className="flex flex-col md:flex-row md:items-center gap-4 w-full md:w-auto"
-      >
-        <div
-          className="bg-blue-600 inline-flex cursor-pointer w-max 
-         items-center space-x-2 text-white px-2 py-2 rounded-md hover:bg-blue-700 transition duration-300"
-        >
-          <FiPlus className="text-lg" />
-          <span className="text-xs font-medium">New Hostel</span>
-        </div>
-      </div>
+        title="Add New"
+        label="New Hostel"
+        icon={<FiPlus className="w-4 h-4" />}
+        className="flex items-center space-x-2 px-4 py-2
+               bg-primary
+               text-white rounded-md hover:bg-emerald-600
+               focus:outline-none focus:ring-2 focus:ring-primary-500 
+               focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md"
+      />
 
       {isOpen && (
         <div
@@ -136,21 +136,21 @@ const AddHostel = ({ refetchData }: { refetchData: () => void }) => {
 
           <div
             className="fixed inset-0 min-h-full z-100 w-screen flex flex-col text-center md:items-center
-           justify-start overflow-y-auto p-2 md:p-3"
+           justify-center overflow-y-auto p-2 md:p-3"
           >
             <div
               className="relative transform justify-center animate-fadeIn max-h-[90vh]
-                overflow-y-auto rounded-md bg-white text-left shadow-xl transition-all   
-                w-full sm:max-w-c-600 md:max-w-600 px-3"
+                overflow-y-auto rounded-2xl bg-white text-left shadow-xl transition-all   
+                w-full sm:max-w-c-550 md:max-w-550 px-3"
             >
               <>
                 <div className="sticky top-0 bg-white z-40 flex px-4 justify-between items-center py-3">
                   <p className="text-sm md:text-lg lg:text-lg font-semibold">
-                    Add Hostel
+                    Add New Hostel
                   </p>
                   <div className="flex justify-end cursor-pointer">
                     <IoCloseOutline
-                      size={30}
+                      size={20}
                       onClick={handleCloseModal}
                       className="text-gray-500"
                     />
@@ -170,7 +170,7 @@ const AddHostel = ({ refetchData }: { refetchData: () => void }) => {
                         type="text"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                         placeholder="e.g. The Richest Man In Babylon"
-                        {...register("name")}
+                        {...register('name')}
                       />
                       {errors.name && (
                         <p className="text-red-500 text-sm mt-1">
@@ -195,23 +195,23 @@ const AddHostel = ({ refetchData }: { refetchData: () => void }) => {
                           }),
                           menu: (base) => ({
                             ...base,
-                            position: "absolute",
-                            width: "max-content",
-                            minWidth: "100%",
-                            minHeight: "50px",
+                            position: 'absolute',
+                            width: 'max-content',
+                            minWidth: '100%',
+                            minHeight: '50px',
                           }),
                           control: (base) => ({
                             ...base,
-                            minHeight: "44px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
+                            minHeight: '44px',
+                            minWidth: '200px',
+                            borderColor: '#d1d5db',
+                            boxShadow: 'none',
+                            '&:hover': {
+                              borderColor: '#9ca3af',
                             },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
+                            '&:focus-within': {
+                              borderColor: '#9ca3af',
+                              boxShadow: 'none',
                             },
                           }),
                         }}
@@ -230,7 +230,7 @@ const AddHostel = ({ refetchData }: { refetchData: () => void }) => {
                         type="number"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                         placeholder="no. of rooms"
-                        {...register("rooms")}
+                        {...register('rooms')}
                       />
                       {errors.rooms && (
                         <p className="text-red-500 text-sm mt-1">
@@ -246,7 +246,7 @@ const AddHostel = ({ refetchData }: { refetchData: () => void }) => {
                         type="number"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                         placeholder="total capacity"
-                        {...register("capacity")}
+                        {...register('capacity')}
                       />
                       {errors.capacity && (
                         <p className="text-red-500 text-sm mt-1">
@@ -262,7 +262,7 @@ const AddHostel = ({ refetchData }: { refetchData: () => void }) => {
                         type="number"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                         placeholder="Ksh."
-                        {...register("room_cost")}
+                        {...register('room_cost')}
                       />
                       {errors.room_cost && (
                         <p className="text-red-500 text-sm mt-1">
@@ -271,7 +271,9 @@ const AddHostel = ({ refetchData }: { refetchData: () => void }) => {
                       )}
                     </div>
                     <div>
-                      <label>Campus</label>
+                      <label className="block space-x-1 text-sm font-medium mb-2">
+                        Campus
+                      </label>
                       <Select
                         options={campusData?.map((item: CampusType) => ({
                           value: item.id,
@@ -286,16 +288,16 @@ const AddHostel = ({ refetchData }: { refetchData: () => void }) => {
                           }),
                           control: (base) => ({
                             ...base,
-                            minHeight: "24px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
+                            minHeight: '24px',
+                            minWidth: '200px',
+                            borderColor: '#d1d5db',
+                            boxShadow: 'none',
+                            '&:hover': {
+                              borderColor: '#9ca3af',
                             },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
+                            '&:focus-within': {
+                              borderColor: '#9ca3af',
+                              boxShadow: 'none',
                             },
                           }),
                         }}
@@ -309,29 +311,11 @@ const AddHostel = ({ refetchData }: { refetchData: () => void }) => {
                       )}
                     </div>
                   </div>
-                  <div className="sticky bottom-0 bg-white z-40 flex space-x-3 gap-4 md:justify-end items-center py-3">
-                    <button
-                      type="button"
-                      onClick={handleCloseModal}
-                      className="border border-gray-300 bg-white shadow-sm text-gray-700 py-2 text-sm px-4 rounded-md w-full min-w-[100px] md:w-auto hover:bg-gray-50"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting || isCreating}
-                      className="bg-primary-600 text-white py-2 hover:bg-blue-700 text-sm px-3 md:px-4 rounded-md w-full min-w-[100px] md:w-auto"
-                    >
-                      {isSubmitting || isCreating ? (
-                        <span className="flex items-center">
-                          <SubmitSpinner />
-                          <span>Adding...</span>
-                        </span>
-                      ) : (
-                        <span>Add</span>
-                      )}
-                    </button>
-                  </div>
+                  <ModalBottomButton
+                    onCancel={handleCloseModal}
+                    isSubmitting={isSubmitting}
+                    isProcessing={isCreating}
+                  />
                 </form>
               </>
             </div>

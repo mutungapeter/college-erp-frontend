@@ -1,8 +1,4 @@
-const TimeTablePage=()=>{
- return (
-     <>
-     Timetable page
-     </>
- )   
-}
-export default TimeTablePage
+const TimeTablePage = () => {
+  return <>Timetable page</>;
+};
+export default TimeTablePage;

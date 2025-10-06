@@ -1,4 +1,4 @@
-  export type Module = {
+export type Module = {
   id: number;
   name: string;
   code: string;
@@ -14,8 +14,7 @@ export type RolePermission = {
   can_approve: boolean;
   can_export: boolean;
   can_print: boolean;
-  can_view_all:boolean;
-
+  can_view_all: boolean;
 };
 
 export type UserRole = {
@@ -24,14 +23,12 @@ export type UserRole = {
   permissions: RolePermission[];
 };
 
-
-
 export type User = {
   id: number;
   username: string;
   email: string;
   first_name: string;
   last_name: string;
-  phone_number?: string; 
-  role: UserRole | null; 
+  phone_number?: string;
+  role: UserRole | null;
 };

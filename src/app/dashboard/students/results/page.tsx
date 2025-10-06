@@ -1,11 +1,8 @@
-const MyResultsPage=()=>{
-    return (
-        <>
-        <div>
-            Results
-        </div>
-        </>
-    )
-    
-}
-export default MyResultsPage
+const MyResultsPage = () => {
+  return (
+    <>
+      <div>Results</div>
+    </>
+  );
+};
+export default MyResultsPage;

@@ -1,22 +1,25 @@
-"use client";
+'use client';
 
-import Pagination from "@/components/common/Pagination";
+import Pagination from '@/components/common/Pagination';
 
-import { useFilters } from "@/hooks/useFilters";
+import { useFilters } from '@/hooks/useFilters';
 
-import ActionModal from "@/components/common/Modals/ActionModal";
-import DataTable, { Column } from "@/components/common/Table/DataTable";
-import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
-import { CampusType } from "@/definitions/curiculum";
-import { PAGE_SIZE } from "@/lib/constants";
-import { useDeleteCampusMutation, useGetCampusesQuery } from "@/store/services/curriculum/campusService";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
-import { FiTrash2 } from "react-icons/fi";
-import { GoSearch } from "react-icons/go";
-import { toast } from "react-toastify";
-import AddCampus from "./NewCampus";
-import EditCampus from "./editCampus";
+import ActionModal from '@/components/common/Modals/ActionModal';
+import DataTable, { Column } from '@/components/common/Table/DataTable';
+import ContentSpinner from '@/components/common/spinners/dataLoadingSpinner';
+import { CampusType } from '@/definitions/curiculum';
+import { PAGE_SIZE } from '@/lib/constants';
+import {
+  useDeleteCampusMutation,
+  useGetCampusesQuery,
+} from '@/store/services/curriculum/campusService';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMemo, useState } from 'react';
+import { FiTrash2 } from 'react-icons/fi';
+import { GoSearch } from 'react-icons/go';
+import { toast } from 'react-toastify';
+import AddCampus from './NewCampus';
+import EditCampus from './editCampus';
 export type ProgramOption = {
   value: string;
   label: string;
@@ -29,13 +32,13 @@ const Campuses = () => {
   const { filters, currentPage, handleFilterChange, handlePageChange } =
     useFilters({
       initialFilters: {
-        name: searchParams.get("campus_name") || "",
-        status: searchParams.get("status") || "",
+        name: searchParams.get('campus_name') || '',
+        status: searchParams.get('status') || '',
       },
-      initialPage: parseInt(searchParams.get("page") || "1", 10),
+      initialPage: parseInt(searchParams.get('page') || '1', 10),
       router,
       debounceTime: 100,
-      debouncedFields: ["campus_name"],
+      debouncedFields: ['campus_name'],
     });
 
   const queryParams = useMemo(
@@ -44,15 +47,15 @@ const Campuses = () => {
       page_size: PAGE_SIZE,
       ...filters,
     }),
-    [currentPage, filters]
+    [currentPage, filters],
   );
 
   const { data, isLoading, error, refetch } = useGetCampusesQuery(queryParams, {
     refetchOnMountOrArgChange: true,
   });
-const [deleteCampus, {isLoading:isDeleting}] = useDeleteCampusMutation();   
-  
-   const openDeleteModal = (id: number) => {
+  const [deleteCampus, { isLoading: isDeleting }] = useDeleteCampusMutation();
+
+  const openDeleteModal = (id: number) => {
     setSelectedCampus(id);
     setIsDeleteModalOpen(true);
   };
@@ -61,47 +64,47 @@ const [deleteCampus, {isLoading:isDeleting}] = useDeleteCampusMutation();
     setIsDeleteModalOpen(false);
     setSelectedCampus(null);
   };
- const handleDeleteCampus = async () => {
+  const handleDeleteCampus = async () => {
     try {
       await deleteCampus(selectedCampus).unwrap();
-      toast.success("Campus Deleted successfully!");
+      toast.success('Campus Deleted successfully!');
       closeDeleteModal();
       refetch();
     } catch (error: unknown) {
-      console.log("error", error);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      console.log('error', error);
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
-        console.log("errorData", errorData);
-        toast.error(errorData.error || "Error Deleting Campus!.");
+        console.log('errorData', errorData);
+        toast.error(errorData.error || 'Error Deleting Campus!.');
       } else {
-        toast.error("Unexpected Error occured. Please try again.");
+        toast.error('Unexpected Error occured. Please try again.');
       }
     }
   };
-  console.log("data", data)
+  console.log('data', data);
   const columns: Column<CampusType>[] = [
     {
-      header: "Name",
-      accessor: "name",
+      header: 'Name',
+      accessor: 'name',
       cell: (campus: CampusType) => <span>{campus.name}</span>,
     },
     {
-      header: "Address",
-      accessor: "address",
+      header: 'Address',
+      accessor: 'address',
       cell: (campus: CampusType) => (
         <span className="text-sm">{campus.address}</span>
       ),
     },
     {
-      header: "City",
-      accessor: "city",
+      header: 'City',
+      accessor: 'city',
       cell: (campus: CampusType) => (
         <span className="text-sm">{campus.city}</span>
       ),
     },
     {
-      header: "Phone",
-      accessor: "phone_number",
+      header: 'Phone',
+      accessor: 'phone_number',
       cell: (campus: CampusType) => (
         <span>
           <span className="text-sm">{campus.phone_number}</span>
@@ -109,8 +112,8 @@ const [deleteCampus, {isLoading:isDeleting}] = useDeleteCampusMutation();
       ),
     },
     {
-      header: "Email",
-      accessor: "email",
+      header: 'Email',
+      accessor: 'email',
       cell: (campus: CampusType) => (
         <span>
           <span className="text-sm">{campus.email}</span>
@@ -118,8 +121,8 @@ const [deleteCampus, {isLoading:isDeleting}] = useDeleteCampusMutation();
       ),
     },
     {
-      header: "Poplulation",
-      accessor: "population",
+      header: 'Poplulation',
+      accessor: 'population',
       cell: (campus: CampusType) => (
         <span>
           <span className="text-sm">{campus.population}</span>
@@ -127,32 +130,27 @@ const [deleteCampus, {isLoading:isDeleting}] = useDeleteCampusMutation();
       ),
     },
 
-   
     {
-      header: "Actions",
-      accessor: "id",
+      header: 'Actions',
+      accessor: 'id',
       cell: (campus: CampusType) => (
         <div className="flex items-center justify-center space-x-2">
-         
-                <div>
-
-                  <EditCampus refetchData={refetch} campus={campus} />
-                </div>
+          <div>
+            <EditCampus refetchData={refetch} campus={campus} />
+          </div>
           <div
-                  onClick={()=>openDeleteModal(campus.id)}
-                  className="p-2 rounded-xl bg-red-100 text-red-600 hover:bg-blue-200 hover:text-red-700 cursor-pointer transition duration-200 shadow-sm"
+            onClick={() => openDeleteModal(campus.id)}
+            className="p-2 rounded-xl bg-red-100 text-red-600 hover:bg-blue-200 hover:text-red-700 cursor-pointer transition duration-200 shadow-sm"
             title="Edit Cohort"
-                >
-                  <FiTrash2 className="text-sm" />
-                </div>
-
-       
+          >
+            <FiTrash2 className="text-sm" />
+          </div>
         </div>
       ),
     },
   ];
 
-  console.log("data", data);
+  console.log('data', data);
   return (
     <>
       <div className="bg-white w-full  p-1 shadow-md rounded-lg font-nunito">
@@ -174,7 +172,6 @@ const [deleteCampus, {isLoading:isDeleting}] = useDeleteCampusMutation();
               className="w-full md:w-auto text-gray-900 md:min-w-[40%]  text-sm px-2 py-2 bg-transparent outline-none border-b border-gray-300 focus:border-blue-600"
             />
           </div>
-          
         </div>
         {isLoading ? (
           <div className="flex justify-center py-8">
@@ -205,15 +202,15 @@ const [deleteCampus, {isLoading:isDeleting}] = useDeleteCampusMutation();
         )}
 
         <ActionModal
-              isOpen={isDeleteModalOpen}
-              onClose={closeDeleteModal}
-              onDelete={handleDeleteCampus}
-              isDeleting={isDeleting}
-              confirmationMessage="Are you sure you want to Delete this Campus ?"
-              deleteMessage="This action cannot be undone."
-              title="Delete Campus"
-              actionText="Delete Campus"
-           />
+          isOpen={isDeleteModalOpen}
+          onClose={closeDeleteModal}
+          onDelete={handleDeleteCampus}
+          isDeleting={isDeleting}
+          confirmationMessage="Are you sure you want to Delete this Campus ?"
+          deleteMessage="This action cannot be undone."
+          title="Delete Campus"
+          actionText="Delete Campus"
+        />
       </div>
     </>
   );

@@ -1,7 +1,7 @@
-"use client";
-import { ReactNode } from "react";
+'use client';
+import { ReactNode } from 'react';
 
-type IconButtonProps = {
+type CreateAndUpdateButtonProps = {
   onClick: () => void;
   title?: string;
   label?: string;
@@ -10,19 +10,20 @@ type IconButtonProps = {
   tooltip?: string;
 };
 
-const IconButton = ({
+const CreateAndUpdateButton = ({
   onClick,
   title,
   label,
   icon,
-  className = "",
+  className = '',
   tooltip,
-}: IconButtonProps) => {
+}: CreateAndUpdateButtonProps) => {
   return (
     <button
       onClick={onClick}
       title={title}
-      className={`flex items-center space-x-2  rounded-md focus:outline-none focus:ring-2 focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md ${className}`}
+      className={`group relative flex items-center space-x-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md ${className}`}
+      type="button"
     >
       {icon}
       {label && <span>{label}</span>}
@@ -35,4 +36,4 @@ const IconButton = ({
   );
 };
 
-export default IconButton;
+export default CreateAndUpdateButton;

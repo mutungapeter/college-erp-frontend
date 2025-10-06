@@ -1,25 +1,26 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { IoCloseOutline } from "react-icons/io5";
-import { z } from "zod";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { IoCloseOutline } from 'react-icons/io5';
+import { z } from 'zod';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
-import Select, { SingleValue } from "react-select";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import Select, { SingleValue } from 'react-select';
 
+import CreateAndUpdateButton from '@/components/common/CreateAndUpdateButton';
+import ModalBottomButton from '@/components/common/StickyModalFooterButtons';
 import {
   DepartmentType,
   ProgrammeType,
   SchoolType,
-} from "@/definitions/curiculum";
-import { updateProgrammeSchema } from "@/schemas/curriculum/programme";
-import { useUpdateProgrammeMutation } from "@/store/services/curriculum/programmesService";
-import { useGetSchoolsQuery } from "@/store/services/curriculum/schoolSService";
-import { FiEdit } from "react-icons/fi";
-import { useGetDepartmentsQuery } from "@/store/services/curriculum/departmentsService";
-import { ProgrammeLevelOptions } from "@/lib/constants";
+} from '@/definitions/curiculum';
+import { ProgrammeLevelOptions } from '@/lib/constants';
+import { updateProgrammeSchema } from '@/schemas/curriculum/programme';
+import { useGetDepartmentsQuery } from '@/store/services/curriculum/departmentsService';
+import { useUpdateProgrammeMutation } from '@/store/services/curriculum/programmesService';
+import { useGetSchoolsQuery } from '@/store/services/curriculum/schoolSService';
+import { FiEdit } from 'react-icons/fi';
 
 const EditProgramme = ({
   data,
@@ -31,7 +32,7 @@ const EditProgramme = ({
   const [isOpen, setIsOpen] = useState(false);
   //   console.log("data", data);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
 
   const [isError, setIsError] = useState(false);
 
@@ -39,12 +40,12 @@ const EditProgramme = ({
     useUpdateProgrammeMutation();
   const { data: schoolsData } = useGetSchoolsQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
   //   console.log("schoolsData", schoolsData);
   const { data: departmentsData } = useGetDepartmentsQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
   const {
     register,
@@ -55,15 +56,15 @@ const EditProgramme = ({
   } = useForm({
     resolver: zodResolver(updateProgrammeSchema),
     defaultValues: {
-      name: data?.name || "",
-      code: data?.code || "",
-      level: data?.level || "",
+      name: data?.name || '',
+      code: data?.code || '',
+      level: data?.level || '',
       department: data?.department?.id || null,
       school: data?.school?.id || null,
     },
   });
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -76,57 +77,57 @@ const EditProgramme = ({
     handleCloseModal();
   };
   const handleSchoolChange = (
-    selected: SingleValue<{ value: number | null; label: string }>
+    selected: SingleValue<{ value: number | null; label: string }>,
   ) => {
     if (selected) {
-      setValue("school", Number(selected.value));
+      setValue('school', Number(selected.value));
     } else {
-      setValue("school", null);
+      setValue('school', null);
     }
   };
   const handleDepartmentChange = (
-    selected: SingleValue<{ value: number | null; label: string }>
+    selected: SingleValue<{ value: number | null; label: string }>,
   ) => {
     if (selected) {
-      setValue("department", Number(selected.value));
+      setValue('department', Number(selected.value));
     } else {
-      setValue("department", null);
+      setValue('department', null);
     }
   };
   const handleLevelChange = (
-    selected: SingleValue<{ value: string; label: string }>
+    selected: SingleValue<{ value: string; label: string }>,
   ) => {
     if (selected) {
-      setValue("level", selected.value);
+      setValue('level', selected.value);
     } else {
-      setValue("level", "null");
+      setValue('level', 'null');
     }
   };
   const onSubmit = async (formData: z.infer<typeof updateProgrammeSchema>) => {
-    console.log("submitting form data");
+    console.log('submitting form data');
 
     try {
       const response = await updateProgramme({
         id: data.id,
         data: formData,
       }).unwrap();
-      console.log("response", response);
+      console.log('response', response);
 
       setIsError(false);
-      setSuccessMessage("Programme Updated successfully!");
+      setSuccessMessage('Programme Updated successfully!');
       setShowSuccessModal(true);
 
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(`Failed to update Programme: ${errorData.error}`);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected Error occured. Please try again.");
+        setSuccessMessage('Unexpected Error occured. Please try again.');
         setShowSuccessModal(true);
       }
     } finally {
@@ -136,16 +137,22 @@ const EditProgramme = ({
 
   return (
     <>
-     <button
-                   onClick={handleOpenModal}
-                   title="Edit "
-                   className="group relative p-2 bg-amber-100 text-amber-500 rounded-md hover:bg-amber-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md"
-                 >
-                   <FiEdit className="w-4 h-4" />
-                   <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                     Edit 
-                   </span>
-                 </button>
+      <CreateAndUpdateButton
+        onClick={handleOpenModal}
+        // title="Edit"
+        label="Edit"
+        icon={<FiEdit className="w-4 h-4 text-amber-500" />}
+        className="
+        px-4 py-2 w-full 
+        border-none 
+        focus:outline-none 
+        focus:border-transparent 
+        focus:ring-0 
+        active:outline-none 
+        active:ring-0
+        hover:bg-gray-100
+      "
+      />
 
       {isOpen && (
         <div
@@ -194,7 +201,7 @@ const EditProgramme = ({
                     <input
                       id="name"
                       type="text"
-                      {...register("name")}
+                      {...register('name')}
                       placeholder="e.g X Copmuter Science Department"
                       className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                     />
@@ -204,91 +211,91 @@ const EditProgramme = ({
                       </p>
                     )}
                   </div>
+                  <div>
+                    <label>School</label>
+                    <Select
+                      options={schoolsData?.map((school: SchoolType) => ({
+                        value: school.id.toString(),
+                        label: school.name,
+                      }))}
+                      menuPortalTarget={document.body}
+                      defaultValue={{
+                        value: data?.school?.id || null,
+                        label: data?.school?.name || '',
+                      }}
+                      styles={{
+                        menuPortal: (base) => ({
+                          ...base,
+                          zIndex: 9999,
+                        }),
+                        control: (base) => ({
+                          ...base,
+                          minHeight: '24px',
+                          minWidth: '200px',
+                          borderColor: '#d1d5db',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: '#9ca3af',
+                          },
+                          '&:focus-within': {
+                            borderColor: '#9ca3af',
+                            boxShadow: 'none',
+                          },
+                        }),
+                      }}
+                      onChange={handleSchoolChange}
+                    />
+
+                    {errors.school && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.school.message}
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <label>Department</label>
+                    <Select
+                      options={departmentsData?.map(
+                        (depart: DepartmentType) => ({
+                          value: depart.id,
+                          label: depart.name,
+                        }),
+                      )}
+                      defaultValue={{
+                        value: data?.department?.id || null,
+                        label: data?.department?.name || '',
+                      }}
+                      menuPortalTarget={document.body}
+                      styles={{
+                        menuPortal: (base) => ({
+                          ...base,
+                          zIndex: 9999,
+                        }),
+                        control: (base) => ({
+                          ...base,
+                          minHeight: '24px',
+                          minWidth: '200px',
+                          borderColor: '#d1d5db',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: '#9ca3af',
+                          },
+                          '&:focus-within': {
+                            borderColor: '#9ca3af',
+                            boxShadow: 'none',
+                          },
+                        }),
+                      }}
+                      onChange={handleDepartmentChange}
+                    />
+
+                    {errors.school && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.school.message}
+                      </p>
+                    )}
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-2  gap-4">
-                    <div>
-                      <label>School</label>
-                      <Select
-                        options={schoolsData?.map((school: SchoolType) => ({
-                          value: school.id.toString(),
-                          label: school.name,
-                        }))}
-                        menuPortalTarget={document.body}
-                        defaultValue={{
-                          value: data?.school?.id || null,
-                          label: data?.school?.name || "",
-                        }}
-                        styles={{
-                          menuPortal: (base) => ({
-                            ...base,
-                            zIndex: 9999,
-                          }),
-                          control: (base) => ({
-                            ...base,
-                            minHeight: "24px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
-                            },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
-                            },
-                          }),
-                        }}
-                        onChange={handleSchoolChange}
-                      />
-
-                      {errors.school && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {errors.school.message}
-                        </p>
-                      )}
-                    </div>
-                    <div>
-                      <label>Department</label>
-                      <Select
-                        options={departmentsData?.map(
-                          (depart: DepartmentType) => ({
-                            value: depart.id,
-                            label: depart.name,
-                          })
-                        )}
-                        defaultValue={{
-                          value: data?.department?.id || null,
-                          label: data?.department?.name || "",
-                        }}
-                        menuPortalTarget={document.body}
-                        styles={{
-                          menuPortal: (base) => ({
-                            ...base,
-                            zIndex: 9999,
-                          }),
-                          control: (base) => ({
-                            ...base,
-                            minHeight: "24px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
-                            },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
-                            },
-                          }),
-                        }}
-                        onChange={handleDepartmentChange}
-                      />
-
-                      {errors.school && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {errors.school.message}
-                        </p>
-                      )}
-                    </div>
                     <div>
                       <label className="block space-x-1  text-sm font-medium mb-2">
                         Programme Code
@@ -296,7 +303,7 @@ const EditProgramme = ({
                       <input
                         id="code"
                         type="text"
-                        {...register("code")}
+                        {...register('code')}
                         placeholder="e.g BIT"
                         className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                       />
@@ -312,8 +319,8 @@ const EditProgramme = ({
                       </label>
                       <Select
                         defaultValue={{
-                          value: data?.level || "",
-                          label: data?.level || "",
+                          value: data?.level || '',
+                          label: data?.level || '',
                         }}
                         options={ProgrammeLevelOptions}
                         onChange={handleLevelChange}
@@ -325,16 +332,16 @@ const EditProgramme = ({
                           }),
                           control: (base) => ({
                             ...base,
-                            minHeight: "24px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
+                            minHeight: '24px',
+                            minWidth: '200px',
+                            borderColor: '#d1d5db',
+                            boxShadow: 'none',
+                            '&:hover': {
+                              borderColor: '#9ca3af',
                             },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
+                            '&:focus-within': {
+                              borderColor: '#9ca3af',
+                              boxShadow: 'none',
                             },
                           }),
                         }}
@@ -342,29 +349,11 @@ const EditProgramme = ({
                     </div>
                   </div>
 
-                  <div className="sticky bottom-0 bg-white z-40 flex md:px-6  gap-4 md:justify-between items-center py-3 ">
-                    <button
-                      type="button"
-                      onClick={handleCloseModal}
-                                         className="border border-red-500 bg-white shadow-sm text-red-500 py-2 text-sm px-4 rounded-lg w-full min-w-[100px] md:w-auto hover:bg-red-500 hover:text-white"
-  >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting || isUpdating}
-                      className="bg-primary-600 text-white py-2 hover:bg-blue-700 text-sm px-3 md:px-4 rounded-md w-full min-w-[100px] md:w-auto"
-                    >
-                      {isSubmitting || isUpdating ? (
-                        <span className="flex items-center">
-                          <SubmitSpinner />
-                          <span>Editing...</span>
-                        </span>
-                      ) : (
-                        <span>Edit</span>
-                      )}
-                    </button>
-                  </div>
+                  <ModalBottomButton
+                    onCancel={handleCloseModal}
+                    isSubmitting={isSubmitting}
+                    isProcessing={isUpdating}
+                  />
                 </form>
               </>
             </div>

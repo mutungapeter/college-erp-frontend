@@ -1,26 +1,32 @@
 // TranscriptPDFDocument.tsx
 import React from 'react';
-import { Document, Page, Text, View, StyleSheet,
-   pdf, Image } from '@react-pdf/renderer';
+import {
+  Document,
+  Page,
+  Text,
+  View,
+  StyleSheet,
+  pdf,
+  Image,
+} from '@react-pdf/renderer';
 import { TranscriptType } from '@/definitions/transcripts';
-
 
 // Create styles for PDF
 const styles = StyleSheet.create({
   page: {
     padding: 30,
-    borderColor: "#6b7280",
+    borderColor: '#6b7280',
     borderWidth: 2,
-    fontFamily: "Helvetica",
+    fontFamily: 'Helvetica',
   },
   logoSection: {
     marginBottom: 15,
-    flexDirection: "column",
-    alignItems: "center",
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   logoContainer: {
-    flexDirection: "column",
-    alignItems: "center",
+    flexDirection: 'column',
+    alignItems: 'center',
     marginBottom: 10,
   },
   logo: {
@@ -29,146 +35,146 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   universityHeaderText: {
-    alignItems: "center",
+    alignItems: 'center',
   },
   universityName: {
     fontSize: 14,
-    fontWeight: "bold",
-    textAlign: "center",
+    fontWeight: 'bold',
+    textAlign: 'center',
     marginBottom: 3,
   },
   contactInfo: {
     fontSize: 8,
-    textAlign: "center",
+    textAlign: 'center',
     marginBottom: 2,
     lineHeight: 1.2,
   },
   officeTitle: {
     fontSize: 12,
-    fontWeight: "bold",
-    textAlign: "center",
+    fontWeight: 'bold',
+    textAlign: 'center',
     marginTop: 8,
     marginBottom: 3,
   },
   documentType: {
     fontSize: 11,
-    fontWeight: "bold",
-    textAlign: "center",
+    fontWeight: 'bold',
+    textAlign: 'center',
     marginBottom: 10,
   },
   studentSection: {
     marginTop: 20,
     paddingTop: 10,
     borderTopWidth: 1,
-    borderColor: "#6b7280",
-    flexDirection: "row",
-    justifyContent: "space-between",
+    borderColor: '#6b7280',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginBottom: 30,
   },
   infoSection: {
-    flexDirection: "column",
+    flexDirection: 'column',
     gap: 10,
   },
   infoRow: {
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: 5,
   },
   label: {
     fontSize: 10,
-    fontWeight: "bold",
-    textTransform: "uppercase",
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
   },
   value: {
     fontSize: 10,
-    fontWeight: "normal",
-    textTransform: "uppercase",
+    fontWeight: 'normal',
+    textTransform: 'uppercase',
   },
   courseSection: {
     marginTop: 25,
     borderWidth: 1,
-    borderColor: "#6b7280",
+    borderColor: '#6b7280',
     borderRadius: 4,
   },
   coursesHeader: {
-    flexDirection: "row",
-    backgroundColor: "#f3f4f6",
+    flexDirection: 'row',
+    backgroundColor: '#f3f4f6',
     borderBottomWidth: 1,
-    borderBottomColor: "#e5e7eb",
+    borderBottomColor: '#e5e7eb',
   },
   courseCode: {
-    width: "15%",
+    width: '15%',
     fontSize: 9,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     paddingVertical: 4,
     paddingHorizontal: 4,
-    textAlign: "left",
+    textAlign: 'left',
     borderRightWidth: 1,
-    borderRightColor: "#e5e7eb",
+    borderRightColor: '#e5e7eb',
   },
   courseName: {
-    width: "40%",
+    width: '40%',
     fontSize: 9,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     paddingVertical: 4,
     paddingHorizontal: 4,
-    textAlign: "left",
+    textAlign: 'left',
     borderRightWidth: 1,
-    borderRightColor: "#e5e7eb",
+    borderRightColor: '#e5e7eb',
   },
   marks: {
-    width: "10%",
+    width: '10%',
     fontSize: 9,
-    fontWeight: "bold",
-    textAlign: "center",
+    fontWeight: 'bold',
+    textAlign: 'center',
     borderRightWidth: 1,
-    borderRightColor: "#e5e7eb",
+    borderRightColor: '#e5e7eb',
     paddingVertical: 4,
     paddingHorizontal: 4,
   },
   grade: {
-    width: "10%",
+    width: '10%',
     fontSize: 9,
-    fontWeight: "bold",
-    textAlign: "center",
+    fontWeight: 'bold',
+    textAlign: 'center',
     paddingVertical: 4,
     paddingHorizontal: 4,
   },
   courseRow: {
-    flexDirection: "row",
+    flexDirection: 'row',
     borderBottomWidth: 1,
-    borderBottomColor: "#e5e7eb",
+    borderBottomColor: '#e5e7eb',
   },
   courseDataCode: {
-    width: "15%",
+    width: '15%',
     fontSize: 8,
     paddingVertical: 6,
     paddingHorizontal: 4,
-    textAlign: "left",
+    textAlign: 'left',
     borderRightWidth: 1,
-    borderRightColor: "#e5e7eb",
+    borderRightColor: '#e5e7eb',
   },
   courseDataName: {
-    width: "40%",
+    width: '40%',
     fontSize: 8,
-    textAlign: "left",
+    textAlign: 'left',
     borderRightWidth: 1,
-    borderRightColor: "#e5e7eb",
+    borderRightColor: '#e5e7eb',
     paddingVertical: 6,
     paddingHorizontal: 4,
   },
   courseDataMarks: {
-    width: "10%",
+    width: '10%',
     fontSize: 8,
-    textAlign: "center",
+    textAlign: 'center',
     borderRightWidth: 1,
-    borderRightColor: "#e5e7eb",
+    borderRightColor: '#e5e7eb',
     paddingVertical: 6,
     paddingHorizontal: 4,
   },
   courseDataGrade: {
-    width: "10%",
+    width: '10%',
     fontSize: 8,
-    textAlign: "center",
+    textAlign: 'center',
     paddingVertical: 6,
     paddingHorizontal: 4,
   },
@@ -177,76 +183,76 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   summaryRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginBottom: 4,
   },
   averageLabel: {
     fontSize: 10,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   gradingSection: {
     marginTop: 20,
-    flexDirection: "row",
-    justifyContent: "flex-start",
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
   },
   gradingSummary: {
-    flexDirection: "column",
+    flexDirection: 'column',
   },
   gradingSummaryTitle: {
     fontSize: 10,
-    fontWeight: "bold",
-    textAlign: "left",
+    fontWeight: 'bold',
+    textAlign: 'left',
     marginBottom: 8,
   },
   gradingTableHeader: {
-    flexDirection: "row",
+    flexDirection: 'row',
     paddingVertical: 4,
     marginBottom: 2,
   },
   gradingHeaderText: {
     fontSize: 9,
-    fontWeight: "bold",
-    textAlign: "left",
+    fontWeight: 'bold',
+    textAlign: 'left',
   },
   gradingPointsColumn: {
     paddingRight: 15,
   },
   gradingRow: {
-    flexDirection: "row",
+    flexDirection: 'row',
     paddingVertical: 2,
   },
   gradingDataPoints: {
     fontSize: 8,
-    textAlign: "left",
+    textAlign: 'left',
     paddingRight: 15,
   },
   gradingDataGrade: {
     fontSize: 8,
-    textAlign: "left",
+    textAlign: 'left',
   },
   signature: {
     marginTop: 40,
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   signatureLine: {
-    width: "40%",
+    width: '40%',
     borderTopWidth: 1,
-    borderTopColor: "#000",
-    marginHorizontal: "5%",
-    textAlign: "center",
+    borderTopColor: '#000',
+    marginHorizontal: '5%',
+    textAlign: 'center',
     paddingTop: 5,
     fontSize: 8,
   },
   footer: {
     marginTop: 20,
     borderTopWidth: 1,
-    borderTopColor: "#e5e7eb",
+    borderTopColor: '#e5e7eb',
     paddingTop: 10,
     fontSize: 8,
-    color: "#6b7280",
-    textAlign: "center",
+    color: '#6b7280',
+    textAlign: 'center',
   },
 });
 
@@ -254,21 +260,23 @@ interface TranscriptPDFDocumentProps {
   transcriptData: TranscriptType[];
 }
 
-const TranscriptPDFDocument: React.FC<TranscriptPDFDocumentProps> = ({ transcriptData }) => {
+const TranscriptPDFDocument: React.FC<TranscriptPDFDocumentProps> = ({
+  transcriptData,
+}) => {
   const gradingData = [
-    { points: "70-100", grade: "A" },
-    { points: "60-69", grade: "B" },
-    { points: "50-59", grade: "C" },
-    { points: "40-49", grade: "D" },
-    { points: "0-39", grade: "E" },
+    { points: '70-100', grade: 'A' },
+    { points: '60-69', grade: 'B' },
+    { points: '50-59', grade: 'C' },
+    { points: '40-49', grade: 'D' },
+    { points: '0-39', grade: 'E' },
   ];
 
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
     });
   };
 
@@ -280,10 +288,7 @@ const TranscriptPDFDocument: React.FC<TranscriptPDFDocumentProps> = ({ transcrip
           <View style={styles.logoSection}>
             <View style={styles.logoContainer}>
               {/* eslint-disable-next-line jsx-a11y/alt-text */}
-              <Image
-                style={styles.logo}
-                src="/logo/university_logo.png"
-              />
+              <Image style={styles.logo} src="/logo/university_logo.png" />
               <View style={styles.universityHeaderText}>
                 <Text style={styles.universityName}>
                   Kathangaita University of Science and Technology
@@ -313,7 +318,8 @@ const TranscriptPDFDocument: React.FC<TranscriptPDFDocumentProps> = ({ transcrip
               <View style={styles.infoRow}>
                 <Text style={styles.label}>Student Name:</Text>
                 <Text style={styles.value}>
-                  {transcript?.student?.user.first_name} {transcript?.student?.user.last_name}
+                  {transcript?.student?.user.first_name}{' '}
+                  {transcript?.student?.user.last_name}
                 </Text>
               </View>
               <View style={styles.infoRow}>
@@ -345,7 +351,7 @@ const TranscriptPDFDocument: React.FC<TranscriptPDFDocumentProps> = ({ transcrip
               <View style={styles.infoRow}>
                 <Text style={styles.label}>Year Of Study:</Text>
                 <Text style={styles.value}>
-                  {transcript?.student?.cohort.current_year}
+                  {transcript?.student?.cohort.current_year.name}
                 </Text>
               </View>
               <View style={styles.infoRow}>
@@ -380,9 +386,7 @@ const TranscriptPDFDocument: React.FC<TranscriptPDFDocumentProps> = ({ transcrip
                 <Text style={styles.courseDataCode}>
                   {course.course.course_code}
                 </Text>
-                <Text style={styles.courseDataName}>
-                  {course.course.name}
-                </Text>
+                <Text style={styles.courseDataName}>{course.course.name}</Text>
                 <Text style={styles.courseDataMarks}>{course.cat_one}</Text>
                 <Text style={styles.courseDataMarks}>{course.cat_two}</Text>
                 <Text style={styles.courseDataMarks}>{course.exam_marks}</Text>
@@ -403,17 +407,15 @@ const TranscriptPDFDocument: React.FC<TranscriptPDFDocumentProps> = ({ transcrip
           {/* Grading System */}
           <View style={styles.gradingSection}>
             <View style={styles.gradingSummary}>
-              <Text style={styles.gradingSummaryTitle}>
-                Key Grading System
-              </Text>
+              <Text style={styles.gradingSummaryTitle}>Key Grading System</Text>
 
               <View style={styles.gradingTableHeader}>
-                <Text style={[styles.gradingHeaderText, styles.gradingPointsColumn]}>
+                <Text
+                  style={[styles.gradingHeaderText, styles.gradingPointsColumn]}
+                >
                   Points
                 </Text>
-                <Text style={styles.gradingHeaderText}>
-                  Grade
-                </Text>
+                <Text style={styles.gradingHeaderText}>Grade</Text>
               </View>
 
               {gradingData.map((item, index) => (
@@ -438,7 +440,8 @@ const TranscriptPDFDocument: React.FC<TranscriptPDFDocumentProps> = ({ transcrip
           {/* Footer */}
           <View style={styles.footer}>
             <Text>
-              This is an official transcript of the Kathangaita University of Science and Technology.
+              This is an official transcript of the Kathangaita University of
+              Science and Technology.
             </Text>
             <Text>This document is void if altered in any way.</Text>
           </View>
@@ -448,11 +451,13 @@ const TranscriptPDFDocument: React.FC<TranscriptPDFDocumentProps> = ({ transcrip
   );
 };
 
-export const exportTranscriptToPDF = async (transcriptData: TranscriptType[]): Promise<void> => {
+export const exportTranscriptToPDF = async (
+  transcriptData: TranscriptType[],
+): Promise<void> => {
   const doc = <TranscriptPDFDocument transcriptData={transcriptData} />;
   const asPdf = pdf(doc);
   const blob = await asPdf.toBlob();
-  
+
   // Create download link
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');

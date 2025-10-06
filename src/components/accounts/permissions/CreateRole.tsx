@@ -1,176 +1,163 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+'use client';
+import { useEffect, useState } from 'react';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import { RoleFormData, roleSchema } from "@/schemas/accounts";
 import {
-  useCreateRoleMutation,
-  useGetModulesQuery,
-} from "@/store/services/permissions/permissionsService";
-import { Module } from "./types";
+  CreateRoleFormData,
+  createRoleSchema,
+} from '@/schemas/permissions/index';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { IoCloseOutline } from 'react-icons/io5';
+import { toast } from 'react-toastify';
+
+import CreateAndUpdateButton from '@/components/common/CreateAndUpdateButton';
+import ModalBottomButton from '@/components/common/StickyModalFooterButtons';
+import { useCreateRoleMutation } from '@/store/services/permissions/permissionsService';
+import { getApiErrorMessage } from '@/utils/errorHandler';
+import { FiPlus } from 'react-icons/fi';
 
 interface Props {
-  refetchData?: () => void;
+  refetchData: () => void;
 }
+const CreateRole = ({ refetchData }: Props) => {
+  const [isOpen, setIsOpen] = useState(false);
 
-const NewRoleWithPermissions = ({ refetchData }: Props) => {
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
-  const [isError, setIsError] = useState(false);
-
-  const { data: modulesData = [], isLoading: isModulesLoading } =
-    useGetModulesQuery({}, { refetchOnMountOrArgChange: true });
   const [createRole, { isLoading: isCreating }] = useCreateRoleMutation();
 
   const {
     register,
     handleSubmit,
     reset,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<RoleFormData>({
-    resolver: zodResolver(roleSchema),
-    defaultValues: {
-      name: "",
-      modules: [],
-    },
+    formState: { isSubmitting, errors },
+  } = useForm<CreateRoleFormData>({
+    resolver: zodResolver(createRoleSchema),
   });
 
-  const selectedModules = watch("modules");
-
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
-
-  const handleCloseSuccessModal = () => {
-    setShowSuccessModal(false);
-    setIsError(false);
-  };
-
-  const onSubmit = async (formData: RoleFormData) => {
-    console.log("Submitting form data", formData);
+  const onSubmit = async (formData: CreateRoleFormData) => {
+    console.log('Form Data:', formData);
     try {
-      const response = await createRole(formData).unwrap();
-      console.log("response", response);
-      setIsError(false);
-      setSuccessMessage("Role created successfully");
-      setShowSuccessModal(true);
-      reset();
-      refetchData?.();
+      const res = await createRole(formData).unwrap();
+      const msg = res?.message || 'Role added successfully!';
+      toast.success(msg);
+      handleCloseModal();
+      refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
-      setIsError(true);
-      setShowSuccessModal(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
-        const errorData = (error as { data: { error: string } }).data;
-        console.log("errorData", errorData);
-
-        const msg = errorData.error || "Failed to create role.";
-        setSuccessMessage(msg);
-        setShowSuccessModal(true);
-      } else {
-        setSuccessMessage("Unexpected error occurred. Please try again.");
-      }
+      console.log('error', error);
+      handleCloseModal();
+      toast.error(getApiErrorMessage(error));
+    } finally {
+      handleCloseModal();
+      refetchData();
     }
   };
 
-  const toggleModuleSelection = (moduleId: number) => {
-    const current = selectedModules || [];
-    if (current.includes(moduleId)) {
-      setValue(
-        "modules",
-        current.filter((id) => id !== moduleId)
-      );
-    } else {
-      setValue("modules", [...current, moduleId]);
-    }
+  const handleOpenModal = () => setIsOpen(true);
+  const handleCloseModal = () => {
+    reset();
+    setIsOpen(false);
   };
 
   return (
-    <div className="min-h-screen bg-white p-4 md:p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-6">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
-            Role and Permissions
-          </h1>
-          <p className="text-gray-600 mt-2">Create New Role</p>
-        </div>
+    <>
+      <CreateAndUpdateButton
+        onClick={handleOpenModal}
+        title="Add New"
+        label="Add New Role"
+        icon={<FiPlus className="w-4 h-4" />}
+        className="flex items-center space-x-2 px-4 py-2
+               bg-emerald-500
+               text-white rounded-md hover:bg-emerald-600
+               focus:outline-none focus:ring-2 focus:ring-emerald-500 
+               focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md"
+      />
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          {/* Role Name */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Role Name
-            </label>
-            <input
-              type="text"
-              {...register("name")}
-              className="mt-1 block w-full md:w-auto md:min-w-[50%]
-    border border-gray-300 rounded-lg p-2 
-    focus:outline-none focus:ring-0 focus:border-primary"
-            />
-            {errors.name && (
-              <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
-            )}
-          </div>
-
-          {/* Modules */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Modules (Select to grant view access)
-            </label>
-            {isModulesLoading ? (
-              <p>Loading modules...</p>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {modulesData.map((module: Module) => (
-                  <label
-                    key={module.id}
-                    className="flex items-center space-x-2 border rounded p-2 cursor-pointer"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={selectedModules.includes(module.id)}
-                      onChange={() => toggleModuleSelection(module.id)}
-                    />
-                    <span>{module.name}</span>
-                  </label>
-                ))}
-              </div>
-            )}
-            {errors.modules && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.modules.message}
-              </p>
-            )}
-          </div>
-
-          {/* Submit Button */}
-          <div>
-            <button
-              type="submit"
-              disabled={isCreating}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
-            >
-              {isCreating ? "Creating..." : "Create Role"}
-            </button>
-          </div>
-        </form>
-
-        {showSuccessModal && (
-          <SuccessFailModal
-            message={successMessage}
-            onClose={handleCloseSuccessModal}
-            isError={isError}
+      {isOpen && (
+        <div
+          className="relative z-9999 animate-fadeIn"
+          aria-labelledby="modal-title"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div
+            onClick={() => setIsOpen(false)}
+            className="fixed inset-0 bg-black bg-opacity-50 transition-opacity animate-fadeIn cursor-pointer"
+            aria-hidden="true"
           />
-        )}
-      </div>
-    </div>
+
+          <div className="fixed inset-0 min-h-full z-100 w-screen flex flex-col text-center md:items-center justify-center overflow-y-auto p-2 md:p-3 pointer-events-none">
+            <div
+              className="relative transform justify-center animate-fadeIn max-h-[90vh]
+          overflow-y-auto rounded-md bg-white text-left shadow-xl transition-all   
+          w-full sm:max-w-c-450 md:max-w-450 px-3 pointer-events-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <>
+                <div className="sticky top-0 bg-white z-40 flex  px-4 justify-between items-center py-4 ">
+                  <p className="text-sm md:text-lg lg:text-lg font-semibold ">
+                    Add New Role
+                  </p>
+                  <IoCloseOutline
+                    size={20}
+                    className="cursor-pointer"
+                    onClick={handleCloseModal}
+                  />
+                </div>
+
+                <form
+                  onSubmit={handleSubmit(onSubmit)}
+                  className="space-y-4   p-4 md:p-4 lg:p-4 "
+                >
+                  <div>
+                    <label className="block space-x-1  text-sm font-medium mb-2">
+                      Name<span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="admissionNumber"
+                      placeholder="Enter name"
+                      {...register('name')}
+                      className="w-full py-2 px-4 rounded-md border border-1 border-gray-400 focus:outline-none focus:border-primary focus:bg-white placeholder:text-sm md:placeholder:text-sm lg:placeholder:text-sm"
+                    />
+                    {errors.name && (
+                      <p className="text-red-500 text-sm">
+                        {String(errors.name.message)}
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <label className="block space-x-1  text-sm font-medium mb-2">
+                      Description
+                    </label>
+                    <textarea
+                      id="description"
+                      placeholder="descripition here..."
+                      {...register('description')}
+                      rows={3}
+                      cols={15}
+                      className="w-full py-2 px-4 rounded-md border border-1 border-gray-400 focus:outline-none focus:border-primary focus:bg-white placeholder:text-sm md:placeholder:text-sm lg:placeholder:text-sm"
+                    />
+                    {errors.description && (
+                      <p className="text-red-500 text-sm">
+                        {String(errors.description.message)}
+                      </p>
+                    )}
+                  </div>
+
+                  <ModalBottomButton
+                    onCancel={handleCloseModal}
+                    isSubmitting={isSubmitting}
+                    isProcessing={isCreating}
+                  />
+                </form>
+              </>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
-
-export default NewRoleWithPermissions;
+export default CreateRole;

@@ -1,30 +1,30 @@
-"use client";
+'use client';
 
-import Pagination from "@/components/common/Pagination";
-import DataTable, { Column } from "@/components/common/Table/DataTable";
-import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
-import { useFilters } from "@/hooks/useFilters";
-import { PAGE_SIZE } from "@/lib/constants";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
-import { FiChevronRight, FiTrash2 } from "react-icons/fi";
+import Pagination from '@/components/common/Pagination';
+import DataTable, { Column } from '@/components/common/Table/DataTable';
+import ContentSpinner from '@/components/common/spinners/dataLoadingSpinner';
+import { useFilters } from '@/hooks/useFilters';
+import { PAGE_SIZE } from '@/lib/constants';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMemo, useState } from 'react';
+import { FiChevronRight, FiTrash2 } from 'react-icons/fi';
 
-import NoData from "@/components/common/NoData";
+import NoData from '@/components/common/NoData';
 
-import { LabelOptionsType } from "@/definitions/Labels/labelOptionsType";
+import { LabelOptionsType } from '@/definitions/Labels/labelOptionsType';
 import {
   useDeleteInventoryItemMutation,
   useGetInventoryItemsQuery,
-} from "@/store/services/finance/inventoryService";
-import Link from "next/link";
-import { SlBasket } from "react-icons/sl";
-import FilterSelect from "../common/Select";
-import { CategoryTypeOptions, InventoryItem } from "./types";
-import NewInventoryItem from "./NewItem";
-import UpdateInventoryItem from "./EditItem";
-import { toast } from "react-toastify";
-import ActionModal from "../common/Modals/ActionModal";
-import IssueInventoryItem from "./issueInventory";
+} from '@/store/services/finance/inventoryService';
+import Link from 'next/link';
+import { SlBasket } from 'react-icons/sl';
+import FilterSelect from '../common/Select';
+import { CategoryTypeOptions, InventoryItem } from './types';
+import NewInventoryItem from './NewItem';
+import UpdateInventoryItem from './EditItem';
+import { toast } from 'react-toastify';
+import ActionModal from '../common/Modals/ActionModal';
+import IssueInventoryItem from './issueInventory';
 const InventoryItems = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -33,13 +33,13 @@ const InventoryItems = () => {
   const { filters, currentPage, handleFilterChange, handlePageChange } =
     useFilters({
       initialFilters: {
-        category_type: searchParams.get("category_type") || "",
-        category: searchParams.get("category") || "",
+        category_type: searchParams.get('category_type') || '',
+        category: searchParams.get('category') || '',
       },
-      initialPage: parseInt(searchParams.get("page") || "1", 10),
+      initialPage: parseInt(searchParams.get('page') || '1', 10),
       router,
       debounceTime: 100,
-      debouncedFields: [""],
+      debouncedFields: [''],
     });
 
   const queryParams = useMemo(
@@ -48,19 +48,19 @@ const InventoryItems = () => {
       page_size: PAGE_SIZE,
       ...filters,
     }),
-    [currentPage, filters]
+    [currentPage, filters],
   );
-  console.log("queryParams", queryParams);
+  console.log('queryParams', queryParams);
 
   const { data, error, isLoading, refetch } = useGetInventoryItemsQuery(
     queryParams,
     {
       refetchOnMountOrArgChange: true,
-    }
+    },
   );
   const [deleteInventoryItem, { isLoading: isDeleting }] =
     useDeleteInventoryItemMutation();
-  console.log("data", data);
+  console.log('data', data);
   const openActionModal = (id: number) => {
     setSelectedItem(id);
     setIsModalOpen(true);
@@ -74,32 +74,32 @@ const InventoryItems = () => {
   const handleDeleteInventoryItem = async () => {
     try {
       await deleteInventoryItem(selectedItem).unwrap();
-      toast.success("Inventory Item successfully deleted!");
+      toast.success('Inventory Item successfully deleted!');
       closeActionModal();
       refetch();
     } catch (error: unknown) {
-      console.log("error", error);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      console.log('error', error);
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
-        console.log("errorData", errorData);
-        toast.error(errorData.error || "Error Deleting Inventory Item.");
+        console.log('errorData', errorData);
+        toast.error(errorData.error || 'Error Deleting Inventory Item.');
       } else {
-        toast.error("Unexpected Error occurred. Please try again.");
+        toast.error('Unexpected Error occurred. Please try again.');
       }
     }
   };
 
   const handleCategoryTypeChange = (
-    selectedOption: LabelOptionsType | null
+    selectedOption: LabelOptionsType | null,
   ) => {
     handleFilterChange({
-      category_type: selectedOption ? selectedOption.value : "",
+      category_type: selectedOption ? selectedOption.value : '',
     });
   };
   const columns: Column<InventoryItem>[] = [
     {
-      header: "Item Name",
-      accessor: "name",
+      header: 'Item Name',
+      accessor: 'name',
       cell: (item: InventoryItem) => (
         <span className="text-sm whitespace-normal break-words">
           {item.name}
@@ -108,28 +108,28 @@ const InventoryItems = () => {
     },
 
     {
-      header: "Quantity",
-      accessor: "quantity_in_stock",
+      header: 'Quantity',
+      accessor: 'quantity_in_stock',
       cell: (item: InventoryItem) => <span>{item.quantity_in_stock}</span>,
     },
     {
-      header: "Unit of Measure",
-      accessor: "unit",
+      header: 'Unit of Measure',
+      accessor: 'unit',
       cell: (item: InventoryItem) => <span>{item.unit.name}</span>,
     },
     {
-      header: "Unit Valuation",
-      accessor: "unit_valuation",
+      header: 'Unit Valuation',
+      accessor: 'unit_valuation',
       cell: (item: InventoryItem) => <span>{item?.unit_valuation}</span>,
     },
     {
-      header: "Total Valuation",
-      accessor: "total_valuation",
+      header: 'Total Valuation',
+      accessor: 'total_valuation',
       cell: (item: InventoryItem) => <span>{item?.total_valuation}</span>,
     },
     {
-      header: "Category",
-      accessor: "category",
+      header: 'Category',
+      accessor: 'category',
       cell: (item: InventoryItem) => (
         <span className="text-xs whitespace-normal break-words">
           {item.category.name}({item.category.category_type_label})
@@ -138,8 +138,8 @@ const InventoryItems = () => {
     },
 
     {
-      header: "Actions",
-      accessor: "id",
+      header: 'Actions',
+      accessor: 'id',
       cell: (item: InventoryItem) => (
         <div className="flex items-center space-x-2">
           <div>
@@ -208,8 +208,8 @@ const InventoryItems = () => {
             options={CategoryTypeOptions}
             value={
               CategoryTypeOptions.find(
-                (option) => option.value === filters.category_type
-              ) || { value: "", label: "Filter by Category Type" }
+                (option) => option.value === filters.category_type,
+              ) || { value: '', label: 'Filter by Category Type' }
             }
             onChange={handleCategoryTypeChange}
             placeholder="Filter by category type"

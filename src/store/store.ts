@@ -1,10 +1,9 @@
-"use client";
-import { configureStore } from "@reduxjs/toolkit";
-import { apiSlice } from "./api/apiSlice";
-import authSlice, { loadUser, userLoggedIn } from "./services/auth/authSlice";
+'use client';
+import { configureStore } from '@reduxjs/toolkit';
+import { apiSlice } from './api/apiSlice';
+import authSlice, { loadUser } from './services/auth/authSlice';
 // import Cookies from "js-cookie";
 // import { authApi } from "./services/auth/authService";
-
 
 export const makeStore = () => {
   const store = configureStore({
@@ -16,13 +15,11 @@ export const makeStore = () => {
       getDefaultMiddleware().concat(apiSlice.middleware),
   });
 
- 
   store.dispatch(loadUser());
-
 
   return store;
 };
 
 export type AppStore = ReturnType<typeof makeStore>;
-export type RootState = ReturnType<AppStore["getState"]>;
-export type AppDispatch = AppStore["dispatch"];
+export type RootState = ReturnType<AppStore['getState']>;
+export type AppDispatch = AppStore['dispatch'];

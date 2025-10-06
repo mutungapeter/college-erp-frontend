@@ -1,27 +1,26 @@
-"use client";
+'use client';
 
-import Pagination from "@/components/common/Pagination";
+import Pagination from '@/components/common/Pagination';
 
-import { useFilters } from "@/hooks/useFilters";
+import { useFilters } from '@/hooks/useFilters';
 
-import DataTable, { Column } from "@/components/common/Table/DataTable";
-import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
+import DataTable, { Column } from '@/components/common/Table/DataTable';
+import ContentSpinner from '@/components/common/spinners/dataLoadingSpinner';
 
-
-import { PAGE_SIZE } from "@/lib/constants";
-import { useGetHostelsQuery } from "@/store/services/hostels/hostelService";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
-import { GoSearch } from "react-icons/go";
-import { HostelsType } from "@/definitions/hostels";
-import { formatCurrency } from "@/utils/currency";
-import { useGetCampusesQuery } from "@/store/services/curriculum/campusService";
-import { CampusType } from "@/definitions/curiculum";
-import { LabelOptionsType } from "@/definitions/Labels/labelOptionsType";
-import FilterSelect from "../common/Select";
-import AddHostel from "./NewHostel";
-import EditHostel from "./UpdateHostel";
-import Link from "next/link";
+import { PAGE_SIZE } from '@/lib/constants';
+import { useGetHostelsQuery } from '@/store/services/hostels/hostelService';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMemo } from 'react';
+import { GoSearch } from 'react-icons/go';
+import { HostelsType } from '@/definitions/hostels';
+import { formatCurrency } from '@/utils/currency';
+import { useGetCampusesQuery } from '@/store/services/curriculum/campusService';
+import { CampusType } from '@/definitions/curiculum';
+import { LabelOptionsType } from '@/definitions/Labels/labelOptionsType';
+import FilterSelect from '../common/Select';
+import AddHostel from './NewHostel';
+import EditHostel from './UpdateHostel';
+import Link from 'next/link';
 
 const Hostels = () => {
   const router = useRouter();
@@ -30,13 +29,13 @@ const Hostels = () => {
   const { filters, currentPage, handleFilterChange, handlePageChange } =
     useFilters({
       initialFilters: {
-        name: searchParams.get("name") || "",
-        campus: searchParams.get("campus") || "",
+        name: searchParams.get('name') || '',
+        campus: searchParams.get('campus') || '',
       },
-      initialPage: parseInt(searchParams.get("page") || "1", 10),
+      initialPage: parseInt(searchParams.get('page') || '1', 10),
       router,
       debounceTime: 100,
-      debouncedFields: ["name"],
+      debouncedFields: ['name'],
     });
 
   const queryParams = useMemo(
@@ -45,49 +44,58 @@ const Hostels = () => {
       page_size: PAGE_SIZE,
       ...filters,
     }),
-    [currentPage, filters]
+    [currentPage, filters],
   );
-console.log("queryParams",queryParams)
-  
-  const { data:hostelsData, isLoading, error, refetch } = useGetHostelsQuery(queryParams, {
+  console.log('queryParams', queryParams);
+
+  const {
+    data: hostelsData,
+    isLoading,
+    error,
+    refetch,
+  } = useGetHostelsQuery(queryParams, {
     refetchOnMountOrArgChange: true,
   });
-   const { data:campusData } = useGetCampusesQuery({}, {refetchOnMountOrArgChange: true,});
-     
-       console.log("campusData", campusData)
-    const campusOptions = campusData?.map((item:CampusType) => ({
-        value: item.id, 
-        label: `${item.name}`,
-      })) || [];
-    
-   const handleCampusChange = (selectedOption: LabelOptionsType | null) => {
-    const campusValue = selectedOption ? selectedOption.value : "";
-        handleFilterChange({
-        campus: campusValue,
-      });
-      };
-   
-console.log("hostelsData",hostelsData)
+  const { data: campusData } = useGetCampusesQuery(
+    {},
+    { refetchOnMountOrArgChange: true },
+  );
 
- 
- 
+  console.log('campusData', campusData);
+  const campusOptions =
+    campusData?.map((item: CampusType) => ({
+      value: item.id,
+      label: `${item.name}`,
+    })) || [];
+
+  const handleCampusChange = (selectedOption: LabelOptionsType | null) => {
+    const campusValue = selectedOption ? selectedOption.value : '';
+    handleFilterChange({
+      campus: campusValue,
+    });
+  };
+
+  console.log('hostelsData', hostelsData);
+
   const columns: Column<HostelsType>[] = [
     {
-      header: "Name",
-      accessor: "name",
-      cell: (item: HostelsType) => <span className="font-semibold text-sm">{item.name}</span>,
+      header: 'Name',
+      accessor: 'name',
+      cell: (item: HostelsType) => (
+        <span className="font-semibold text-sm">{item.name}</span>
+      ),
     },
     {
-      header: "Gender",
-      accessor: "gender",
+      header: 'Gender',
+      accessor: 'gender',
       cell: (item: HostelsType) => (
         <span className="text-sm font-normal">{item.gender}</span>
       ),
     },
-    
+
     {
-      header: "Capacity",
-      accessor: "capacity",
+      header: 'Capacity',
+      accessor: 'capacity',
       cell: (item: HostelsType) => (
         <span>
           <span className="text-sm font-nunito ">{item.capacity}</span>
@@ -95,8 +103,8 @@ console.log("hostelsData",hostelsData)
       ),
     },
     {
-      header: "Rooms",
-      accessor: "rooms",
+      header: 'Rooms',
+      accessor: 'rooms',
       cell: (item: HostelsType) => (
         <span>
           <span className="text-sm normal">{item.rooms}</span>
@@ -104,36 +112,34 @@ console.log("hostelsData",hostelsData)
       ),
     },
     {
-      header: "Room Cost",
-      accessor: "room_cost",
+      header: 'Room Cost',
+      accessor: 'room_cost',
       cell: (item: HostelsType) => (
         <span>
-          <span className="text-xs font-semibold">{formatCurrency(item.room_cost)}</span>
+          <span className="text-xs font-semibold">
+            {formatCurrency(item.room_cost)}
+          </span>
         </span>
       ),
     },
     {
-      header: "Campus",
-      accessor: "campus",
+      header: 'Campus',
+      accessor: 'campus',
       cell: (item: HostelsType) => (
         <span>
           <span className="text-sm font-normal">{item.campus.name}</span>
         </span>
       ),
     },
-    
-   
-  
-   
+
     {
-      header: "Actions",
-      accessor: "id",
+      header: 'Actions',
+      accessor: 'id',
       cell: (item: HostelsType) => (
         <div className="flex items-center justify-center space-x-2">
-            
-             <EditHostel data={item} refetchData={refetch} />
-     
-           <Link
+          <EditHostel data={item} refetchData={refetch} />
+
+          <Link
             href={`/dashboard/hostels/${item.id}`}
             className="flex items-center justify-center px-2 py-1 rounded-xl bg-indigo-100 text-indigo-600 hover:bg-indigo-500 hover:text-white transition duration-200 shadow-sm hover:shadow-md"
             title="View Event Details"
@@ -141,24 +147,20 @@ console.log("hostelsData",hostelsData)
             {/* <FiEye className="text-sm" /> */}
             Rooms
           </Link>
-         
-
-       
         </div>
       ),
     },
   ];
- 
- 
+
   return (
     <>
       <div className="bg-white w-full  p-1 shadow-md rounded-lg font-nunito">
         <div className=" p-3  flex flex-col md:flex-row md:items-center  lg:items-center md:gap-0 lg:gap-0 gap-4 lg:justify-between md:justify-between">
           <h2 className="font-semibold text-black text-xl">Hostels</h2>
-          
-         <div>
+
+          <div>
             <AddHostel refetchData={refetch} />
-         </div>
+          </div>
         </div>
 
         <div className="flex flex-col gap-4 mt-5 lg:gap-0 md:gap-0 lg:flex-row md:flex-row  md:items-center p-2 md:justify-between lg:items-center lg:justify-between">
@@ -174,15 +176,17 @@ console.log("hostelsData",hostelsData)
             />
           </div>
           <div className="flex flex-col gap-3  lg:p-0 lg:flex-row md:flex-row md:items-center md:space-x-2 lg:items-center lg:space-x-5">
-             <FilterSelect
-            options={campusOptions}
-            value={campusOptions.find(
-              (option:LabelOptionsType) => option.value === filters.campus  
-            ) || { value: "", label: "Fiter By campus" }}
-            onChange={handleCampusChange}
-            placeholder=""
-            defaultLabel="All Campuses"
-          />
+            <FilterSelect
+              options={campusOptions}
+              value={
+                campusOptions.find(
+                  (option: LabelOptionsType) => option.value === filters.campus,
+                ) || { value: '', label: 'Fiter By campus' }
+              }
+              onChange={handleCampusChange}
+              placeholder=""
+              defaultLabel="All Campuses"
+            />
           </div>
         </div>
         {isLoading ? (
@@ -212,8 +216,6 @@ console.log("hostelsData",hostelsData)
             onPageChange={handlePageChange}
           />
         )}
-
-     
       </div>
     </>
   );

@@ -1,18 +1,14 @@
-"use client";
-import { useState } from "react";
-import { FiInfo } from "react-icons/fi";
-import { IoCloseOutline } from "react-icons/io5";
-import { LuSend } from "react-icons/lu";
+'use client';
+import { useState } from 'react';
+import { FiInfo } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
+import { LuSend } from 'react-icons/lu';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
 
-import { FIneType } from "@/definitions/library";
-import {
-    useFinePaymentRequestMutation
-} from "@/store/services/library/libraryService";
-
-
+import { FIneType } from '@/definitions/library';
+import { useFinePaymentRequestMutation } from '@/store/services/library/libraryService';
 
 interface Props {
   data: FIneType | null;
@@ -22,12 +18,12 @@ interface Props {
 const RequestFinePayment = ({ refetchData, data }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
-  const [finePaymentRequest, { isLoading: isCreating }] = useFinePaymentRequestMutation();
+  const [finePaymentRequest, { isLoading: isCreating }] =
+    useFinePaymentRequestMutation();
 
-  
   const handleCloseModal = () => {
     setIsOpen(false);
   };
@@ -42,27 +38,29 @@ const RequestFinePayment = ({ refetchData, data }: Props) => {
 
   const onSubmit = async () => {
     const submissionData = {
-        fine: data?.id
-    }
-   
+      fine: data?.id,
+    };
+
     try {
       const response = await finePaymentRequest(submissionData).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Fine payment request sent to finance successfully!");
+      setSuccessMessage('Fine payment request sent to finance successfully!');
       setShowSuccessModal(true);
-      
+
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
-        setSuccessMessage(`Failed to send fine payment request: ${errorData.error}`);
+        setSuccessMessage(
+          `Failed to send fine payment request: ${errorData.error}`,
+        );
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occurred. Please try again.");
+        setSuccessMessage('Unexpected error occurred. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -72,24 +70,21 @@ const RequestFinePayment = ({ refetchData, data }: Props) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
     });
   };
 
   return (
     <>
-      <div
-        onClick={handleOpenModal}
-        className="relative group"
-      >
+      <div onClick={handleOpenModal} className="relative group">
         <div
           className="bg-green-100 cursor-pointer p-2
            w-fit text-green-700 rounded-xl hover:bg-green-700 hover:text-white transition duration-300"
-          title="Request Fine Payment" 
+          title="Request Fine Payment"
         >
           <LuSend className="text-sm" />
         </div>
-      
+
         {/* <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">
           Send Fine Payment Request to Finance
         </div> */}
@@ -135,11 +130,18 @@ const RequestFinePayment = ({ refetchData, data }: Props) => {
                 <div className="p-4">
                   <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                     <div className="flex items-start space-x-3">
-                      <FiInfo className="text-blue-600 mt-0.5 flex-shrink-0" size={20} />
+                      <FiInfo
+                        className="text-blue-600 mt-0.5 flex-shrink-0"
+                        size={20}
+                      />
                       <div className="text-sm text-blue-800">
-                        <p className="font-medium mb-1">Confirmation Required</p>
-                        <p className="break-words whitespace-normal"> 
-                          Please review the fine details below and confirm that you want to send this fine record to the Finance department for payment processing.
+                        <p className="font-medium mb-1">
+                          Confirmation Required
+                        </p>
+                        <p className="break-words whitespace-normal">
+                          Please review the fine details below and confirm that
+                          you want to send this fine record to the Finance
+                          department for payment processing.
                         </p>
                       </div>
                     </div>
@@ -153,7 +155,7 @@ const RequestFinePayment = ({ refetchData, data }: Props) => {
                         Fine Record Details
                       </h3>
                     </div>
-                    
+
                     <div className="p-4 space-y-4">
                       {/* Book Information */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -161,24 +163,36 @@ const RequestFinePayment = ({ refetchData, data }: Props) => {
                           <div className="flex items-start space-x-3">
                             {/* <FiBookOpen className="text-blue-600 mt-1 flex-shrink-0" size={16} /> */}
                             <div>
-                              <p className="text-sm font-medium text-gray-700">Book Title</p>
-                              <p className="text-sm text-gray-900">{data?.borrow_transaction?.book?.title}</p>
+                              <p className="text-sm font-medium text-gray-700">
+                                Book Title
+                              </p>
+                              <p className="text-sm text-gray-900">
+                                {data?.borrow_transaction?.book?.title}
+                              </p>
                             </div>
                           </div>
-                          
+
                           <div className="flex items-start space-x-3">
                             {/* <FiUser className="text-purple-600 mt-1 flex-shrink-0" size={16} /> */}
                             <div>
-                              <p className="text-sm font-medium text-gray-700">Author</p>
-                              <p className="text-sm text-gray-900">{data?.borrow_transaction?.book?.author}</p>
+                              <p className="text-sm font-medium text-gray-700">
+                                Author
+                              </p>
+                              <p className="text-sm text-gray-900">
+                                {data?.borrow_transaction?.book?.author}
+                              </p>
                             </div>
                           </div>
 
                           <div className="flex items-start space-x-3">
                             <div className="w-4 h-4 bg-gray-400 rounded mt-1 flex-shrink-0"></div>
                             <div>
-                              <p className="text-sm font-medium text-gray-700">Copy Number</p>
-                              <p className="text-sm text-gray-900">{data?.borrow_transaction?.copy_number || 'N/A'}</p>
+                              <p className="text-sm font-medium text-gray-700">
+                                Copy Number
+                              </p>
+                              <p className="text-sm text-gray-900">
+                                {data?.borrow_transaction?.copy_number || 'N/A'}
+                              </p>
                             </div>
                           </div>
                         </div>
@@ -187,30 +201,51 @@ const RequestFinePayment = ({ refetchData, data }: Props) => {
                           <div className="flex items-start space-x-3">
                             {/* <FiUser className="text-green-600 mt-1 flex-shrink-0" size={16} /> */}
                             <div>
-                              <p className="text-sm font-medium text-gray-700">Borrower</p>
-                              <p className="text-sm text-gray-900">
-                                {data?.borrow_transaction?.member?.user?.first_name} {data?.borrow_transaction?.member?.user?.last_name}
+                              <p className="text-sm font-medium text-gray-700">
+                                Borrower
                               </p>
-                              <p className="text-xs text-gray-500">{data?.borrow_transaction?.member?.role}</p>
+                              <p className="text-sm text-gray-900">
+                                {
+                                  data?.borrow_transaction?.member?.user
+                                    ?.first_name
+                                }{' '}
+                                {
+                                  data?.borrow_transaction?.member?.user
+                                    ?.last_name
+                                }
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                {data?.borrow_transaction?.member?.role}
+                              </p>
                             </div>
                           </div>
                           <div className="flex items-start space-x-3">
                             {/* <FiCalendar className="text-orange-600 mt-1 flex-shrink-0" size={16} /> */}
                             <div>
-                              <p className="text-sm font-medium text-gray-700">Borrow  Date</p>
-                              <p className="text-sm text-gray-900">{formatDate(data?.borrow_transaction?.borrow_date || '')}</p>
+                              <p className="text-sm font-medium text-gray-700">
+                                Borrow Date
+                              </p>
+                              <p className="text-sm text-gray-900">
+                                {formatDate(
+                                  data?.borrow_transaction?.borrow_date || '',
+                                )}
+                              </p>
                             </div>
                           </div>
 
                           <div className="flex items-start space-x-3">
                             {/* <FiCalendar className="text-orange-600 mt-1 flex-shrink-0" size={16} /> */}
                             <div>
-                              <p className="text-sm font-medium text-gray-700">Due Date</p>
-                              <p className="text-sm text-gray-900">{formatDate(data?.borrow_transaction?.due_date || '')}</p>
+                              <p className="text-sm font-medium text-gray-700">
+                                Due Date
+                              </p>
+                              <p className="text-sm text-gray-900">
+                                {formatDate(
+                                  data?.borrow_transaction?.due_date || '',
+                                )}
+                              </p>
                             </div>
                           </div>
-
-                          
                         </div>
                       </div>
 
@@ -224,19 +259,25 @@ const RequestFinePayment = ({ refetchData, data }: Props) => {
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                             <div>
                               <p className="text-gray-600">Fine per day</p>
-                              <p className="font-medium text-gray-900">Ksh {data?.fine_per_day}</p>
+                              <p className="font-medium text-gray-900">
+                                Ksh {data?.fine_per_day}
+                              </p>
                             </div>
                             <div>
                               <p className="text-gray-600">Total Fine</p>
-                              <p className="font-bold text-red-600 text-lg">Ksh {data?.calculated_fine}</p>
+                              <p className="font-bold text-red-600 text-lg">
+                                Ksh {data?.calculated_fine}
+                              </p>
                             </div>
                             <div>
                               <p className="text-gray-600">Status</p>
-                              <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                                data?.paid 
-                                  ? 'bg-green-100 text-green-800' 
-                                  : 'bg-red-100 text-red-800'
-                              }`}>
+                              <span
+                                className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                                  data?.paid
+                                    ? 'bg-green-100 text-green-800'
+                                    : 'bg-red-100 text-red-800'
+                                }`}
+                              >
                                 {data?.status_text}
                               </span>
                             </div>
@@ -260,7 +301,7 @@ const RequestFinePayment = ({ refetchData, data }: Props) => {
                       disabled={isCreating}
                       className="bg-green-600 text-white py-2 hover:bg-green-700 text-sm px-4 rounded-md w-full min-w-[140px] md:w-auto disabled:bg-gray-400"
                     >
-                      { isCreating ? (
+                      {isCreating ? (
                         <span className="flex items-center justify-center">
                           <SubmitSpinner />
                           <span>Sending...</span>

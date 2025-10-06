@@ -1,27 +1,30 @@
-"use client";
+'use client';
 
-import Pagination from "@/components/common/Pagination";
+import Pagination from '@/components/common/Pagination';
 
-import { useFilters } from "@/hooks/useFilters";
+import { useFilters } from '@/hooks/useFilters';
 
-import ActionModal from "@/components/common/Modals/ActionModal";
-import FilterSelect from "@/components/common/Select";
-import DataTable, { Column } from "@/components/common/Table/DataTable";
-import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
-import { ProgrammeCohortType } from "@/definitions/curiculum";
-import { CohortStatusOptions, PAGE_SIZE } from "@/lib/constants";
+import ButtonDropdown from '@/components/common/ActionsPopover';
+import ActionModal from '@/components/common/Modals/ActionModal';
+import FilterSelect from '@/components/common/Select';
+import DataTable, { Column } from '@/components/common/Table/DataTable';
+import ContentSpinner from '@/components/common/spinners/dataLoadingSpinner';
+import { ProgrammeCohortType } from '@/definitions/curiculum';
+import { CohortStatusOptions, PAGE_SIZE } from '@/lib/constants';
+import { RolePermission } from '@/store/definitions';
+import { useAppSelector } from '@/store/hooks';
 import {
   useDeleteCohortMutation,
   useGetCohortsQuery,
-} from "@/store/services/curriculum/cohortsService";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
-import { FiTrash2 } from "react-icons/fi";
-import { GoSearch } from "react-icons/go";
-import { toast } from "react-toastify";
-import UpdateCohort from "./EditCohort";
-import AddCohort from "./NewCohort";
-import PromoteCohort from "@/components/reporting/reportSemester";
+} from '@/store/services/curriculum/cohortsService';
+import { RootState } from '@/store/store';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMemo, useState } from 'react';
+import { FiTrash2 } from 'react-icons/fi';
+import { GoSearch } from 'react-icons/go';
+import { toast } from 'react-toastify';
+import UpdateCohort from './EditCohort';
+import AddCohort from './NewCohort';
 export type ProgramOption = {
   value: string;
   label: string;
@@ -31,16 +34,22 @@ const Cohorts = () => {
   const searchParams = useSearchParams();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedCohort, setSelectedCohort] = useState<number | null>(null);
+  const { user } = useAppSelector((state: RootState) => state.auth);
+
+  const permissions: RolePermission[] = useMemo(() => {
+    return user?.role?.permissions ?? [];
+  }, [user?.role?.permissions]);
+  console.log('permissions', permissions);
   const { filters, currentPage, handleFilterChange, handlePageChange } =
     useFilters({
       initialFilters: {
-        name: searchParams.get("name") || "",
-        status: searchParams.get("status") || "",
+        name: searchParams.get('name') || '',
+        status: searchParams.get('status') || '',
       },
-      initialPage: parseInt(searchParams.get("page") || "1", 10),
+      initialPage: parseInt(searchParams.get('page') || '1', 10),
       router,
       debounceTime: 100,
-      debouncedFields: ["name"],
+      debouncedFields: ['name'],
     });
 
   const queryParams = useMemo(
@@ -49,7 +58,7 @@ const Cohorts = () => {
       page_size: PAGE_SIZE,
       ...filters,
     }),
-    [currentPage, filters]
+    [currentPage, filters],
   );
 
   const { data, isLoading, error, refetch } = useGetCohortsQuery(queryParams, {
@@ -66,88 +75,105 @@ const Cohorts = () => {
     setIsDeleteModalOpen(false);
     setSelectedCohort(null);
   };
+  const accountsPermissions = useMemo(() => {
+    return permissions.find(
+      (permission) => permission.module.code === 'academics_cohorts',
+    );
+  }, [permissions]);
+
+  // Permission checks
+  // const canCreate = accountsPermissions?.can_create ?? false;
+  const canEdit = accountsPermissions?.can_edit ?? false;
+  const canDelete = accountsPermissions?.can_delete ?? false;
+  const hasActions = canEdit || canDelete;
   const handleDeleteCohort = async () => {
     try {
       await deleteCohort(selectedCohort).unwrap();
-      toast.success("Cohort Delete successfully!");
+      toast.success('Cohort Delete successfully!');
       closeDeleteModal();
       refetch();
     } catch (error: unknown) {
-      console.log("error", error);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      console.log('error', error);
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
-        console.log("errorData", errorData);
-        toast.error(errorData.error || "Error Deleting Cohort!.");
+        console.log('errorData', errorData);
+        toast.error(errorData.error || 'Error Deleting Cohort!.');
       } else {
-        toast.error("Unexpected Error occured. Please try again.");
+        toast.error('Unexpected Error occured. Please try again.');
       }
     }
   };
   const columns: Column<ProgrammeCohortType>[] = [
     {
-      header: "Cohort",
-      accessor: "name",
-      cell: (cohort: ProgrammeCohortType) => <span>{cohort.name} </span>,
-    },
-     {
-      header: "Intake",
-      accessor: "intake",
+      header: 'Cohort',
+      accessor: 'name',
       cell: (cohort: ProgrammeCohortType) => (
-        <span className="text-sm font-normal">{cohort?.intake?.name} ({new Date(cohort?.intake?.start_date).getFullYear()})</span>
+        <span className="text-md">{cohort?.name ?? 'No Name'} </span>
       ),
     },
     {
-      header: "programme",
-      accessor: "programme",
+      header: 'Intake',
+      accessor: 'intake',
       cell: (cohort: ProgrammeCohortType) => (
-        <span className="text-sm font-normal whitespace-normal break-words">{cohort.programme.name}</span>
+        <span className="text-md font-normal">
+          {cohort?.intake?.name} {cohort?.intake?.academic_year?.name}
+        </span>
       ),
     },
     {
-      header: "Current_year",
-      accessor: "current_year",
+      header: 'programme',
+      accessor: 'programme',
       cell: (cohort: ProgrammeCohortType) => (
-        <span className="text-sm font-normal">{cohort.current_year}</span>
+        <span className="text-md font-normal whitespace-normal break-words">
+          {cohort.programme.name}
+        </span>
       ),
     },
     {
-      header: "Current semester",
-      accessor: "current_semester",
+      header: 'Study Year',
+      accessor: 'current_year',
+      cell: (cohort: ProgrammeCohortType) => (
+        <span className="text-md font-normal">
+          {cohort?.current_year?.name}
+        </span>
+      ),
+    },
+    {
+      header: 'Current semester',
+      accessor: 'current_semester',
       cell: (cohort: ProgrammeCohortType) => (
         <div className="flex items-center space-x-2">
-          <span className="text-xs font-normal">
-            {cohort.current_semester.name}
+          <span className="text-md font-normal">
+            {cohort?.current_semester?.name}
           </span>
-          <span
-            className={`text-xs font-normal px-2 ] rounded-full
-    ${
-      cohort.current_semester.status === "Active"
-        ? "bg-green-100 text-green-600"
-        : cohort.current_semester.status === "Closed"
-        ? "bg-red-100 text-red-600"
-        : "bg-yellow-100 text-yellow-600"
-    }
-  `}
-          >
-            {cohort.current_semester.status}
+        </div>
+      ),
+    },
+    {
+      header: 'Academic Year',
+      accessor: 'current_semester',
+      cell: (cohort: ProgrammeCohortType) => (
+        <div className="flex items-center space-x-2">
+          <span className="text-md font-normal">
+            {cohort?.current_semester?.academic_year?.name}
           </span>
         </div>
       ),
     },
 
     {
-      header: "Status",
-      accessor: "status",
+      header: 'Status',
+      accessor: 'status',
       cell: (cohort: ProgrammeCohortType) => (
         <div className="flex items-center justify-center">
           <span
             className={`
             px-2 py-1 rounded-md font-normal text-xs  ${
-              cohort.status === "Active"
-                ? "bg-emerald-100 text-emerald-600"
-                : cohort.status === "Graduated"
-                ? "bg-blue-600 text-white"
-                : "bg-gray-100 text-gray-600"
+              cohort.status === 'Active'
+                ? 'bg-emerald-100 text-emerald-600'
+                : cohort.status === 'Graduated'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 text-gray-600'
             }`}
           >
             {cohort.status}
@@ -155,35 +181,47 @@ const Cohorts = () => {
         </div>
       ),
     },
-    {
-      header: "Actions",
-      accessor: "id",
-      cell: (cohort: ProgrammeCohortType) => (
-        <div className="flex items-center justify-center space-x-2">
-          <div>
-            <UpdateCohort data={cohort} refetchData={refetch} />
-          </div>
-          <div
-            onClick={() => openDeleteModal(cohort.id)}
-            className="p-2 rounded-xl bg-red-100 text-red-600 hover:bg-blue-200 hover:text-red-700 cursor-pointer transition duration-200 shadow-sm"
-            title="Edit Cohort"
-          >
-            <FiTrash2 className="text-sm" />
-          </div>
-          
-        </div>
-      ),
-    },
+
+    ...(hasActions
+      ? ([
+          {
+            header: 'Actions',
+            accessor: 'id',
+            cell: (cohort: ProgrammeCohortType) => (
+              <>
+                <ButtonDropdown>
+                  {canEdit && (
+                    <UpdateCohort data={cohort} refetchData={refetch} />
+                  )}
+
+                  {canDelete && (
+                    <button
+                      onClick={() => openDeleteModal(cohort.id)}
+                      className="flex items-center space-x-2"
+                    >
+                      <FiTrash2 className="text-lg" />
+                      <span className="text-red-600">Delete</span>
+                    </button>
+                  )}
+                </ButtonDropdown>
+              </>
+            ),
+          },
+        ] as Column<ProgrammeCohortType>[])
+      : []),
   ];
   const handleStatusChange = (selectedOption: ProgramOption | null) => {
     handleFilterChange({
-      status: selectedOption ? selectedOption.value : "",
+      status: selectedOption ? selectedOption.value : '',
     });
   };
-  console.log("data", data);
+  console.log('data', data);
   return (
     <>
-      <div className="bg-white w-full  p-1 shadow-md rounded-lg font-nunito">
+      <div
+        className="bg-white w-full  p-1 shadow-md rounded-lg
+       font-inter"
+      >
         <div className=" p-3  flex flex-col md:flex-row md:items-center lg:items-center md:gap-0 lg:gap-0 gap-4 lg:justify-between md:justify-between">
           <h2 className="font-semibold text-black text-xl">
             All Cohorts/Classes
@@ -209,8 +247,8 @@ const Cohorts = () => {
               options={CohortStatusOptions}
               value={
                 CohortStatusOptions.find(
-                  (option) => option.value === filters.status
-                ) || { value: "", label: "Filter by Status" }
+                  (option) => option.value === filters.status,
+                ) || { value: '', label: 'Filter by Status' }
               }
               onChange={handleStatusChange}
               placeholder="Filter by Status"

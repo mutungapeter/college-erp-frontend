@@ -1,26 +1,26 @@
-"use client";
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import Select, { SingleValue } from "react-select";
+'use client';
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import Select, { SingleValue } from 'react-select';
 import {
   ProgrammeType,
   SemesterType,
   StudyYearType,
-} from "@/definitions/curiculum";
-import { FeeStructure } from "@/definitions/finance/fees/feeStructure";
+} from '@/definitions/curiculum';
+import { FeeStructure } from '@/definitions/finance/fees/feeStructure';
 import {
   FeeStructureFormData,
   feeStructureSchema,
-} from "@/schemas/finance/fees";
-import { useGetAcademicYearsQuery } from "@/store/services/curriculum/academicYearsService";
-import { useGetProgrammesQuery } from "@/store/services/curriculum/programmesService";
-import { useGetSemestersQuery } from "@/store/services/curriculum/semestersService";
-import { useUpdateFeeStructureMutation } from "@/store/services/finance/finaceServices";
-import { FiEdit } from "react-icons/fi";
-import { IoCloseOutline } from "react-icons/io5";
+} from '@/schemas/finance/fees';
+import { useGetAcademicYearsQuery } from '@/store/services/curriculum/academicYearsService';
+import { useGetProgrammesQuery } from '@/store/services/curriculum/programmesService';
+import { useGetSemestersQuery } from '@/store/services/curriculum/semestersService';
+import { useUpdateFeeStructureMutation } from '@/store/services/finance/finaceServices';
+import { FiEdit } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
 
 interface Props {
   refetchData: () => void;
@@ -30,22 +30,22 @@ const EditFeeStructure = ({ refetchData, data }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
   const [updateFeeStructure, { isLoading: isCreating }] =
     useUpdateFeeStructureMutation();
   const { data: semeestersData } = useGetSemestersQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
   const { data: programmesData } = useGetProgrammesQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
   const { data: yearsData } = useGetAcademicYearsQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
 
   const {
@@ -61,7 +61,7 @@ const EditFeeStructure = ({ refetchData, data }: Props) => {
     },
   });
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -75,53 +75,53 @@ const EditFeeStructure = ({ refetchData, data }: Props) => {
     handleCloseModal();
   };
   const handleSemesterChange = (
-    selected: SingleValue<{ value: number | null; label: string }>
+    selected: SingleValue<{ value: number | null; label: string }>,
   ) => {
     if (selected) {
       const semesterId = Number(selected.value);
-      setValue("semester", semesterId);
+      setValue('semester', semesterId);
     }
   };
 
   const handleProgrammeChange = (
-    selected: SingleValue<{ value: number | null; label: string }>
+    selected: SingleValue<{ value: number | null; label: string }>,
   ) => {
     if (selected) {
       const programmeId = Number(selected.value);
-      setValue("programme", programmeId);
+      setValue('programme', programmeId);
     }
   };
   const handleYearChange = (
-    selected: SingleValue<{ value: number | null; label: string }>
+    selected: SingleValue<{ value: number | null; label: string }>,
   ) => {
     if (selected && selected.value) {
-      setValue("year_of_study", Number(selected.value));
+      setValue('year_of_study', Number(selected.value));
     }
   };
   const onSubmit = async (formData: FeeStructureFormData) => {
-    console.log("submitting form data");
+    console.log('submitting form data');
 
-    console.log("payload", formData);
+    console.log('payload', formData);
     try {
       const response = await updateFeeStructure({
         id: data.id,
         data: formData,
       }).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Fee Stucture Updated Successfully");
+      setSuccessMessage('Fee Stucture Updated Successfully');
       setShowSuccessModal(true);
-      refetchData()
+      refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(errorData.error);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occured. Please try again.");
+        setSuccessMessage('Unexpected error occured. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -187,7 +187,7 @@ const EditFeeStructure = ({ refetchData, data }: Props) => {
                         value: data?.programme?.id || null,
                         label:
                           `${data?.programme?.name} (${data?.programme?.level})` ||
-                          "",
+                          '',
                       }}
                       menuPortalTarget={document.body}
                       menuPlacement="auto"
@@ -198,16 +198,16 @@ const EditFeeStructure = ({ refetchData, data }: Props) => {
                         }),
                         control: (base) => ({
                           ...base,
-                          minHeight: "24px",
-                          minWidth: "200px",
-                          borderColor: "#d1d5db",
-                          boxShadow: "none",
-                          "&:hover": {
-                            borderColor: "#9ca3af",
+                          minHeight: '24px',
+                          minWidth: '200px',
+                          borderColor: '#d1d5db',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: '#9ca3af',
                           },
-                          "&:focus-within": {
-                            borderColor: "#9ca3af",
-                            boxShadow: "none",
+                          '&:focus-within': {
+                            borderColor: '#9ca3af',
+                            boxShadow: 'none',
                           },
                         }),
                       }}
@@ -231,7 +231,7 @@ const EditFeeStructure = ({ refetchData, data }: Props) => {
                         value: data?.semester?.id || null,
                         label:
                           `${data?.semester?.name}-${data.semester.academic_year}` ||
-                          "",
+                          '',
                       }}
                       menuPortalTarget={document.body}
                       menuPlacement="auto"
@@ -242,16 +242,16 @@ const EditFeeStructure = ({ refetchData, data }: Props) => {
                         }),
                         control: (base) => ({
                           ...base,
-                          minHeight: "24px",
-                          minWidth: "200px",
-                          borderColor: "#d1d5db",
-                          boxShadow: "none",
-                          "&:hover": {
-                            borderColor: "#9ca3af",
+                          minHeight: '24px',
+                          minWidth: '200px',
+                          borderColor: '#d1d5db',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: '#9ca3af',
                           },
-                          "&:focus-within": {
-                            borderColor: "#9ca3af",
-                            boxShadow: "none",
+                          '&:focus-within': {
+                            borderColor: '#9ca3af',
+                            boxShadow: 'none',
                           },
                         }),
                       }}
@@ -273,7 +273,7 @@ const EditFeeStructure = ({ refetchData, data }: Props) => {
                       }))}
                       defaultValue={{
                         value: data?.year_of_study?.id || null,
-                        label: `${data?.year_of_study?.name}` || "",
+                        label: `${data?.year_of_study?.name}` || '',
                       }}
                       menuPortalTarget={document.body}
                       menuPlacement="auto"
@@ -284,16 +284,16 @@ const EditFeeStructure = ({ refetchData, data }: Props) => {
                         }),
                         control: (base) => ({
                           ...base,
-                          minHeight: "24px",
-                          minWidth: "200px",
-                          borderColor: "#d1d5db",
-                          boxShadow: "none",
-                          "&:hover": {
-                            borderColor: "#9ca3af",
+                          minHeight: '24px',
+                          minWidth: '200px',
+                          borderColor: '#d1d5db',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: '#9ca3af',
                           },
-                          "&:focus-within": {
-                            borderColor: "#9ca3af",
-                            boxShadow: "none",
+                          '&:focus-within': {
+                            borderColor: '#9ca3af',
+                            boxShadow: 'none',
                           },
                         }),
                       }}

@@ -1,32 +1,33 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
-import { ReceiveOrderFormData, receiveOrderSchema } from "@/schemas/procurement/po";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
 import {
-    useReceiveGoodsMutation
-} from "@/store/services/finance/procurementService";
-import { FaRegCheckCircle } from "react-icons/fa";
-import { IoCloseOutline } from "react-icons/io5";
-import { PurchaseOrderType } from "./types";
+  ReceiveOrderFormData,
+  receiveOrderSchema,
+} from '@/schemas/procurement/po';
+import { useReceiveGoodsMutation } from '@/store/services/finance/procurementService';
+import { FaRegCheckCircle } from 'react-icons/fa';
+import { IoCloseOutline } from 'react-icons/io5';
+import { PurchaseOrderType } from './types';
 
 interface Props {
   refetchData: () => void;
-  data:PurchaseOrderType;
+  data: PurchaseOrderType;
 }
 const ReceiveOrder = ({ refetchData, data }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
-  
+  const [successMessage, setSuccessMessage] = useState('');
+
   const [isError, setIsError] = useState(false);
 
   const [receiveGoods, { isLoading: isCreating }] = useReceiveGoodsMutation();
- 
+
   const {
     register,
     handleSubmit,
@@ -36,9 +37,9 @@ const ReceiveOrder = ({ refetchData, data }: Props) => {
     resolver: zodResolver(receiveOrderSchema),
   });
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
- 
+
   const handleCloseModal = () => {
     setIsOpen(false);
   };
@@ -50,47 +51,46 @@ const ReceiveOrder = ({ refetchData, data }: Props) => {
   };
 
   const onSubmit = async (formData: ReceiveOrderFormData) => {
-    console.log("submitting form data");
+    console.log('submitting form data');
 
-    console.log("formData", formData);
+    console.log('formData', formData);
     const payLoad = {
-        purchase_order: data.id,
-        ...formData
-    }
+      purchase_order: data.id,
+      ...formData,
+    };
     try {
       const response = await receiveGoods(payLoad).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Goods Successfully Received.");
+      setSuccessMessage('Goods Successfully Received.');
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(errorData.error);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occured. Please try again.");
+        setSuccessMessage('Unexpected error occured. Please try again.');
         setShowSuccessModal(true);
       }
     }
   };
- 
 
   return (
     <>
-     <button
-                   onClick={handleOpenModal}
-                   className="flex items-center 
+      <button
+        onClick={handleOpenModal}
+        className="flex items-center 
                    gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400 transition"
-                 >
-                   <FaRegCheckCircle className="text-sm" />
-                   Receive Goods
-                 </button>
+      >
+        <FaRegCheckCircle className="text-sm" />
+        Receive Goods
+      </button>
       {/* <div
         onClick={handleOpenModal}
   className="bg-green-600 inline-flex cursor-pointer w-max 
@@ -126,7 +126,7 @@ const ReceiveOrder = ({ refetchData, data }: Props) => {
               <>
                 <div className="sticky top-0 bg-white z-40 flex  px-4 justify-between items-center py-4 ">
                   <p className="text-sm md:text-lg lg:text-lg font-semibold ">
-                   Received Order
+                    Received Order
                   </p>
                   <IoCloseOutline
                     size={20}
@@ -139,15 +139,13 @@ const ReceiveOrder = ({ refetchData, data }: Props) => {
                   onSubmit={handleSubmit(onSubmit)}
                   className="space-y-4   p-4 md:p-4 lg:p-4 "
                 >
-              
-                 
                   <div>
                     <label className="block space-x-1  text-sm font-medium mb-2">
                       Remarks
                     </label>
                     <textarea
                       id="name"
-                      {...register("remarks")}
+                      {...register('remarks')}
                       placeholder="Remarks optional"
                       rows={3}
                       cols={5}

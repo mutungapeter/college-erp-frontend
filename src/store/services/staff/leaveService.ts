@@ -1,30 +1,26 @@
+import { apiSlice } from '../../api/apiSlice';
 
-import { apiSlice } from "../../api/apiSlice";
+interface ApplicationsInterface {
+  page?: number;
+  page_size?: number;
 
-
-interface ApplicationsInterface{
-
-  page?:number;
-  page_size?:number;
-  
-  department?:string;
-  status?:string;
-  search?:string;
+  department?: string;
+  status?: string;
+  search?: string;
 }
 
-interface EntitlementsInterface{
+interface EntitlementsInterface {
+  page?: number;
+  page_size?: number;
 
-  page?:number;
-  page_size?:number;
-  
-  department?:string;
-  status?:string;
-  search?:string;
+  department?: string;
+  status?: string;
+  search?: string;
 }
 
 export const leavesApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-  getLeaveApplications: builder.query({
+    getLeaveApplications: builder.query({
       query: ({
         page,
         page_size,
@@ -32,15 +28,16 @@ export const leavesApi = apiSlice.injectEndpoints({
         search,
         department,
       }: ApplicationsInterface = {}) => {
-        const queryParams: Record<string, string | number | boolean | undefined> = {};
+        const queryParams: Record<
+          string,
+          string | number | boolean | undefined
+        > = {};
         if (page) queryParams.page = page;
         if (page_size) queryParams.page_size = page_size;
         if (search) queryParams.search = search;
         if (status) queryParams.status = status;
         if (department) queryParams.department = department;
-        
-      
-  
+
         return {
           url: `staff/leave-applications/`,
           method: 'GET',
@@ -48,7 +45,7 @@ export const leavesApi = apiSlice.injectEndpoints({
         };
       },
     }),
-  getLeaveEntitlements: builder.query({
+    getLeaveEntitlements: builder.query({
       query: ({
         page,
         page_size,
@@ -56,15 +53,16 @@ export const leavesApi = apiSlice.injectEndpoints({
         search,
         department,
       }: EntitlementsInterface = {}) => {
-        const queryParams: Record<string, string | number | boolean | undefined> = {};
+        const queryParams: Record<
+          string,
+          string | number | boolean | undefined
+        > = {};
         if (page) queryParams.page = page;
         if (page_size) queryParams.page_size = page_size;
         if (search) queryParams.search = search;
         if (status) queryParams.status = status;
         if (department) queryParams.department = department;
-        
-      
-  
+
         return {
           url: `staff/leave-entitlements/`,
           method: 'GET',
@@ -72,51 +70,45 @@ export const leavesApi = apiSlice.injectEndpoints({
         };
       },
     }),
-   
+
     createLeaveEntitlement: builder.mutation({
       query: (data) => ({
         url: `staff/leave-entitlements/create/`,
-        method: "POST",
+        method: 'POST',
         body: data,
-        
       }),
     }),
     createBulkLeaveEntitlements: builder.mutation({
       query: (data) => ({
         url: `staff/leave-entitlements/bulk-create/`,
-        method: "POST",
+        method: 'POST',
         body: data,
-        
       }),
     }),
     updateLeaveEntitlement: builder.mutation({
-      query: ({id, data}) => ({
+      query: ({ id, data }) => ({
         url: `staff/leave-entitlements/${id}/update/`,
-        method: "PATCH",
+        method: 'PATCH',
         body: data,
-        
       }),
     }),
-    
+
     createLeaveApplication: builder.mutation({
       query: (data) => ({
         url: `staff/leave-applications/create/`,
-        method: "POST",
+        method: 'POST',
         body: data,
-        
       }),
     }),
-   
+
     updateLeaveApplication: builder.mutation({
-      query: ({id, data}) => ({
+      query: ({ id, data }) => ({
         url: `staff/leave-applications/${id}/`,
-        method: "PATCH",
+        method: 'PATCH',
         body: data,
-        
       }),
     }),
-    
-    
+
     getLeaves: builder.query({
       query: ({
         page,
@@ -125,15 +117,16 @@ export const leavesApi = apiSlice.injectEndpoints({
         search,
         department,
       }: ApplicationsInterface = {}) => {
-        const queryParams: Record<string, string | number | boolean | undefined> = {};
+        const queryParams: Record<
+          string,
+          string | number | boolean | undefined
+        > = {};
         if (page) queryParams.page = page;
         if (page_size) queryParams.page_size = page_size;
         if (search) queryParams.search = search;
         if (status) queryParams.status = status;
         if (department) queryParams.department = department;
-        
-      
-  
+
         return {
           url: `staff/leaves/`,
           method: 'GET',
@@ -141,18 +134,16 @@ export const leavesApi = apiSlice.injectEndpoints({
         };
       },
     }),
-   
   }),
 });
 
 export const {
-useCreateLeaveApplicationMutation,
-useGetLeaveApplicationsQuery,
-useGetLeavesQuery,
-useUpdateLeaveApplicationMutation,
-useCreateLeaveEntitlementMutation,
-useGetLeaveEntitlementsQuery,
-useUpdateLeaveEntitlementMutation,
-useCreateBulkLeaveEntitlementsMutation
-
+  useCreateLeaveApplicationMutation,
+  useGetLeaveApplicationsQuery,
+  useGetLeavesQuery,
+  useUpdateLeaveApplicationMutation,
+  useCreateLeaveEntitlementMutation,
+  useGetLeaveEntitlementsQuery,
+  useUpdateLeaveEntitlementMutation,
+  useCreateBulkLeaveEntitlementsMutation,
 } = leavesApi;

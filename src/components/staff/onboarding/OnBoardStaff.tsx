@@ -1,60 +1,64 @@
-"use client";
+'use client';
 
-import ActionModal from "@/components/common/Modals/ActionModal";
-import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
-import { handleApiError } from "@/lib/ApiError";
-import { useCompleteOnboardingMutation, useGetOnboardingProgressQuery } from "@/store/services/staff/staffService";
-import Link from "next/link";
-import { useState } from "react";
+import ActionModal from '@/components/common/Modals/ActionModal';
+import ContentSpinner from '@/components/common/spinners/dataLoadingSpinner';
+import { handleApiError } from '@/lib/ApiError';
+import {
+  useCompleteOnboardingMutation,
+  useGetOnboardingProgressQuery,
+} from '@/store/services/staff/staffService';
+import Link from 'next/link';
+import { useState } from 'react';
 import {
   FaCheckCircle,
   FaClipboardList,
   FaClock,
   FaCreditCard,
   FaExclamationTriangle,
-  FaUser
-} from "react-icons/fa";
-import { IoArrowBackSharp } from "react-icons/io5";
-import { LuFileText } from "react-icons/lu";
-import { toast } from "react-toastify";
-import AddStaffPayroll from "./ConfigurePayroll";
-import StaffDocumentMultiUpload from "./UploadDocuments";
+  FaUser,
+} from 'react-icons/fa';
+import { IoArrowBackSharp } from 'react-icons/io5';
+import { LuFileText } from 'react-icons/lu';
+import { toast } from 'react-toastify';
+import AddStaffPayroll from './ConfigurePayroll';
+import StaffDocumentMultiUpload from './UploadDocuments';
 
 interface Props {
   staff_id: string;
 }
 
-
 const StaffOnBoarding = ({ staff_id }: Props) => {
-  const { data, isLoading, error, refetch } =useGetOnboardingProgressQuery(staff_id);
-  console.log("data", data);
-   const [modalType, setModalType] = useState<"submit" | "accept">("submit");
-    const [isModalOpen, setIsModalOpen] = useState(false);
-  const [completeOnboarding, {isLoading: isUpdating}] = useCompleteOnboardingMutation()
-    const openSubmitModal = () => {
-    setModalType("submit");
+  const { data, isLoading, error, refetch } =
+    useGetOnboardingProgressQuery(staff_id);
+  console.log('data', data);
+  const [modalType, setModalType] = useState<'submit' | 'accept'>('submit');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [completeOnboarding, { isLoading: isUpdating }] =
+    useCompleteOnboardingMutation();
+  const openSubmitModal = () => {
+    setModalType('submit');
     setIsModalOpen(true);
   };
 
-   const closeModal = () => setIsModalOpen(false);
+  const closeModal = () => setIsModalOpen(false);
 
-   const handleCompleteOnboarding = async () => {
-       const data = {
-         onboarding_completed: true,
-       };
-       try {
-         await completeOnboarding({ id: staff_id, data }).unwrap();
-         toast.success("Onboarding completed successfully!");
-         closeModal();
-         refetch();
-       } catch (error: unknown) {
-         handleApiError(error, "Completing Onboarding");
-       }
-     };
+  const handleCompleteOnboarding = async () => {
+    const data = {
+      onboarding_completed: true,
+    };
+    try {
+      await completeOnboarding({ id: staff_id, data }).unwrap();
+      toast.success('Onboarding completed successfully!');
+      closeModal();
+      refetch();
+    } catch (error: unknown) {
+      handleApiError(error, 'Completing Onboarding');
+    }
+  };
   if (isLoading) {
     return (
       <>
-      <ContentSpinner />
+        <ContentSpinner />
       </>
     );
   }
@@ -91,10 +95,13 @@ const StaffOnBoarding = ({ staff_id }: Props) => {
     <div className="max-w-c-1235 mx-auto p-6">
       <div className="bg-white rounded-lg flex flex-col gap-4 shadow-md border p-6 mb-6">
         <div className="flex items-center justify-between mb-4">
-        <Link href={"/dashboard/staff"} className="flex items-center hover:text-primary-500 cursor-pointer space-x-2">
+          <Link
+            href={'/dashboard/staff'}
+            className="flex items-center hover:text-primary-500 cursor-pointer space-x-2"
+          >
             <IoArrowBackSharp className="text-xl " />
             <h3 className="">Back to Staff</h3>
-        </Link>
+          </Link>
         </div>
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
           Staff Onboarding Progress
@@ -150,8 +157,8 @@ const StaffOnBoarding = ({ staff_id }: Props) => {
             <div
               className={`w-10 h-10 rounded-full flex items-center justify-center mr-4 ${
                 data.user_created
-                  ? "bg-green-100 text-green-600"
-                  : "bg-gray-100 text-gray-400"
+                  ? 'bg-green-100 text-green-600'
+                  : 'bg-gray-100 text-gray-400'
               }`}
             >
               <FaUser className="w-5 h-5" />
@@ -188,8 +195,8 @@ const StaffOnBoarding = ({ staff_id }: Props) => {
             <div
               className={`w-10 h-10 rounded-full flex items-center justify-center mr-4 ${
                 data.staff_details_completed
-                  ? "bg-green-100 text-green-600"
-                  : "bg-gray-100 text-gray-400"
+                  ? 'bg-green-100 text-green-600'
+                  : 'bg-gray-100 text-gray-400'
               }`}
             >
               <FaClipboardList className="w-5 h-5" />
@@ -226,8 +233,8 @@ const StaffOnBoarding = ({ staff_id }: Props) => {
             <div
               className={`w-10 h-10 rounded-full flex items-center justify-center mr-4 ${
                 data.documents_uploaded
-                  ? "bg-green-100 text-green-600"
-                  : "bg-gray-100 text-gray-400"
+                  ? 'bg-green-100 text-green-600'
+                  : 'bg-gray-100 text-gray-400'
               }`}
             >
               <LuFileText className="w-5 h-5" />
@@ -266,8 +273,8 @@ const StaffOnBoarding = ({ staff_id }: Props) => {
             <div
               className={`w-10 h-10 rounded-full flex items-center justify-center mr-4 ${
                 data.payroll_setup_completed
-                  ? "bg-green-100 text-green-600"
-                  : "bg-gray-100 text-gray-400"
+                  ? 'bg-green-100 text-green-600'
+                  : 'bg-gray-100 text-gray-400'
               }`}
             >
               <FaCreditCard className="w-5 h-5" />
@@ -305,8 +312,8 @@ const StaffOnBoarding = ({ staff_id }: Props) => {
             <div
               className={`w-10 h-10 rounded-full flex items-center justify-center mr-4 ${
                 data.onboarding_completed
-                  ? "bg-green-100 text-green-600"
-                  : "bg-gray-100 text-gray-400"
+                  ? 'bg-green-100 text-green-600'
+                  : 'bg-gray-100 text-gray-400'
               }`}
             >
               <FaCheckCircle className="w-5 h-5" />
@@ -331,53 +338,36 @@ const StaffOnBoarding = ({ staff_id }: Props) => {
                   <span className="text-sm font-medium">Pending</span>
                 </div>
                 <div
-onClick={openSubmitModal}
-                    className="bg-blue-800 inline-flex cursor-pointer w-max 
+                  onClick={openSubmitModal}
+                  className="bg-blue-800 inline-flex cursor-pointer w-max 
          items-center space-x-2 text-white px-4 py-2 rounded-xl hover:bg-blue-700 hover:text-white transition duration-300"
-                  >
-                    <span className="text-xs font-medium">
-                      Complete Onboarding
-                    </span>
-                  </div>
-             
+                >
+                  <span className="text-xs font-medium">
+                    Complete Onboarding
+                  </span>
+                </div>
               </div>
             )}
           </div>
         </div>
       </div>
-            {isModalOpen && (
-              <ActionModal
-                isOpen={isModalOpen}
-                onClose={closeModal}
-                onDelete={
-                  modalType === "submit"
-                    ? handleCompleteOnboarding
-                    : () => {} 
-                }
-                isDeleting={isUpdating}
-                title={
-                  modalType === "submit"
-                    ? "Complete Onboarding"
-                    : ""
-                }
-                confirmationMessage={
-                  modalType === "submit"
-                    ? "Complete onboarding for this Staff?"
-                    : ""
-                }
-                deleteMessage={
-                  modalType === "submit"
-                    ? ""
-                    : ""
-                }
-                actionText={
-                  modalType === "submit"
-                    ? "Complete Onboarding"
-                    : ""
-                }
-                actionType={modalType === "submit" ? "create" : "update"}
-              />
-            )}
+      {isModalOpen && (
+        <ActionModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          onDelete={
+            modalType === 'submit' ? handleCompleteOnboarding : () => {}
+          }
+          isDeleting={isUpdating}
+          title={modalType === 'submit' ? 'Complete Onboarding' : ''}
+          confirmationMessage={
+            modalType === 'submit' ? 'Complete onboarding for this Staff?' : ''
+          }
+          deleteMessage={modalType === 'submit' ? '' : ''}
+          actionText={modalType === 'submit' ? 'Complete Onboarding' : ''}
+          actionType={modalType === 'submit' ? 'create' : 'update'}
+        />
+      )}
 
       {/* Completion Message */}
       {completedCount === totalSteps && (

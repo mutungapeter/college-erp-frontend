@@ -1,34 +1,34 @@
-"use client";
+'use client';
 
-import { useFilters } from "@/hooks/useFilters";
+import { useFilters } from '@/hooks/useFilters';
 
-import DataTable, { Column } from "@/components/common/Table/DataTable";
-import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
+import DataTable, { Column } from '@/components/common/Table/DataTable';
+import ContentSpinner from '@/components/common/spinners/dataLoadingSpinner';
 
-import ActionModal from "@/components/common/Modals/ActionModal";
-import FilterSelect from "@/components/common/Select";
-import { LabelOptionsType } from "@/definitions/Labels/labelOptionsType";
-import { IntakeType } from "@/definitions/admissions";
-import { OvertimePaymentType } from "@/definitions/payroll";
-import { PAGE_SIZE } from "@/lib/constants";
-import { useGetDepartmentsQuery } from "@/store/services/curriculum/departmentsService";
+import ActionModal from '@/components/common/Modals/ActionModal';
+import FilterSelect from '@/components/common/Select';
+import { LabelOptionsType } from '@/definitions/Labels/labelOptionsType';
+import { IntakeType } from '@/definitions/admissions';
+import { OvertimePaymentType } from '@/definitions/payroll';
+import { PAGE_SIZE } from '@/lib/constants';
+import { useGetDepartmentsQuery } from '@/store/services/curriculum/departmentsService';
 import {
   useApproveOvertimePaymentMutation,
   useGetOvertimePaymentsQuery,
-} from "@/store/services/staff/staffService";
-import { formatCurrency } from "@/utils/currency";
-import { YearMonthCustomDate } from "@/utils/date";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
-import { GoSearch } from "react-icons/go";
-import { toast } from "react-toastify";
-import UpdateOvertimePayment from "./EditOvertimePayment";
-import CreateOvertimePayment from "./NewOvertimePayment";
-import Pagination from "@/components/common/Pagination";
+} from '@/store/services/staff/staffService';
+import { formatCurrency } from '@/utils/currency';
+import { YearMonthCustomDate } from '@/utils/date';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMemo, useState } from 'react';
+import { GoSearch } from 'react-icons/go';
+import { toast } from 'react-toastify';
+import UpdateOvertimePayment from './EditOvertimePayment';
+import CreateOvertimePayment from './NewOvertimePayment';
+import Pagination from '@/components/common/Pagination';
 
 const OvertimePayments = () => {
-  const [modalType, setModalType] = useState<"submit" | "accept" | "update">(
-    "submit"
+  const [modalType, setModalType] = useState<'submit' | 'accept' | 'update'>(
+    'submit',
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [overtimeId, setOvertimeId] = useState<number | null>(null);
@@ -38,16 +38,16 @@ const OvertimePayments = () => {
   const { filters, currentPage, handleFilterChange, handlePageChange } =
     useFilters({
       initialFilters: {
-        search: searchParams.get("search") || "",
-        period_start: searchParams.get("period_start") || "",
-        period_end: searchParams.get("period_end") || "",
-        department: searchParams.get("department") || "",
-        status: searchParams.get("status") || "",
+        search: searchParams.get('search') || '',
+        period_start: searchParams.get('period_start') || '',
+        period_end: searchParams.get('period_end') || '',
+        department: searchParams.get('department') || '',
+        status: searchParams.get('status') || '',
       },
-      initialPage: parseInt(searchParams.get("page") || "1", 10),
+      initialPage: parseInt(searchParams.get('page') || '1', 10),
       router,
       debounceTime: 100,
-      debouncedFields: ["search"],
+      debouncedFields: ['search'],
     });
 
   const queryParams = useMemo(
@@ -56,7 +56,7 @@ const OvertimePayments = () => {
       page_size: PAGE_SIZE,
       ...filters,
     }),
-    [currentPage, filters]
+    [currentPage, filters],
   );
 
   const [approveOvertimePayment, { isLoading: isUpdating }] =
@@ -72,18 +72,17 @@ const OvertimePayments = () => {
 
   const { data: departmentsData } = useGetDepartmentsQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
 
-
   const openApproveModal = (id: number) => {
-    setModalType("accept");
+    setModalType('accept');
     setOvertimeId(id);
     setIsModalOpen(true);
   };
 
   const openDisapproveModal = (id: number) => {
-    setModalType("submit");
+    setModalType('submit');
     setOvertimeId(id);
     setIsModalOpen(true);
   };
@@ -91,12 +90,12 @@ const OvertimePayments = () => {
   const closeModal = () => setIsModalOpen(false);
 
   const handleApiError = (error: unknown, action: string) => {
-    console.log("error", error);
-    if (error && typeof error === "object" && "data" in error && error.data) {
+    console.log('error', error);
+    if (error && typeof error === 'object' && 'data' in error && error.data) {
       const errorData = (error as { data: { error: string } }).data;
       toast.error(errorData.error || `Error ${action} overtime payment!`);
     } else {
-      toast.error("Unexpected error occurred. Please try again.");
+      toast.error('Unexpected error occurred. Please try again.');
     }
   };
 
@@ -106,11 +105,11 @@ const OvertimePayments = () => {
     };
     try {
       await approveOvertimePayment({ id: overtimeId, data }).unwrap();
-      toast.success("Approved overtime payments successfully!");
+      toast.success('Approved overtime payments successfully!');
       closeModal();
       refetch();
     } catch (error: unknown) {
-      handleApiError(error, "approving");
+      handleApiError(error, 'approving');
     }
   };
 
@@ -121,12 +120,12 @@ const OvertimePayments = () => {
     try {
       await approveOvertimePayment({ id: overtimeId, data }).unwrap();
       toast.success(
-        "Updated the overtime payment status to pending successfully!"
+        'Updated the overtime payment status to pending successfully!',
       );
       closeModal();
       refetch();
     } catch (error: unknown) {
-      handleApiError(error, "updating");
+      handleApiError(error, 'updating');
     }
   };
 
@@ -137,7 +136,7 @@ const OvertimePayments = () => {
     })) || [];
 
   const handleIntakeChange = (selectedOption: LabelOptionsType | null) => {
-    const departmentValue = selectedOption ? selectedOption.value : "";
+    const departmentValue = selectedOption ? selectedOption.value : '';
     handleFilterChange({
       department: departmentValue,
     });
@@ -145,8 +144,8 @@ const OvertimePayments = () => {
 
   const columns: Column<OvertimePaymentType>[] = [
     {
-      header: "Name",
-      accessor: "staff",
+      header: 'Name',
+      accessor: 'staff',
       cell: (item: OvertimePaymentType) => (
         <span className="text-sm whitespace-normal break-words">
           {item.staff.user.first_name} {item.staff.user.last_name} (
@@ -155,8 +154,8 @@ const OvertimePayments = () => {
       ),
     },
     {
-      header: "Rate Per Hour",
-      accessor: "rate_per_hour",
+      header: 'Rate Per Hour',
+      accessor: 'rate_per_hour',
       cell: (item: OvertimePaymentType) => (
         <span className="text-xs font-semibold">
           {formatCurrency(item.rate_per_hour)} per hour
@@ -164,8 +163,8 @@ const OvertimePayments = () => {
       ),
     },
     {
-      header: "Hours",
-      accessor: "hours",
+      header: 'Hours',
+      accessor: 'hours',
       cell: (item: OvertimePaymentType) => (
         <span>
           <span className="text-xs font-bold">{item.hours} hrs</span>
@@ -173,8 +172,8 @@ const OvertimePayments = () => {
       ),
     },
     {
-      header: "Date",
-      accessor: "date",
+      header: 'Date',
+      accessor: 'date',
       cell: (item: OvertimePaymentType) => (
         <span>
           <span className="text-xs font-bold">
@@ -184,8 +183,8 @@ const OvertimePayments = () => {
       ),
     },
     {
-      header: "Status",
-      accessor: "approved",
+      header: 'Status',
+      accessor: 'approved',
       cell: (item: OvertimePaymentType) => (
         <div className="flex items-center space-x-2">
           <span
@@ -193,25 +192,25 @@ const OvertimePayments = () => {
           text-xs border font-medium w-fit flex px-2 py-1 rounded-md 
           ${
             item.approved === true
-              ? "text-green-500 border-green-500 bg-green-100"
+              ? 'text-green-500 border-green-500 bg-green-100'
               : item.approved === false
-              ? "text-yellow-500 border-yellow-500 bg-yellow-100"
-              : "text-white bg-gray-500"
+                ? 'text-yellow-500 border-yellow-500 bg-yellow-100'
+                : 'text-white bg-gray-500'
           }
         `}
           >
             {item.approved === true
-              ? "Approved"
+              ? 'Approved'
               : item.approved === false
-              ? "Pending"
-              : "Unknown"}
+                ? 'Pending'
+                : 'Unknown'}
           </span>
         </div>
       ),
     },
     {
-      header: "Actions",
-      accessor: "id",
+      header: 'Actions',
+      accessor: 'id',
       cell: (item: OvertimePaymentType) => (
         <div className="flex items-center space-x-2">
           <UpdateOvertimePayment refetchData={refetch} data={item} />
@@ -220,7 +219,7 @@ const OvertimePayments = () => {
               onClick={() => openDisapproveModal(item.id)}
               className="px-2 py-1 text-xs bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors"
             >
-            Disapprove
+              Disapprove
             </button>
           ) : item.approved === false ? (
             <button
@@ -268,8 +267,8 @@ const OvertimePayments = () => {
               value={
                 departmentOptions.find(
                   (option: LabelOptionsType) =>
-                    option.value === filters.department
-                ) || { value: "", label: "All Departments" }
+                    option.value === filters.department,
+                ) || { value: '', label: 'All Departments' }
               }
               onChange={handleIntakeChange}
               placeholder=""
@@ -300,13 +299,13 @@ const OvertimePayments = () => {
           <div className="text-center text-gray-500 py-8">No data</div>
         )}
         {overtimePayments && overtimePayments.count > 0 && (
-                  <Pagination
-                    currentPage={currentPage}
-                    totalItems={overtimePayments.count}
-                    pageSize={PAGE_SIZE}
-                    onPageChange={handlePageChange}
-                  />
-                )}
+          <Pagination
+            currentPage={currentPage}
+            totalItems={overtimePayments.count}
+            pageSize={PAGE_SIZE}
+            onPageChange={handlePageChange}
+          />
+        )}
       </div>
 
       {isModalOpen && (
@@ -314,42 +313,42 @@ const OvertimePayments = () => {
           isOpen={isModalOpen}
           onClose={closeModal}
           onDelete={
-            modalType === "accept"
+            modalType === 'accept'
               ? handleApproveOvertimePayments
-              : modalType === "submit"
-              ? handleDisapproveOvertimePayments
-              : () => {}
+              : modalType === 'submit'
+                ? handleDisapproveOvertimePayments
+                : () => {}
           }
           isDeleting={isUpdating}
           title={
-            modalType === "accept"
-              ? "Approve Overtime Payment"
-              : modalType === "submit"
-              ? "Disapprove Payment"
-              : "Update Payment"
+            modalType === 'accept'
+              ? 'Approve Overtime Payment'
+              : modalType === 'submit'
+                ? 'Disapprove Payment'
+                : 'Update Payment'
           }
           confirmationMessage={
-            modalType === "accept"
-              ? "Are you sure you want to approve this overtime payment?"
-              : modalType === "submit"
-              ? "Are you sure you want to set this overtime payment status to pending?"
-              : "Are you sure you want to update this payment?"
+            modalType === 'accept'
+              ? 'Are you sure you want to approve this overtime payment?'
+              : modalType === 'submit'
+                ? 'Are you sure you want to set this overtime payment status to pending?'
+                : 'Are you sure you want to update this payment?'
           }
           deleteMessage={
-            modalType === "accept"
-              ? "This will approve the overtime payment for processing."
-              : modalType === "submit"
-              ? "This will change the payment status from approved to pending."
-              : "This action will modify the payment details."
+            modalType === 'accept'
+              ? 'This will approve the overtime payment for processing.'
+              : modalType === 'submit'
+                ? 'This will change the payment status from approved to pending.'
+                : 'This action will modify the payment details.'
           }
           actionText={
-            modalType === "accept"
-              ? "Approve Payment"
-              : modalType === "submit"
-              ? "Disapprove Payment"
-              : "Update Payment"
+            modalType === 'accept'
+              ? 'Approve Payment'
+              : modalType === 'submit'
+                ? 'Disapprove Payment'
+                : 'Update Payment'
           }
-          actionType={modalType === "submit" ? "update" : "submit"}
+          actionType={modalType === 'submit' ? 'update' : 'submit'}
         />
       )}
     </>

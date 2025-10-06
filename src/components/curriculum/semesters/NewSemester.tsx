@@ -1,56 +1,60 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FiPlus } from "react-icons/fi";
-import Select from "react-select";
-import { z } from "zod";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiPlus } from 'react-icons/fi';
+import Select from 'react-select';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
 
-
-import { SemesterNameOptions, SemesterStatusOptions } from "@/lib/constants";
-import { semesterSchema } from "@/schemas/curriculum/semesters";
-import { useCreateSemesterMutation } from "@/store/services/curriculum/semestersService";
-import IconButton from "@/components/common/IconButton";
-import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
-import { IoCloseOutline } from "react-icons/io5";
+import CreateAndUpdateButton from '@/components/common/CreateAndUpdateButton';
+import ModalBottomButton from '@/components/common/StickyModalFooterButtons';
+import { SemesterStatusOptions } from '@/lib/constants';
+import {
+  CreateSemesterFormData,
+  semesterSchema,
+} from '@/schemas/curriculum/semesters';
+import { useGetAcademicYearsQuery } from '@/store/services/curriculum/academicYearsService';
+import { useCreateSemesterMutation } from '@/store/services/curriculum/semestersService';
+import { IoCloseOutline } from 'react-icons/io5';
+import { AcademicYearType } from '../acadmicyYears/types';
 
 type SelectOption = {
   value: string | number;
   label: string;
 };
 
-type FormValues = z.infer<typeof semesterSchema>;
-
 const AddSemester = ({ refetchData }: { refetchData: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
-  const [createSemester, { isLoading: isCreating }] = useCreateSemesterMutation();
-
+  const [createSemester, { isLoading: isCreating }] =
+    useCreateSemesterMutation();
+  const { data: academicYearsData } = useGetAcademicYearsQuery(
+    {},
+    { refetchOnMountOrArgChange: true },
+  );
   const {
     register,
     handleSubmit,
     reset,
     setValue,
     formState: { isSubmitting, errors },
-  } = useForm<FormValues>({
+  } = useForm<CreateSemesterFormData>({
     resolver: zodResolver(semesterSchema),
     defaultValues: {
-      name: "",
-      // academic_year: "",
-      start_date: "",
-      end_date: "",
-      status: "Active",
-    }
+      name: '',
+      academic_year: undefined,
+      start_date: '',
+      end_date: '',
+      status: 'Active',
+    },
   });
 
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -59,46 +63,47 @@ const AddSemester = ({ refetchData }: { refetchData: () => void }) => {
   };
 
   const handleOpenModal = () => setIsOpen(true);
-  
+
   const handleCloseSuccessModal = () => {
     setShowSuccessModal(false);
     setIsError(false);
     handleCloseModal();
   };
-  
-  const handleSemesterNameChange = (selected: SelectOption | null) => {
-    if (selected) {
-      setValue("name", String(selected.value));
-    }
-  };
-  
+
+
+
   const handleStatusChange = (selected: SelectOption | null) => {
     if (selected) {
-      setValue("status", String(selected.value));
+      setValue('status', String(selected.value));
+    }
+  };
+  const handleAcademicYearChange = (selected: SelectOption | null) => {
+    if (selected) {
+      setValue('academic_year', Number(selected.value));
     }
   };
 
-  const onSubmit = async (formData: FormValues) => {
-    console.log("submitting form data", formData);
+  const onSubmit = async (formData: CreateSemesterFormData) => {
+    console.log('submitting form data', formData);
 
     try {
       const response = await createSemester(formData).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Semester added successfully!");
+      setSuccessMessage('Semester added successfully!');
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(`Failed to add Semester: ${errorData.error}`);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occurred. Please try again.");
+        setSuccessMessage('Unexpected error occurred. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -106,14 +111,15 @@ const AddSemester = ({ refetchData }: { refetchData: () => void }) => {
 
   return (
     <>
-           <IconButton
+      <CreateAndUpdateButton
         onClick={handleOpenModal}
         title="Add New"
-        label="New Semester"
+        label="Add Semester"
         icon={<FiPlus className="w-4 h-4" />}
-        className="bg-primary-500 text-white px-4 py-2 hover:bg-primary-600 focus:ring-primary-500 focus:ring-offset-1"
+        className="bg-primary-500 text-white 
+        px-4 py-2 hover:bg-primary-600
+         focus:ring-primary-500 focus:ring-offset-1"
       />
-
 
       {isOpen && (
         <div
@@ -135,7 +141,7 @@ const AddSemester = ({ refetchData }: { refetchData: () => void }) => {
             <div
               className="relative transform justify-center animate-fadeIn max-h-[90vh]
                 overflow-y-auto rounded-xl bg-white text-left shadow-xl transition-all   
-                w-full sm:max-w-c-400 md:max-w-400 px-3"
+                w-full sm:max-w-c-450 md:max-w-450 px-3"
             >
               <>
                 <div className="sticky top-0 bg-white z-40 flex sm:px-6 px-4 justify-between items-center py-3">
@@ -155,65 +161,66 @@ const AddSemester = ({ refetchData }: { refetchData: () => void }) => {
                   onSubmit={handleSubmit(onSubmit)}
                   className="space-y-4 mt-2 p-4 md:p-4 lg:p-4"
                 >
-                 
+                  <div>
                     <div>
-                      <div>
-                        <label className="block space-x-1 text-sm font-medium mb-2">
-                          Name<span className="text-red-500">*</span>
-                        </label>
-                        <Select
-                          options={SemesterNameOptions}
-                          menuPortalTarget={document.body}
-                          styles={{
-                            menuPortal: (base) => ({
-                              ...base,
-                              zIndex: 9999,
-                            }),
-                            control: (base) => ({
-                              ...base,
-                              minHeight: "25px",
-                              minWidth: "200px",
-                              borderColor: "#d1d5db",
-                              boxShadow: "none",
-                              "&:hover": {
-                                borderColor: "#9ca3af",
-                              },
-                              "&:focus-within": {
-                                borderColor: "#9ca3af",
-                                boxShadow: "none",
-                              },
-                            }),
-                          }}
-                          onChange={handleSemesterNameChange}
-                        />
-
-                        {errors.name && (
-                          <p className="text-red-500 text-sm mt-1">
-                            {errors.name.message}
-                          </p>
-                        )}
-                      </div>
+                      <label className="block space-x-1 text-sm font-medium mb-2">
+                        Name<span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
+                        placeholder="e.g. Semester One etc"
+                        {...register('name')}
+                      />
+                      {errors.name && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.name.message}
+                        </p>
+                      )}
                     </div>
-                    {/* <div>
-                      <div>
-                        <label className="block space-x-1 text-sm font-medium mb-2">
-                          Academic Year<span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
-                          placeholder="e.g. 2025-2026"
-                          {...register("academic_year")}
-                        />
-                        {errors.academic_year && (
-                          <p className="text-red-500 text-sm mt-1">
-                            {errors.academic_year.message}
-                          </p>
-                        )}
-                      </div>
-                    </div> */}
-              
-                  
+                  </div>
+                  <div>
+                    <label className="block space-x-1 text-sm font-medium mb-2">
+                      Academic Year<span className="text-red-500">*</span>
+                    </label>
+                    <Select
+                      options={academicYearsData?.map(
+                        (item: AcademicYearType) => ({
+                          value: item.id,
+                          label: item.name,
+                        }),
+                      )}
+                      menuPortalTarget={document.body}
+                      styles={{
+                        menuPortal: (base) => ({
+                          ...base,
+                          zIndex: 9999,
+                        }),
+                        control: (base) => ({
+                          ...base,
+                          minHeight: '25px',
+                          minWidth: '200px',
+                          borderColor: '#d1d5db',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: '#9ca3af',
+                          },
+                          '&:focus-within': {
+                            borderColor: '#9ca3af',
+                            boxShadow: 'none',
+                          },
+                        }),
+                      }}
+                      onChange={handleAcademicYearChange}
+                    />
+
+                    {errors.academic_year && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.academic_year.message}
+                      </p>
+                    )}
+                  </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block space-x-1 text-sm font-medium mb-2">
@@ -222,7 +229,7 @@ const AddSemester = ({ refetchData }: { refetchData: () => void }) => {
                       <input
                         type="date"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
-                        {...register("start_date")}
+                        {...register('start_date')}
                       />
                       {errors.start_date && (
                         <p className="text-red-500 text-sm mt-1">
@@ -230,7 +237,7 @@ const AddSemester = ({ refetchData }: { refetchData: () => void }) => {
                         </p>
                       )}
                     </div>
-                    
+
                     <div>
                       <label className="block space-x-1 text-sm font-medium mb-2">
                         End Date<span className="text-red-500">*</span>
@@ -238,7 +245,7 @@ const AddSemester = ({ refetchData }: { refetchData: () => void }) => {
                       <input
                         type="date"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
-                        {...register("end_date")}
+                        {...register('end_date')}
                       />
                       {errors.end_date && (
                         <p className="text-red-500 text-sm mt-1">
@@ -247,14 +254,16 @@ const AddSemester = ({ refetchData }: { refetchData: () => void }) => {
                       )}
                     </div>
                   </div>
-                  
+
                   <div>
                     <label className="block space-x-1 text-sm font-medium mb-2">
                       Status<span className="text-red-500">*</span>
                     </label>
                     <Select
                       options={SemesterStatusOptions}
-                      defaultValue={SemesterStatusOptions.find(option => option.value === "Active")}
+                      defaultValue={SemesterStatusOptions.find(
+                        (option) => option.value === 'Active',
+                      )}
                       onChange={handleStatusChange}
                       menuPortalTarget={document.body}
                       styles={{
@@ -264,15 +273,15 @@ const AddSemester = ({ refetchData }: { refetchData: () => void }) => {
                         }),
                         control: (base) => ({
                           ...base,
-                          minHeight: "25px",
-                          borderColor: "#d1d5db",
-                          boxShadow: "none",
-                          "&:hover": {
-                            borderColor: "#9ca3af",
+                          minHeight: '25px',
+                          borderColor: '#d1d5db',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: '#9ca3af',
                           },
-                          "&:focus-within": {
-                            borderColor: "#9ca3af",
-                            boxShadow: "none",
+                          '&:focus-within': {
+                            borderColor: '#9ca3af',
+                            boxShadow: 'none',
                           },
                         }),
                       }}
@@ -284,11 +293,11 @@ const AddSemester = ({ refetchData }: { refetchData: () => void }) => {
                     )}
                   </div>
 
-                   <ModalBottomButton
-                                                        onCancel={handleCloseModal}
-                                                        isSubmitting={isSubmitting}
-                                                        isProcessing={isCreating}
-                                                      />
+                  <ModalBottomButton
+                    onCancel={handleCloseModal}
+                    isSubmitting={isSubmitting}
+                    isProcessing={isCreating}
+                  />
                 </form>
               </>
             </div>

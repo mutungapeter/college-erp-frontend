@@ -1,4 +1,4 @@
-import { apiSlice } from "../../api/apiSlice";
+import { apiSlice } from '../../api/apiSlice';
 
 interface GetInventoryInterface {
   category?: string;
@@ -33,7 +33,7 @@ export const inventoryApis = apiSlice.injectEndpoints({
 
         return {
           url: `inventory/categories/`,
-          method: "GET",
+          method: 'GET',
           params: queryParams,
         };
       },
@@ -41,48 +41,48 @@ export const inventoryApis = apiSlice.injectEndpoints({
     createCategory: builder.mutation({
       query: (data) => ({
         url: `inventory/categories/create/`,
-        method: "POST",
+        method: 'POST',
         body: data,
       }),
     }),
     createUnit: builder.mutation({
       query: (data) => ({
         url: `inventory/units-of-measure/create/`,
-        method: "POST",
+        method: 'POST',
         body: data,
       }),
     }),
     issueInventory: builder.mutation({
       query: (data) => ({
         url: `inventory/items/issue/`,
-        method: "POST",
+        method: 'POST',
         body: data,
       }),
     }),
     updateUnit: builder.mutation({
       query: ({ id, data }) => ({
         url: `inventory/units-of-measure/${id}/`,
-        method: "PATCH",
+        method: 'PATCH',
         body: data,
       }),
     }),
     updateInventoryCategory: builder.mutation({
       query: ({ id, data }) => ({
         url: `inventory/categories/${id}/`,
-        method: "PATCH",
+        method: 'PATCH',
         body: data,
       }),
     }),
     deleteUnit: builder.mutation({
       query: (id) => ({
         url: `inventory/units-of-measure/${id}/`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
     }),
     deleteCategoryUnit: builder.mutation({
       query: (id) => ({
         url: `inventory/categories/${id}/`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
     }),
     getUnits: builder.query({
@@ -97,7 +97,7 @@ export const inventoryApis = apiSlice.injectEndpoints({
 
         return {
           url: `inventory/units-of-measure/`,
-          method: "GET",
+          method: 'GET',
           params: queryParams,
         };
       },
@@ -120,7 +120,7 @@ export const inventoryApis = apiSlice.injectEndpoints({
 
         return {
           url: `inventory/items/`,
-          method: "GET",
+          method: 'GET',
           params: queryParams,
         };
       },
@@ -143,7 +143,7 @@ export const inventoryApis = apiSlice.injectEndpoints({
 
         return {
           url: `inventory/items/issue/records/`,
-          method: "GET",
+          method: 'GET',
           params: queryParams,
         };
       },
@@ -152,21 +152,21 @@ export const inventoryApis = apiSlice.injectEndpoints({
     createInventoryItem: builder.mutation({
       query: (data) => ({
         url: `inventory/items/create/`,
-        method: "POST",
+        method: 'POST',
         body: data,
       }),
     }),
     updateInventoryItem: builder.mutation({
       query: ({ id, data }) => ({
         url: `inventory/items/${id}/`,
-        method: "PATCH",
+        method: 'PATCH',
         body: data,
       }),
     }),
     deleteInventoryItem: builder.mutation({
       query: (id) => ({
         url: `inventory/items/${id}/`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
     }),
   }),
@@ -188,4 +188,3 @@ export const {
   useIssueInventoryMutation,
   useGetInventoryIssueRecordsQuery,
 } = inventoryApis;
-

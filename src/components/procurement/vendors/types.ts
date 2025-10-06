@@ -1,5 +1,5 @@
-import { Role } from "@/definitions/students";
-import { AwardedTenderType, TenderType } from "../tenders/types";
+import { Role } from '@/definitions/students';
+import { AwardedTenderType, TenderType } from '../tenders/types';
 
 export interface VendorInterface {
   id: number;
@@ -47,23 +47,23 @@ export interface VendorDetailedType {
 }
 
 export interface Paid_by {
-	id: number;
-	username: string;
-	first_name: string;
-	last_name: string;
-	email: string;
-	role: Role;
-	gender: string;
-	phone_number: string;
-	id_number: string;
-	passport_number?: string;
-	address: string;
-	postal_code?: string;
-	city: string;
-	state?: string;
-	country: string;
-	date_of_birth: string;
-	is_verified: boolean;
+  id: number;
+  username: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  role: Role;
+  gender: string;
+  phone_number: string;
+  id_number: string;
+  passport_number?: string;
+  address: string;
+  postal_code?: string;
+  city: string;
+  state?: string;
+  country: string;
+  date_of_birth: string;
+  is_verified: boolean;
 }
 
 export interface VendorPaymentInterface {
@@ -78,17 +78,3 @@ export interface VendorPaymentInterface {
   payment_method: string;
   paid_by: Paid_by;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

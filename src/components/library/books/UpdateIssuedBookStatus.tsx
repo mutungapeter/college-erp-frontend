@@ -1,23 +1,21 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
-import { SelectOption } from "@/components/curriculum/courseSessions/EditSession";
-import { IssuedBookType } from "@/definitions/library";
-import { BorrowedBookStatusOptions } from "@/lib/constants";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
+import { SelectOption } from '@/components/curriculum/courseSessions/EditSession';
+import { IssuedBookType } from '@/definitions/library';
+import { BorrowedBookStatusOptions } from '@/lib/constants';
 import {
   UpdateIssuedBookStatusSchema,
   UpdateIssuedBookStatusType,
-} from "@/schemas/library/main";
-import {
-  useUpdateIssuedBookMutation
-} from "@/store/services/library/libraryService";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FiEdit, FiInfo } from "react-icons/fi";
-import { IoCloseOutline } from "react-icons/io5";
-import Select from "react-select";
+} from '@/schemas/library/main';
+import { useUpdateIssuedBookMutation } from '@/store/services/library/libraryService';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiEdit, FiInfo } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
+import Select from 'react-select';
 const UpdateBorrowedBookStatus = ({
   data,
   refetchData,
@@ -28,10 +26,10 @@ const UpdateBorrowedBookStatus = ({
   const [isOpen, setIsOpen] = useState(false);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
 
   const [isError, setIsError] = useState(false);
-  console.log("data", data);
+  console.log('data', data);
   const [updateIssuedBook, { isLoading: isUpdating }] =
     useUpdateIssuedBookMutation();
 
@@ -42,12 +40,12 @@ const UpdateBorrowedBookStatus = ({
   } = useForm<UpdateIssuedBookStatusType>({
     resolver: zodResolver(UpdateIssuedBookStatusSchema),
     defaultValues: {
-      status: data?.status || "",
+      status: data?.status || '',
     },
   });
 
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -63,34 +61,34 @@ const UpdateBorrowedBookStatus = ({
   };
 
   const onSubmit = async (formData: UpdateIssuedBookStatusType) => {
-    console.log("submitting form data for update", formData);
-    console.log("data", formData);
+    console.log('submitting form data for update', formData);
+    console.log('data', formData);
     try {
       const response = await updateIssuedBook({
         id: data?.id,
         data: formData,
       }).unwrap();
-      console.log("response", response);
+      console.log('response', response);
 
       setIsError(false);
-      setSuccessMessage("Borrowing status   updated successfully!");
+      setSuccessMessage('Borrowing status   updated successfully!');
       setShowSuccessModal(true);
 
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      console.log('error', error);
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
-        console.log("errorData", errorData);
+        console.log('errorData', errorData);
         setIsError(true);
         setSuccessMessage(
           errorData.error ||
-            "An error occured while updating borrowing status Info.Please try again!."
+            'An error occured while updating borrowing status Info.Please try again!.',
         );
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occured. Please try again.");
+        setSuccessMessage('Unexpected error occured. Please try again.');
         setShowSuccessModal(true);
       }
     } finally {
@@ -99,7 +97,7 @@ const UpdateBorrowedBookStatus = ({
   };
   const handleStatusChange = (selected: SelectOption | null) => {
     if (selected && selected.value) {
-      setValue("status", String(selected.value));
+      setValue('status', String(selected.value));
     }
   };
 
@@ -161,12 +159,14 @@ const UpdateBorrowedBookStatus = ({
                         Status Change Guidelines
                       </p>
                       <p className="break-words whitespace-normal">
-                        Borrowed Books records with status{" "}
-                        <span className="font-semibold">&ldquo;Returned&ldquo;</span> cannot
-                        be modified as they have completed the borrowing cycle.
-                        All other statuses (Pending Return, Lost, Lost, etc.)
-                        can be updated as needed to reflect the current state of
-                        the book.
+                        Borrowed Books records with status{' '}
+                        <span className="font-semibold">
+                          &ldquo;Returned&ldquo;
+                        </span>{' '}
+                        cannot be modified as they have completed the borrowing
+                        cycle. All other statuses (Pending Return, Lost, Lost,
+                        etc.) can be updated as needed to reflect the current
+                        state of the book.
                       </p>
                     </div>
                   </div>
@@ -182,7 +182,7 @@ const UpdateBorrowedBookStatus = ({
                     <Select
                       options={BorrowedBookStatusOptions}
                       defaultValue={BorrowedBookStatusOptions.find(
-                        (option) => option.value === data?.status || ""
+                        (option) => option.value === data?.status || '',
                       )}
                       onChange={handleStatusChange}
                       menuPortalTarget={document.body}
@@ -194,23 +194,23 @@ const UpdateBorrowedBookStatus = ({
                         }),
                         menu: (base) => ({
                           ...base,
-                          position: "absolute",
-                          width: "max-content",
-                          minWidth: "100%",
-                          minHeight: "50px",
+                          position: 'absolute',
+                          width: 'max-content',
+                          minWidth: '100%',
+                          minHeight: '50px',
                         }),
                         control: (base) => ({
                           ...base,
-                          minHeight: "44px",
-                          minWidth: "200px",
-                          borderColor: "#d1d5db",
-                          boxShadow: "none",
-                          "&:hover": {
-                            borderColor: "#9ca3af",
+                          minHeight: '44px',
+                          minWidth: '200px',
+                          borderColor: '#d1d5db',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: '#9ca3af',
                           },
-                          "&:focus-within": {
-                            borderColor: "#9ca3af",
-                            boxShadow: "none",
+                          '&:focus-within': {
+                            borderColor: '#9ca3af',
+                            boxShadow: 'none',
                           },
                         }),
                       }}

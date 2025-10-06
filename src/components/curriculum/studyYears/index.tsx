@@ -1,40 +1,43 @@
-"use client";
+'use client';
 
-import Pagination from "@/components/common/Pagination";
+import Pagination from '@/components/common/Pagination';
 
-import { useFilters } from "@/hooks/useFilters";
+import { useFilters } from '@/hooks/useFilters';
 
-import ActionModal from "@/components/common/Modals/ActionModal";
-import DataTable, { Column } from "@/components/common/Table/DataTable";
-import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
-import { StudyYearType } from "@/definitions/curiculum";
-import { PAGE_SIZE } from "@/lib/constants";
-import { useDeleteAcademicYearMutation, useGetAcademicYearsQuery } from "@/store/services/curriculum/academicYearsService";
-import { CustomDate } from "@/utils/date";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
-import { FiTrash2 } from "react-icons/fi";
-import { GoSearch } from "react-icons/go";
-import { toast } from "react-toastify";
-import EditStudyYear from "./Edit";
-import AddNewStudyYear from "./New";
-
-
+import ActionModal from '@/components/common/Modals/ActionModal';
+import DataTable, { Column } from '@/components/common/Table/DataTable';
+import ContentSpinner from '@/components/common/spinners/dataLoadingSpinner';
+import { StudyYearType } from '@/definitions/curiculum';
+import { PAGE_SIZE } from '@/lib/constants';
+import {
+  useDeleteStudyYearMutation,
+  useGetStudyYearsQuery,
+} from '@/store/services/curriculum/academicYearsService';
+import { CustomDate } from '@/utils/date';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMemo, useState } from 'react';
+import { FiTrash2 } from 'react-icons/fi';
+import { GoSearch } from 'react-icons/go';
+import { toast } from 'react-toastify';
+import EditStudyYear from './Edit';
+import AddNewStudyYear from './New';
 
 const StudyYears = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [selectedStudyYear, setSelectedStudyYear] = useState<number | null>(null);
+  const [selectedStudyYear, setSelectedStudyYear] = useState<number | null>(
+    null,
+  );
   const { filters, currentPage, handleFilterChange, handlePageChange } =
     useFilters({
       initialFilters: {
-        year_name: searchParams.get("year_name") || "",
+        year_name: searchParams.get('year_name') || '',
       },
-      initialPage: parseInt(searchParams.get("page") || "1", 10),
+      initialPage: parseInt(searchParams.get('page') || '1', 10),
       router,
       debounceTime: 100,
-      debouncedFields: ["year_name"],
+      debouncedFields: ['year_name'],
     });
 
   const queryParams = useMemo(
@@ -43,16 +46,20 @@ const StudyYears = () => {
       page_size: PAGE_SIZE,
       ...filters,
     }),
-    [currentPage, filters]
+    [currentPage, filters],
   );
 
-  const { data, isLoading, error, refetch } = useGetAcademicYearsQuery(queryParams, {
-    refetchOnMountOrArgChange: true,
-  });
-  
-const [deletAcademicYear, {isLoading:isDeleting}] = useDeleteAcademicYearMutation();   
- 
-   const openDeleteModal = (id: number) => {
+  const { data, isLoading, error, refetch } = useGetStudyYearsQuery(
+    queryParams,
+    {
+      refetchOnMountOrArgChange: true,
+    },
+  );
+
+  const [deletStudyYear, { isLoading: isDeleting }] =
+    useDeleteStudyYearMutation();
+
+  const openDeleteModal = (id: number) => {
     setSelectedStudyYear(id);
     setIsDeleteModalOpen(true);
   };
@@ -61,65 +68,61 @@ const [deletAcademicYear, {isLoading:isDeleting}] = useDeleteAcademicYearMutatio
     setIsDeleteModalOpen(false);
     setSelectedStudyYear(null);
   };
-  
- const handleDeleteAcademicYear = async () => {
+
+  const handleDeleteAcademicYear = async () => {
     try {
-      await deletAcademicYear(selectedStudyYear).unwrap();
-      toast.success("Study Year Deleted successfully!");
+      await deletStudyYear(selectedStudyYear).unwrap();
+      toast.success('Study Year Deleted successfully!');
       closeDeleteModal();
       refetch();
     } catch (error: unknown) {
-      console.log("error", error);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      console.log('error', error);
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
-        console.log("errorData", errorData);
-        toast.error(errorData.error || "Error Deleting Study Year!.");
+        console.log('errorData', errorData);
+        toast.error(errorData.error || 'Error Deleting Study Year!.');
       } else {
-        toast.error("Unexpected Error occured. Please try again.");
+        toast.error('Unexpected Error occured. Please try again.');
       }
     }
   };
   const columns: Column<StudyYearType>[] = [
     {
-      header: "Name",
-      accessor: "name",
+      header: 'Name',
+      accessor: 'name',
       cell: (item: StudyYearType) => <span>{item.name}</span>,
     },
     {
-      header: "Added On",
-      accessor: "created_on",
+      header: 'Added On',
+      accessor: 'created_on',
       cell: (item: StudyYearType) => (
-        <span className="text-sm font-normal">{CustomDate(item.created_on)}</span>
+        <span className="text-sm font-normal">
+          {CustomDate(item.created_on)}
+        </span>
       ),
     },
-    
-    
-   
- 
+
     {
-      header: "Actions",
-      accessor: "id",
+      header: 'Actions',
+      accessor: 'id',
       cell: (item: StudyYearType) => (
         <div className="flex items-center  space-x-2">
-          
-                <div>
-                  <EditStudyYear  data={item} refetchData={refetch} />
-                </div>
+          <div>
+            <EditStudyYear data={item} refetchData={refetch} />
+          </div>
           <div
-                  onClick={()=>openDeleteModal(item.id)}
-                  className="p-2 rounded-xl bg-red-100 text-red-600 hover:bg-blue-200 hover:text-red-700 cursor-pointer transition duration-200 shadow-sm"
+            onClick={() => openDeleteModal(item.id)}
+            className="p-2 rounded-xl bg-red-100 text-red-600 hover:bg-blue-200 hover:text-red-700 cursor-pointer transition duration-200 shadow-sm"
             title="Edit Cohort"
-                >
-                  <FiTrash2 className="text-sm" />
-                </div>
-
-       
+          >
+            <FiTrash2 className="text-sm" />
+          </div>
         </div>
       ),
     },
   ];
- 
-  console.log("data", data);
+
+  console.log('data', data);
   return (
     <>
       <div className="bg-white w-full  p-1 shadow-md rounded-lg font-nunito">
@@ -141,7 +144,6 @@ const [deletAcademicYear, {isLoading:isDeleting}] = useDeleteAcademicYearMutatio
               className="w-full md:w-auto text-gray-900 md:min-w-[40%]  text-sm px-2 py-2 bg-transparent outline-none border-b border-gray-300 focus:border-blue-600"
             />
           </div>
-         
         </div>
         {isLoading ? (
           <div className="flex justify-center py-8">
@@ -172,15 +174,15 @@ const [deletAcademicYear, {isLoading:isDeleting}] = useDeleteAcademicYearMutatio
         )}
 
         <ActionModal
-              isOpen={isDeleteModalOpen}
-              onClose={closeDeleteModal}
-              onDelete={handleDeleteAcademicYear}
-              isDeleting={isDeleting}
-              confirmationMessage="Are you sure you want to Delete this Study Year ?"
-              deleteMessage="This action cannot be undone."
-              title="Delete Study Year"
-              actionText="Delete "
-           />
+          isOpen={isDeleteModalOpen}
+          onClose={closeDeleteModal}
+          onDelete={handleDeleteAcademicYear}
+          isDeleting={isDeleting}
+          confirmationMessage="Are you sure you want to Delete this Study Year ?"
+          deleteMessage="This action cannot be undone."
+          title="Delete Study Year"
+          actionText="Delete "
+        />
       </div>
     </>
   );

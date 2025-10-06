@@ -1,21 +1,20 @@
-"use client";
+'use client';
 
-import Pagination from "@/components/common/Pagination";
+import Pagination from '@/components/common/Pagination';
 
-import { useFilters } from "@/hooks/useFilters";
+import { useFilters } from '@/hooks/useFilters';
 
-import DataTable, { Column } from "@/components/common/Table/DataTable";
-import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
+import DataTable, { Column } from '@/components/common/Table/DataTable';
+import ContentSpinner from '@/components/common/spinners/dataLoadingSpinner';
 
-import { IssuedBookType } from "@/definitions/library";
-import { PAGE_SIZE } from "@/lib/constants";
-import { useGetBorrowedBooksQuery } from "@/store/services/library/libraryService";
-import { YearMonthCustomDate } from "@/utils/date";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
-import { GoSearch } from "react-icons/go";
-import UpdateBorrowedBookStatus from "./UpdateIssuedBookStatus";
-
+import { IssuedBookType } from '@/definitions/library';
+import { PAGE_SIZE } from '@/lib/constants';
+import { useGetBorrowedBooksQuery } from '@/store/services/library/libraryService';
+import { YearMonthCustomDate } from '@/utils/date';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMemo } from 'react';
+import { GoSearch } from 'react-icons/go';
+import UpdateBorrowedBookStatus from './UpdateIssuedBookStatus';
 
 const BorrowedBooksList = () => {
   const router = useRouter();
@@ -24,12 +23,12 @@ const BorrowedBooksList = () => {
   const { filters, currentPage, handleFilterChange, handlePageChange } =
     useFilters({
       initialFilters: {
-        search: searchParams.get("search") || "",
+        search: searchParams.get('search') || '',
       },
-      initialPage: parseInt(searchParams.get("page") || "1", 10),
+      initialPage: parseInt(searchParams.get('page') || '1', 10),
       router,
       debounceTime: 100,
-      debouncedFields: ["search"],
+      debouncedFields: ['search'],
     });
 
   const queryParams = useMemo(
@@ -38,116 +37,123 @@ const BorrowedBooksList = () => {
       page_size: PAGE_SIZE,
       ...filters,
     }),
-    [currentPage, filters]
+    [currentPage, filters],
   );
-console.log("queryParams",queryParams)
-  
-  const { data:booksData, isLoading, error, refetch } = useGetBorrowedBooksQuery(queryParams, {
+  console.log('queryParams', queryParams);
+
+  const {
+    data: booksData,
+    isLoading,
+    error,
+    refetch,
+  } = useGetBorrowedBooksQuery(queryParams, {
     refetchOnMountOrArgChange: true,
   });
-console.log("booksData",booksData)
+  console.log('booksData', booksData);
 
- 
- 
   const columns: Column<IssuedBookType>[] = [
     {
-      header: "Member",
-      accessor: "member",
-      cell: (item: IssuedBookType) => <span className="font-semibold text-sm">{item.member.user.first_name} {item.member.user.last_name}</span>,
-    },
-    {
-      header: "MemberType",
-      accessor: "member",
-      cell: (item: IssuedBookType) => <span className="font-semibold text-sm">{item.member.role}</span>,
-    },
-    {
-      header: "Title",
-      accessor: "book",
-      cell: (item: IssuedBookType) => <span className="font-semibold text-sm">{item.book.title}</span>,
-    },
-    {
-      header: "Borrow  Date",
-      accessor: "borrow_date",
+      header: 'Member',
+      accessor: 'member',
       cell: (item: IssuedBookType) => (
-        <span className="text-xs font-normal">{YearMonthCustomDate(item.borrow_date)}</span>
-      ),
-    },
-    
-    {
-      header: "Due Date",
-      accessor: "due_date",
-      cell: (item: IssuedBookType) => (
-        <span>
-          <span className="text-xs font-nunito ">{YearMonthCustomDate(item.due_date)}</span>
+        <span className="font-semibold text-sm">
+          {item.member.user.first_name} {item.member.user.last_name}
         </span>
       ),
     },
     {
-      header: "Days Due",
-      accessor: "days_overdue",
+      header: 'MemberType',
+      accessor: 'member',
+      cell: (item: IssuedBookType) => (
+        <span className="font-semibold text-sm">{item.member.role}</span>
+      ),
+    },
+    {
+      header: 'Title',
+      accessor: 'book',
+      cell: (item: IssuedBookType) => (
+        <span className="font-semibold text-sm">{item.book.title}</span>
+      ),
+    },
+    {
+      header: 'Borrow  Date',
+      accessor: 'borrow_date',
+      cell: (item: IssuedBookType) => (
+        <span className="text-xs font-normal">
+          {YearMonthCustomDate(item.borrow_date)}
+        </span>
+      ),
+    },
+
+    {
+      header: 'Due Date',
+      accessor: 'due_date',
+      cell: (item: IssuedBookType) => (
+        <span>
+          <span className="text-xs font-nunito ">
+            {YearMonthCustomDate(item.due_date)}
+          </span>
+        </span>
+      ),
+    },
+    {
+      header: 'Days Due',
+      accessor: 'days_overdue',
       cell: (item: IssuedBookType) => (
         <span>
           <span className="text-sm normal">{item.days_overdue}</span>
         </span>
       ),
     },
-    
+
     {
-      header: "Status",
-      accessor: "status",
+      header: 'Status',
+      accessor: 'status',
       cell: (item: IssuedBookType) => (
         <span className="">
-          <span className={`text-xs font-normal px-2 py-1 rounded-md
+          <span
+            className={`text-xs font-normal px-2 py-1 rounded-md
             ${
-        item.status === "overdue"
-          ? "bg-blue-100 text-blue-800"
-          : item.status === "Returned"
-          ? "bg-green-100 text-green-700"
-          : item.status === "active"
-          ? "bg-yellow-100 text-yellow-700"
-          : item.status === "Pending Return"
-          ? "bg-yellow-100 text-yellow-700"
-          : item.status === "lost"
-          ? "bg-red-100 text-red-700"
-          : item.status === "renewed"
-          ? "bg-green-100 text-green-700"
-          : item.status === "rejected"
-          ? "bg-red-100 text-red-700"
-
-          : "bg-red-100 text-red-700"
-      }
-            `}>{item.status}</span>
+              item.status === 'overdue'
+                ? 'bg-blue-100 text-blue-800'
+                : item.status === 'Returned'
+                  ? 'bg-green-100 text-green-700'
+                  : item.status === 'active'
+                    ? 'bg-yellow-100 text-yellow-700'
+                    : item.status === 'Pending Return'
+                      ? 'bg-yellow-100 text-yellow-700'
+                      : item.status === 'lost'
+                        ? 'bg-red-100 text-red-700'
+                        : item.status === 'renewed'
+                          ? 'bg-green-100 text-green-700'
+                          : item.status === 'rejected'
+                            ? 'bg-red-100 text-red-700'
+                            : 'bg-red-100 text-red-700'
+            }
+            `}
+          >
+            {item.status}
+          </span>
         </span>
       ),
     },
-    
-   
-  
-   
+
     {
-      header: "Actions",
-      accessor: "id",
+      header: 'Actions',
+      accessor: 'id',
       cell: (item: IssuedBookType) => (
         <div className="flex items-center justify-center space-x-2">
-        
-            <UpdateBorrowedBookStatus data={item} refetchData={refetch} />
-          
-         
-
-       
+          <UpdateBorrowedBookStatus data={item} refetchData={refetch} />
         </div>
       ),
     },
   ];
- 
- 
+
   return (
     <>
       <div className="bg-white w-full  p-1 shadow-md rounded-lg font-nunito">
         <div className=" p-3  flex flex-col md:flex-row md:items-center lg:items-center md:gap-0 lg:gap-0 gap-4 lg:justify-between md:justify-between">
           <h2 className="font-semibold text-black text-xl">All Issued Books</h2>
-          
-         
         </div>
 
         <div className="flex flex-col gap-4 mt-5 lg:gap-0 md:gap-0 lg:flex-row md:flex-row  md:items-center p-2 md:justify-between lg:items-center lg:justify-between">
@@ -163,7 +169,7 @@ console.log("booksData",booksData)
             />
           </div>
           <div className="flex flex-col gap-3  lg:p-0 lg:flex-row md:flex-row md:items-center md:space-x-2 lg:items-center lg:space-x-5">
-             {/* <FilterSelect
+            {/* <FilterSelect
             options={intakeOptions}
             value={intakeOptions.find(
               (option:LabelOptionsType) => option.value === filters.intake  
@@ -201,8 +207,6 @@ console.log("booksData",booksData)
             onPageChange={handlePageChange}
           />
         )}
-
-     
       </div>
     </>
   );

@@ -1,10 +1,9 @@
-"use client";
+'use client';
 
-import InfoCard from "@/components/students/Details/InfoCard";
-import { StaffType } from "@/definitions/staff";
-import { LuBriefcase } from "react-icons/lu";
-import EditStaffWorkDetails from "../../edit/EditWorkInfo";
-
+import InfoCard from '@/components/students/Details/InfoCard';
+import { StaffType } from '@/definitions/staff';
+import { LuBriefcase } from 'react-icons/lu';
+import EditStaffWorkDetails from '../../edit/EditWorkInfo';
 
 interface Props {
   data: StaffType;
@@ -16,10 +15,10 @@ const WorkDetailsTab = ({ data, refetchData }: Props) => {
     <div className="bg-white rounded-xl shadow-sm p-6">
       <div className="mb-6 flex items-center justify-between">
         <div>
-
-        <h2 className="text-lg font-bold text-gray-900 mb-1">Work Details</h2>
-        <p className="text-sm text-gray-500">Job title and department details</p>
-
+          <h2 className="text-lg font-bold text-gray-900 mb-1">Work Details</h2>
+          <p className="text-sm text-gray-500">
+            Job title and department details
+          </p>
         </div>
         <div>
           <EditStaffWorkDetails data={data} refetchData={refetchData} />
@@ -30,12 +29,11 @@ const WorkDetailsTab = ({ data, refetchData }: Props) => {
           icon={<LuBriefcase className="text-blue-600" />}
           title="Work Information"
           items={[
-            { label: "Staff No", value: data.staff_number },
-            { label: "Position", value: data.position.name },
-            { label: "Department", value: data.department.name },
-            { label: "Office", value: data.department.office },
-            { label: "System Role", value: data.user?.role?.name },
-
+            { label: 'Staff No', value: data.staff_number },
+            { label: 'Position', value: data.position.name },
+            { label: 'Department', value: data.department.name },
+            { label: 'Office', value: data.department.office },
+            { label: 'System Role', value: data.user?.role?.name },
           ]}
         />
       ) : (

@@ -1,11 +1,11 @@
-"use client";
+'use client';
 import {
   useDeleteTenderApplicationDocumentsMutation,
   useGetApplicationDetailsQuery,
   useReviewApplicationMutation,
-} from "@/store/services/finance/procurementService";
+} from '@/store/services/finance/procurementService';
 
-import { useState } from "react";
+import { useState } from 'react';
 import {
   FiAlertCircle,
   FiArrowLeft,
@@ -19,20 +19,20 @@ import {
   FiFileText,
   FiTrash2,
   FiXCircle,
-} from "react-icons/fi";
+} from 'react-icons/fi';
 
-import ActionModal from "@/components/common/Modals/ActionModal";
-import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
-import { formatCurrency } from "@/utils/currency";
-import { CustomDate } from "@/utils/date";
-import { toast } from "react-toastify";
-import { ApplicationDetailsType } from "./types";
+import ActionModal from '@/components/common/Modals/ActionModal';
+import ContentSpinner from '@/components/common/spinners/dataLoadingSpinner';
+import { formatCurrency } from '@/utils/currency';
+import { CustomDate } from '@/utils/date';
+import { toast } from 'react-toastify';
+import { ApplicationDetailsType } from './types';
 
 // Import the PDF export function
-import { exportTenderAgreementToPDF } from "./TenderAgreementPDFDocument";
-import Link from "next/link";
-import { LuSend } from "react-icons/lu";
-import UploadTenderApplicationDocuments from "./NewApplicationDocument";
+import { exportTenderAgreementToPDF } from './TenderAgreementPDFDocument';
+import Link from 'next/link';
+import { LuSend } from 'react-icons/lu';
+import UploadTenderApplicationDocuments from './NewApplicationDocument';
 
 interface Props {
   id: string | number | null;
@@ -50,10 +50,10 @@ const TenderApplicationDetails = ({ id }: Props) => {
   const [deleteTenderApplicationDocuments, { isLoading: isDeleting }] =
     useDeleteTenderApplicationDocumentsMutation();
   const [selectedApplication, setSelectedApplication] = useState<number | null>(
-    null
+    null,
   );
-  const [modalType, setModalType] = useState<"update" | "cancel" | "submit">(
-    "update"
+  const [modalType, setModalType] = useState<'update' | 'cancel' | 'submit'>(
+    'update',
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -66,18 +66,18 @@ const TenderApplicationDetails = ({ id }: Props) => {
     useReviewApplicationMutation();
   const openUpdateModal = (id: number) => {
     setSelectedApplication(id);
-    setModalType("update");
+    setModalType('update');
     setIsModalOpen(true);
   };
   const openSubmitModal = (id: number) => {
     setSelectedApplication(id);
-    setModalType("submit");
+    setModalType('submit');
     setIsModalOpen(true);
   };
 
   const openCancelModal = (id: number) => {
     setSelectedApplication(id);
-    setModalType("cancel");
+    setModalType('cancel');
     setIsModalOpen(true);
   };
   const openDeleteModal = (id: number) => {
@@ -92,20 +92,20 @@ const TenderApplicationDetails = ({ id }: Props) => {
   const closeModal = () => setIsModalOpen(false);
   const handleApproveApplication = async () => {
     const data = {
-      status: "approved",
+      status: 'approved',
     };
     console.log(selectedApplication);
     try {
       if (selectedApplication) {
         await reviewApplication({ id: selectedApplication, data }).unwrap();
       }
-      toast.success("Application Approved  successfully!");
+      toast.success('Application Approved  successfully!');
       closeModal();
       refetch();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
 
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         toast.error(`Failed to approve application: ${errorData.error}`);
       }
@@ -113,20 +113,20 @@ const TenderApplicationDetails = ({ id }: Props) => {
   };
   const handleSubmitApplication = async () => {
     const data = {
-      status: "pending",
+      status: 'pending',
     };
     console.log(selectedApplication);
     try {
       if (selectedApplication) {
         await reviewApplication({ id: selectedApplication, data }).unwrap();
       }
-      toast.success("Application Submitted  successfully!");
+      toast.success('Application Submitted  successfully!');
       closeModal();
       refetch();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
 
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         toast.error(`Failed to submit application: ${errorData.error}`);
       }
@@ -134,22 +134,22 @@ const TenderApplicationDetails = ({ id }: Props) => {
   };
   const handleRejectApplication = async () => {
     const data = {
-      status: "rejected",
+      status: 'rejected',
     };
     try {
       if (selectedApplication) {
         await reviewApplication({ id: selectedApplication, data }).unwrap();
       }
-      toast.success("Application rejected successfully!");
+      toast.success('Application rejected successfully!');
       closeModal();
       refetch();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
 
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         toast.error(
-          `An error occured while rejecting the application: ${errorData.error}`
+          `An error occured while rejecting the application: ${errorData.error}`,
         );
       }
     }
@@ -157,17 +157,17 @@ const TenderApplicationDetails = ({ id }: Props) => {
   const handleDeleteDoc = async () => {
     try {
       await deleteTenderApplicationDocuments(selectedDoc).unwrap();
-      toast.success("Application document successfully deleted!");
+      toast.success('Application document successfully deleted!');
       closeDeleteModal();
       refetch();
     } catch (error: unknown) {
-      console.log("error", error);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      console.log('error', error);
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
-        console.log("errorData", errorData);
-        toast.error(errorData.error || "Error deleting document.");
+        console.log('errorData', errorData);
+        toast.error(errorData.error || 'Error deleting document.');
       } else {
-        toast.error("Unexpected Error occurred. Please try again.");
+        toast.error('Unexpected Error occurred. Please try again.');
       }
     }
   };
@@ -177,21 +177,21 @@ const TenderApplicationDetails = ({ id }: Props) => {
       const agreementNumber = `AGR-${
         application.id
       }-${new Date().getFullYear()}`;
-      const agreementDate = new Date().toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
+      const agreementDate = new Date().toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
       });
 
       await exportTenderAgreementToPDF(
         application,
         agreementNumber,
-        agreementDate
+        agreementDate,
       );
-      toast.success("Agreement PDF generated successfully!");
+      toast.success('Agreement PDF generated successfully!');
     } catch (error) {
-      console.error("Error generating agreement:", error);
-      toast.error("Failed to generate agreement PDF. Please try again.");
+      console.error('Error generating agreement:', error);
+      toast.error('Failed to generate agreement PDF. Please try again.');
     }
   };
 
@@ -222,25 +222,25 @@ const TenderApplicationDetails = ({ id }: Props) => {
   const getStatusConfig = (status: string) => {
     const configs = {
       approved: {
-        bg: "bg-green-50",
-        border: "border-green-200",
-        text: "text-green-800",
+        bg: 'bg-green-50',
+        border: 'border-green-200',
+        text: 'text-green-800',
         icon: FiCheckCircle,
-        iconColor: "text-green-600",
+        iconColor: 'text-green-600',
       },
       rejected: {
-        bg: "bg-red-50",
-        border: "border-red-200",
-        text: "text-red-800",
+        bg: 'bg-red-50',
+        border: 'border-red-200',
+        text: 'text-red-800',
         icon: FiXCircle,
-        iconColor: "text-red-600",
+        iconColor: 'text-red-600',
       },
       pending: {
-        bg: "bg-yellow-50",
-        border: "border-yellow-200",
-        text: "text-yellow-800",
+        bg: 'bg-yellow-50',
+        border: 'border-yellow-200',
+        text: 'text-yellow-800',
         icon: FiAlertCircle,
-        iconColor: "text-yellow-600",
+        iconColor: 'text-yellow-600',
       },
     };
     return configs[status as keyof typeof configs] || configs.pending;
@@ -293,7 +293,7 @@ const TenderApplicationDetails = ({ id }: Props) => {
                 <span>Generate Agreement</span>
               </button>
 
-              {application.status === "incomplete" && (
+              {application.status === 'incomplete' && (
                 <button
                   onClick={() => openSubmitModal(application.id)}
                   className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
@@ -304,7 +304,7 @@ const TenderApplicationDetails = ({ id }: Props) => {
                 </button>
               )}
 
-              {application.status === "pending" && (
+              {application.status === 'pending' && (
                 <>
                   <button
                     onClick={() => openUpdateModal(application.id)}
@@ -383,7 +383,7 @@ const TenderApplicationDetails = ({ id }: Props) => {
                           Duration
                         </p>
                         <p className="text-xs font-medium text-blue-800">
-                          {CustomDate(application.tender.start_date)} -{" "}
+                          {CustomDate(application.tender.start_date)} -{' '}
                           {CustomDate(application.tender.end_date)}
                         </p>
                       </div>
@@ -547,7 +547,7 @@ const TenderApplicationDetails = ({ id }: Props) => {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <span className="text-sm text-gray-600 capitalize">
-                              {doc.document_type || "N/A"}
+                              {doc.document_type || 'N/A'}
                             </span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
@@ -556,14 +556,14 @@ const TenderApplicationDetails = ({ id }: Props) => {
                           <td className="px-6 py-4 whitespace-nowrap text-center">
                             <div className="flex items-center justify-center space-x-2">
                               <button
-                                onClick={() => window.open(doc.file, "_blank")}
+                                onClick={() => window.open(doc.file, '_blank')}
                                 className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-100 rounded-md transition-colors"
                                 title="View Document"
                               >
                                 <FiEye className="w-4 h-4" />
                               </button>
                               <button
-                                onClick={() => window.open(doc.file, "_blank")}
+                                onClick={() => window.open(doc.file, '_blank')}
                                 className="p-2 text-green-600 hover:text-green-800 hover:bg-green-100 rounded-md transition-colors"
                                 title="Download Document"
                               >
@@ -623,11 +623,11 @@ const TenderApplicationDetails = ({ id }: Props) => {
                   <div className="flex items-start space-x-3">
                     <div
                       className={`w-3 h-3 rounded-full mt-2 ${
-                        application.status === "approved"
-                          ? "bg-green-500"
-                          : application.status === "rejected"
-                          ? "bg-red-500"
-                          : "bg-yellow-500"
+                        application.status === 'approved'
+                          ? 'bg-green-500'
+                          : application.status === 'rejected'
+                            ? 'bg-red-500'
+                            : 'bg-yellow-500'
                       }`}
                     ></div>
                     <div>
@@ -688,7 +688,7 @@ const TenderApplicationDetails = ({ id }: Props) => {
                   <div className="pt-2 border-t border-gray-200">
                     <p className="text-xs text-gray-500 mb-1">Reviewed By:</p>
                     <p className="font-medium text-gray-900 text-sm">
-                      {application.reviewed_by.first_name}{" "}
+                      {application.reviewed_by.first_name}{' '}
                       {application.reviewed_by.last_name}
                     </p>
                   </div>
@@ -714,55 +714,55 @@ const TenderApplicationDetails = ({ id }: Props) => {
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
             onDelete={
-              modalType === "update"
+              modalType === 'update'
                 ? handleApproveApplication
-                : modalType === "cancel"
-                ? handleRejectApplication
-                :modalType === "submit"
-                ? handleSubmitApplication
-                : () => {}
+                : modalType === 'cancel'
+                  ? handleRejectApplication
+                  : modalType === 'submit'
+                    ? handleSubmitApplication
+                    : () => {}
             }
             confirmationMessage={
-              modalType === "update"
-                ? "Are you sure you want to approve this tender application  and automatically award the tender  to the applicant ?"
-                : modalType === "submit"
-                ? "Are you sure you want to submit this tender application for review?"
-                : "Are you sure you want Reject this tender application?"
+              modalType === 'update'
+                ? 'Are you sure you want to approve this tender application  and automatically award the tender  to the applicant ?'
+                : modalType === 'submit'
+                  ? 'Are you sure you want to submit this tender application for review?'
+                  : 'Are you sure you want Reject this tender application?'
             }
             deleteMessage={
-              modalType === "update"
-                ? "This will automatically award the tender to the applicant and generate invoice for the tender amount.Also will create a vendor record for this awarded applicant"
-                : modalType === "submit"
-                ? "This will submit the tender application for review"
-                : "This will  reject the tender application"
+              modalType === 'update'
+                ? 'This will automatically award the tender to the applicant and generate invoice for the tender amount.Also will create a vendor record for this awarded applicant'
+                : modalType === 'submit'
+                  ? 'This will submit the tender application for review'
+                  : 'This will  reject the tender application'
             }
             isDeleting={isReviewLoading}
             title={
-              modalType === "update"
-                ? "Approve  Application "
-                : modalType === "cancel"
-                ? "Reject Application"
-                : modalType === "submit"
-                ? "Submit Application For Review"
-                : ""
+              modalType === 'update'
+                ? 'Approve  Application '
+                : modalType === 'cancel'
+                  ? 'Reject Application'
+                  : modalType === 'submit'
+                    ? 'Submit Application For Review'
+                    : ''
             }
             actionText={
-              modalType === "update"
-                ? "Approve"
-                : modalType === "cancel"
-                ? "Reject"
-                : modalType === "submit"
-                ? "Submit"
-                : ""
+              modalType === 'update'
+                ? 'Approve'
+                : modalType === 'cancel'
+                  ? 'Reject'
+                  : modalType === 'submit'
+                    ? 'Submit'
+                    : ''
             }
             actionType={
-              modalType === "update"
-                ? "update"
-                : modalType === "cancel"
-                ? "cancel"
-                :  modalType === "submit"
-                ? "create"
-                : "create"
+              modalType === 'update'
+                ? 'update'
+                : modalType === 'cancel'
+                  ? 'cancel'
+                  : modalType === 'submit'
+                    ? 'create'
+                    : 'create'
             }
           />
         )}

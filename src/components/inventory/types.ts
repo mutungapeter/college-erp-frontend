@@ -1,5 +1,5 @@
-import { DepartmentType } from "@/definitions/curiculum";
-import { UserType } from "@/definitions/students";
+import { DepartmentType } from '@/definitions/curiculum';
+import { UserType } from '@/definitions/students';
 
 export interface CategoryType {
   id: number;
@@ -7,52 +7,45 @@ export interface CategoryType {
   description: string;
   created_on: string;
   updated_on: string;
-  category_type:string;
-  category_type_label:string;
+  category_type: string;
+  category_type_label: string;
 }
 
-
-
-
 export interface InventoryUnitType {
-	id: number;
-	created_on: string;
-	updated_on: string;
-	name: string;
+  id: number;
+  created_on: string;
+  updated_on: string;
+  name: string;
 }
 
 export interface InventoryItem {
-	id: number;
-	category: CategoryType;
-	unit: InventoryUnitType;
-	created_on: string;
-	updated_on: string;
-	name: string;
-	description: string;
-  total_valuation?:string ;
-  unit_valuation?:string;
-	quantity_in_stock: number;
+  id: number;
+  category: CategoryType;
+  unit: InventoryUnitType;
+  created_on: string;
+  updated_on: string;
+  name: string;
+  description: string;
+  total_valuation?: string;
+  unit_valuation?: string;
+  quantity_in_stock: number;
 }
 
-
 export const CategoryTypeOptions: { value: string; label: string }[] = [
-  { value: "fixed_asset", label: "Fixed Asset" },
-  { value: "consumable", label: "Consumable" },
-  { value: "service", label: "Service" },
+  { value: 'fixed_asset', label: 'Fixed Asset' },
+  { value: 'consumable', label: 'Consumable' },
+  { value: 'service', label: 'Service' },
   // { value: "furniture", label: "Furniture" },
-  { value: "inventory", label: "Inventory" },
-  { value: "other", label: "Other" },
+  { value: 'inventory', label: 'Inventory' },
+  { value: 'other', label: 'Other' },
 ];
 
-
-
-
 export interface IssueRecord {
-	id: number;
-	inventory_item: InventoryItem;
-	quantity: number;
-	issued_to: DepartmentType;
-	issued_by: UserType;
-	remarks: string;
-	issued_on: string;
+  id: number;
+  inventory_item: InventoryItem;
+  quantity: number;
+  issued_to: DepartmentType;
+  issued_by: UserType;
+  remarks: string;
+  issued_on: string;
 }

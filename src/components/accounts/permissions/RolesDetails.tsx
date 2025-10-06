@@ -1,28 +1,29 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import Link from "next/link";
-import { FiArrowLeft } from "react-icons/fi";
-import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import { z } from "zod";
+'use client';
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import ContentSpinner from '@/components/common/spinners/dataLoadingSpinner';
 import {
-  useGetRolesPermissionsQuery,
   useCreateUpdateRolePermissionMutation,
-} from "@/store/services/permissions/permissionsService";
-import { Permission } from "./types";
+  useGetRolesPermissionsQuery,
+} from '@/store/services/permissions/permissionsService';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { FiArrowLeft } from 'react-icons/fi';
+import { z } from 'zod';
+import { Permission } from './types';
+import { Module } from '@/store/definitions';
 
 // Permission fields array
 const PERMISSION_FIELDS = [
-  { key: "can_view", label: "View" },
-  { key: "can_create", label: "Create" },
-  { key: "can_edit", label: "Edit" },
-  { key: "can_delete", label: "Delete" },
-  { key: "can_approve", label: "Approve" },
-  { key: "can_export", label: "Export" },
-  { key: "can_print", label: "Print" },
-  { key: "can_view_all", label: "View All" },
+  { key: 'can_view', label: 'View' },
+  { key: 'can_create', label: 'Create' },
+  { key: 'can_edit', label: 'Edit' },
+  { key: 'can_delete', label: 'Delete' },
+  { key: 'can_approve', label: 'Approve' },
+  { key: 'can_export', label: 'Export' },
+  { key: 'can_print', label: 'Print' },
+  { key: 'can_view_all', label: 'View All' },
 ] as const;
 
 // Zod schema
@@ -38,7 +39,7 @@ const permissionsSchema = z.object({
       can_export: z.boolean(),
       can_print: z.boolean(),
       can_view_all: z.boolean(),
-    })
+    }),
   ),
 });
 type PermissionsFormData = z.infer<typeof permissionsSchema>;
@@ -58,9 +59,9 @@ export default function RoleWithPermissionsDetails({ role_id }: Props) {
   });
   const [updatePermissions, { isLoading: isUpdating }] =
     useCreateUpdateRolePermissionMutation();
-
+  const router = useRouter();
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
   const { control, handleSubmit, reset, getValues } =
@@ -68,7 +69,7 @@ export default function RoleWithPermissionsDetails({ role_id }: Props) {
       resolver: zodResolver(permissionsSchema),
       defaultValues: { permissions: [] },
     });
-  console.log("role", role);
+  console.log('role', role);
 
   useEffect(() => {
     if (role?.permissions?.length) {
@@ -90,7 +91,7 @@ export default function RoleWithPermissionsDetails({ role_id }: Props) {
   const onSubmit = async () => {
     const values = getValues();
     const filteredPermissions = values.permissions.filter((perm) =>
-      PERMISSION_FIELDS.some((f) => perm[f.key])
+      PERMISSION_FIELDS.some((f) => perm[f.key]),
     );
 
     try {
@@ -100,15 +101,15 @@ export default function RoleWithPermissionsDetails({ role_id }: Props) {
       }).unwrap();
 
       setIsError(false);
-      setSuccessMessage("Permissions updated successfully");
+      setSuccessMessage('Permissions updated successfully');
       setShowSuccessModal(true);
       refetch();
     } catch (err) {
       console.error(err);
       setIsError(true);
-      setSuccessMessage("Failed to update permissions");
+      setSuccessMessage('Failed to update permissions');
       setShowSuccessModal(true);
-    }finally{
+    } finally {
       refetch();
     }
   };
@@ -137,14 +138,14 @@ export default function RoleWithPermissionsDetails({ role_id }: Props) {
   }
 
   return (
-    <div className="min-h-screen p-4 bg-white shadow-lg border rounded-lg">
-      <Link
-        href="/dashboard/permissions"
+    <div className="min-h-screen p-4 bg-white  border rounded-lg">
+      <button
+        onClick={() => router.push('/dashboard/settings')}
         className="flex items-center space-x-2 mb-6"
       >
         <FiArrowLeft className="text-xl" />
-        <span>Back </span>
-      </Link>
+        <span>Back</span>
+      </button>
 
       <h1 className="text-2xl font-bold mb-4">
         Edit Permissions for {role.name}
@@ -152,11 +153,11 @@ export default function RoleWithPermissionsDetails({ role_id }: Props) {
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="space-y-6 font-montserrat"
+        className="space-y-6 font-montserrat max-h-[80vh] overflow-y-auto"
       >
-        {role.permissions.map((module: any, i: number) => (
-          <div key={module.module_id} className="border rounded p-3">
-            <h3 className="font-semibold">{module.module_name}</h3>
+        {role.permissions.map((module: Module, i: number) => (
+          <div key={module.id} className="border rounded p-3">
+            <h3 className="font-semibold">{module.name}</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-2">
               {PERMISSION_FIELDS.map(({ key, label }) => (
                 <Controller
@@ -184,7 +185,7 @@ export default function RoleWithPermissionsDetails({ role_id }: Props) {
           disabled={isUpdating}
           className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 disabled:opacity-50"
         >
-          {isUpdating ? "Updating..." : "Update Permissions"}
+          {isUpdating ? 'Updating...' : 'Update Permissions'}
         </button>
       </form>
 

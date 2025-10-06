@@ -1,37 +1,37 @@
-"use client";
+'use client';
 
-import Pagination from "@/components/common/Pagination";
-import DataTable, { Column } from "@/components/common/Table/DataTable";
-import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
-import { useFilters } from "@/hooks/useFilters";
-import { PAGE_SIZE } from "@/lib/constants";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+import Pagination from '@/components/common/Pagination';
+import DataTable, { Column } from '@/components/common/Table/DataTable';
+import ContentSpinner from '@/components/common/spinners/dataLoadingSpinner';
+import { useFilters } from '@/hooks/useFilters';
+import { PAGE_SIZE } from '@/lib/constants';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMemo } from 'react';
 
-import NoData from "@/components/common/NoData";
+import NoData from '@/components/common/NoData';
 
-import { LabelOptionsType } from "@/definitions/Labels/labelOptionsType";
-import { DepartmentType } from "@/definitions/curiculum";
-import { useGetDepartmentsQuery } from "@/store/services/curriculum/departmentsService";
-import { useGetInventoryIssueRecordsQuery } from "@/store/services/finance/inventoryService";
-import { CustomDate } from "@/utils/date";
-import { GoSearch } from "react-icons/go";
-import FilterSelect from "../common/Select";
-import IssueInventoryItem from "./issueInventory";
-import { IssueRecord } from "./types";
+import { LabelOptionsType } from '@/definitions/Labels/labelOptionsType';
+import { DepartmentType } from '@/definitions/curiculum';
+import { useGetDepartmentsQuery } from '@/store/services/curriculum/departmentsService';
+import { useGetInventoryIssueRecordsQuery } from '@/store/services/finance/inventoryService';
+import { CustomDate } from '@/utils/date';
+import { GoSearch } from 'react-icons/go';
+import FilterSelect from '../common/Select';
+import IssueInventoryItem from './issueInventory';
+import { IssueRecord } from './types';
 const IssueRecords = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { filters, currentPage, handleFilterChange, handlePageChange } =
     useFilters({
       initialFilters: {
-        search: searchParams.get("search") || "",
-        department: searchParams.get("department") || "",
+        search: searchParams.get('search') || '',
+        department: searchParams.get('department') || '',
       },
-      initialPage: parseInt(searchParams.get("page") || "1", 10),
+      initialPage: parseInt(searchParams.get('page') || '1', 10),
       router,
       debounceTime: 100,
-      debouncedFields: ["search"],
+      debouncedFields: ['search'],
     });
 
   const queryParams = useMemo(
@@ -40,32 +40,32 @@ const IssueRecords = () => {
       page_size: PAGE_SIZE,
       ...filters,
     }),
-    [currentPage, filters]
+    [currentPage, filters],
   );
-  console.log("queryParams", queryParams);
+  console.log('queryParams', queryParams);
 
   const { data, error, isLoading, refetch } = useGetInventoryIssueRecordsQuery(
     queryParams,
     {
       refetchOnMountOrArgChange: true,
-    }
+    },
   );
   const { data: departmentsData } = useGetDepartmentsQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
 
-  console.log("departmentsData", departmentsData);
+  console.log('departmentsData', departmentsData);
 
   const handleDepartmentChange = (selectedOption: LabelOptionsType | null) => {
     handleFilterChange({
-      department: selectedOption ? selectedOption.value : "",
+      department: selectedOption ? selectedOption.value : '',
     });
   };
   const columns: Column<IssueRecord>[] = [
     {
-      header: "Item Name",
-      accessor: "inventory_item",
+      header: 'Item Name',
+      accessor: 'inventory_item',
       cell: (item: IssueRecord) => (
         <span className="text-sm whitespace-normal break-words">
           {item.inventory_item.name}
@@ -74,13 +74,13 @@ const IssueRecords = () => {
     },
 
     {
-      header: "Quantity",
-      accessor: "quantity",
+      header: 'Quantity',
+      accessor: 'quantity',
       cell: (item: IssueRecord) => <span>{item.quantity}</span>,
     },
     {
-      header: "Issued To",
-      accessor: "issued_to",
+      header: 'Issued To',
+      accessor: 'issued_to',
       cell: (item: IssueRecord) => (
         <span>
           {item.issued_to.name} {item.issued_to.office}
@@ -88,25 +88,25 @@ const IssueRecords = () => {
       ),
     },
     {
-      header: "Issued By",
-      accessor: "issued_by",
+      header: 'Issued By',
+      accessor: 'issued_by',
       cell: (item: IssueRecord) => (
         <span>
-          {item.issued_by.first_name} {item.issued_by.last_name}{" "}
+          {item.issued_by.first_name} {item.issued_by.last_name}{' '}
           {item?.issued_by?.role?.name}
         </span>
       ),
     },
     {
-      header: "Remarks",
-      accessor: "remarks",
+      header: 'Remarks',
+      accessor: 'remarks',
       cell: (item: IssueRecord) => (
         <span className="whitespace-normal break-words">{item?.remarks}</span>
       ),
     },
     {
-      header: "Issued On",
-      accessor: "issued_on",
+      header: 'Issued On',
+      accessor: 'issued_on',
       cell: (item: IssueRecord) => (
         <span className="text-xs whitespace-normal break-words">
           {CustomDate(item.issued_on)}
@@ -162,9 +162,9 @@ const IssueRecords = () => {
                     }))
                     .find(
                       (option: LabelOptionsType) =>
-                        option.value === filters.department
-                    ) || { value: "", label: "All Departments" }
-                : { value: "", label: "All Departments" }
+                        option.value === filters.department,
+                    ) || { value: '', label: 'All Departments' }
+                : { value: '', label: 'All Departments' }
             }
             onChange={handleDepartmentChange}
             placeholder=""

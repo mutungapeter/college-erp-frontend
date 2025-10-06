@@ -1,17 +1,20 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { FiEdit } from "react-icons/fi";
-import { IoCloseOutline } from "react-icons/io5";
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiEdit } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import { useUpateCampusMutation } from "@/store/services/curriculum/campusService";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import { useUpateCampusMutation } from '@/store/services/curriculum/campusService';
 
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
-import { CampusType } from "@/definitions/curiculum";
-import { updateCampusSchema, updateCampusTypeFormData } from "@/schemas/curriculum/campus";
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
+import { CampusType } from '@/definitions/curiculum';
+import {
+  updateCampusSchema,
+  updateCampusTypeFormData,
+} from '@/schemas/curriculum/campus';
 
 const EditCampus = ({
   campus,
@@ -23,11 +26,11 @@ const EditCampus = ({
   const [isOpen, setIsOpen] = useState(false);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
 
   const [isError, setIsError] = useState(false);
 
-  const [updateCampus, { isLoading: isUpdating }] =useUpateCampusMutation();
+  const [updateCampus, { isLoading: isUpdating }] = useUpateCampusMutation();
 
   const {
     register,
@@ -37,12 +40,12 @@ const EditCampus = ({
   } = useForm({
     resolver: zodResolver<updateCampusTypeFormData>(updateCampusSchema),
     defaultValues: {
-      name: campus?.name || "",
-      city: campus?.city || "",
-      address: campus?.address || "",
-      phone_number: campus?.phone_number || "",
-      email: campus?.email || "",
-      population: campus?.population ??  0,
+      name: campus?.name || '',
+      city: campus?.city || '',
+      address: campus?.address || '',
+      phone_number: campus?.phone_number || '',
+      email: campus?.email || '',
+      population: campus?.population ?? 0,
     },
   });
 
@@ -64,25 +67,25 @@ const EditCampus = ({
         id: campus.id,
         data: formData,
       }).unwrap();
-      console.log("response", response);
+      console.log('response', response);
 
       setIsError(false);
-      setSuccessMessage("Campus updated successfully!");
+      setSuccessMessage('Campus updated successfully!');
       setShowSuccessModal(true);
 
       refetchData();
     } catch (error: unknown) {
       setIsError(true);
-      console.log("error", error);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      console.log('error', error);
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
-        console.log("errorData", errorData);
-        
+        console.log('errorData', errorData);
+
         setSuccessMessage(`Error: ${errorData.error}`);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Failed to update Campus. Please try again.");
+        setSuccessMessage('Failed to update Campus. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -91,15 +94,15 @@ const EditCampus = ({
   return (
     <>
       <button
-              onClick={handleOpenModal}
-              title="Edit "
-              className="group relative p-2 bg-amber-100 text-amber-500 rounded-md hover:bg-amber-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md"
-            >
-              <FiEdit className="w-4 h-4" />
-              <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                Edit 
-              </span>
-            </button>
+        onClick={handleOpenModal}
+        title="Edit "
+        className="group relative p-2 bg-amber-100 text-amber-500 rounded-md hover:bg-amber-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md"
+      >
+        <FiEdit className="w-4 h-4" />
+        <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+          Edit
+        </span>
+      </button>
 
       {isOpen && (
         <div
@@ -123,7 +126,7 @@ const EditCampus = ({
                 overflow-y-auto rounded-md bg-white text-left shadow-xl transition-all   
                 w-full sm:max-w-c-500 md:max-w-500 px-3"
             >
-               <>
+              <>
                 <div className="sticky top-0 bg-white z-40 flex sm:px-6 px-4 justify-between items-center py-3 ">
                   <p className="text-sm md:text-lg lg:text-lg font-semibold ">
                     Add New Campus
@@ -141,25 +144,24 @@ const EditCampus = ({
                   onSubmit={handleSubmit(onSubmit)}
                   className="space-y-4 mt-2  p-4 md:p-4 lg:p-4 "
                 >
-                 <div>
-                      <label className="block space-x-1  text-sm font-medium mb-2">
-                        Campus name<span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        id="name"
-                        type="text"
-                        {...register("name")}
-                        placeholder="e.g X University"
-                        className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
-                      />
-                      {errors.name && (
-                        <p className="text-red-500 text-sm">
-                          {errors.name.message}
-                        </p>
-                      )}
-                    </div>
+                  <div>
+                    <label className="block space-x-1  text-sm font-medium mb-2">
+                      Campus name<span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      id="name"
+                      type="text"
+                      {...register('name')}
+                      placeholder="e.g X University"
+                      className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
+                    />
+                    {errors.name && (
+                      <p className="text-red-500 text-sm">
+                        {errors.name.message}
+                      </p>
+                    )}
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-2  gap-4">
-                  
                     <div>
                       <label className="block space-x-1  text-sm font-medium mb-2">
                         City<span className="text-red-500">*</span>
@@ -167,7 +169,7 @@ const EditCampus = ({
                       <input
                         id="city"
                         type="text"
-                        {...register("city")}
+                        {...register('city')}
                         placeholder="e.g Nairobi"
                         className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                       />
@@ -184,7 +186,7 @@ const EditCampus = ({
                       <input
                         id="address"
                         type="text"
-                        {...register("address")}
+                        {...register('address')}
                         placeholder="e.g Greec Towers, 5th Floor"
                         className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                       />
@@ -194,7 +196,7 @@ const EditCampus = ({
                         </p>
                       )}
                     </div>
-                    
+
                     <div>
                       <label className="block space-x-1  text-sm font-medium mb-2">
                         Email<span className="text-red-500"></span>
@@ -202,7 +204,7 @@ const EditCampus = ({
                       <input
                         id="email"
                         type="email"
-                        {...register("email")}
+                        {...register('email')}
                         placeholder="e.g inform@x.com"
                         className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                       />
@@ -219,7 +221,7 @@ const EditCampus = ({
                       <input
                         id="population"
                         type="text"
-                        {...register("population")}
+                        {...register('population')}
                         placeholder="e.g 600"
                         className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                       />
@@ -229,18 +231,13 @@ const EditCampus = ({
                         </p>
                       )}
                     </div>
-                    
-                    
-                    
                   </div>
-                 
-                  
+
                   <div className="sticky bottom-0 bg-white z-40 flex md:px-6  gap-4 md:justify-between items-center py-3 ">
                     <button
                       type="button"
                       onClick={handleCloseModal}
                       className="border border-red-500 bg-white shadow-sm text-red-500 py-2 text-sm px-4 rounded-lg w-full min-w-[100px] md:w-auto hover:bg-red-500 hover:text-white"
-
                     >
                       Cancel
                     </button>

@@ -1,25 +1,25 @@
-"use client";
+'use client';
 
-import Pagination from "@/components/common/Pagination";
+import Pagination from '@/components/common/Pagination';
 
-import { useFilters } from "@/hooks/useFilters";
+import { useFilters } from '@/hooks/useFilters';
 
-import DataTable, { Column } from "@/components/common/Table/DataTable";
-import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
+import DataTable, { Column } from '@/components/common/Table/DataTable';
+import ContentSpinner from '@/components/common/spinners/dataLoadingSpinner';
 
-import FilterSelect from "@/components/common/Select";
-import { LabelOptionsType } from "@/definitions/Labels/labelOptionsType";
-import { DepartmentType } from "@/definitions/curiculum";
-import { LeaveApplicationType } from "@/definitions/leaves";
-import { PAGE_SIZE } from "@/lib/constants";
-import { useGetDepartmentsQuery } from "@/store/services/curriculum/departmentsService";
-import { useGetLeaveApplicationsQuery } from "@/store/services/staff/leaveService";
-import { YearMonthCustomDate } from "@/utils/date";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
-import { GoSearch } from "react-icons/go";
-import NewLeaveRequest from "./NewLeaveApplication";
-import EditLeaveApplication from "./UpdateLeaveApplication";
+import FilterSelect from '@/components/common/Select';
+import { LabelOptionsType } from '@/definitions/Labels/labelOptionsType';
+import { DepartmentType } from '@/definitions/curiculum';
+import { LeaveApplicationType } from '@/definitions/leaves';
+import { PAGE_SIZE } from '@/lib/constants';
+import { useGetDepartmentsQuery } from '@/store/services/curriculum/departmentsService';
+import { useGetLeaveApplicationsQuery } from '@/store/services/staff/leaveService';
+import { YearMonthCustomDate } from '@/utils/date';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMemo } from 'react';
+import { GoSearch } from 'react-icons/go';
+import NewLeaveRequest from './NewLeaveApplication';
+import EditLeaveApplication from './UpdateLeaveApplication';
 
 const LeaveApplications = () => {
   const router = useRouter();
@@ -27,14 +27,14 @@ const LeaveApplications = () => {
   const { filters, currentPage, handleFilterChange, handlePageChange } =
     useFilters({
       initialFilters: {
-        search: searchParams.get("search") || "",
-        department: searchParams.get("department") || "",
-        status: searchParams.get("status") || "",
+        search: searchParams.get('search') || '',
+        department: searchParams.get('department') || '',
+        status: searchParams.get('status') || '',
       },
-      initialPage: parseInt(searchParams.get("page") || "1", 10),
+      initialPage: parseInt(searchParams.get('page') || '1', 10),
       router,
       debounceTime: 100,
-      debouncedFields: ["search"],
+      debouncedFields: ['search'],
     });
 
   const queryParams = useMemo(
@@ -43,9 +43,9 @@ const LeaveApplications = () => {
       page_size: PAGE_SIZE,
       ...filters,
     }),
-    [currentPage, filters]
+    [currentPage, filters],
   );
-  console.log("queryParams", queryParams);
+  console.log('queryParams', queryParams);
 
   const {
     data: applicationsData,
@@ -56,14 +56,14 @@ const LeaveApplications = () => {
     refetchOnMountOrArgChange: true,
   });
 
-  console.log("applicationsData", applicationsData);
+  console.log('applicationsData', applicationsData);
 
   const { data: departmentsData } = useGetDepartmentsQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
 
-  console.log("departmentsData", departmentsData);
+  console.log('departmentsData', departmentsData);
   const departmentOptions =
     departmentsData?.map((item: DepartmentType) => ({
       value: item.id,
@@ -71,7 +71,7 @@ const LeaveApplications = () => {
     })) || [];
 
   const handleIntakeChange = (selectedOption: LabelOptionsType | null) => {
-    const departmentValue = selectedOption ? selectedOption.value : "";
+    const departmentValue = selectedOption ? selectedOption.value : '';
     handleFilterChange({
       department: departmentValue,
     });
@@ -79,8 +79,8 @@ const LeaveApplications = () => {
 
   const columns: Column<LeaveApplicationType>[] = [
     {
-      header: "Name",
-      accessor: "staff",
+      header: 'Name',
+      accessor: 'staff',
       cell: (item: LeaveApplicationType) => (
         <span>
           {item.staff.user.first_name} {item.staff.user.last_name}(
@@ -90,24 +90,26 @@ const LeaveApplications = () => {
     },
 
     {
-      header: "Type",
-      accessor: "leave_type",
+      header: 'Type',
+      accessor: 'leave_type',
       cell: (item: LeaveApplicationType) => (
         <span className="text-sm">{item.leave_type}</span>
       ),
     },
     {
-      header: "Reason",
-      accessor: "reason",
+      header: 'Reason',
+      accessor: 'reason',
       cell: (item: LeaveApplicationType) => (
         <span>
-          <p className="text-sm  whitespace-normal break-words">{item.reason}</p>
+          <p className="text-sm  whitespace-normal break-words">
+            {item.reason}
+          </p>
         </span>
       ),
     },
     {
-      header: "From",
-      accessor: "start_date",
+      header: 'From',
+      accessor: 'start_date',
       cell: (item: LeaveApplicationType) => (
         <span>
           <span className="text-sm">
@@ -118,8 +120,8 @@ const LeaveApplications = () => {
     },
 
     {
-      header: "To",
-      accessor: "end_date",
+      header: 'To',
+      accessor: 'end_date',
       cell: (item: LeaveApplicationType) => (
         <span>
           <span className="text-sm">{YearMonthCustomDate(item.end_date)}</span>
@@ -127,33 +129,33 @@ const LeaveApplications = () => {
       ),
     },
     {
-      header: "Reason Declined",
-      accessor: "reason_declined",
+      header: 'Reason Declined',
+      accessor: 'reason_declined',
       cell: (item: LeaveApplicationType) => (
         <div className="flex items-center justify-center">
           <p className="text-sm text-center whitespace-normal break-words">
-            {item.reason_declined ? item.reason_declined : "--"}
+            {item.reason_declined ? item.reason_declined : '--'}
           </p>
         </div>
       ),
     },
 
     {
-      header: "Application Status",
-      accessor: "status",
+      header: 'Application Status',
+      accessor: 'status',
       cell: (item: LeaveApplicationType) => (
         <div className="text-center">
           <span
             className={`
           "text-sm font-semibold justify-center w-fit flex px-2 py-1 rounded-md text-center"
             ${
-              item.status === "Approved"
-                ? "text-green-500 bg-green-100"
-                : item.status === "Pending"
-                ? "text-yellow-500 bg-yellow-100"
-                : item.status === "Declined"
-                ? "text-red-500 bg-red-100"
-                : "text-white bg-gray-500"
+              item.status === 'Approved'
+                ? 'text-green-500 bg-green-100'
+                : item.status === 'Pending'
+                  ? 'text-yellow-500 bg-yellow-100'
+                  : item.status === 'Declined'
+                    ? 'text-red-500 bg-red-100'
+                    : 'text-white bg-gray-500'
             }
             `}
           >
@@ -164,8 +166,8 @@ const LeaveApplications = () => {
     },
 
     {
-      header: "Actions",
-      accessor: "id",
+      header: 'Actions',
+      accessor: 'id',
       cell: (item: LeaveApplicationType) => (
         <div className="flex items-center justify-center space-x-2">
           <EditLeaveApplication data={item} refetchData={refetch} />
@@ -174,7 +176,7 @@ const LeaveApplications = () => {
     },
   ];
 
-  console.log("applicationsData", applicationsData);
+  console.log('applicationsData', applicationsData);
   return (
     <>
       <div className="bg-white w-full  p-1 shadow-md rounded-lg font-nunito">
@@ -207,8 +209,8 @@ const LeaveApplications = () => {
               value={
                 departmentOptions.find(
                   (option: LabelOptionsType) =>
-                    option.value === filters.department
-                ) || { value: "", label: "All Departments" }
+                    option.value === filters.department,
+                ) || { value: '', label: 'All Departments' }
               }
               onChange={handleIntakeChange}
               placeholder=""

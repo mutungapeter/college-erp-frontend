@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
-import { ProgrammeDetailsType } from "@/definitions/curiculum";
-import { useGetProgrammeQuery } from "@/store/services/curriculum/programmesService";
-import Link from "next/link";
-import { useState } from "react";
-import { FaGraduationCap } from "react-icons/fa";
-import { HiOutlineBuildingLibrary } from "react-icons/hi2";
+import ContentSpinner from '@/components/common/spinners/dataLoadingSpinner';
+import { ProgrammeDetailsType } from '@/definitions/curiculum';
+import { useGetProgrammeQuery } from '@/store/services/curriculum/programmesService';
+import Link from 'next/link';
+import { useState } from 'react';
+import { FaGraduationCap } from 'react-icons/fa';
+import { HiOutlineBuildingLibrary } from 'react-icons/hi2';
 import {
   IoArrowBackOutline,
   IoBookOutline,
@@ -15,9 +15,9 @@ import {
   IoLocationOutline,
   IoMailOutline,
   IoSchoolOutline,
-} from "react-icons/io5";
-import AddUnit from "./AddUnit";
-import EditUnit from "./Edit";
+} from 'react-icons/io5';
+import AddUnit from './AddUnit';
+import EditUnit from './Edit';
 
 interface Props {
   programme_id: string;
@@ -27,8 +27,8 @@ const ProgrammeDetails = ({ programme_id }: Props) => {
   const { data, isLoading, isError, refetch } =
     useGetProgrammeQuery(programme_id);
   const programmeDetails = data as ProgrammeDetailsType;
-  const [activeTab, setActiveTab] = useState("overview");
-console.log("data", data)
+  const [activeTab, setActiveTab] = useState('overview');
+  console.log('data', data);
   if (isLoading) {
     return <ContentSpinner />;
   }
@@ -52,7 +52,7 @@ console.log("data", data)
     );
   }
 
-  const handleTabChange = (tab: "overview" | "units") => {
+  const handleTabChange = (tab: 'overview' | 'units') => {
     setActiveTab(tab);
   };
 
@@ -95,21 +95,21 @@ console.log("data", data)
         <div className="container mx-auto px-4">
           <div className="flex overflow-x-auto">
             <button
-              onClick={() => handleTabChange("overview")}
+              onClick={() => handleTabChange('overview')}
               className={`px-4 py-4 font-medium whitespace-nowrap ${
-                activeTab === "overview"
-                  ? "text-blue-600 border-b-2 border-blue-600"
-                  : "text-gray-600 hover:text-blue-600"
+                activeTab === 'overview'
+                  ? 'text-blue-600 border-b-2 border-blue-600'
+                  : 'text-gray-600 hover:text-blue-600'
               }`}
             >
               Overview
             </button>
             <button
-              onClick={() => handleTabChange("units")}
+              onClick={() => handleTabChange('units')}
               className={`px-4 py-4 font-medium whitespace-nowrap ${
-                activeTab === "units"
-                  ? "text-blue-600 border-b-2 border-blue-600"
-                  : "text-gray-600 hover:text-blue-600"
+                activeTab === 'units'
+                  ? 'text-blue-600 border-b-2 border-blue-600'
+                  : 'text-gray-600 hover:text-blue-600'
               }`}
             >
               Course Units
@@ -119,7 +119,7 @@ console.log("data", data)
       </div>
 
       <div className="container mx-auto px-4 py-6">
-        {activeTab === "overview" && (
+        {activeTab === 'overview' && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white rounded-lg shadow p-6">
               <div className="flex items-center mb-4">
@@ -219,22 +219,25 @@ console.log("data", data)
           </div>
         )}
 
-        {activeTab === "units" && (
+        {activeTab === 'units' && (
           <div className="bg-white rounded-lg shadow overflow-hidden">
             <div className="p-6 border-b flex justify-between items-center">
-                <div>
-
-              <div className="flex items-center">
-                <IoListOutline className="text-blue-600 mr-2" size={24} />
-                <h2 className="text-xl font-semibold">Course Units</h2>
+              <div>
+                <div className="flex items-center">
+                  <IoListOutline className="text-blue-600 mr-2" size={24} />
+                  <h2 className="text-xl font-semibold">Course Units</h2>
+                </div>
+                <p className="text-gray-500 mt-1">
+                  Total of {programmeDetails.units.length} units
+                </p>
               </div>
-              <p className="text-gray-500 mt-1">
-                Total of {programmeDetails.units.length} units
-              </p>
-                </div>
-                <div>
-                    <AddUnit refetchData={refetch} data={programmeDetails} programme_id={programmeDetails.id} />
-                </div>
+              <div>
+                <AddUnit
+                  refetchData={refetch}
+                  data={programmeDetails}
+                  programme_id={programmeDetails.id}
+                />
+              </div>
             </div>
 
             <div className="overflow-x-auto">
@@ -280,7 +283,7 @@ console.log("data", data)
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <EditUnit refetchData={refetch} data={unit}  />
+                        <EditUnit refetchData={refetch} data={unit} />
                       </td>
                     </tr>
                   ))}

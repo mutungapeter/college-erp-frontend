@@ -1,20 +1,20 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FiPlus } from "react-icons/fi";
-import { IoCloseOutline } from "react-icons/io5";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiPlus } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
-import Select from "react-select";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
+import Select from 'react-select';
 
-import { LeaveTypeOptions } from "@/definitions/leaves";
+import { LeaveTypeOptions } from '@/definitions/leaves';
 import {
   SatffLeaveApplicationSchema,
   StaffApplicationType,
-} from "@/schemas/staff/leaves";
-import { useCreateLeaveApplicationMutation } from "@/store/services/staff/leaveService";
+} from '@/schemas/staff/leaves';
+import { useCreateLeaveApplicationMutation } from '@/store/services/staff/leaveService';
 
 type SelectOption = {
   value: string | number;
@@ -24,7 +24,7 @@ type SelectOption = {
 const StaffRequestLeave = ({ refetchData }: { refetchData: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
   const [createLeaveApplication, { isLoading: isCreating }] =
@@ -39,15 +39,15 @@ const StaffRequestLeave = ({ refetchData }: { refetchData: () => void }) => {
   } = useForm<StaffApplicationType>({
     resolver: zodResolver(SatffLeaveApplicationSchema),
     defaultValues: {
-      reason: "",
-      start_date: "",
-      end_date: "",
-      leave_type: "",
+      reason: '',
+      start_date: '',
+      end_date: '',
+      leave_type: '',
     },
   });
 
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -56,7 +56,7 @@ const StaffRequestLeave = ({ refetchData }: { refetchData: () => void }) => {
   };
   const handleLeaveTypeChange = (selected: SelectOption | null) => {
     if (selected && selected.value) {
-      setValue("leave_type", String(selected.value));
+      setValue('leave_type', String(selected.value));
     }
   };
   const handleOpenModal = () => setIsOpen(true);
@@ -67,29 +67,27 @@ const StaffRequestLeave = ({ refetchData }: { refetchData: () => void }) => {
     handleCloseModal();
   };
 
- 
-
   const onSubmit = async (formData: StaffApplicationType) => {
-    console.log("submitting form data", formData);
+    console.log('submitting form data', formData);
 
     try {
       const response = await createLeaveApplication(formData).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Leave request submitted successfully!");
+      setSuccessMessage('Leave request submitted successfully!');
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(errorData.error);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occurred. Please try again.");
+        setSuccessMessage('Unexpected error occurred. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -150,7 +148,6 @@ const StaffRequestLeave = ({ refetchData }: { refetchData: () => void }) => {
                   onSubmit={handleSubmit(onSubmit)}
                   className="space-y-4 mt-2 p-4 md:p-4 lg:p-4"
                 >
-                
                   <div>
                     <label className="block space-x-1  text-sm font-medium mb-2">
                       Leave Type
@@ -167,16 +164,16 @@ const StaffRequestLeave = ({ refetchData }: { refetchData: () => void }) => {
                         }),
                         control: (base) => ({
                           ...base,
-                          minHeight: "24px",
-                          minWidth: "200px",
-                          borderColor: "#d1d5db",
-                          boxShadow: "none",
-                          "&:hover": {
-                            borderColor: "#9ca3af",
+                          minHeight: '24px',
+                          minWidth: '200px',
+                          borderColor: '#d1d5db',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: '#9ca3af',
                           },
-                          "&:focus-within": {
-                            borderColor: "#9ca3af",
-                            boxShadow: "none",
+                          '&:focus-within': {
+                            borderColor: '#9ca3af',
+                            boxShadow: 'none',
                           },
                         }),
                       }}
@@ -195,7 +192,7 @@ const StaffRequestLeave = ({ refetchData }: { refetchData: () => void }) => {
                       <input
                         type="date"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
-                        {...register("start_date")}
+                        {...register('start_date')}
                       />
                       {errors.start_date && (
                         <p className="text-red-500 text-sm mt-1">
@@ -211,7 +208,7 @@ const StaffRequestLeave = ({ refetchData }: { refetchData: () => void }) => {
                       <input
                         type="date"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
-                        {...register("end_date")}
+                        {...register('end_date')}
                       />
                       {errors.end_date && (
                         <p className="text-red-500 text-sm mt-1">
@@ -228,7 +225,7 @@ const StaffRequestLeave = ({ refetchData }: { refetchData: () => void }) => {
                     </label>
                     <textarea
                       id="reason"
-                      {...register("reason")}
+                      {...register('reason')}
                       placeholder="Write here..."
                       className="w-full py-2 px-4  
                         text-sm md:text-lg font-normal border placeholder:text-sm  rounded-md focus:outline-none"

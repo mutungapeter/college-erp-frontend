@@ -1,6 +1,6 @@
-import ClickOutside from "@/hooks/ClickOutside";
-import { ChangeEvent, useState } from "react";
-import { BsChevronDown } from "react-icons/bs";
+import ClickOutside from '@/hooks/ClickOutside';
+import { ChangeEvent, useState } from 'react';
+import { BsChevronDown } from 'react-icons/bs';
 interface CustomDropdownOption {
   label: string;
   value: string | number;
@@ -24,12 +24,12 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   loading,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const allOptions = [{ label: defaultValue, value: "" }, ...options];
+  const allOptions = [{ label: defaultValue, value: '' }, ...options];
 
   const filteredOptions = allOptions.filter((option) =>
-    (option.label || "").toLowerCase().includes(searchTerm.toLowerCase())
+    (option.label || '').toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const selectedLabel =

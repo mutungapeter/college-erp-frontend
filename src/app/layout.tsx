@@ -1,19 +1,17 @@
-import type { Metadata } from "next";
-import "../styles/css/fonts.css";
-import "../styles/css/nunito.css";
-import "../styles/css/satoshi.css";
-import "../styles/css/style.css";
-import "./globals.css";
+import type { Metadata } from 'next';
+import '../styles/css/fonts.css';
+import '../styles/css/nunito.css';
+import '../styles/css/satoshi.css';
+import '../styles/css/style.css';
+import './globals.css';
 
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'
-import { ReduxProvider } from "./provider";
-
-
+import { ClientToastContainer } from '@/components/common/Toast';
+import 'react-toastify/dist/ReactToastify.css';
+import { ReduxProvider } from './provider';
 
 export const metadata: Metadata = {
-  title: "College Portal",
-  description: "College Erp",
+  title: 'College Portal',
+  description: 'College Erp',
 };
 
 export default function RootLayout({
@@ -23,11 +21,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning={true}>
-      <body
-        className=""
-      ><ReduxProvider>
-      
-      <ToastContainer
+      <body className="">
+        <ReduxProvider>
+          {/* <ToastContainer
                position="top-right"
                autoClose={5000}
                hideProgressBar={false}
@@ -38,9 +34,10 @@ export default function RootLayout({
                draggable
                pauseOnHover
                theme="colored" 
-             />
-             {children}
-         </ReduxProvider>
+             /> */}
+          <ClientToastContainer />
+          {children}
+        </ReduxProvider>
       </body>
     </html>
   );

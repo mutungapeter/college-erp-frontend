@@ -1,19 +1,19 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FiEdit } from "react-icons/fi";
-import { IoCloseOutline } from "react-icons/io5";
-import { z } from "zod";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiEdit } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
+import { z } from 'zod';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
 
-import { StudyYearType } from "@/definitions/curiculum";
+import { StudyYearType } from '@/definitions/curiculum';
 
-import IconButton from "@/components/common/IconButton";
-import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
-import { studyYearSchema } from "@/schemas/curriculum/studyYears";
-import { useUpdateAcademicYearMutation } from "@/store/services/curriculum/academicYearsService";
+import CreateAndUpdateButton from '@/components/common/CreateAndUpdateButton';
+import ModalBottomButton from '@/components/common/StickyModalFooterButtons';
+import { studyYearSchema } from '@/schemas/curriculum/studyYears';
+import { useUpdateStudyYearMutation } from '@/store/services/curriculum/academicYearsService';
 
 type FormValues = z.infer<typeof studyYearSchema>;
 
@@ -25,11 +25,11 @@ type EditStudyYearProps = {
 const EditStudyYear = ({ data, refetchData }: EditStudyYearProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
-  const [updateAcademicYear, { isLoading: isUpdating }] =
-    useUpdateAcademicYearMutation();
+  const [updateStudyYear, { isLoading: isUpdating }] =
+    useUpdateStudyYearMutation();
 
   const {
     register,
@@ -43,7 +43,7 @@ const EditStudyYear = ({ data, refetchData }: EditStudyYearProps) => {
   });
 
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -59,28 +59,28 @@ const EditStudyYear = ({ data, refetchData }: EditStudyYearProps) => {
   };
 
   const onSubmit = async (formData: FormValues) => {
-    console.log("submitting form data", formData);
+    console.log('submitting form data', formData);
 
     try {
-      const response = await updateAcademicYear({
+      const response = await updateStudyYear({
         id: data.id,
         data: formData,
       }).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Study Year updated successfully!");
+      setSuccessMessage('Study Year updated successfully!');
       setShowSuccessModal(true);
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(`Failed to update Study Year: ${errorData.error}`);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occurred. Please try again.");
+        setSuccessMessage('Unexpected error occurred. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -88,7 +88,7 @@ const EditStudyYear = ({ data, refetchData }: EditStudyYearProps) => {
 
   return (
     <>
-      <IconButton
+      <CreateAndUpdateButton
         onClick={handleOpenModal}
         title="Edit"
         icon={<FiEdit className="w-4 h-4" />}
@@ -121,7 +121,7 @@ const EditStudyYear = ({ data, refetchData }: EditStudyYearProps) => {
               <>
                 <div className="sticky top-0 bg-white z-40 flex sm:px-6 px-4 justify-between items-center py-3">
                   <p className="text-sm md:text-lg lg:text-lg font-semibold">
-                    Edit Semester
+                    Edit Study Year
                   </p>
                   <div className="flex justify-end cursor-pointer">
                     <IoCloseOutline
@@ -146,7 +146,7 @@ const EditStudyYear = ({ data, refetchData }: EditStudyYearProps) => {
                         type="text"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                         placeholder="e.g. First Year, Second Year"
-                        {...register("name")}
+                        {...register('name')}
                       />
                       {errors.name && (
                         <p className="text-red-500 text-sm mt-1">

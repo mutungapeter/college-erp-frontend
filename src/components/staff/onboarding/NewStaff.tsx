@@ -1,53 +1,52 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FiPlus } from "react-icons/fi";
-import { IoCloseOutline } from "react-icons/io5";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiPlus } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
-import Select from "react-select";
-import { useGetUserRolesQuery } from "@/store/services/permissions/permissionsService";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
+import Select from 'react-select';
+import { useGetUserRolesQuery } from '@/store/services/permissions/permissionsService';
 
-import {
-  DepartmentType
-} from "@/definitions/curiculum";
-import { Position } from "@/definitions/staff";
-import { GenderOptions } from "@/lib/constants";
-import { createStaffSchema, CreateStaffType } from "@/schemas/staff/main";
+import { DepartmentType } from '@/definitions/curiculum';
+import { Position } from '@/definitions/staff';
+import { GenderOptions } from '@/lib/constants';
+import { createStaffSchema, CreateStaffType } from '@/schemas/staff/main';
 // import { useGetRolesQuery } from "@/store/services/curriculum/campusService";
-import { useGetDepartmentsQuery } from "@/store/services/curriculum/departmentsService";
-import { useCreateStaffMutation, useGetPositionsQuery } from "@/store/services/staff/staffService";
-import { RoleType } from "@/components/accounts/permissions/types";
+import { useGetDepartmentsQuery } from '@/store/services/curriculum/departmentsService';
+import {
+  useCreateStaffMutation,
+  useGetPositionsQuery,
+} from '@/store/services/staff/staffService';
+import { RoleType } from '@/components/accounts/permissions/types';
 
 type SelectOption = {
   value: string | number;
   label: string;
 };
 
-
-
 const CreateStaff = ({ refetchData }: { refetchData: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
   const [createStaff, { isLoading: isCreating }] = useCreateStaffMutation();
   const { data: departmentsData } = useGetDepartmentsQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
   const { data: positionsData } = useGetPositionsQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
   const { data: rolesData } = useGetUserRolesQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
-console.log("rolesData", rolesData);
+  console.log('rolesData', rolesData);
   const {
     register,
     handleSubmit,
@@ -59,7 +58,7 @@ console.log("rolesData", rolesData);
   });
 
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -77,50 +76,49 @@ console.log("rolesData", rolesData);
 
   const handleGenderChange = (selected: SelectOption | null) => {
     if (selected && selected.value) {
-      setValue("gender", String(selected.value));
+      setValue('gender', String(selected.value));
     }
   };
   const handlePositionChange = (selected: SelectOption | null) => {
     if (selected) {
       const positionId = Number(selected.value);
-      setValue("position", positionId);
+      setValue('position', positionId);
     }
   };
   const handleDepartmentChange = (selected: SelectOption | null) => {
     if (selected) {
       const departId = Number(selected.value);
-      setValue("department", departId);
+      setValue('department', departId);
     }
   };
   const handleRoleChange = (selected: SelectOption | null) => {
     if (selected) {
       const roleId = Number(selected.value);
-      setValue("role", roleId);
+      setValue('role', roleId);
     }
   };
-  
- 
+
   const onSubmit = async (formData: CreateStaffType) => {
-    console.log("submitting form data", formData);
+    console.log('submitting form data', formData);
 
     try {
       const response = await createStaff(formData).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Staff Created successfully!");
+      setSuccessMessage('Staff Created successfully!');
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(`Failed to create staff: ${errorData.error}`);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occurred. Please try again.");
+        setSuccessMessage('Unexpected error occurred. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -167,7 +165,7 @@ console.log("rolesData", rolesData);
               <>
                 <div className="sticky top-0 bg-white z-40 flex  px-4 justify-between items-center py-3">
                   <p className="text-sm md:text-lg lg:text-lg font-semibold">
-                    Add New Staff 
+                    Add New Staff
                   </p>
                   <div className="flex justify-end cursor-pointer">
                     <IoCloseOutline
@@ -192,7 +190,7 @@ console.log("rolesData", rolesData);
                           type="text"
                           className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                           placeholder="e.g. John"
-                          {...register("first_name")}
+                          {...register('first_name')}
                         />
                         {errors.first_name && (
                           <p className="text-red-500 text-sm mt-1">
@@ -210,7 +208,7 @@ console.log("rolesData", rolesData);
                           type="text"
                           className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                           placeholder="e.g. Kamusukuti"
-                          {...register("last_name")}
+                          {...register('last_name')}
                         />
                         {errors.last_name && (
                           <p className="text-red-500 text-sm mt-1">
@@ -228,7 +226,7 @@ console.log("rolesData", rolesData);
                           type="text"
                           className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                           placeholder="e.g. 07xxxxxxxxx"
-                          {...register("phone_number")}
+                          {...register('phone_number')}
                         />
                         {errors.phone_number && (
                           <p className="text-red-500 text-sm mt-1">
@@ -246,7 +244,7 @@ console.log("rolesData", rolesData);
                           type="email"
                           className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                           placeholder="e.g user@example.com"
-                          {...register("email")}
+                          {...register('email')}
                         />
                         {errors.email && (
                           <p className="text-red-500 text-sm mt-1">
@@ -262,7 +260,7 @@ console.log("rolesData", rolesData);
                       <input
                         type="date"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
-                        {...register("date_of_birth")}
+                        {...register('date_of_birth')}
                       />
                       {errors.date_of_birth && (
                         <p className="text-red-500 text-sm mt-1">
@@ -287,23 +285,23 @@ console.log("rolesData", rolesData);
                           }),
                           menu: (base) => ({
                             ...base,
-                            position: "absolute",
-                            width: "max-content",
-                            minWidth: "100%",
-                            minHeight: "50px",
+                            position: 'absolute',
+                            width: 'max-content',
+                            minWidth: '100%',
+                            minHeight: '50px',
                           }),
                           control: (base) => ({
                             ...base,
-                            minHeight: "44px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
+                            minHeight: '44px',
+                            minWidth: '200px',
+                            borderColor: '#d1d5db',
+                            boxShadow: 'none',
+                            '&:hover': {
+                              borderColor: '#9ca3af',
                             },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
+                            '&:focus-within': {
+                              borderColor: '#9ca3af',
+                              boxShadow: 'none',
                             },
                           }),
                         }}
@@ -323,7 +321,7 @@ console.log("rolesData", rolesData);
                           type="text"
                           className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                           placeholder="e.g. 123 Main St"
-                          {...register("address")}
+                          {...register('address')}
                         />
                         {errors.address && (
                           <p className="text-red-500 text-sm mt-1">
@@ -341,7 +339,7 @@ console.log("rolesData", rolesData);
                           type="text"
                           className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                           placeholder="e.g. 123 Main St"
-                          {...register("city")}
+                          {...register('city')}
                         />
                         {errors.city && (
                           <p className="text-red-500 text-sm mt-1">
@@ -350,17 +348,15 @@ console.log("rolesData", rolesData);
                         )}
                       </div>
                     </div>
-                   <div className="relative">
+                    <div className="relative">
                       <label className="block space-x-1 text-sm font-medium mb-2">
                         Position<span className="text-red-500">*</span>
                       </label>
                       <Select
-                        options={positionsData?.map(
-                          (item: Position) => ({
-                            value: item.id,
-                            label: `${item.name}`,
-                          })
-                        )}
+                        options={positionsData?.map((item: Position) => ({
+                          value: item.id,
+                          label: `${item.name}`,
+                        }))}
                         menuPortalTarget={document.body}
                         menuPlacement="auto"
                         // menuPosition="absolute"
@@ -368,22 +364,22 @@ console.log("rolesData", rolesData);
                           menuPortal: (base) => ({
                             ...base,
                             zIndex: 10000,
-                            overflow: "visible",
-                            maxHeight: "300px",
-                            paddingY: "20px",
+                            overflow: 'visible',
+                            maxHeight: '300px',
+                            paddingY: '20px',
                           }),
                           control: (base) => ({
                             ...base,
-                            minHeight: "44px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
+                            minHeight: '44px',
+                            minWidth: '200px',
+                            borderColor: '#d1d5db',
+                            boxShadow: 'none',
+                            '&:hover': {
+                              borderColor: '#9ca3af',
                             },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
+                            '&:focus-within': {
+                              borderColor: '#9ca3af',
+                              boxShadow: 'none',
                             },
                           }),
                         }}
@@ -396,8 +392,7 @@ console.log("rolesData", rolesData);
                         </p>
                       )}
                     </div>
-                  
-                
+
                     <div>
                       <div className="relative">
                         <label className="block space-x-1 text-sm font-medium mb-2">
@@ -408,7 +403,7 @@ console.log("rolesData", rolesData);
                             (item: DepartmentType) => ({
                               value: item.id,
                               label: `${item.name}`,
-                            })
+                            }),
                           )}
                           menuPortalTarget={document.body}
                           menuPlacement="auto"
@@ -417,21 +412,21 @@ console.log("rolesData", rolesData);
                             menuPortal: (base) => ({
                               ...base,
                               zIndex: 10000,
-                              overflow: "visible",
-                              maxHeight: "300px",
+                              overflow: 'visible',
+                              maxHeight: '300px',
                             }),
                             control: (base) => ({
                               ...base,
-                              minHeight: "44px",
-                              minWidth: "200px",
-                              borderColor: "#d1d5db",
-                              boxShadow: "none",
-                              "&:hover": {
-                                borderColor: "#9ca3af",
+                              minHeight: '44px',
+                              minWidth: '200px',
+                              borderColor: '#d1d5db',
+                              boxShadow: 'none',
+                              '&:hover': {
+                                borderColor: '#9ca3af',
                               },
-                              "&:focus-within": {
-                                borderColor: "#9ca3af",
-                                boxShadow: "none",
+                              '&:focus-within': {
+                                borderColor: '#9ca3af',
+                                boxShadow: 'none',
                               },
                             }),
                           }}
@@ -446,52 +441,50 @@ console.log("rolesData", rolesData);
                       </div>
                     </div>
                   </div>
-                <div className="relative">
-                      <label className="block space-x-1 text-sm font-medium mb-2">
-                        Role<span className="text-red-500">*</span>
-                      </label>
-                      <Select
-                        options={rolesData?.map(
-                          (item: RoleType) => ({
-                            value: item.id,
-                            label: `${item.name}`,
-                          })
-                        )}
-                        menuPortalTarget={document.body}
-                        menuPlacement="auto"
-                        styles={{
-                          menuPortal: (base) => ({
-                            ...base,
-                            zIndex: 10000,
-                            overflow: "visible",
-                            maxHeight: "300px",
-                            paddingY: "20px",
-                          }),
-                          control: (base) => ({
-                            ...base,
-                            minHeight: "44px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
-                            },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
-                            },
-                          }),
-                        }}
-                        onChange={handleRoleChange}
-                      />
+                  <div className="relative">
+                    <label className="block space-x-1 text-sm font-medium mb-2">
+                      Role<span className="text-red-500">*</span>
+                    </label>
+                    <Select
+                      options={rolesData?.map((item: RoleType) => ({
+                        value: item.id,
+                        label: `${item.name}`,
+                      }))}
+                      menuPortalTarget={document.body}
+                      menuPlacement="auto"
+                      styles={{
+                        menuPortal: (base) => ({
+                          ...base,
+                          zIndex: 10000,
+                          overflow: 'visible',
+                          maxHeight: '300px',
+                          paddingY: '20px',
+                        }),
+                        control: (base) => ({
+                          ...base,
+                          minHeight: '44px',
+                          minWidth: '200px',
+                          borderColor: '#d1d5db',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: '#9ca3af',
+                          },
+                          '&:focus-within': {
+                            borderColor: '#9ca3af',
+                            boxShadow: 'none',
+                          },
+                        }),
+                      }}
+                      onChange={handleRoleChange}
+                    />
 
-                      {errors.role && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {errors.role.message}
-                        </p>
-                      )}
-                    </div>
-                  
+                    {errors.role && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.role.message}
+                      </p>
+                    )}
+                  </div>
+
                   <div className="sticky bottom-0 bg-white z-40 flex  space-x-3 gap-4 md:justify-end items-center py-3">
                     <button
                       type="button"

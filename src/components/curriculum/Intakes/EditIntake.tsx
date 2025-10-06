@@ -1,20 +1,20 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FiEdit } from "react-icons/fi";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiEdit } from 'react-icons/fi';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
 
-import IconButton from "@/components/common/IconButton";
-import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
-import { IntakeType } from "@/definitions/admissions";
+import CreateAndUpdateButton from '@/components/common/CreateAndUpdateButton';
+import ModalBottomButton from '@/components/common/StickyModalFooterButtons';
+import { IntakeType } from '@/definitions/admissions';
 import {
   UpdateIntakeFormData,
   UpdateIntakeSchema,
-} from "@/schemas/curriculum/intakes";
-import { useUpdateIntakeMutation } from "@/store/services/admissions/admissionsService";
-import { IoCloseOutline } from "react-icons/io5";
+} from '@/schemas/curriculum/intakes';
+import { useUpdateIntakeMutation } from '@/store/services/admissions/admissionsService';
+import { IoCloseOutline } from 'react-icons/io5';
 
 interface Props {
   refetchData: () => void;
@@ -24,9 +24,9 @@ interface Props {
 const EditIntake = ({ refetchData, data }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
-  console.log("data", data);
+  console.log('data', data);
   const [updateIntake, { isLoading: isUpdating }] = useUpdateIntakeMutation();
 
   const {
@@ -39,22 +39,22 @@ const EditIntake = ({ refetchData, data }: Props) => {
   } = useForm<UpdateIntakeFormData>({
     resolver: zodResolver(UpdateIntakeSchema),
     defaultValues: {
-      name: data.name ?? "",
-      start_date: data.start_date ?? "",
-      end_date: data.end_date ?? "",
+      name: data.name ?? '',
+      start_date: data.start_date ?? '',
+      end_date: data.end_date ?? '',
       closed: data.closed ?? false,
     },
   });
 
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
   useEffect(() => {
     if (data) {
       reset({
-        name: data.name ?? "",
-        start_date: data.start_date ?? "",
-        end_date: data.end_date ?? "",
+        name: data.name ?? '',
+        start_date: data.start_date ?? '',
+        end_date: data.end_date ?? '',
         closed: data.closed ?? false,
       });
     }
@@ -64,7 +64,7 @@ const EditIntake = ({ refetchData, data }: Props) => {
     setIsOpen(false);
     reset();
   };
-  const activeValue = watch("closed");
+  const activeValue = watch('closed');
   const handleOpenModal = () => setIsOpen(true);
 
   const handleCloseSuccessModal = () => {
@@ -74,29 +74,29 @@ const EditIntake = ({ refetchData, data }: Props) => {
   };
 
   const onSubmit = async (formData: UpdateIntakeFormData) => {
-    console.log("submitting form data", formData);
+    console.log('submitting form data', formData);
 
     try {
       const response = await updateIntake({
         id: data.id,
         data: formData,
       }).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Intake updated successfully!");
+      setSuccessMessage('Intake updated successfully!');
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(`Failed to updated Intake: ${errorData.error}`);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occurred. Please try again.");
+        setSuccessMessage('Unexpected error occurred. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -104,7 +104,7 @@ const EditIntake = ({ refetchData, data }: Props) => {
 
   return (
     <>
-      <IconButton
+      <CreateAndUpdateButton
         onClick={handleOpenModal}
         title="Edit"
         icon={<FiEdit className="w-4 h-4" />}
@@ -159,7 +159,7 @@ const EditIntake = ({ refetchData, data }: Props) => {
                     <input
                       id="name"
                       type="text"
-                      {...register("name")}
+                      {...register('name')}
                       placeholder="e.g Sep Intake 2022"
                       className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                     />
@@ -178,7 +178,7 @@ const EditIntake = ({ refetchData, data }: Props) => {
                       <input
                         type="date"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
-                        {...register("start_date")}
+                        {...register('start_date')}
                       />
                       {errors.start_date && (
                         <p className="text-red-500 text-sm mt-1">
@@ -194,7 +194,7 @@ const EditIntake = ({ refetchData, data }: Props) => {
                       <input
                         type="date"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
-                        {...register("end_date")}
+                        {...register('end_date')}
                       />
                       {errors.end_date && (
                         <p className="text-red-500 text-sm mt-1">
@@ -209,13 +209,13 @@ const EditIntake = ({ refetchData, data }: Props) => {
                       type="checkbox"
                       id="closed"
                       className="w-4 h-4 text-blue-600 cursor-pointer rounded focus:ring-blue-500"
-                      {...register("closed")}
+                      {...register('closed')}
                     />
                     <label
                       htmlFor="closed"
                       className="ml-2 text-sm font-medium text-gray-700"
                     >
-                      Closed {activeValue ? "(Yes)" : "(No)"}
+                      Closed {activeValue ? '(Yes)' : '(No)'}
                     </label>
                   </div>
 

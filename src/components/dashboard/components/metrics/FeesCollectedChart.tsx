@@ -1,15 +1,15 @@
-"use client";
-import { SemesterType } from "@/definitions/curiculum";
-import { PaymentMethod } from "@/definitions/dashboard";
-import { useFilters } from "@/hooks/useFilters";
-import { useGetSemestersQuery } from "@/store/services/curriculum/semestersService";
-import { useGetTotalFeesCollectedQuery } from "@/store/services/finance/feesService";
-import { formatCurrency } from "@/utils/currency";
-import { ApexOptions } from "apexcharts";
-import dynamic from "next/dynamic";
-import { useRouter, useSearchParams } from "next/navigation";
-import { BsChevronDown } from "react-icons/bs";
-const ReactApexChart = dynamic(() => import("react-apexcharts"), {
+'use client';
+import { SemesterType } from '@/definitions/curiculum';
+import { PaymentMethod } from '@/definitions/dashboard';
+import { useFilters } from '@/hooks/useFilters';
+import { useGetSemestersQuery } from '@/store/services/curriculum/semestersService';
+import { useGetTotalFeesCollectedQuery } from '@/store/services/finance/feesService';
+import { formatCurrency } from '@/utils/currency';
+import { ApexOptions } from 'apexcharts';
+import dynamic from 'next/dynamic';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { BsChevronDown } from 'react-icons/bs';
+const ReactApexChart = dynamic(() => import('react-apexcharts'), {
   ssr: false,
 });
 
@@ -19,7 +19,7 @@ export default function FeeCollectionChart() {
 
   const { filters, handleFilterChange } = useFilters({
     initialFilters: {
-      semester: searchParams.get("semester") || "",
+      semester: searchParams.get('semester') || '',
     },
     router,
   });
@@ -27,11 +27,11 @@ export default function FeeCollectionChart() {
     refetchOnMountOrArgChange: true,
   });
 
-  console.log("data", data);
-  console.log("filters", filters);
+  console.log('data', data);
+  console.log('filters', filters);
   const { data: semestersData } = useGetSemestersQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
   const totalCollected = data?.total_collected || 0;
   const totalInvoiced = data?.total_invoiced || 0;
@@ -39,33 +39,33 @@ export default function FeeCollectionChart() {
   const byPaymentMethod = data?.by_payment_method || [];
 
   const labels = byPaymentMethod.map(
-    (item: PaymentMethod) => item.payment_method
+    (item: PaymentMethod) => item.payment_method,
   );
   const seriesData = byPaymentMethod.map((item: PaymentMethod) => item.total);
 
   const options: ApexOptions = {
-    colors: ["#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#3b82f6"],
+    colors: ['#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#3b82f6'],
     chart: {
-      fontFamily: "Outfit, sans-serif",
-      type: "donut",
+      fontFamily: 'Outfit, sans-serif',
+      type: 'donut',
       height: 300,
     },
     legend: {
-      position: "bottom",
-      fontFamily: "Outfit",
-      fontSize: "14px",
+      position: 'bottom',
+      fontFamily: 'Outfit',
+      fontSize: '14px',
     },
     plotOptions: {
       pie: {
         donut: {
-          size: "65%",
+          size: '65%',
           labels: {
             show: true,
             total: {
               show: true,
-              label: "Total Collected",
-              fontSize: "14px",
-              fontFamily: "Outfit, sans-serif",
+              label: 'Total Collected',
+              fontSize: '14px',
+              fontFamily: 'Outfit, sans-serif',
               formatter: function () {
                 return formatCurrency(totalCollected);
               },
@@ -116,7 +116,7 @@ export default function FeeCollectionChart() {
           <option value="">Current Semester</option>
           {semestersData?.map((semester: SemesterType) => (
             <option key={semester.id} value={semester.id}>
-              {semester.name} - {semester.academic_year}
+              {semester.name} - {semester.academic_year.name}
             </option>
           ))}
         </select>

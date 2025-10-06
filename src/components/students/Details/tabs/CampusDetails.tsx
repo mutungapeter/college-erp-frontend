@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { StudentDetailsType } from "@/definitions/students";
-import { LuUsers } from "react-icons/lu";
-import { MdOutlineHomeWork } from "react-icons/md";
-import EditCampusDetails from "../../Edit/EditCampusDetails";
-import InfoCard from "../InfoCard";
+import { StudentDetailsType } from '@/definitions/students';
+import { LuUsers } from 'react-icons/lu';
+import { MdOutlineHomeWork } from 'react-icons/md';
+import EditCampusDetails from '../../Edit/EditCampusDetails';
+import InfoCard from '../InfoCard';
 
 interface Props {
   studentDetails: StudentDetailsType;
@@ -16,8 +16,12 @@ const CampusDetailsTab = ({ studentDetails, refetchData }: Props) => {
     <div className="bg-white rounded-xl shadow-sm p-6">
       <div className="mb-6 flex items-center justify-between">
         <div>
-        <h2 className="text-lg font-bold text-gray-900 mb-1">Campus Details</h2>
-        <p className="text-sm text-gray-500">Information about student&apos;s campus</p>
+          <h2 className="text-lg font-bold text-gray-900 mb-1">
+            Campus Details
+          </h2>
+          <p className="text-sm text-gray-500">
+            Information about student&apos;s campus
+          </p>
         </div>
         <div>
           <EditCampusDetails data={studentDetails} refetchData={refetchData} />
@@ -29,18 +33,24 @@ const CampusDetailsTab = ({ studentDetails, refetchData }: Props) => {
             icon={<MdOutlineHomeWork className="text-blue-600" />}
             title="Campus Information"
             items={[
-              { label: "Campus Name", value: studentDetails.campus.name },
-              { label: "City", value: studentDetails.campus.city },
-              { label: "Address", value: studentDetails.campus.address },
+              { label: 'Campus Name', value: studentDetails.campus.name },
+              { label: 'City', value: studentDetails.campus.city },
+              { label: 'Address', value: studentDetails.campus.address },
             ]}
           />
           <InfoCard
             icon={<LuUsers className="text-blue-600" />}
             title="Contact Information"
             items={[
-              { label: "Phone Number", value: studentDetails.campus.phone_number },
-              { label: "Email", value: studentDetails.campus.email },
-              { label: "Population", value: studentDetails.campus.population.toString() },
+              {
+                label: 'Phone Number',
+                value: studentDetails.campus.phone_number,
+              },
+              { label: 'Email', value: studentDetails.campus.email },
+              {
+                label: 'Population',
+                value: studentDetails.campus.population.toString(),
+              },
             ]}
           />
         </div>

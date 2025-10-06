@@ -1,19 +1,19 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FiEdit } from "react-icons/fi";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiEdit } from 'react-icons/fi';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
 
-import { IoCloseOutline } from "react-icons/io5";
-import { z } from "zod";
+import { IoCloseOutline } from 'react-icons/io5';
+import { z } from 'zod';
 
-import IconButton from "@/components/common/IconButton";
-import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
-import { MarksType } from "@/definitions/academics";
-import { updateExamDataSchema } from "@/schemas/exams/main";
-import { useUpdateMarksMutation } from "@/store/services/academics/acadmicsService";
+import CreateAndUpdateButton from '@/components/common/CreateAndUpdateButton';
+import ModalBottomButton from '@/components/common/StickyModalFooterButtons';
+import { MarksType } from '@/definitions/academics';
+import { updateExamDataSchema } from '@/schemas/exams/main';
+import { useUpdateMarksMutation } from '@/store/services/academics/acadmicsService';
 
 const EditMarks = ({
   data,
@@ -25,7 +25,7 @@ const EditMarks = ({
   const [isOpen, setIsOpen] = useState(false);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
 
   const [isError, setIsError] = useState(false);
 
@@ -43,9 +43,9 @@ const EditMarks = ({
       exam_marks: data?.exam_marks ? Number(data.exam_marks) : 0,
     },
   });
-  console.log("data", data);
+  console.log('data', data);
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -61,31 +61,31 @@ const EditMarks = ({
   };
 
   const onSubmit = async (formData: FormValues) => {
-    console.log("submitting form data for update", formData);
-    console.log("data", formData);
+    console.log('submitting form data for update', formData);
+    console.log('data', formData);
     try {
       const response = await updateMarks({
         id: data?.id,
         data: formData,
       }).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Marks   updated successfully!");
+      setSuccessMessage('Marks   updated successfully!');
       setShowSuccessModal(true);
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      console.log('error', error);
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
-        console.log("errorData", errorData);
+        console.log('errorData', errorData);
         setIsError(true);
         setSuccessMessage(
-          "An error occured while updating marks.Please try again!."
+          'An error occured while updating marks.Please try again!.',
         );
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occured. Please try again.");
+        setSuccessMessage('Unexpected error occured. Please try again.');
         setShowSuccessModal(true);
       }
     } finally {
@@ -95,14 +95,13 @@ const EditMarks = ({
 
   return (
     <>
-        <IconButton
-              onClick={handleOpenModal}
-              title="Edit"
-              icon={<FiEdit className="w-3 h-4" />}
-              className="group relative p-2 bg-amber-100 text-amber-500 hover:bg-amber-600 hover:text-white focus:ring-amber-500"
-              tooltip="Edit"
-            />
-      
+      <CreateAndUpdateButton
+        onClick={handleOpenModal}
+        title="Edit"
+        icon={<FiEdit className="w-3 h-4" />}
+        className="group relative p-2 bg-amber-100 text-amber-500 hover:bg-amber-600 hover:text-white focus:ring-amber-500"
+        tooltip="Edit"
+      />
 
       {isOpen && (
         <div
@@ -128,8 +127,10 @@ const EditMarks = ({
                 w-full sm:max-w-c-450 md:max-w-450 px-3"
             >
               <>
-                <div className="sticky top-0 bg-white z-40
-                 flex sm:px-6 px-4 justify-between items-center py-6 ">
+                <div
+                  className="sticky top-0 bg-white z-40
+                 flex sm:px-6 px-4 justify-between items-center py-6 "
+                >
                   <p className="text-sm md:text-lg lg:text-lg font-bold ">
                     Edit Marks
                   </p>
@@ -213,7 +214,7 @@ const EditMarks = ({
                       <label className="block text-sm">Cat One</label>
                       <input
                         type="number"
-                        {...register("cat_one")}
+                        {...register('cat_one')}
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                       />
                       {errors.cat_one && (
@@ -226,7 +227,7 @@ const EditMarks = ({
                       <label className="block text-sm">Cat Two</label>
                       <input
                         type="number"
-                        {...register("cat_two")}
+                        {...register('cat_two')}
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                       />
                       {errors.cat_two && (
@@ -240,7 +241,7 @@ const EditMarks = ({
                     <label className="block text-sm">Exam Marks</label>
                     <input
                       type="number"
-                      {...register("exam_marks")}
+                      {...register('exam_marks')}
                       className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                     />
                     {errors.exam_marks && (
@@ -250,10 +251,10 @@ const EditMarks = ({
                     )}
                   </div>
                   <ModalBottomButton
-                                     onCancel={handleCloseModal}
-                                     isSubmitting={isSubmitting}
-                                     isProcessing={isUpdating}
-                                   />
+                    onCancel={handleCloseModal}
+                    isSubmitting={isSubmitting}
+                    isProcessing={isUpdating}
+                  />
                 </form>
               </>
             </div>

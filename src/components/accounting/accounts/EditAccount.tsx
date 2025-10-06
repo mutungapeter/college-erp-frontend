@@ -1,26 +1,26 @@
-"use client";
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
+'use client';
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
 import {
   Account_type,
   AccountInterface,
-} from "@/definitions/finance/accounts/main";
-import { LabelOptionsType } from "@/definitions/Labels/labelOptionsType";
+} from '@/definitions/finance/accounts/main';
+import { LabelOptionsType } from '@/definitions/Labels/labelOptionsType';
 import {
   CashFlowOptions,
   CreateAccountFormData,
   createAccountSchema,
-} from "@/schemas/finance/accounts/account";
+} from '@/schemas/finance/accounts/account';
 import {
   useGetAccountTypesQuery,
   useUpdateFinAccountMutation,
-} from "@/store/services/finance/accounting";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FiEdit } from "react-icons/fi";
-import { IoCloseOutline } from "react-icons/io5";
-import Select, { SingleValue } from "react-select";
+} from '@/store/services/finance/accounting';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiEdit } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
+import Select, { SingleValue } from 'react-select';
 interface Props {
   refetchData: () => void;
   data: AccountInterface;
@@ -29,7 +29,7 @@ const UpdateFinanceAccount = ({ refetchData, data }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
   const [updateFinAccount, { isLoading: isCreating }] =
@@ -37,7 +37,7 @@ const UpdateFinanceAccount = ({ refetchData, data }: Props) => {
 
   const { data: accountTypesData } = useGetAccountTypesQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
 
   const {
@@ -50,29 +50,29 @@ const UpdateFinanceAccount = ({ refetchData, data }: Props) => {
     resolver: zodResolver(createAccountSchema),
     defaultValues: {
       account_type: data?.account_type.id ?? undefined,
-      name: data?.name ?? "",
-      account_code: data?.account_code ?? "",
+      name: data?.name ?? '',
+      account_code: data?.account_code ?? '',
       is_contra: data?.is_contra ?? false,
       is_default: data?.is_default ?? false,
-      cash_flow_section: data?.cash_flow_section ?? "",
+      cash_flow_section: data?.cash_flow_section ?? '',
     },
   });
-  const defaultValue = watch("is_default");
-  const contraValue = watch("is_contra");
+  const defaultValue = watch('is_default');
+  const contraValue = watch('is_contra');
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
   const handleProgrammeChange = (
-    selected: SingleValue<{ value: number | null; label: string }>
+    selected: SingleValue<{ value: number | null; label: string }>,
   ) => {
     if (selected) {
       const accTypeId = Number(selected.value);
-      setValue("account_type", accTypeId);
+      setValue('account_type', accTypeId);
     }
   };
   const handleCashFlowSectionChange = (selected: LabelOptionsType | null) => {
     if (selected) {
-      setValue("cash_flow_section", String(selected.value));
+      setValue('cash_flow_section', String(selected.value));
     }
   };
   const handleCloseModal = () => {
@@ -86,29 +86,29 @@ const UpdateFinanceAccount = ({ refetchData, data }: Props) => {
     handleCloseModal();
   };
   const onSubmit = async (formData: CreateAccountFormData) => {
-    console.log("submitting form data");
+    console.log('submitting form data');
 
-    console.log("payload", formData);
+    console.log('payload', formData);
     try {
       const response = await updateFinAccount({
         id: data.id,
         data: formData,
       }).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Account Updated Successfully");
+      setSuccessMessage('Account Updated Successfully');
       setShowSuccessModal(true);
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(errorData.error);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occured. Please try again.");
+        setSuccessMessage('Unexpected error occured. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -171,7 +171,7 @@ const UpdateFinanceAccount = ({ refetchData, data }: Props) => {
                         type="text"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                         placeholder="e.g. Cash At Bank"
-                        {...register("name")}
+                        {...register('name')}
                       />
                       {errors.name && (
                         <p className="text-red-500 text-sm mt-1">
@@ -187,7 +187,7 @@ const UpdateFinanceAccount = ({ refetchData, data }: Props) => {
                         type="text"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                         placeholder="e.g. 20038."
-                        {...register("account_code")}
+                        {...register('account_code')}
                       />
                       {errors.account_code && (
                         <p className="text-red-500 text-sm mt-1">
@@ -206,7 +206,7 @@ const UpdateFinanceAccount = ({ refetchData, data }: Props) => {
                           (item: Account_type) => ({
                             value: item.id,
                             label: `${item.name}(${item.normal_balance})`,
-                          })
+                          }),
                         )}
                         defaultValue={{
                           value: data.account_type.id,
@@ -221,16 +221,16 @@ const UpdateFinanceAccount = ({ refetchData, data }: Props) => {
                           }),
                           control: (base) => ({
                             ...base,
-                            minHeight: "24px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
+                            minHeight: '24px',
+                            minWidth: '200px',
+                            borderColor: '#d1d5db',
+                            boxShadow: 'none',
+                            '&:hover': {
+                              borderColor: '#9ca3af',
                             },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
+                            '&:focus-within': {
+                              borderColor: '#9ca3af',
+                              boxShadow: 'none',
                             },
                           }),
                         }}
@@ -250,8 +250,8 @@ const UpdateFinanceAccount = ({ refetchData, data }: Props) => {
                       <Select
                         options={CashFlowOptions}
                         defaultValue={{
-                          label: data?.cash_flow_section ?? "",
-                          value: data?.cash_flow_section ?? "",
+                          label: data?.cash_flow_section ?? '',
+                          value: data?.cash_flow_section ?? '',
                         }}
                         menuPortalTarget={document.body}
                         styles={{
@@ -261,16 +261,16 @@ const UpdateFinanceAccount = ({ refetchData, data }: Props) => {
                           }),
                           control: (base) => ({
                             ...base,
-                            minHeight: "25px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
+                            minHeight: '25px',
+                            minWidth: '200px',
+                            borderColor: '#d1d5db',
+                            boxShadow: 'none',
+                            '&:hover': {
+                              borderColor: '#9ca3af',
                             },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
+                            '&:focus-within': {
+                              borderColor: '#9ca3af',
+                              boxShadow: 'none',
                             },
                           }),
                         }}
@@ -290,13 +290,13 @@ const UpdateFinanceAccount = ({ refetchData, data }: Props) => {
                         type="checkbox"
                         id="is_default"
                         className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-                        {...register("is_default")}
+                        {...register('is_default')}
                       />
                       <label
                         htmlFor="closed"
                         className="ml-2 text-sm font-medium text-gray-700"
                       >
-                        Default {defaultValue ? "(Yes)" : "(No)"}
+                        Default {defaultValue ? '(Yes)' : '(No)'}
                       </label>
                     </div>
                     <div className="flex items-center space-x-2 mb-4">
@@ -304,13 +304,13 @@ const UpdateFinanceAccount = ({ refetchData, data }: Props) => {
                         type="checkbox"
                         id="is_contra"
                         className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-                        {...register("is_contra")}
+                        {...register('is_contra')}
                       />
                       <label
                         htmlFor="is_contra"
                         className="ml-2 text-sm font-medium text-gray-700"
                       >
-                        Contra {contraValue ? "(Yes)" : "(No)"}
+                        Contra {contraValue ? '(Yes)' : '(No)'}
                       </label>
                     </div>
                   </div>

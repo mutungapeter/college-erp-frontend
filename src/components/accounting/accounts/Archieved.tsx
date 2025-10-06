@@ -1,37 +1,40 @@
-"use client";
+'use client';
 
-import Pagination from "@/components/common/Pagination";
-import DataTable, { Column } from "@/components/common/Table/DataTable";
-import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
-import { AccountInterface } from "@/definitions/finance/accounts/main";
-import { useFilters } from "@/hooks/useFilters";
-import { PAGE_SIZE } from "@/lib/constants";
-import { useGetArchivedAccountsQuery, useRecoverFinAccountMutation } from "@/store/services/finance/accounting";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import Pagination from '@/components/common/Pagination';
+import DataTable, { Column } from '@/components/common/Table/DataTable';
+import ContentSpinner from '@/components/common/spinners/dataLoadingSpinner';
+import { AccountInterface } from '@/definitions/finance/accounts/main';
+import { useFilters } from '@/hooks/useFilters';
+import { PAGE_SIZE } from '@/lib/constants';
+import {
+  useGetArchivedAccountsQuery,
+  useRecoverFinAccountMutation,
+} from '@/store/services/finance/accounting';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMemo, useState } from 'react';
 
-import ActionModal from "@/components/common/Modals/ActionModal";
-import NoData from "@/components/common/NoData";
-import { LuArchiveRestore } from "react-icons/lu";
-import { toast } from "react-toastify";
+import ActionModal from '@/components/common/Modals/ActionModal';
+import NoData from '@/components/common/NoData';
+import { LuArchiveRestore } from 'react-icons/lu';
+import { toast } from 'react-toastify';
 const ArchivedChartOfAccounts = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-   
-    const [selectedAcc, setSelectedAcc] = useState<number | null>(null);
-    const [recoverFinAccount, { isLoading: isDeleting }] = useRecoverFinAccountMutation();
-  const { filters, currentPage, handlePageChange } =
-    useFilters({
-      initialFilters: {
-        search: searchParams.get("search") || "",
-        account_type: searchParams.get("account_type") || "",
-      },
-      initialPage: parseInt(searchParams.get("page") || "1", 10),
-      router,
-      debounceTime: 100,
-      debouncedFields: ["search"],
-    });
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const [selectedAcc, setSelectedAcc] = useState<number | null>(null);
+  const [recoverFinAccount, { isLoading: isDeleting }] =
+    useRecoverFinAccountMutation();
+  const { filters, currentPage, handlePageChange } = useFilters({
+    initialFilters: {
+      search: searchParams.get('search') || '',
+      account_type: searchParams.get('account_type') || '',
+    },
+    initialPage: parseInt(searchParams.get('page') || '1', 10),
+    router,
+    debounceTime: 100,
+    debouncedFields: ['search'],
+  });
 
   const queryParams = useMemo(
     () => ({
@@ -39,71 +42,76 @@ const ArchivedChartOfAccounts = () => {
       page_size: PAGE_SIZE,
       ...filters,
     }),
-    [currentPage, filters]
+    [currentPage, filters],
   );
-  console.log("queryParams", queryParams);
+  console.log('queryParams', queryParams);
 
-  const { data, error, isLoading,refetch } = useGetArchivedAccountsQuery(queryParams, {
-    refetchOnMountOrArgChange: true,
-  });
-const openDeleteModal = (id: number) => {
-      setSelectedAcc(id);
-      setIsDeleteModalOpen(true);
-    };
-  
-    const closeDeleteModal = () => {
-      setIsDeleteModalOpen(false);
-      setSelectedAcc(null);
-    };
-  
-    const handleDeleteFinAccount = async () => {
-      try {
-        await recoverFinAccount(selectedAcc).unwrap();
-        toast.success("Account  successfully unarchived and moved to active accounts!");
-        closeDeleteModal();
-        refetch();
-      } catch (error: unknown) {
-        console.log("error", error);
-        if (error && typeof error === "object" && "data" in error && error.data) {
-          const errorData = (error as { data: { error: string } }).data;
-          console.log("errorData", errorData);
-          toast.error(errorData.error || "Error unarchieving account!.");
-        } else {
-          toast.error("Unexpected Error occured. Please try again.");
-        }
+  const { data, error, isLoading, refetch } = useGetArchivedAccountsQuery(
+    queryParams,
+    {
+      refetchOnMountOrArgChange: true,
+    },
+  );
+  const openDeleteModal = (id: number) => {
+    setSelectedAcc(id);
+    setIsDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setSelectedAcc(null);
+  };
+
+  const handleDeleteFinAccount = async () => {
+    try {
+      await recoverFinAccount(selectedAcc).unwrap();
+      toast.success(
+        'Account  successfully unarchived and moved to active accounts!',
+      );
+      closeDeleteModal();
+      refetch();
+    } catch (error: unknown) {
+      console.log('error', error);
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
+        const errorData = (error as { data: { error: string } }).data;
+        console.log('errorData', errorData);
+        toast.error(errorData.error || 'Error unarchieving account!.');
+      } else {
+        toast.error('Unexpected Error occured. Please try again.');
       }
-    };
- 
+    }
+  };
+
   const columns: Column<AccountInterface>[] = [
     {
-      header: "Account Name",
-      accessor: "name",
+      header: 'Account Name',
+      accessor: 'name',
       cell: (item: AccountInterface) => <span>{item.name}</span>,
     },
     {
-      header: "Account Code",
-      accessor: "account_code",
+      header: 'Account Code',
+      accessor: 'account_code',
       cell: (item: AccountInterface) => <span>{item.account_code}</span>,
     },
 
     {
-      header: "Account Type",
-      accessor: "account_type",
+      header: 'Account Type',
+      accessor: 'account_type',
       cell: (item: AccountInterface) => (
         <span className="text-sm">{item.account_type.name}</span>
       ),
     },
     {
-      header: "Normal Balance",
-      accessor: "account_type",
+      header: 'Normal Balance',
+      accessor: 'account_type',
       cell: (item: AccountInterface) => (
         <span>
           <span
             className={`
                 ${
-                  item.account_type.normal_balance === "debit"
-                    ? "text-green-500"
-                    : "text-red-500"
+                  item.account_type.normal_balance === 'debit'
+                    ? 'text-green-500'
+                    : 'text-red-500'
                 }
                 `}
           >
@@ -114,21 +122,20 @@ const openDeleteModal = (id: number) => {
     },
 
     {
-      header: "Actions",
-      accessor: "id",
+      header: 'Actions',
+      accessor: 'id',
       cell: (item: AccountInterface) => (
         <div className="flex items-center  space-x-2">
-         
-         <button
-                     title="Unarchive account"
-                     className="group relative p-2 bg-green-100 text-green-500 rounded-md hover:bg-green-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md"
-                  onClick={() => openDeleteModal(item.id)}
-                   >
-                     <LuArchiveRestore className="w-4 h-4" />
-                     <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                       Unarchive account
-                     </span>
-                   </button>
+          <button
+            title="Unarchive account"
+            className="group relative p-2 bg-green-100 text-green-500 rounded-md hover:bg-green-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md"
+            onClick={() => openDeleteModal(item.id)}
+          >
+            <LuArchiveRestore className="w-4 h-4" />
+            <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+              Unarchive account
+            </span>
+          </button>
         </div>
       ),
     },
@@ -138,19 +145,14 @@ const openDeleteModal = (id: number) => {
       {/* Header */}
       <div className="mb-8 flex p-4 md:flex-row flex-col gap-4 md:gap-0 md:justify-between items-start">
         <div>
-
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Archievd Chart of Accounts
-        </h1>
-        <p className="text-gray-600">
-          View  all your accounting achieved accounts
-        </p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Archievd Chart of Accounts
+          </h1>
+          <p className="text-gray-600">
+            View all your accounting achieved accounts
+          </p>
         </div>
-        <div className="flex justify-between items-center gap-3 md:gap-5">
-       
-        
-        
-        </div>
+        <div className="flex justify-between items-center gap-3 md:gap-5"></div>
       </div>
       <div className="w-full  p-1  font-nunito">
         {isLoading ? (
@@ -172,7 +174,7 @@ const openDeleteModal = (id: number) => {
             stripeColor="bg-slate-100"
           />
         ) : (
-          <NoData  />
+          <NoData />
         )}
 
         {data && data.count > 0 && (
@@ -184,18 +186,17 @@ const openDeleteModal = (id: number) => {
           />
         )}
       </div>
-       <ActionModal
-         isOpen={isDeleteModalOpen}
-         onClose={closeDeleteModal}
-         onDelete={handleDeleteFinAccount}
-         isDeleting={isDeleting}
-         confirmationMessage="Are you sure you want to Unarchive this Account ?"
-         deleteMessage="This account will be unarchived and moved to active charts of accounts section under the accounts."
-         title="Unarchive Account"
-         actionText="unarchive"
-           actionType="submit"
-         
-       />
+      <ActionModal
+        isOpen={isDeleteModalOpen}
+        onClose={closeDeleteModal}
+        onDelete={handleDeleteFinAccount}
+        isDeleting={isDeleting}
+        confirmationMessage="Are you sure you want to Unarchive this Account ?"
+        deleteMessage="This account will be unarchived and moved to active charts of accounts section under the accounts."
+        title="Unarchive Account"
+        actionText="unarchive"
+        actionType="submit"
+      />
     </div>
   );
 };

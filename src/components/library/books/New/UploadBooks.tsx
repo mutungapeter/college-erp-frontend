@@ -1,15 +1,15 @@
-import { useEffect, useRef, useState } from "react";
-import { FiCheckCircle, FiUpload, FiX } from "react-icons/fi";
-import { PiSpinnerGap } from "react-icons/pi";
-import { toast } from "react-toastify";
+import { useEffect, useRef, useState } from 'react';
+import { FiCheckCircle, FiUpload, FiX } from 'react-icons/fi';
+import { PiSpinnerGap } from 'react-icons/pi';
+import { toast } from 'react-toastify';
 
-import { zodResolver } from "@hookform/resolvers/zod";
+import { zodResolver } from '@hookform/resolvers/zod';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import { UploadBooksFormData, uploadBooksSchema } from "@/schemas/library/main";
-import { useUploadBooksMutation } from "@/store/services/library/libraryService";
-import { useForm } from "react-hook-form";
-import { IoCloseOutline } from "react-icons/io5";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import { UploadBooksFormData, uploadBooksSchema } from '@/schemas/library/main';
+import { useUploadBooksMutation } from '@/store/services/library/libraryService';
+import { useForm } from 'react-hook-form';
+import { IoCloseOutline } from 'react-icons/io5';
 interface Props {
   refetchData: () => void;
 }
@@ -21,24 +21,22 @@ interface UploadResponse {
   errors: string[];
 }
 
-
 const UploadBooks = ({ refetchData }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
-  
-  const [uploadBooks, { isLoading: isUploading }] = useUploadBooksMutation();
+  const [successMessage, setSuccessMessage] = useState('');
 
+  const [uploadBooks, { isLoading: isUploading }] = useUploadBooksMutation();
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
     setIsModalOpen(false);
     setFile(null);
-    setError("");
+    setError('');
     reset();
   };
   const handleCloseSuccessModal = () => {
@@ -55,19 +53,17 @@ const UploadBooks = ({ refetchData }: Props) => {
     resolver: zodResolver(uploadBooksSchema),
   });
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
-
-  
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
-    setError("");
+    setError('');
 
     if (!selectedFile) return;
 
     setFile(selectedFile);
-    setValue("books_csv", selectedFile, {
+    setValue('books_csv', selectedFile, {
       shouldValidate: true,
       shouldDirty: true,
     });
@@ -75,13 +71,13 @@ const UploadBooks = ({ refetchData }: Props) => {
 
   const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    setError("");
+    setError('');
 
     const selectedFile = e.dataTransfer.files[0];
     if (!selectedFile) return;
 
     setFile(selectedFile);
-    setValue("books_csv", selectedFile, {
+    setValue('books_csv', selectedFile, {
       shouldValidate: true,
       shouldDirty: true,
     });
@@ -90,44 +86,42 @@ const UploadBooks = ({ refetchData }: Props) => {
   const onDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
   };
-const formatUploadMessage = (response: UploadResponse): string => {
+  const formatUploadMessage = (response: UploadResponse): string => {
     const { success_count, skipped_count, errors } = response;
-    
+
     let message = `Upload completed!\n`;
     message += `Successfully uploaded: ${success_count} books\n`;
-    
+
     if (skipped_count > 0) {
       message += `Skipped: ${skipped_count} books\n`;
     }
-    
+
     if (errors.length > 0) {
       message += `Duplicate Errors: ${errors.length}\n`;
     }
-    
+
     return message.trim();
   };
   const onSubmit = async (data: UploadBooksFormData) => {
     if (!file) {
-      setError("Please select a file to upload");
+      setError('Please select a file to upload');
       return;
     }
 
     const formData = new FormData();
-    formData.append("books_csv", data.books_csv);
-    
+    formData.append('books_csv', data.books_csv);
 
-    console.log("formData", formData);
-       try {
+    console.log('formData', formData);
+    try {
       const response: UploadResponse = await uploadBooks(formData).unwrap();
-      console.log("response", response);
-
+      console.log('response', response);
 
       const formattedMessage = formatUploadMessage(response);
       setSuccessMessage(formattedMessage);
-      
+
       const hasErrors = response.errors && response.errors.length > 0;
       const noSuccessfulUploads = response.success_count === 0;
-      
+
       setIsError(hasErrors && noSuccessfulUploads);
       setShowSuccessModal(true);
       if (response.success_count > 0) {
@@ -137,23 +131,24 @@ const formatUploadMessage = (response: UploadResponse): string => {
       if (response.success_count > 0) {
         toast.success(`${response.success_count} books uploaded successfully!`);
       }
-      
+
       if (response.skipped_count > 0) {
         toast.warning(`${response.skipped_count} books were skipped`);
       }
 
       setFile(null);
-      setError("");
+      setError('');
       reset();
-      
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      
-      if (error && typeof error === "object" && "data" in error && error.data) {
-        const errorData = error as { data: { error?: string; message?: string; errors?: string[] } };
-        console.log("errorData", errorData.data);
-        let errorMessage = "";
+
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
+        const errorData = error as {
+          data: { error?: string; message?: string; errors?: string[] };
+        };
+        console.log('errorData', errorData.data);
+        let errorMessage = '';
         let errorDetails: string[] = [];
 
         if (errorData.data.error) {
@@ -161,29 +156,29 @@ const formatUploadMessage = (response: UploadResponse): string => {
         } else if (errorData.data.message) {
           errorMessage = errorData.data.message;
         } else {
-          errorMessage = "Failed to upload books. Please check your file format.";
+          errorMessage =
+            'Failed to upload books. Please check your file format.';
         }
 
         if (errorData.data.errors && Array.isArray(errorData.data.errors)) {
           errorDetails = errorData.data.errors;
         }
-        console.log("errorDetails", errorDetails)
-
+        console.log('errorDetails', errorDetails);
 
         setSuccessMessage(errorMessage);
-    
+
         setShowSuccessModal(true);
-        
-        toast.error("Upload failed. Please check the errors and try again.");
+
+        toast.error('Upload failed. Please check the errors and try again.');
       } else {
-        const errorMessage = "Unexpected error occurred. Please try again.";
+        const errorMessage = 'Unexpected error occurred. Please try again.';
         setSuccessMessage(errorMessage);
         setShowSuccessModal(true);
         toast.error(errorMessage);
       }
     } finally {
       setFile(null);
-      setError("");
+      setError('');
     }
   };
 
@@ -231,15 +226,14 @@ const formatUploadMessage = (response: UploadResponse): string => {
               encType="multipart/form-data"
               className="space-y-4"
             >
-             
               <div
                 className={`border-2 border-dashed rounded-lg p-8 flex flex-col items-center justify-center cursor-pointer mb-6
                   ${
                     file
-                      ? "border-green-400 bg-green-50"
+                      ? 'border-green-400 bg-green-50'
                       : error
-                      ? "border-red-400 bg-red-50"
-                      : "border-gray-300 hover:border-blue-400 hover:bg-blue-50"
+                        ? 'border-red-400 bg-red-50'
+                        : 'border-gray-300 hover:border-blue-400 hover:bg-blue-50'
                   }`}
                 onClick={triggerFileInput}
                 onDrop={onDrop}
@@ -277,7 +271,7 @@ const formatUploadMessage = (response: UploadResponse): string => {
                   <>
                     <FiUpload
                       className={`text-4xl mb-3 ${
-                        error ? "text-red-500" : "text-blue-500"
+                        error ? 'text-red-500' : 'text-blue-500'
                       }`}
                     />
                     <p className="text-gray-700 font-medium">
@@ -320,8 +314,8 @@ const formatUploadMessage = (response: UploadResponse): string => {
                   className={`px-4 py-2 rounded-md text-white font-medium flex items-center gap-2
                     ${
                       !file || isUploading
-                        ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-blue-600 hover:bg-blue-700"
+                        ? 'bg-gray-400 cursor-not-allowed'
+                        : 'bg-blue-600 hover:bg-blue-700'
                     }`}
                 >
                   {isUploading ? (

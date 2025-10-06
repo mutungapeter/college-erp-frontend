@@ -1,8 +1,8 @@
-"use client";
-import PageLoadingSpinner from "@/components/common/spinners/pageLoadingSpinner";
-import VendorPayments from "@/components/procurement/tenders/Payments/VendorPayments";
+'use client';
+import PageLoadingSpinner from '@/components/common/spinners/pageLoadingSpinner';
+import VendorPayments from '@/components/procurement/tenders/Payments/VendorPayments';
 
-import { Suspense } from "react";
+import { Suspense } from 'react';
 
 const VendorPaymentsPage = () => {
   return (

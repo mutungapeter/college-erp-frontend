@@ -1,15 +1,15 @@
-"use client";
+'use client';
 import GetApplications from '@/components/admissions/applications';
-import PageLoadingSpinner from '@/components/common/spinners/pageLoadingSpinner'
+import PageLoadingSpinner from '@/components/common/spinners/pageLoadingSpinner';
 
-import React, { Suspense } from 'react'
+import React, { Suspense } from 'react';
 
 const ApplicationsPage = () => {
   return (
-                <Suspense fallback={<PageLoadingSpinner />}>
-            <GetApplications />
-            </Suspense>
-  )
-}
+    <Suspense fallback={<PageLoadingSpinner />}>
+      <GetApplications />
+    </Suspense>
+  );
+};
 
-export default ApplicationsPage
+export default ApplicationsPage;

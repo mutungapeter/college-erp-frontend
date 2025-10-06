@@ -1,10 +1,10 @@
-"use client";
-import { useState } from "react";
-import { IoCloseOutline } from "react-icons/io5";
-import { FiEye } from "react-icons/fi";
-import { PayrollType } from "@/definitions/payroll";
-import { formatCurrency } from "@/utils/currency";
-import { CustomDate } from "@/utils/date";
+'use client';
+import { useState } from 'react';
+import { IoCloseOutline } from 'react-icons/io5';
+import { FiEye } from 'react-icons/fi';
+import { PayrollType } from '@/definitions/payroll';
+import { formatCurrency } from '@/utils/currency';
+import { CustomDate } from '@/utils/date';
 
 interface Props {
   data: PayrollType;
@@ -19,9 +19,6 @@ const PayrollDetailsModal = ({ data }: Props) => {
 
   const handleOpenModal = () => setIsOpen(true);
 
- 
-
-
   const calculateTotalSalary = () => {
     const basic = parseFloat(data.basic_salary || '0');
     const house = parseFloat(data.house_allowance || '0');
@@ -32,11 +29,11 @@ const PayrollDetailsModal = ({ data }: Props) => {
 
   return (
     <>
-      <div onClick={handleOpenModal} 
-     className="flex items-center justify-center p-2 rounded-md bg-indigo-100 text-indigo-600 hover:bg-indigo-200 hover:text-indigo-700 cursor-pointer transition duration-200 shadow-sm hover:shadow-md">
-
-          <FiEye className="text-sm text-indigo-600" />
-  
+      <div
+        onClick={handleOpenModal}
+        className="flex items-center justify-center p-2 rounded-md bg-indigo-100 text-indigo-600 hover:bg-indigo-200 hover:text-indigo-700 cursor-pointer transition duration-200 shadow-sm hover:shadow-md"
+      >
+        <FiEye className="text-sm text-indigo-600" />
       </div>
 
       {isOpen && (
@@ -53,12 +50,15 @@ const PayrollDetailsModal = ({ data }: Props) => {
           ></div>
 
           <div className="fixed inset-0 min-h-full z-100 w-screen flex flex-col text-center md:items-center justify-start overflow-y-auto p-2 md:p-3">
-            <div className="relative transform justify-center animate-fadeIn max-h-[90vh] overflow-y-auto
-             rounded-md bg-white text-left shadow-xl transition-all w-full sm:max-w-c-600 md:max-w-600 ">
+            <div
+              className="relative transform justify-center animate-fadeIn max-h-[90vh] overflow-y-auto
+             rounded-md bg-white text-left shadow-xl transition-all w-full sm:max-w-c-600 md:max-w-600 "
+            >
               <>
                 <div className="sticky top-0 bg-white z-40 flex px-4 justify-between items-center py-3 mt-2 border-b">
                   <p className="text-sm md:text-lg lg:text-lg font-semibold">
-                    Payroll Details - {data.staff?.user.first_name} {data.staff?.user.last_name}
+                    Payroll Details - {data.staff?.user.first_name}{' '}
+                    {data.staff?.user.last_name}
                   </p>
                   <div className="flex justify-end cursor-pointer">
                     <IoCloseOutline
@@ -70,16 +70,18 @@ const PayrollDetailsModal = ({ data }: Props) => {
                 </div>
 
                 <div className="space-y-6 mt-4 p-4 md:p-6 lg:p-6">
-                 
                   <div className="bg-slate-100 rounded-lg p-4">
-                    <h3 className="text-lg font-semibold mb-3 text-gray-800">Staff Information</h3>
+                    <h3 className="text-lg font-semibold mb-3 text-gray-800">
+                      Staff Information
+                    </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium underline underline-offset-4 decoration-gray-600 text-gray-600 mb-1">
                           Staff Name
                         </label>
                         <p className="text-sm text-gray-900">
-                          {data.staff?.user.first_name} {data.staff?.user.last_name}
+                          {data.staff?.user.first_name}{' '}
+                          {data.staff?.user.last_name}
                         </p>
                       </div>
                       <div>
@@ -95,7 +97,9 @@ const PayrollDetailsModal = ({ data }: Props) => {
 
                   {/* Salary Breakdown */}
                   <div className="bg-blue-50 rounded-lg p-4">
-                    <h3 className="text-lg font-semibold mb-3 text-gray-800">Salary Breakdown</h3>
+                    <h3 className="text-lg font-semibold mb-3 text-gray-800">
+                      Salary Breakdown
+                    </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-600 mb-1">
@@ -144,7 +148,9 @@ const PayrollDetailsModal = ({ data }: Props) => {
 
                   {/* Statutory Information */}
                   <div className="bg-yellow-50 rounded-lg p-4">
-                    <h3 className="text-lg font-semibold mb-3 text-gray-800">Statutory Information</h3>
+                    <h3 className="text-lg font-semibold mb-3 text-gray-800">
+                      Statutory Information
+                    </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-600 mb-1">
@@ -183,7 +189,9 @@ const PayrollDetailsModal = ({ data }: Props) => {
 
                   {/* Banking Information */}
                   <div className="bg-green-50 rounded-lg p-4">
-                    <h3 className="text-lg font-semibold mb-3 text-gray-800">Banking Information</h3>
+                    <h3 className="text-lg font-semibold mb-3 text-gray-800">
+                      Banking Information
+                    </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-600 mb-1">
@@ -214,7 +222,9 @@ const PayrollDetailsModal = ({ data }: Props) => {
 
                   {/* Timestamps */}
                   <div className="bg-gray-50 rounded-lg p-4">
-                    <h3 className="text-lg font-semibold mb-3 text-gray-800">Record Information</h3>
+                    <h3 className="text-lg font-semibold mb-3 text-gray-800">
+                      Record Information
+                    </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-600 mb-1">

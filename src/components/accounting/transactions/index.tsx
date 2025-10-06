@@ -1,26 +1,26 @@
-"use client";
+'use client';
 
-import Pagination from "@/components/common/Pagination";
-import { AccountInterface } from "@/definitions/finance/accounts/main";
-import { useFilters } from "@/hooks/useFilters";
-import { PAGE_SIZE } from "@/lib/constants";
+import Pagination from '@/components/common/Pagination';
+import { AccountInterface } from '@/definitions/finance/accounts/main';
+import { useFilters } from '@/hooks/useFilters';
+import { PAGE_SIZE } from '@/lib/constants';
 import {
   useGetAccountsQuery,
   useGetTransactionsQuery,
-} from "@/store/services/finance/accounting";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+} from '@/store/services/finance/accounting';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMemo } from 'react';
 
-import DataTable, { Column } from "@/components/common/Table/DataTable";
-import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
+import DataTable, { Column } from '@/components/common/Table/DataTable';
+import ContentSpinner from '@/components/common/spinners/dataLoadingSpinner';
 
-import NoData from "@/components/common/NoData";
-import FilterSelect from "@/components/common/Select";
-import { LabelOptionsType } from "@/definitions/Labels/labelOptionsType";
-import { TransactionType } from "@/definitions/finance/accounts/transactions";
-import { formatCurrency } from "@/utils/currency";
-import { CustomDate } from "@/utils/date";
-import { GoSearch } from "react-icons/go";
+import NoData from '@/components/common/NoData';
+import FilterSelect from '@/components/common/Select';
+import { LabelOptionsType } from '@/definitions/Labels/labelOptionsType';
+import { TransactionType } from '@/definitions/finance/accounts/transactions';
+import { formatCurrency } from '@/utils/currency';
+import { CustomDate } from '@/utils/date';
+import { GoSearch } from 'react-icons/go';
 
 const Transactions = () => {
   const router = useRouter();
@@ -29,13 +29,13 @@ const Transactions = () => {
   const { filters, currentPage, handleFilterChange, handlePageChange } =
     useFilters({
       initialFilters: {
-        reference: searchParams.get("reference") || "",
-        account: searchParams.get("account") || "",
+        reference: searchParams.get('reference') || '',
+        account: searchParams.get('account') || '',
       },
-      initialPage: parseInt(searchParams.get("page") || "1", 10),
+      initialPage: parseInt(searchParams.get('page') || '1', 10),
       router,
       debounceTime: 100,
-      debouncedFields: ["reference"],
+      debouncedFields: ['reference'],
     });
 
   const queryParams = useMemo(
@@ -44,19 +44,16 @@ const Transactions = () => {
       page_size: PAGE_SIZE,
       ...filters,
     }),
-    [currentPage, filters]
+    [currentPage, filters],
   );
-  console.log("queryParams", queryParams);
+  console.log('queryParams', queryParams);
 
-  const { data, error, isLoading } = useGetTransactionsQuery(
-    queryParams,
-    {
-      refetchOnMountOrArgChange: true,
-    }
-  );
+  const { data, error, isLoading } = useGetTransactionsQuery(queryParams, {
+    refetchOnMountOrArgChange: true,
+  });
   const { data: accounts } = useGetAccountsQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
 
   const accountsOptions =
@@ -66,60 +63,60 @@ const Transactions = () => {
     })) || [];
   const handleCohortChange = (selectedOption: LabelOptionsType | null) => {
     handleFilterChange({
-      account: selectedOption ? selectedOption.value : "",
+      account: selectedOption ? selectedOption.value : '',
     });
   };
   const columns: Column<TransactionType>[] = [
     {
-      header: "Account Name",
-      accessor: "account",
+      header: 'Account Name',
+      accessor: 'account',
       cell: (item: TransactionType) => <span>{item.account.name}</span>,
     },
     {
-      header: "Account Code",
-      accessor: "account",
+      header: 'Account Code',
+      accessor: 'account',
       cell: (item: TransactionType) => <span>{item.account.account_code}</span>,
     },
     {
-      header: "Amount",
-      accessor: "account",
+      header: 'Amount',
+      accessor: 'account',
       cell: (item: TransactionType) => (
         <span>{formatCurrency(item.amount)}</span>
       ),
     },
 
     {
-      header: "Reference",
-      accessor: "journal_info",
+      header: 'Reference',
+      accessor: 'journal_info',
       cell: (item: TransactionType) => (
         <span className="text-sm">{item.journal_info.reference}</span>
       ),
     },
     {
-      header: "Transacation desc",
-      accessor: "journal_info",
+      header: 'Transacation desc',
+      accessor: 'journal_info',
       cell: (item: TransactionType) => (
         <span className="text-sm">{item.journal_info.description}</span>
       ),
     },
     {
-      header: "Transacation desc",
-      accessor: "journal_info",
+      header: 'Transacation desc',
+      accessor: 'journal_info',
       cell: (item: TransactionType) => (
         <span className="text-sm">{CustomDate(item.journal_info.date)}</span>
       ),
     },
     {
-      header: "Normal Balance",
-      accessor: "is_debit",
+      header: 'Normal Balance',
+      accessor: 'is_debit',
       cell: (item: TransactionType) => (
         <span>
           <span
             className={`
-                ${item.is_debit === true ? "text-green-500" : "text-red-500"}
+                ${item.is_debit === true ? 'text-green-500' : 'text-red-500'}
                 `}
           >
-            {item.is_debit ? "Debit" : "Credit"}
+            {item.is_debit ? 'Debit' : 'Credit'}
           </span>
         </span>
       ),
@@ -143,8 +140,8 @@ const Transactions = () => {
             options={accountsOptions}
             value={
               accountsOptions.find(
-                (option: LabelOptionsType) => option.value === filters.account
-              ) || { value: "", label: "All Accounts" }
+                (option: LabelOptionsType) => option.value === filters.account,
+              ) || { value: '', label: 'All Accounts' }
             }
             onChange={handleCohortChange}
             placeholder=""

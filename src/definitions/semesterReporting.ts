@@ -1,14 +1,14 @@
-import { ProgrammeCohortType, SemesterType } from "./curiculum";
-
+import { SemesterType } from './curiculum';
+import { StudentType, UserType } from './students';
 
 export interface ReportingType {
-	id: number;
-	cohort: ProgrammeCohortType;
-	student: string;
-	academic_year: string;
-	semester: SemesterType;
-    reg_no: string;
-	reported: boolean;
-	created_on: string;
-	updated_on: string;
+  id: number;
+  student: StudentType;
+  academic_year: string;
+  semester: SemesterType;
+  registration_number: string;
+  reported: boolean;
+  created_on: string;
+  done_by: UserType;
+  updated_on: string;
 }

@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
 import Transcripts from '@/components/academics/transcripts';
-import PageLoadingSpinner from '@/components/common/spinners/pageLoadingSpinner'
+import PageLoadingSpinner from '@/components/common/spinners/pageLoadingSpinner';
 
-import React, { Suspense } from 'react'
+import React, { Suspense } from 'react';
 
 const TranscriptsPage = () => {
   return (
-                <Suspense fallback={<PageLoadingSpinner />}>
-            <Transcripts />
-            </Suspense>
-  )
-}
+    <Suspense fallback={<PageLoadingSpinner />}>
+      <Transcripts />
+    </Suspense>
+  );
+};
 
-export default TranscriptsPage
+export default TranscriptsPage;

@@ -1,24 +1,25 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { HiOutlineBanknotes, HiOutlineDocumentText } from "react-icons/hi2"; 
-import { IoCloseOutline } from "react-icons/io5";
-import { MdPayments } from "react-icons/md"; 
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { HiOutlineBanknotes, HiOutlineDocumentText } from 'react-icons/hi2';
+import { IoCloseOutline } from 'react-icons/io5';
+import { MdPayments } from 'react-icons/md';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
 
-import { paySlipSchema, PaySlipSchemaType } from "@/schemas/payroll/main";
-import { useGeneratePaySlipsMutation } from "@/store/services/staff/staffService";
+import { paySlipSchema, PaySlipSchemaType } from '@/schemas/payroll/main';
+import { useGeneratePaySlipsMutation } from '@/store/services/staff/staffService';
 
 const GeneratePaySlips = ({ refetchData }: { refetchData: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
-  const [generatePaySlips, { isLoading: isCreating }] = useGeneratePaySlipsMutation();
+  const [generatePaySlips, { isLoading: isCreating }] =
+    useGeneratePaySlipsMutation();
 
   const {
     register,
@@ -30,7 +31,7 @@ const GeneratePaySlips = ({ refetchData }: { refetchData: () => void }) => {
   });
 
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -47,26 +48,26 @@ const GeneratePaySlips = ({ refetchData }: { refetchData: () => void }) => {
   };
 
   const onSubmit = async (formData: PaySlipSchemaType) => {
-    console.log("submitting form data", formData);
+    console.log('submitting form data', formData);
 
     try {
       const response = await generatePaySlips(formData).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("PaySlips generated successfully!");
+      setSuccessMessage('PaySlips generated successfully!');
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(`Failed to generate payslips: ${errorData.error}`);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occurred. Please try again.");
+        setSuccessMessage('Unexpected error occurred. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -138,15 +139,26 @@ const GeneratePaySlips = ({ refetchData }: { refetchData: () => void }) => {
                 <div className="px-6 py-4 bg-blue-50 border-l-4 border-blue-400 mx-6 mt-4 rounded-r-md">
                   <div className="flex items-start space-x-3">
                     <div className="flex-shrink-0">
-                      <svg className="w-5 h-5 text-blue-400 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                      <svg
+                        className="w-5 h-5 text-blue-400 mt-0.5"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                          clipRule="evenodd"
+                        />
                       </svg>
                     </div>
                     <div>
-                      <h4 className="text-sm font-medium text-blue-800">Important Notice</h4>
+                      <h4 className="text-sm font-medium text-blue-800">
+                        Important Notice
+                      </h4>
                       <p className="text-sm text-blue-700 mt-1">
-                        Select the pay period dates to generate payslips for all active employees. 
-                        Ensure all attendance and salary adjustments are finalized before processing.
+                        Select the pay period dates to generate payslips for all
+                        active employees. Ensure all attendance and salary
+                        adjustments are finalized before processing.
                       </p>
                     </div>
                   </div>
@@ -166,16 +178,16 @@ const GeneratePaySlips = ({ refetchData }: { refetchData: () => void }) => {
                         <input
                           type="date"
                           className="w-full py-3 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          {...register("start_date")}
+                          {...register('start_date')}
                         />
-                         </div>
+                      </div>
                       {errors.start_date && (
                         <p className="text-red-500 text-sm mt-1">
                           {errors.start_date.message}
                         </p>
                       )}
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Pay Period End Date
@@ -185,9 +197,9 @@ const GeneratePaySlips = ({ refetchData }: { refetchData: () => void }) => {
                         <input
                           type="date"
                           className="w-full py-3 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          {...register("end_date")}
+                          {...register('end_date')}
                         />
-                        </div>
+                      </div>
                       {errors.end_date && (
                         <p className="text-red-500 text-sm mt-1">
                           {errors.end_date.message}
@@ -203,14 +215,23 @@ const GeneratePaySlips = ({ refetchData }: { refetchData: () => void }) => {
                       <div className="text-sm text-gray-600">
                         <p className="font-medium mb-1">Processing Details:</p>
                         <ul className="space-y-1 text-xs">
-                          <li>• Payslips will be generated for all active employees</li>
-                          <li>• System will calculate salaries based on active employment status, Overtime hours, and deductions</li>
-                          <li>• Generated payslips can be downloaded or emailed to employees</li>
+                          <li>
+                            • Payslips will be generated for all active
+                            employees
+                          </li>
+                          <li>
+                            • System will calculate salaries based on active
+                            employment status, Overtime hours, and deductions
+                          </li>
+                          <li>
+                            • Generated payslips can be downloaded or emailed to
+                            employees
+                          </li>
                         </ul>
                       </div>
                     </div>
                   </div>
-                
+
                   <div className="sticky bottom-0 bg-white z-40 flex space-x-3 gap-4 justify-end items-center py-4 border-t border-gray-100 -mx-6 px-6">
                     <button
                       type="button"

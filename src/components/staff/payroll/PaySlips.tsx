@@ -1,28 +1,26 @@
-"use client";
+'use client';
 
-import Pagination from "@/components/common/Pagination";
+import Pagination from '@/components/common/Pagination';
 
-import DataTable, { Column } from "@/components/common/Table/DataTable";
-import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
-import { useFilters } from "@/hooks/useFilters";
+import DataTable, { Column } from '@/components/common/Table/DataTable';
+import ContentSpinner from '@/components/common/spinners/dataLoadingSpinner';
+import { useFilters } from '@/hooks/useFilters';
 
-
-import FilterSelect from "@/components/common/Select";
-import { LabelOptionsType } from "@/definitions/Labels/labelOptionsType";
-import { IntakeType } from "@/definitions/admissions";
-import { PaySlipType } from "@/definitions/payroll";
-import { PAGE_SIZE } from "@/lib/constants";
-import { useGetDepartmentsQuery } from "@/store/services/curriculum/departmentsService";
-import { useGetPaySlipsQuery } from "@/store/services/staff/staffService";
-import { formatCurrency } from "@/utils/currency";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
-import { GoSearch } from "react-icons/go";
-import { PaySlipDownloadButton } from "./PaySlipPdf";
-import GeneratePaySlips from "./ProcessPaySlips";
-import PayslipDetailsModal from "./PaySlipDetails";
-import PayWages from "./PayWages";
-
+import FilterSelect from '@/components/common/Select';
+import { LabelOptionsType } from '@/definitions/Labels/labelOptionsType';
+import { IntakeType } from '@/definitions/admissions';
+import { PaySlipType } from '@/definitions/payroll';
+import { PAGE_SIZE } from '@/lib/constants';
+import { useGetDepartmentsQuery } from '@/store/services/curriculum/departmentsService';
+import { useGetPaySlipsQuery } from '@/store/services/staff/staffService';
+import { formatCurrency } from '@/utils/currency';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMemo } from 'react';
+import { GoSearch } from 'react-icons/go';
+import { PaySlipDownloadButton } from './PaySlipPdf';
+import GeneratePaySlips from './ProcessPaySlips';
+import PayslipDetailsModal from './PaySlipDetails';
+import PayWages from './PayWages';
 
 const AllPaySlips = () => {
   const router = useRouter();
@@ -30,16 +28,16 @@ const AllPaySlips = () => {
   const { filters, currentPage, handleFilterChange, handlePageChange } =
     useFilters({
       initialFilters: {
-        search: searchParams.get("search") || "",
-        period_start: searchParams.get("period_start") || "",
-        period_end: searchParams.get("period_end") || "",
-        department: searchParams.get("department") || "",
-        status: searchParams.get("status") || "",
+        search: searchParams.get('search') || '',
+        period_start: searchParams.get('period_start') || '',
+        period_end: searchParams.get('period_end') || '',
+        department: searchParams.get('department') || '',
+        status: searchParams.get('status') || '',
       },
-      initialPage: parseInt(searchParams.get("page") || "1", 10),
+      initialPage: parseInt(searchParams.get('page') || '1', 10),
       router,
       debounceTime: 100,
-      debouncedFields: ["search"],
+      debouncedFields: ['search'],
     });
 
   const queryParams = useMemo(
@@ -48,28 +46,27 @@ const AllPaySlips = () => {
       page_size: PAGE_SIZE,
       ...filters,
     }),
-    [currentPage, filters]
+    [currentPage, filters],
   );
-  console.log("queryParams", queryParams);
+  console.log('queryParams', queryParams);
 
   const {
     data: paySlips,
     isLoading,
     error,
-    refetch
+    refetch,
   } = useGetPaySlipsQuery(queryParams, {
     refetchOnMountOrArgChange: true,
   });
 
-  console.log("paySlips", paySlips);
+  console.log('paySlips', paySlips);
 
   const { data: departmentsData } = useGetDepartmentsQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
 
-
-  console.log("departmentsData", departmentsData);
+  console.log('departmentsData', departmentsData);
   const departmentOptions =
     departmentsData?.map((item: IntakeType) => ({
       value: item.id,
@@ -77,7 +74,7 @@ const AllPaySlips = () => {
     })) || [];
 
   const handleIntakeChange = (selectedOption: LabelOptionsType | null) => {
-    const departmentValue = selectedOption ? selectedOption.value : "";
+    const departmentValue = selectedOption ? selectedOption.value : '';
     handleFilterChange({
       department: departmentValue,
     });
@@ -85,52 +82,54 @@ const AllPaySlips = () => {
 
   const columns: Column<PaySlipType>[] = [
     {
-      header: "Name",
-      accessor: "staff",
+      header: 'Name',
+      accessor: 'staff',
       cell: (item: PaySlipType) => (
         <span>
-          {item.staff.user.first_name} {item.staff.user.last_name}({item.staff.staff_number})
+          {item.staff.user.first_name} {item.staff.user.last_name}(
+          {item.staff.staff_number})
         </span>
       ),
     },
-   
 
-    
-   
     {
-  header: "Month Ending",
-  accessor: "payroll_period_end",
-  cell: (item: PaySlipType) => (
-    <span className="text-sm">
-       {item.payroll_period_end}
-    </span>
-  ),
-},
+      header: 'Month Ending',
+      accessor: 'payroll_period_end',
+      cell: (item: PaySlipType) => (
+        <span className="text-sm">{item.payroll_period_end}</span>
+      ),
+    },
     {
-      header: "B.S",
-      accessor: "basic_salary",
+      header: 'B.S',
+      accessor: 'basic_salary',
       cell: (item: PaySlipType) => (
         <span>
-          <span className="text-xs font-bold">{formatCurrency(item.basic_salary)}</span>
+          <span className="text-xs font-bold">
+            {formatCurrency(item.basic_salary)}
+          </span>
         </span>
       ),
     },
     {
-      header: "Total A/W",
-      accessor: "total_allowances",
+      header: 'Total A/W',
+      accessor: 'total_allowances',
       cell: (item: PaySlipType) => (
         <span>
-          <span className="text-xs font-bold">{formatCurrency(item.total_allowances)}</span>
+          <span className="text-xs font-bold">
+            {formatCurrency(item.total_allowances)}
+          </span>
         </span>
       ),
     },
-   
+
     {
-      header: "Total Overtime",
-      accessor: "total_overtime",
+      header: 'Total Overtime',
+      accessor: 'total_overtime',
       cell: (item: PaySlipType) => (
         <span>
-          <span className="text-xs font-bold">{formatCurrency(item.total_overtime)}</span>
+          <span className="text-xs font-bold">
+            {formatCurrency(item.total_overtime)}
+          </span>
         </span>
       ),
     },
@@ -144,78 +143,81 @@ const AllPaySlips = () => {
     //   ),
     // },
     {
-      header: "Net Pay",
-      accessor: "net_pay",
+      header: 'Net Pay',
+      accessor: 'net_pay',
       cell: (item: PaySlipType) => (
         <span>
-          <span className="text-xs font-bold">{formatCurrency(item.net_pay)}</span>
+          <span className="text-xs font-bold">
+            {formatCurrency(item.net_pay)}
+          </span>
         </span>
       ),
     },
     {
-      header: "Balance",
-      accessor: "outstanding_balance",
+      header: 'Balance',
+      accessor: 'outstanding_balance',
       cell: (item: PaySlipType) => (
         <span>
-          <span className="text-xs font-bold">{formatCurrency(item.outstanding_balance)}</span>
+          <span className="text-xs font-bold">
+            {formatCurrency(item.outstanding_balance)}
+          </span>
         </span>
       ),
     },
     {
-      header: "Payment Status",
-      accessor: "payment_status",
+      header: 'Payment Status',
+      accessor: 'payment_status',
       cell: (item: PaySlipType) => (
         // <div>
-         <span
-  className={`
+        <span
+          className={`
     text-[12px] justify-center flex px-2 whitespace-normal break-words py-1 rounded-md text-center
-    ${item.payment_status === "paid"
-      ? "text-green-500 bg-green-100"
-      : item.payment_status === "pending"
-      ? "text-yellow-500 bg-yellow-100"
-      : item.payment_status === "failed"
-      ? "text-red-500 bg-red-100"
-      : item.payment_status === "processing"
-      ? "text-orange-500 bg-orange-100"
-      : item.payment_status === "reversed"
-      ? "bg-indigo-500 text-white"
-      : "text-white bg-gray-500"}
+    ${
+      item.payment_status === 'paid'
+        ? 'text-green-500 bg-green-100'
+        : item.payment_status === 'pending'
+          ? 'text-yellow-500 bg-yellow-100'
+          : item.payment_status === 'failed'
+            ? 'text-red-500 bg-red-100'
+            : item.payment_status === 'processing'
+              ? 'text-orange-500 bg-orange-100'
+              : item.payment_status === 'reversed'
+                ? 'bg-indigo-500 text-white'
+                : 'text-white bg-gray-500'
+    }
   `}
->
-  {item.payment_status_label}
-</span>
+        >
+          {item.payment_status_label}
+        </span>
 
         // </div>
       ),
     },
-   
+
     {
-      header: "Actions",
-      accessor: "id",
+      header: 'Actions',
+      accessor: 'id',
       cell: (item: PaySlipType) => (
         <div className="flex items-center justify-center space-x-2">
-      <PayslipDetailsModal data={item} />
-        {(item.payment_status === "pending" || item.payment_status === "partially_paid") && (
-          <PayWages data={item} refetchData={refetch} />
-        )}
-      <PaySlipDownloadButton 
-        payslip={item} 
-        variant="button"
-      />
+          <PayslipDetailsModal data={item} />
+          {(item.payment_status === 'pending' ||
+            item.payment_status === 'partially_paid') && (
+            <PayWages data={item} refetchData={refetch} />
+          )}
+          <PaySlipDownloadButton payslip={item} variant="button" />
         </div>
       ),
     },
   ];
 
-  console.log("paySlips", paySlips);
+  console.log('paySlips', paySlips);
   return (
     <>
       <div className="bg-white w-full  p-1 shadow-md rounded-lg font-nunito">
         <div className=" p-3  flex flex-col md:flex-row md:items-center lg:items-center md:gap-0 lg:gap-0 gap-4 lg:justify-between md:justify-between">
           <h2 className="font-semibold text-black text-xl">PaySlips</h2>
           <div>
-       <GeneratePaySlips  refetchData={refetch} />
-
+            <GeneratePaySlips refetchData={refetch} />
           </div>
         </div>
 
@@ -255,8 +257,8 @@ const AllPaySlips = () => {
               value={
                 departmentOptions.find(
                   (option: LabelOptionsType) =>
-                    option.value === filters.department
-                ) || { value: "", label: "All Departments" }
+                    option.value === filters.department,
+                ) || { value: '', label: 'All Departments' }
               }
               onChange={handleIntakeChange}
               placeholder=""
@@ -303,7 +305,6 @@ const AllPaySlips = () => {
     }}
   />
 )} */}
-
       </div>
     </>
   );

@@ -1,53 +1,53 @@
-"use client";
+'use client';
 
-import Pagination from "@/components/common/Pagination";
+import Pagination from '@/components/common/Pagination';
 
-import { useFilters } from "@/hooks/useFilters";
+import { useFilters } from '@/hooks/useFilters';
 
-import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
-import DataTable, { Column } from "@/components/common/Table/DataTable";
+import ContentSpinner from '@/components/common/spinners/dataLoadingSpinner';
+import DataTable, { Column } from '@/components/common/Table/DataTable';
 
-import { HostelRoomsType } from "@/definitions/hostels";
-import { PAGE_SIZE } from "@/lib/constants";
+import { HostelRoomsType } from '@/definitions/hostels';
+import { PAGE_SIZE } from '@/lib/constants';
 import {
   useDeletHostelRoomMutation,
   useGetHostelRoomsQuery,
-} from "@/store/services/hostels/hostelService";
-import { formatCurrency } from "@/utils/currency";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
-import { FiTrash2 } from "react-icons/fi";
-import { GoSearch } from "react-icons/go";
-import { IoArrowBackOutline } from "react-icons/io5";
-import ActionModal from "../common/Modals/ActionModal";
-import SuccessFailModal from "../common/Modals/SuccessFailModal";
-import AddRoom from "./NewHostelRoom";
-import AddOccuppant from "./occupants/addOccupant";
-import EditHostelRoom from "./UpdateHostelRoom";
+} from '@/store/services/hostels/hostelService';
+import { formatCurrency } from '@/utils/currency';
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMemo, useState } from 'react';
+import { FiTrash2 } from 'react-icons/fi';
+import { GoSearch } from 'react-icons/go';
+import { IoArrowBackOutline } from 'react-icons/io5';
+import ActionModal from '../common/Modals/ActionModal';
+import SuccessFailModal from '../common/Modals/SuccessFailModal';
+import AddRoom from './NewHostelRoom';
+import AddOccuppant from './occupants/addOccupant';
+import EditHostelRoom from './UpdateHostelRoom';
 interface Props {
   hostel_id: string;
 }
 const HostelRooms = ({ hostel_id }: Props) => {
-  console.log("hostel_id");
+  console.log('hostel_id');
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<number | null>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
   const { filters, currentPage, handleFilterChange, handlePageChange } =
     useFilters({
       initialFilters: {
-        room_no: searchParams.get("room_no") || "",
-        campus: searchParams.get("campus") || "",
+        room_no: searchParams.get('room_no') || '',
+        campus: searchParams.get('campus') || '',
       },
-      initialPage: parseInt(searchParams.get("page") || "1", 10),
+      initialPage: parseInt(searchParams.get('page') || '1', 10),
       router,
       debounceTime: 100,
-      debouncedFields: ["room_no"],
+      debouncedFields: ['room_no'],
     });
 
   const queryParams = useMemo(
@@ -57,10 +57,10 @@ const HostelRooms = ({ hostel_id }: Props) => {
       page_size: PAGE_SIZE,
       ...filters,
     }),
-    [hostel_id, currentPage, filters]
+    [hostel_id, currentPage, filters],
   );
 
-  console.log("queryParams", queryParams);
+  console.log('queryParams', queryParams);
 
   const {
     data: roomsData,
@@ -92,45 +92,45 @@ const HostelRooms = ({ hostel_id }: Props) => {
     try {
       await deleteHostelROom(selectedRoom).unwrap();
       setIsError(false);
-      setSuccessMessage("Room deleted successfully!");
+      setSuccessMessage('Room deleted successfully!');
       closeDeleteModal();
       setShowSuccessModal(true);
       refetch();
     } catch (error: unknown) {
       setIsError(true);
-      console.log("error", error);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      console.log('error', error);
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
-        setSuccessMessage(errorData.error || "Error deleting room.");
+        setSuccessMessage(errorData.error || 'Error deleting room.');
         setShowSuccessModal(true);
       } else {
-        setSuccessMessage("Unexpected error occurred. Please try again.");
+        setSuccessMessage('Unexpected error occurred. Please try again.');
         setShowSuccessModal(true);
       }
     }
   };
 
-  console.log("roomsData", roomsData);
+  console.log('roomsData', roomsData);
 
   const columns: Column<HostelRoomsType>[] = [
     {
-      header: "Room No.",
-      accessor: "room_number",
+      header: 'Room No.',
+      accessor: 'room_number',
       cell: (item: HostelRoomsType) => (
         <span className="font-semibold text-sm">{item.room_number}</span>
       ),
     },
     {
-      header: "Capacity",
-      accessor: "room_capacity",
+      header: 'Capacity',
+      accessor: 'room_capacity',
       cell: (item: HostelRoomsType) => (
         <span className="text-sm font-normal">{item.room_capacity}</span>
       ),
     },
 
     {
-      header: "Cost",
-      accessor: "hostel",
+      header: 'Cost',
+      accessor: 'hostel',
       cell: (item: HostelRoomsType) => (
         <span>
           <span className="text-sm font-nunito ">
@@ -140,8 +140,8 @@ const HostelRooms = ({ hostel_id }: Props) => {
       ),
     },
     {
-      header: "Occupants",
-      accessor: "students_assigned",
+      header: 'Occupants',
+      accessor: 'students_assigned',
       cell: (item: HostelRoomsType) => (
         <span>
           <span className="text-sm normal">{item.students_assigned}</span>
@@ -149,8 +149,8 @@ const HostelRooms = ({ hostel_id }: Props) => {
       ),
     },
     {
-      header: "Occupancy",
-      accessor: "occupancy",
+      header: 'Occupancy',
+      accessor: 'occupancy',
       cell: (item: HostelRoomsType) => (
         <span>
           <span className="text-sm normal">{item.occupancy}</span>
@@ -158,16 +158,16 @@ const HostelRooms = ({ hostel_id }: Props) => {
       ),
     },
     {
-      header: "Status",
-      accessor: "status",
+      header: 'Status',
+      accessor: 'status',
       cell: (item: HostelRoomsType) => (
         <span>
           <span
             className={`text-xs font-normal px-2 py-1 rounded-md
             ${
-              item.status === "Fully Occupied"
-                ? "text-red-500 bg-red-100"
-                : "text-green-500 bg-green-100"
+              item.status === 'Fully Occupied'
+                ? 'text-red-500 bg-red-100'
+                : 'text-green-500 bg-green-100'
             }
             `}
           >
@@ -178,8 +178,8 @@ const HostelRooms = ({ hostel_id }: Props) => {
     },
 
     {
-      header: "Actions",
-      accessor: "id",
+      header: 'Actions',
+      accessor: 'id',
       cell: (item: HostelRoomsType) => (
         <div className="flex items-center justify-center space-x-2">
           <EditHostelRoom data={item} refetchData={refetch} />
@@ -205,7 +205,7 @@ const HostelRooms = ({ hostel_id }: Props) => {
     },
   ];
   const selectedRoomData = roomsData?.results?.rooms?.find(
-    (room: HostelRoomsType) => room.id === selectedRoom
+    (room: HostelRoomsType) => room.id === selectedRoom,
   );
 
   return (
@@ -220,22 +220,22 @@ const HostelRooms = ({ hostel_id }: Props) => {
             <span>Back to Hostels</span>
           </Link>
           <h2 className="text-2xl font-bold">
-            {roomsData?.results?.hostel?.name || "Hostel"} - Rooms
+            {roomsData?.results?.hostel?.name || 'Hostel'} - Rooms
           </h2>
         </div>
 
         <div className=" p-3  flex flex-col md:flex-row md:items-start lg:items-start md:gap-0 lg:gap-0 gap-4 lg:justify-between md:justify-between">
           <div className="flex flex-col gap-2">
             <span className="font-normal text-xs px-2 py-1 rounded-full bg-indigo-700 text-white w-fit">
-              {roomsData?.results?.hostel?.campus?.name || "Campus"}
-            </span>{" "}
+              {roomsData?.results?.hostel?.campus?.name || 'Campus'}
+            </span>{' '}
             <small className="text-gray-600">
-              {roomsData?.results?.hostel.campus?.city || "City"}
+              {roomsData?.results?.hostel.campus?.city || 'City'}
             </small>
             <div className="text-sm text-gray-700 md:text-base md:font-medium">
-              Capacity: {roomsData?.results?.hostel?.capacity ?? "-"} People
+              Capacity: {roomsData?.results?.hostel?.capacity ?? '-'} People
             </div>
-            <span> Rooms: {roomsData?.results.hostel?.rooms ?? "-"}</span>
+            <span> Rooms: {roomsData?.results.hostel?.rooms ?? '-'}</span>
           </div>
 
           <div>

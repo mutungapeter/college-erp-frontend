@@ -1,11 +1,11 @@
-"use client";
-import Link from "next/link";
-import { AiOutlineMenu } from "react-icons/ai";
-import { GoSidebarCollapse } from "react-icons/go";
-import { LuMessageCircle } from "react-icons/lu";
-import { MdOutlineMenu } from "react-icons/md";
-import DropdownUser from "./DropdownUser";
-import Image from "next/image";
+'use client';
+import Link from 'next/link';
+import { AiOutlineMenu } from 'react-icons/ai';
+import { GoSidebarCollapse } from 'react-icons/go';
+import { LuMessageCircle } from 'react-icons/lu';
+import { MdOutlineMenu } from 'react-icons/md';
+import DropdownUser from './DropdownUser';
+import Image from 'next/image';
 const Navbar = ({
   onToggleSidebar,
   onToggleMobileSidebar,
@@ -35,21 +35,21 @@ const Navbar = ({
           </div> */}
 
           <div className="flex items-center justify-center space-x-3 mb-4">
-                            <div className="flex-shrink-0">
-                              <Image
-                                src="/logo/logo.png"
-                                alt="University Logo"
-                                width={40}
-                                height={40}
-                                className="w-15 h-15 object-contain"
-                              />
-                            </div>
-                            <div className="text-left">
-                              <h1 className="text-lg md:text-2xl  font-bold leading-tight uppercase">
-                                College ERP
-                              </h1>
-                            </div>
-                          </div>
+            <div className="flex-shrink-0">
+              <Image
+                src="/logo/logo.png"
+                alt="University Logo"
+                width={40}
+                height={40}
+                className="w-15 h-15 object-contain"
+              />
+            </div>
+            <div className="text-left">
+              <h1 className="text-lg md:text-2xl  font-bold leading-tight uppercase">
+                College ERP
+              </h1>
+            </div>
+          </div>
         </Link>
       </div>
 

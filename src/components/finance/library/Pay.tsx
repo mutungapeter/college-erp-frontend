@@ -1,18 +1,19 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
-import Select from "react-select";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
+import Select from 'react-select';
 
+import { paymentMethodOptions } from '@/definitions/finance/fees/invoices';
+import { FIneType } from '@/definitions/library';
 import {
-  paymentMethodOptions,
-} from "@/definitions/finance/fees/invoices";
-import { FIneType } from "@/definitions/library";
-import { payLibraryFeeSchema, PayLibraryFineType } from "@/schemas/finance/library";
-import { usePayLibraryFineMutation } from "@/store/services/finance/finaceServices";
+  payLibraryFeeSchema,
+  PayLibraryFineType,
+} from '@/schemas/finance/library';
+import { usePayLibraryFineMutation } from '@/store/services/finance/finaceServices';
 type SchoolOption = {
   value: string;
   label: string;
@@ -22,15 +23,15 @@ interface Props {
   data: FIneType;
 }
 const PayLibraryFine = ({ refetchData, data }: Props) => {
-    console.log("data=============", data)
+  console.log('data=============', data);
   const [isOpen, setIsOpen] = useState(false);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
-  const [payLibraryFine, { isLoading: isCreating }] =  usePayLibraryFineMutation
-();
+  const [payLibraryFine, { isLoading: isCreating }] =
+    usePayLibraryFineMutation();
 
   const {
     register,
@@ -42,7 +43,7 @@ const PayLibraryFine = ({ refetchData, data }: Props) => {
     resolver: zodResolver(payLibraryFeeSchema),
   });
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -56,37 +57,37 @@ const PayLibraryFine = ({ refetchData, data }: Props) => {
   };
 
   const onSubmit = async (formData: PayLibraryFineType) => {
-    console.log("submitting form data");
+    console.log('submitting form data');
     const payload = {
-        fine: data.id,
-        ...formData
-    }
-    console.log("payload", payload)
+      fine: data.id,
+      ...formData,
+    };
+    console.log('payload', payload);
     try {
       const response = await payLibraryFine(payload).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Payment Successful");
+      setSuccessMessage('Payment Successful');
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(errorData.error);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occured. Please try again.");
+        setSuccessMessage('Unexpected error occured. Please try again.');
         setShowSuccessModal(true);
       }
     }
   };
   const handlePaymentMethodChange = (selected: SchoolOption | null) => {
     if (selected && selected.value) {
-      setValue("payment_method", String(selected.value));
+      setValue('payment_method', String(selected.value));
     }
   };
 
@@ -133,7 +134,6 @@ const PayLibraryFine = ({ refetchData, data }: Props) => {
                     Pay Library Fine
                   </p>
                 </div>
-                
 
                 <form
                   onSubmit={handleSubmit(onSubmit)}
@@ -146,7 +146,7 @@ const PayLibraryFine = ({ refetchData, data }: Props) => {
                     <input
                       id="name"
                       type="number"
-                      {...register("amount")}
+                      {...register('amount')}
                       placeholder="Ksh"
                       className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                     />
@@ -172,16 +172,16 @@ const PayLibraryFine = ({ refetchData, data }: Props) => {
                         }),
                         control: (base) => ({
                           ...base,
-                          minHeight: "24px",
-                          minWidth: "200px",
-                          borderColor: "#d1d5db",
-                          boxShadow: "none",
-                          "&:hover": {
-                            borderColor: "#9ca3af",
+                          minHeight: '24px',
+                          minWidth: '200px',
+                          borderColor: '#d1d5db',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: '#9ca3af',
                           },
-                          "&:focus-within": {
-                            borderColor: "#9ca3af",
-                            boxShadow: "none",
+                          '&:focus-within': {
+                            borderColor: '#9ca3af',
+                            boxShadow: 'none',
                           },
                         }),
                       }}

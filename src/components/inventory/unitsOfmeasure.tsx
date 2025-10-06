@@ -1,26 +1,26 @@
-"use client";
+'use client';
 
-import Pagination from "@/components/common/Pagination";
-import DataTable, { Column } from "@/components/common/Table/DataTable";
-import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
-import { useFilters } from "@/hooks/useFilters";
-import { PAGE_SIZE } from "@/lib/constants";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import Pagination from '@/components/common/Pagination';
+import DataTable, { Column } from '@/components/common/Table/DataTable';
+import ContentSpinner from '@/components/common/spinners/dataLoadingSpinner';
+import { useFilters } from '@/hooks/useFilters';
+import { PAGE_SIZE } from '@/lib/constants';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMemo, useState } from 'react';
 
-import ActionModal from "@/components/common/Modals/ActionModal";
-import NoData from "@/components/common/NoData";
-import { toast } from "react-toastify";
+import ActionModal from '@/components/common/Modals/ActionModal';
+import NoData from '@/components/common/NoData';
+import { toast } from 'react-toastify';
 
 import {
   useDeleteUnitMutation,
   useGetUnitsQuery,
-} from "@/store/services/finance/inventoryService";
-import Link from "next/link";
-import { FiArrowLeft, FiTrash2 } from "react-icons/fi";
-import EditUnitOfMeasure from "./EditUnitOfMeasure";
-import NewUnitOfMeasure from "./NewUnit";
-import { InventoryUnitType } from "./types";
+} from '@/store/services/finance/inventoryService';
+import Link from 'next/link';
+import { FiArrowLeft, FiTrash2 } from 'react-icons/fi';
+import EditUnitOfMeasure from './EditUnitOfMeasure';
+import NewUnitOfMeasure from './NewUnit';
+import { InventoryUnitType } from './types';
 const UnitsMeasure = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -28,17 +28,16 @@ const UnitsMeasure = () => {
   const [selectedItem, setSelectedItem] = useState<number | null>(null);
 
   const [deleteUnit, { isLoading: isUpdating }] = useDeleteUnitMutation();
-  const { filters, currentPage, handlePageChange } =
-    useFilters({
-      initialFilters: {
-        category_type: searchParams.get("category_type") || "",
-        category: searchParams.get("category") || "",
-      },
-      initialPage: parseInt(searchParams.get("page") || "1", 10),
-      router,
-      debounceTime: 100,
-      debouncedFields: [""],
-    });
+  const { filters, currentPage, handlePageChange } = useFilters({
+    initialFilters: {
+      category_type: searchParams.get('category_type') || '',
+      category: searchParams.get('category') || '',
+    },
+    initialPage: parseInt(searchParams.get('page') || '1', 10),
+    router,
+    debounceTime: 100,
+    debouncedFields: [''],
+  });
 
   const queryParams = useMemo(
     () => ({
@@ -46,14 +45,14 @@ const UnitsMeasure = () => {
       page_size: PAGE_SIZE,
       ...filters,
     }),
-    [currentPage, filters]
+    [currentPage, filters],
   );
-  console.log("queryParams", queryParams);
+  console.log('queryParams', queryParams);
 
   const { data, error, isLoading, refetch } = useGetUnitsQuery(queryParams, {
     refetchOnMountOrArgChange: true,
   });
-  console.log("data", data);
+  console.log('data', data);
 
   const openActionModal = (id: number) => {
     setSelectedItem(id);
@@ -68,25 +67,25 @@ const UnitsMeasure = () => {
   const handleDeleteUnit = async () => {
     try {
       await deleteUnit(selectedItem).unwrap();
-      toast.success("Unit of Measure deleted successfully!");
+      toast.success('Unit of Measure deleted successfully!');
       closeActionModal();
       refetch();
     } catch (error: unknown) {
-      console.log("error", error);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      console.log('error', error);
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
-        console.log("errorData", errorData);
-        toast.error(errorData.error || "Error Deleting Unit of Measure.");
+        console.log('errorData', errorData);
+        toast.error(errorData.error || 'Error Deleting Unit of Measure.');
       } else {
-        toast.error("Unexpected Error occurred. Please try again.");
+        toast.error('Unexpected Error occurred. Please try again.');
       }
     }
   };
 
   const columns: Column<InventoryUnitType>[] = [
     {
-      header: "Name",
-      accessor: "name",
+      header: 'Name',
+      accessor: 'name',
       cell: (item: InventoryUnitType) => (
         <span className="text-sm whitespace-normal break-words">
           {item.name}
@@ -94,8 +93,8 @@ const UnitsMeasure = () => {
       ),
     },
     {
-      header: "Actions",
-      accessor: "id",
+      header: 'Actions',
+      accessor: 'id',
       cell: (item: InventoryUnitType) => (
         <span className="flex items-center space-x-2">
           <div>

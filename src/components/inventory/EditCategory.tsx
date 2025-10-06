@@ -1,17 +1,17 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
-import { IoCloseOutline } from "react-icons/io5";
-import Select from "react-select";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
+import { IoCloseOutline } from 'react-icons/io5';
+import Select from 'react-select';
 
-import { CategoryFormData, categorySchema } from "@/schemas/inventory";
-import { useUpdateInventoryCategoryMutation } from "@/store/services/finance/inventoryService";
-import { FiEdit } from "react-icons/fi";
-import { CategoryType, CategoryTypeOptions } from "./types";
+import { CategoryFormData, categorySchema } from '@/schemas/inventory';
+import { useUpdateInventoryCategoryMutation } from '@/store/services/finance/inventoryService';
+import { FiEdit } from 'react-icons/fi';
+import { CategoryType, CategoryTypeOptions } from './types';
 type SchoolOption = {
   value: string;
   label: string;
@@ -24,11 +24,12 @@ const EditCategory = ({ refetchData, data }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
-  const [updateInventoryCategory, { isLoading: isCreating }] = useUpdateInventoryCategoryMutation();
- 
+  const [updateInventoryCategory, { isLoading: isCreating }] =
+    useUpdateInventoryCategoryMutation();
+
   const {
     register,
     handleSubmit,
@@ -38,17 +39,17 @@ const EditCategory = ({ refetchData, data }: Props) => {
   } = useForm<CategoryFormData>({
     resolver: zodResolver(categorySchema),
     defaultValues: {
-      name: data?.name ?? "",
-      description: data?.description ?? "",
-      category_type: data?.category_type ?? ""
-    }
+      name: data?.name ?? '',
+      description: data?.description ?? '',
+      category_type: data?.category_type ?? '',
+    },
   });
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
   const handleCategoryType = (selected: SchoolOption | null) => {
-     if (selected && selected.value) {
-      setValue("category_type", String(selected.value));
+    if (selected && selected.value) {
+      setValue('category_type', String(selected.value));
     }
   };
   const handleCloseModal = () => {
@@ -62,49 +63,47 @@ const EditCategory = ({ refetchData, data }: Props) => {
   };
 
   const onSubmit = async (formData: CategoryFormData) => {
-    console.log("submitting form data");
+    console.log('submitting form data');
 
-    console.log("formData", formData);
+    console.log('formData', formData);
     try {
       const response = await updateInventoryCategory({
         id: data.id,
-        data: formData
+        data: formData,
       }).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Category Updated Successfully");
+      setSuccessMessage('Category Updated Successfully');
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(errorData.error);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occured. Please try again.");
+        setSuccessMessage('Unexpected error occured. Please try again.');
         setShowSuccessModal(true);
       }
     }
   };
- 
 
   return (
     <>
-    
       <button
-                  onClick={handleOpenModal}
-                  title="Edit Structure"
-                  className="group relative p-2 bg-amber-100 text-amber-500 rounded-md hover:bg-amber-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md"
-                >
-                  <FiEdit className="w-4 h-4" />
-                  <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                    Edit Category
-                  </span>
-                </button>
+        onClick={handleOpenModal}
+        title="Edit Structure"
+        className="group relative p-2 bg-amber-100 text-amber-500 rounded-md hover:bg-amber-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md"
+      >
+        <FiEdit className="w-4 h-4" />
+        <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+          Edit Category
+        </span>
+      </button>
       {isOpen && (
         <div
           className="relative z-9999 animate-fadeIn"
@@ -143,17 +142,15 @@ const EditCategory = ({ refetchData, data }: Props) => {
                   onSubmit={handleSubmit(onSubmit)}
                   className="space-y-4   p-4 md:p-4 lg:p-4 "
                 >
-            
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    
-                      <div>
+                    <div>
                       <label className="block space-x-1  text-sm font-medium mb-2">
                         Name<span className="text-red-500">*</span>
                       </label>
                       <input
                         id="name"
                         type="text"
-                        {...register("name")}
+                        {...register('name')}
                         placeholder="Name"
                         className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                       />
@@ -163,48 +160,47 @@ const EditCategory = ({ refetchData, data }: Props) => {
                         </p>
                       )}
                     </div>
-                  <div>
-                    <label className="block space-x-1  text-sm font-medium mb-2">
-                      Category Type
-                      <span className="text-red-500 mb-2">*</span>
-                    </label>
-                    <Select
-                   
-                    options={CategoryTypeOptions}
-                    defaultValue={CategoryTypeOptions.find(
-                      (option) => option.value === data.category_type
-                    )}
-                    menuPortalTarget={document.body}
-                    menuPlacement="auto"
-                    styles={{
-                      menuPortal: (base) => ({
-                        ...base,
-                          zIndex: 9999,
-                        }),
-                        control: (base) => ({
-                          ...base,
-                          minHeight: "24px",
-                          minWidth: "200px",
-                          borderColor: "#d1d5db",
-                          boxShadow: "none",
-                          "&:hover": {
-                            borderColor: "#9ca3af",
-                          },
-                          "&:focus-within": {
-                            borderColor: "#9ca3af",
-                            boxShadow: "none",
-                          },
-                        }),
-                      }}
-                      onChange={handleCategoryType}
-                    />
+                    <div>
+                      <label className="block space-x-1  text-sm font-medium mb-2">
+                        Category Type
+                        <span className="text-red-500 mb-2">*</span>
+                      </label>
+                      <Select
+                        options={CategoryTypeOptions}
+                        defaultValue={CategoryTypeOptions.find(
+                          (option) => option.value === data.category_type,
+                        )}
+                        menuPortalTarget={document.body}
+                        menuPlacement="auto"
+                        styles={{
+                          menuPortal: (base) => ({
+                            ...base,
+                            zIndex: 9999,
+                          }),
+                          control: (base) => ({
+                            ...base,
+                            minHeight: '24px',
+                            minWidth: '200px',
+                            borderColor: '#d1d5db',
+                            boxShadow: 'none',
+                            '&:hover': {
+                              borderColor: '#9ca3af',
+                            },
+                            '&:focus-within': {
+                              borderColor: '#9ca3af',
+                              boxShadow: 'none',
+                            },
+                          }),
+                        }}
+                        onChange={handleCategoryType}
+                      />
 
-                    {errors.category_type && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.category_type.message}
-                      </p>
-                    )}
-                  </div>
+                      {errors.category_type && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.category_type.message}
+                        </p>
+                      )}
+                    </div>
                   </div>
                   <div>
                     <label className="block space-x-1  text-sm font-medium mb-2">
@@ -212,7 +208,7 @@ const EditCategory = ({ refetchData, data }: Props) => {
                     </label>
                     <textarea
                       id="name"
-                      {...register("description")}
+                      {...register('description')}
                       placeholder="Description optional"
                       rows={3}
                       cols={5}

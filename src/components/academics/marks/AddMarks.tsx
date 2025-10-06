@@ -1,23 +1,23 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FiPlus } from "react-icons/fi";
-import { IoCloseOutline } from "react-icons/io5";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiPlus } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
 
 import {
   CourseType,
   ProgrammeCohortType,
   SemesterType,
-} from "@/definitions/curiculum";
+} from '@/definitions/curiculum';
 
-import IconButton from "@/components/common/IconButton";
-import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
-import { StudentDetailsType } from "@/definitions/students";
-import { ExamDataCreate, examDataCreateSchema } from "@/schemas/exams/main";
-import { useAddMarksMutation } from "@/store/services/academics/acadmicsService";
+import CreateAndUpdateButton from '@/components/common/CreateAndUpdateButton';
+import ModalBottomButton from '@/components/common/StickyModalFooterButtons';
+import { StudentDetailsType } from '@/definitions/students';
+import { ExamDataCreate, examDataCreateSchema } from '@/schemas/exams/main';
+import { useAddMarksMutation } from '@/store/services/academics/acadmicsService';
 
 type AddMarksProps = {
   student: StudentDetailsType;
@@ -36,7 +36,7 @@ const AddMarks = ({
 }: AddMarksProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
   const [addMarks, { isLoading: isCreating }] = useAddMarksMutation();
@@ -55,13 +55,13 @@ const AddMarks = ({
       exam_marks: 0,
     },
   });
-  const cat_one = watch("cat_one");
-  const cat_two = watch("cat_two");
-  const exam_marks = watch("exam_marks");
+  const cat_one = watch('cat_one');
+  const cat_two = watch('cat_two');
+  const exam_marks = watch('exam_marks');
 
   const total = (Number(cat_one) + Number(cat_two)) / 2 + Number(exam_marks);
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -89,22 +89,22 @@ const AddMarks = ({
 
     try {
       const response = await addMarks(submissionData).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Marks Added successfully!");
+      setSuccessMessage('Marks Added successfully!');
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(`Failed to add Marks: ${errorData.error}`);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occurred. Please try again.");
+        setSuccessMessage('Unexpected error occurred. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -112,7 +112,7 @@ const AddMarks = ({
 
   return (
     <>
-      <IconButton
+      <CreateAndUpdateButton
         onClick={handleOpenModal}
         title="Add New"
         label="Add Marks"
@@ -143,8 +143,10 @@ const AddMarks = ({
                 w-full sm:max-w-c-450 md:max-w-450 px-3"
             >
               <>
-                <div className="sticky top-0 bg-white z-40 flex px-4
-                 justify-between items-center py-6">
+                <div
+                  className="sticky top-0 bg-white z-40 flex px-4
+                 justify-between items-center py-6"
+                >
                   <p className="text-sm md:text-lg lg:text-lg font-semibold">
                     Add Marks
                   </p>
@@ -228,7 +230,7 @@ const AddMarks = ({
                       <label className="block text-sm">Cat One</label>
                       <input
                         type="number"
-                        {...register("cat_one")}
+                        {...register('cat_one')}
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                       />
                       {errors.cat_one && (
@@ -241,7 +243,7 @@ const AddMarks = ({
                       <label className="block text-sm">Cat Two</label>
                       <input
                         type="number"
-                        {...register("cat_two")}
+                        {...register('cat_two')}
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                       />
                       {errors.cat_two && (
@@ -254,7 +256,7 @@ const AddMarks = ({
                       <label className="block text-sm">Exam Marks</label>
                       <input
                         type="number"
-                        {...register("exam_marks")}
+                        {...register('exam_marks')}
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                       />
                       {errors.exam_marks && (

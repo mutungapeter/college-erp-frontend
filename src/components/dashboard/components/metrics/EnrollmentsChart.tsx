@@ -1,17 +1,16 @@
-"use client";
+'use client';
 
-import { IntakeType } from "@/definitions/admissions";
-import { useFilters } from "@/hooks/useFilters";
+import { IntakeType } from '@/definitions/admissions';
+import { useFilters } from '@/hooks/useFilters';
 import {
   useGetEnrollmentsMetricsQuery,
   useGetIntakesQuery,
-} from "@/store/services/admissions/admissionsService";
-import { YearMonthCustomDate } from "@/utils/date";
-import { ApexOptions } from "apexcharts";
-import dynamic from "next/dynamic";
-import { useRouter, useSearchParams } from "next/navigation";
-import { BsChevronDown } from "react-icons/bs";
-const ReactApexChart = dynamic(() => import("react-apexcharts"), {
+} from '@/store/services/admissions/admissionsService';
+import { ApexOptions } from 'apexcharts';
+import dynamic from 'next/dynamic';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { BsChevronDown } from 'react-icons/bs';
+const ReactApexChart = dynamic(() => import('react-apexcharts'), {
   ssr: false,
 });
 
@@ -28,7 +27,7 @@ export default function EnrollmentsBarChart() {
 
   const { filters, handleFilterChange } = useFilters({
     initialFilters: {
-      intake: searchParams.get("intake") || "",
+      intake: searchParams.get('intake') || '',
     },
     router,
   });
@@ -37,29 +36,28 @@ export default function EnrollmentsBarChart() {
   });
   const { data: intakesData } = useGetIntakesQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
 
-  console.log("data", data);
+  console.log('data', data);
 
   const labels = data?.map((item: EnrollmentData) => item.intake_name);
   const seriesData = data?.map((item: EnrollmentData) => item.total);
 
   const options: ApexOptions = {
     chart: {
-      type: "bar",
+      type: 'bar',
       height: 300,
-      fontFamily: "Outfit, sans-serif",
+      fontFamily: 'Outfit, sans-serif',
       toolbar: { show: false },
     },
     plotOptions: {
-       bar: {
-    columnWidth: "20%",
-    distributed: true, 
-    borderRadius: 4,
-    borderRadiusApplication: "end",
-  },
-   
+      bar: {
+        columnWidth: '20%',
+        distributed: true,
+        borderRadius: 4,
+        borderRadiusApplication: 'end',
+      },
     },
     dataLabels: {
       enabled: false,
@@ -69,16 +67,16 @@ export default function EnrollmentsBarChart() {
       labels: {
         rotate: -45,
         style: {
-          fontSize: "12px",
+          fontSize: '12px',
         },
       },
       title: {
-        text: "Intake",
+        text: 'Intake',
       },
     },
     yaxis: {
       title: {
-        text: "Enrollments",
+        text: 'Enrollments',
       },
     },
     tooltip: {
@@ -86,7 +84,7 @@ export default function EnrollmentsBarChart() {
         formatter: (val: number) => `${val} students`,
       },
     },
-    colors: ["#3b82f6"],
+    colors: ['#3b82f6'],
   };
 
   return (
@@ -105,7 +103,7 @@ export default function EnrollmentsBarChart() {
           <option value="">Filter by intake</option>
           {intakesData?.map((item: IntakeType) => (
             <option key={item.id} value={item.id}>
-              {item.name} - {YearMonthCustomDate(item.start_date)}
+              {item.name} {item.academic_year.name} 
             </option>
           ))}
         </select>
@@ -123,10 +121,10 @@ export default function EnrollmentsBarChart() {
       ) : (
         <ReactApexChart
           options={options}
-          series={[{ name: "Enrollments", data: seriesData }]}
+          series={[{ name: 'Enrollments', data: seriesData }]}
           type="bar"
           height={300}
-          width={"100%"}
+          width={'100%'}
         />
       )}
     </div>

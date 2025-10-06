@@ -1,17 +1,17 @@
-"use client";
+'use client';
 import {
   Expense,
   Income,
   IncomeStatementType,
-} from "@/definitions/finance/accounts/reports";
-import { useFilters } from "@/hooks/useFilters";
-import { useGetIncomeStatementQuery } from "@/store/services/finance/accounting";
-import { formatCurrency } from "@/utils/currency";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import React, { useMemo } from "react";
-import { BiArrowBack } from "react-icons/bi";
-import { exportIncomeStatementToPDF } from "./IncomeStatementPDFDocument"; // Import the PDF export function
+} from '@/definitions/finance/accounts/reports';
+import { useFilters } from '@/hooks/useFilters';
+import { useGetIncomeStatementQuery } from '@/store/services/finance/accounting';
+import { formatCurrency } from '@/utils/currency';
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useMemo } from 'react';
+import { BiArrowBack } from 'react-icons/bi';
+import { exportIncomeStatementToPDF } from './IncomeStatementPDFDocument'; // Import the PDF export function
 
 interface IncomeSectionProps {
   title: string;
@@ -26,19 +26,19 @@ const IncomeStatementReports: React.FC = () => {
 
   const { filters, handleFilterChange } = useFilters({
     initialFilters: {
-      start_date: searchParams.get("start_date") || "",
-      end_date: searchParams.get("end_date") || "",
+      start_date: searchParams.get('start_date') || '',
+      end_date: searchParams.get('end_date') || '',
     },
     router,
     debounceTime: 100,
-    debouncedFields: ["reference"],
+    debouncedFields: ['reference'],
   });
 
   const queryParams = useMemo(
     () => ({
       ...filters,
     }),
-    [filters]
+    [filters],
   );
 
   const { data, isLoading, error } = useGetIncomeStatementQuery(queryParams, {
@@ -64,16 +64,16 @@ const IncomeStatementReports: React.FC = () => {
                 <span className="bg-blue-200 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
                   {
                     items.filter(
-                      (item) => parseFloat(item.amount.toString()) > 0
+                      (item) => parseFloat(item.amount.toString()) > 0,
                     ).length
-                  }{" "}
+                  }{' '}
                   active
                 </span>
               )}
             </div>
             <span
               className={`font-semibold ${
-                isExpense ? "text-red-600" : "text-green-600"
+                isExpense ? 'text-red-600' : 'text-green-600'
               }`}
             >
               {formatCurrency(sectionTotal)}
@@ -92,14 +92,14 @@ const IncomeStatementReports: React.FC = () => {
                   className={`text-sm font-medium ${
                     parseFloat(item.amount.toString()) > 0
                       ? isExpense
-                        ? "text-red-600"
-                        : "text-green-600"
-                      : "text-gray-400"
+                        ? 'text-red-600'
+                        : 'text-green-600'
+                      : 'text-gray-400'
                   }`}
                 >
                   {parseFloat(item.amount.toString()) > 0
                     ? formatCurrency(item.amount)
-                    : "-"}
+                    : '-'}
                 </span>
               </div>
             ))}
@@ -112,7 +112,7 @@ const IncomeStatementReports: React.FC = () => {
               </span>
               <span
                 className={`font-bold text-lg ${
-                  isExpense ? "text-red-600" : "text-green-600"
+                  isExpense ? 'text-red-600' : 'text-green-600'
                 }`}
               >
                 {formatCurrency(sectionTotal)}
@@ -196,17 +196,17 @@ const IncomeStatementReports: React.FC = () => {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
     });
   };
 
   const getPeriodText = () => {
     if (filters.start_date && filters.end_date) {
       return `For the period from ${formatDate(
-        filters.start_date
+        filters.start_date,
       )} to ${formatDate(filters.end_date)}`;
     } else if (filters.start_date) {
       return `For the period ending ${formatDate(filters.start_date)}`;
@@ -223,7 +223,7 @@ const IncomeStatementReports: React.FC = () => {
       const periodText = getPeriodText();
       await exportIncomeStatementToPDF(incomeStatementData, periodText);
     } catch (error) {
-      console.error("Error exporting PDF:", error);
+      console.error('Error exporting PDF:', error);
       // You can add a toast notification here if you have one
     }
   };
@@ -326,15 +326,15 @@ const IncomeStatementReports: React.FC = () => {
             <div
               className={`${
                 parseFloat(net_profit.toString()) >= 0
-                  ? "bg-green-50 border-green-200 hover:border-green-300"
-                  : "bg-red-50 border-red-200 hover:border-red-300"
+                  ? 'bg-green-50 border-green-200 hover:border-green-300'
+                  : 'bg-red-50 border-red-200 hover:border-red-300'
               } border rounded-lg p-4 hover:shadow-md transition-all duration-300`}
             >
               <div
                 className={`text-sm mb-1 ${
                   parseFloat(net_profit.toString()) >= 0
-                    ? "text-green-700"
-                    : "text-red-700"
+                    ? 'text-green-700'
+                    : 'text-red-700'
                 }`}
               >
                 Net Profit/Loss
@@ -342,8 +342,8 @@ const IncomeStatementReports: React.FC = () => {
               <div
                 className={`text-xl font-semibold ${
                   parseFloat(net_profit.toString()) >= 0
-                    ? "text-green-800"
-                    : "text-red-800"
+                    ? 'text-green-800'
+                    : 'text-red-800'
                 }`}
               >
                 {formatCurrency(net_profit)}
@@ -380,8 +380,8 @@ const IncomeStatementReports: React.FC = () => {
             <span
               className={`text-2xl font-bold ${
                 parseFloat(net_profit.toString()) >= 0
-                  ? "text-green-600"
-                  : "text-red-600"
+                  ? 'text-green-600'
+                  : 'text-red-600'
               }`}
             >
               {formatCurrency(net_profit)}
@@ -390,10 +390,10 @@ const IncomeStatementReports: React.FC = () => {
           <div className="mt-2 text-sm text-gray-600">
             {parseFloat(net_profit.toString()) >= 0
               ? `Your business generated a profit of ${formatCurrency(
-                  net_profit
+                  net_profit,
                 )} for this period.`
               : `Your business incurred a loss of ${formatCurrency(
-                  Math.abs(net_profit)
+                  Math.abs(net_profit),
                 )} for this period.`}
           </div>
         </div>

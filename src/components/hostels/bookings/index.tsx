@@ -1,45 +1,45 @@
-"use client";
+'use client';
 
-import Pagination from "@/components/common/Pagination";
-import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
-import DataTable, { Column } from "@/components/common/Table/DataTable";
-import { useFilters } from "@/hooks/useFilters";
+import Pagination from '@/components/common/Pagination';
+import ContentSpinner from '@/components/common/spinners/dataLoadingSpinner';
+import DataTable, { Column } from '@/components/common/Table/DataTable';
+import { useFilters } from '@/hooks/useFilters';
 
-import { PAGE_SIZE } from "@/lib/constants";
+import { PAGE_SIZE } from '@/lib/constants';
 import {
   useConfirmHostelRoomBookingMutation,
   useGetHostelRoomBookingsQuery,
   useGetHostelsQuery,
-} from "@/store/services/hostels/hostelService";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
-import { GoSearch } from "react-icons/go";
+} from '@/store/services/hostels/hostelService';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMemo, useState } from 'react';
+import { GoSearch } from 'react-icons/go';
 
-import ActionModal from "@/components/common/Modals/ActionModal";
-import FilterSelect from "@/components/common/Select";
-import { BookingType, HostelsType } from "@/definitions/hostels";
-import { LabelOptionsType } from "@/definitions/Labels/labelOptionsType";
-import { FiCheck, FiX } from "react-icons/fi";
-import { toast } from "react-toastify";
-import CreateBooking from "./CreateBooking";
+import ActionModal from '@/components/common/Modals/ActionModal';
+import FilterSelect from '@/components/common/Select';
+import { BookingType, HostelsType } from '@/definitions/hostels';
+import { LabelOptionsType } from '@/definitions/Labels/labelOptionsType';
+import { FiCheck, FiX } from 'react-icons/fi';
+import { toast } from 'react-toastify';
+import CreateBooking from './CreateBooking';
 const Bookings = () => {
-  console.log("room_id");
+  console.log('room_id');
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const [selectedBooking, setSelectedBooking] = useState<number | null>(null);
-  const [modalType, setModalType] = useState<"update" | "cancel">("update");
+  const [modalType, setModalType] = useState<'update' | 'cancel'>('update');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { filters, currentPage, handleFilterChange, handlePageChange } =
     useFilters({
       initialFilters: {
-        reg_no: searchParams.get("reg_no") || "",
-        hostel: searchParams.get("hostel") || "",
+        reg_no: searchParams.get('reg_no') || '',
+        hostel: searchParams.get('hostel') || '',
       },
-      initialPage: parseInt(searchParams.get("page") || "1", 10),
+      initialPage: parseInt(searchParams.get('page') || '1', 10),
       router,
       debounceTime: 100,
-      debouncedFields: ["reg_no"],
+      debouncedFields: ['reg_no'],
     });
 
   const queryParams = useMemo(
@@ -48,10 +48,10 @@ const Bookings = () => {
       page_size: PAGE_SIZE,
       ...filters,
     }),
-    [currentPage, filters]
+    [currentPage, filters],
   );
 
-  console.log("queryParams", queryParams);
+  console.log('queryParams', queryParams);
 
   const {
     data: bookingsData,
@@ -65,7 +65,7 @@ const Bookings = () => {
     useConfirmHostelRoomBookingMutation();
   const { data: hostels } = useGetHostelsQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
   const hostelsOptions =
     hostels?.map((item: HostelsType) => ({
@@ -75,82 +75,79 @@ const Bookings = () => {
 
   const openUpdateModal = (id: number) => {
     setSelectedBooking(id);
-    setModalType("update");
+    setModalType('update');
     setIsModalOpen(true);
   };
 
   const openCancelModal = (id: number) => {
     setSelectedBooking(id);
-    setModalType("cancel");
+    setModalType('cancel');
     setIsModalOpen(true);
   };
 
   const closeModal = () => setIsModalOpen(false);
   const handleConfirmBooking = async () => {
     const data = {
-      status: "Confirmed",
+      status: 'Confirmed',
     };
     console.log(selectedBooking);
     try {
-      
       if (selectedBooking) {
         await confirmHostelRoomBooking({ id: selectedBooking, data }).unwrap();
       }
-      toast.success("Booking Confirmed  successfully!");
+      toast.success('Booking Confirmed  successfully!');
       closeModal();
       refetch();
     } catch (error: unknown) {
-      console.log("error", error);
- 
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      console.log('error', error);
+
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         toast.error(`Failed to Confrim booking: ${errorData.error}`);
-       
       }
     }
   };
 
   const handleCancelBooking = async () => {
     const data = {
-      status: "Cancelled",
+      status: 'Cancelled',
     };
     try {
       if (selectedBooking) {
         await confirmHostelRoomBooking({ id: selectedBooking, data }).unwrap();
       }
-      toast.success("Booking cancelled successfully!");
+      toast.success('Booking cancelled successfully!');
       closeModal();
       refetch();
     } catch (error: unknown) {
-      console.log("error", error);
- 
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      console.log('error', error);
+
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         toast.error(`Failed to Cancel booking: ${errorData.error}`);
-       
       }
     }
   };
-  console.log("selectedBooking", selectedBooking);
+  console.log('selectedBooking', selectedBooking);
   const handleHostelChange = (selectedOption: LabelOptionsType | null) => {
     handleFilterChange({
-      hostel: selectedOption ? selectedOption.value : "",
+      hostel: selectedOption ? selectedOption.value : '',
     });
   };
   const columns: Column<BookingType>[] = [
     {
-      header: "Student",
-      accessor: "student",
+      header: 'Student',
+      accessor: 'student',
       cell: (item: BookingType) => (
         <span className="font-semibold text-sm">
-          {item?.student?.user?.first_name ?? "-"}{" "}
-          {item?.student?.user?.last_name ?? ""}
+          {item?.student?.user?.first_name ?? '-'}{' '}
+          {item?.student?.user?.last_name ?? ''}
         </span>
       ),
     },
     {
-      header: "Reg No",
-      accessor: "student",
+      header: 'Reg No',
+      accessor: 'student',
       cell: (item: BookingType) => (
         <span className="text-sm font-normal">
           {item.student.registration_number}
@@ -159,8 +156,8 @@ const Bookings = () => {
     },
 
     {
-      header: "Phone",
-      accessor: "student",
+      header: 'Phone',
+      accessor: 'student',
       cell: (item: BookingType) => (
         <span className="text-sm font-nunito ">
           {item.student.user.phone_number}
@@ -169,38 +166,38 @@ const Bookings = () => {
     },
 
     {
-      header: "Gender",
-      accessor: "student",
+      header: 'Gender',
+      accessor: 'student',
       cell: (item: BookingType) => (
         <span className="text-sm normal">{item.student.user.gender}</span>
       ),
     },
     {
-      header: "Hostel",
-      accessor: "hostel_room",
+      header: 'Hostel',
+      accessor: 'hostel_room',
       cell: (item: BookingType) => (
         <span className="text-sm normal">{item.hostel_room.hostel.name}</span>
       ),
     },
     {
-      header: "Room",
-      accessor: "hostel_room",
+      header: 'Room',
+      accessor: 'hostel_room',
       cell: (item: BookingType) => (
         <span className="text-sm normal">{item.hostel_room.room_number}</span>
       ),
     },
     {
-      header: "Status",
-      accessor: "status",
+      header: 'Status',
+      accessor: 'status',
       cell: (item: BookingType) => (
         <span
           className={`
     text-xs font-medium px-2 py-1 rounded-md ${
-      item.status === "Pending"
-        ? "text-amber-500 bg-amber-100"
-        : item.status === "Cancelled"
-        ? "text-red-600 bg-red-100"
-        : "text-green-500 bg-green-100"
+      item.status === 'Pending'
+        ? 'text-amber-500 bg-amber-100'
+        : item.status === 'Cancelled'
+          ? 'text-red-600 bg-red-100'
+          : 'text-green-500 bg-green-100'
     }
     `}
         >
@@ -210,11 +207,11 @@ const Bookings = () => {
     },
 
     {
-      header: "Actions",
-      accessor: "id",
+      header: 'Actions',
+      accessor: 'id',
       cell: (item: BookingType) => {
-        const isConfirmed = item.status === "Confirmed";
-        const isPendingCheckIn = item.status === "Pending";
+        const isConfirmed = item.status === 'Confirmed';
+        const isPendingCheckIn = item.status === 'Pending';
 
         return (
           <div className="flex items-center justify-center space-x-2">
@@ -262,7 +259,7 @@ const Bookings = () => {
           </div>
 
           <div className="flex flex-col gap-2">
-            <CreateBooking refetchData={refetch}  />
+            <CreateBooking refetchData={refetch} />
           </div>
         </div>
 
@@ -283,8 +280,8 @@ const Bookings = () => {
               options={hostelsOptions}
               value={
                 hostelsOptions.find(
-                  (option: LabelOptionsType) => option.value === filters.hostel
-                ) || { value: "", label: "All Hostels" }
+                  (option: LabelOptionsType) => option.value === filters.hostel,
+                ) || { value: '', label: 'All Hostels' }
               }
               onChange={handleHostelChange}
               placeholder=""
@@ -324,43 +321,43 @@ const Bookings = () => {
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
             onDelete={
-              modalType === "update"
+              modalType === 'update'
                 ? handleConfirmBooking
-                : modalType === "cancel"
-                ? handleCancelBooking
-                : () => {}
+                : modalType === 'cancel'
+                  ? handleCancelBooking
+                  : () => {}
             }
             confirmationMessage={
-              modalType === "update"
-                ? "Are you sure you want to confirm this booking and assign student to the booked room?"
-                : "Are you sure you want to cancel this booking?"
+              modalType === 'update'
+                ? 'Are you sure you want to confirm this booking and assign student to the booked room?'
+                : 'Are you sure you want to cancel this booking?'
             }
             deleteMessage={
-              modalType === "update"
-                ? "This will assigned the  student to the room and hostel payment invoice  will be generated for the student and included in fee statement."
-                : "This will cancel the booking and release the room for other students."
+              modalType === 'update'
+                ? 'This will assigned the  student to the room and hostel payment invoice  will be generated for the student and included in fee statement.'
+                : 'This will cancel the booking and release the room for other students.'
             }
             isDeleting={isUpdating}
             title={
-              modalType === "update"
-                ? "Confirm  Booking "
-                : modalType === "cancel"
-                ? "Cancel Booking"
-                : "Confirm Booking"
+              modalType === 'update'
+                ? 'Confirm  Booking '
+                : modalType === 'cancel'
+                  ? 'Cancel Booking'
+                  : 'Confirm Booking'
             }
             actionText={
-              modalType === "update"
-                ? "Confirm Booking"
-                : modalType === "cancel"
-                ? "Cancel Booking"
-                : "Confirm Booking"
+              modalType === 'update'
+                ? 'Confirm Booking'
+                : modalType === 'cancel'
+                  ? 'Cancel Booking'
+                  : 'Confirm Booking'
             }
             actionType={
-              modalType === "update"
-                ? "create"
-                : modalType === "cancel"
-                ? "cancel"
-                : "create"
+              modalType === 'update'
+                ? 'create'
+                : modalType === 'cancel'
+                  ? 'cancel'
+                  : 'create'
             }
           />
         )}

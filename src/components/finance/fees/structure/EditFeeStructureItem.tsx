@@ -1,32 +1,30 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
 
-import { Feeitem } from "@/definitions/finance/fees/feeStructure";
+import { Feeitem } from '@/definitions/finance/fees/feeStructure';
 import {
-    FeeStructureItemFormData,
-    feeStructureItemSchema,
-} from "@/schemas/finance/fees";
-import {
-    useUpdateFeeStructureItemMutation
-} from "@/store/services/finance/finaceServices";
-import { FiEdit } from "react-icons/fi";
-import { IoCloseOutline } from "react-icons/io5";
+  FeeStructureItemFormData,
+  feeStructureItemSchema,
+} from '@/schemas/finance/fees';
+import { useUpdateFeeStructureItemMutation } from '@/store/services/finance/finaceServices';
+import { FiEdit } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
 
 interface Props {
   refetchData: () => void;
   data: Feeitem;
 }
 const EditFeeStructureItem = ({ refetchData, data }: Props) => {
-//   console.log("data=============", data);
+  //   console.log("data=============", data);
   const [isOpen, setIsOpen] = useState(false);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
   const [updateFeeStructureItem, { isLoading: isCreating }] =
@@ -40,12 +38,12 @@ const EditFeeStructureItem = ({ refetchData, data }: Props) => {
   } = useForm<FeeStructureItemFormData>({
     resolver: zodResolver(feeStructureItemSchema),
     defaultValues: {
-      description: data?.description ?? "",
+      description: data?.description ?? '',
       amount: Number(data?.amount) ?? 0,
     },
   });
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -59,30 +57,29 @@ const EditFeeStructureItem = ({ refetchData, data }: Props) => {
   };
 
   const onSubmit = async (formData: FeeStructureItemFormData) => {
-    console.log("submitting form data");
-   
-  
+    console.log('submitting form data');
+
     try {
       const response = await updateFeeStructureItem({
         id: data.id,
-        data: formData
+        data: formData,
       }).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Fee Stucture item Updated Successfully");
+      setSuccessMessage('Fee Stucture item Updated Successfully');
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(errorData.error);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occured. Please try again.");
+        setSuccessMessage('Unexpected error occured. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -146,7 +143,7 @@ const EditFeeStructureItem = ({ refetchData, data }: Props) => {
                     <input
                       id="name"
                       type="number"
-                      {...register("amount")}
+                      {...register('amount')}
                       placeholder="Ksh"
                       className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                     />
@@ -163,7 +160,7 @@ const EditFeeStructureItem = ({ refetchData, data }: Props) => {
                     </label>
                     <textarea
                       id="name"
-                      {...register("description")}
+                      {...register('description')}
                       placeholder="e.g Tution Fee"
                       className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                       rows={3}

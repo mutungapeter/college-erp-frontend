@@ -1,28 +1,28 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FiEdit } from "react-icons/fi";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiEdit } from 'react-icons/fi';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
 
-import { IoCloseOutline } from "react-icons/io5";
+import { IoCloseOutline } from 'react-icons/io5';
 
-import { ApplicationType, IntakeType } from "@/definitions/admissions";
-import { CampusType, ProgrammeType } from "@/definitions/curiculum";
+import CreateAndUpdateButton from '@/components/common/CreateAndUpdateButton';
+import ModalBottomButton from '@/components/common/StickyModalFooterButtons';
+import { ApplicationType, IntakeType } from '@/definitions/admissions';
+import { CampusType, ProgrammeType } from '@/definitions/curiculum';
 import {
   StudentApplicationProgrammeInterestUpdate,
   updateProgrammeInterestSchema,
-} from "@/schemas/admissions/main";
+} from '@/schemas/admissions/main';
 import {
   useGetIntakesQuery,
   useUpdateApplicationMutation,
-} from "@/store/services/admissions/admissionsService";
-import { useGetCampusesQuery } from "@/store/services/curriculum/campusService";
-import { useGetProgrammesQuery } from "@/store/services/curriculum/programmesService";
-import Select, { SingleValue } from "react-select";
-import IconButton from "@/components/common/IconButton";
-import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
+} from '@/store/services/admissions/admissionsService';
+import { useGetCampusesQuery } from '@/store/services/curriculum/campusService';
+import { useGetProgrammesQuery } from '@/store/services/curriculum/programmesService';
+import Select, { SingleValue } from 'react-select';
 
 type ApplicationOptionsType = {
   value: number | undefined;
@@ -38,7 +38,7 @@ const EditProgrammeInterest = ({
   const [isOpen, setIsOpen] = useState(false);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
 
   const [isError, setIsError] = useState(false);
 
@@ -46,15 +46,15 @@ const EditProgrammeInterest = ({
     useUpdateApplicationMutation();
   const { data: programmesData } = useGetProgrammesQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
   const { data: intakesData } = useGetIntakesQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
   const { data: campusData } = useGetCampusesQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
 
   // type FormValues = z.infer<typeof updateProgrammeInterestSchema>;
@@ -73,40 +73,40 @@ const EditProgrammeInterest = ({
   });
 
   const handleFirstChoiceChange = (
-    selected: SingleValue<ApplicationOptionsType>
+    selected: SingleValue<ApplicationOptionsType>,
   ) => {
     if (selected) {
       const first_choice_id = Number(selected.value);
-      setValue("first_choice_programme", first_choice_id);
+      setValue('first_choice_programme', first_choice_id);
     }
   };
   const handleSecondChoiceChange = (
-    selected: SingleValue<ApplicationOptionsType>
+    selected: SingleValue<ApplicationOptionsType>,
   ) => {
     if (selected) {
       const second_choice_id = Number(selected.value);
-      setValue("second_choice_programme", second_choice_id);
+      setValue('second_choice_programme', second_choice_id);
     }
   };
   const handleIntakeChange = (
-    selected: SingleValue<ApplicationOptionsType>
+    selected: SingleValue<ApplicationOptionsType>,
   ) => {
     if (selected) {
       const intakeId = Number(selected.value);
-      setValue("intake", intakeId);
+      setValue('intake', intakeId);
     }
   };
   const handleCampusChange = (
-    selected: SingleValue<ApplicationOptionsType>
+    selected: SingleValue<ApplicationOptionsType>,
   ) => {
     if (selected) {
       const campusId = Number(selected.value);
-      setValue("campus", campusId);
+      setValue('campus', campusId);
     }
   };
 
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -122,33 +122,33 @@ const EditProgrammeInterest = ({
   };
 
   const onSubmit = async (
-    formData: StudentApplicationProgrammeInterestUpdate
+    formData: StudentApplicationProgrammeInterestUpdate,
   ) => {
-    console.log("submitting form data for update", formData);
-    console.log("data", formData);
+    console.log('submitting form data for update', formData);
+    console.log('data', formData);
     try {
       const response = await updateApplication({
         id: data?.id,
         data: formData,
       }).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Programme and Inatake info  updated successfully!");
+      setSuccessMessage('Programme and Inatake info  updated successfully!');
       setShowSuccessModal(true);
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      console.log('error', error);
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
-        console.log("errorData", errorData);
+        console.log('errorData', errorData);
         setIsError(true);
         setSuccessMessage(
-          "An error occured while updating Programme interest and intake info.Please try again!."
+          'An error occured while updating Programme interest and intake info.Please try again!.',
         );
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occured. Please try again.");
+        setSuccessMessage('Unexpected error occured. Please try again.');
         setShowSuccessModal(true);
       }
     } finally {
@@ -158,7 +158,7 @@ const EditProgrammeInterest = ({
 
   return (
     <>
-        <IconButton
+      <CreateAndUpdateButton
         onClick={handleOpenModal}
         title="Edit"
         icon={<FiEdit className="w-4 h-4" />}
@@ -186,14 +186,16 @@ const EditProgrammeInterest = ({
             <div
               className="relative transform justify-center
                animate-fadeIn max-h-[90vh]
-                overflow-y-auto rounded-2xl
+                overflow-y-auto rounded-2xl font-inter
                  bg-white text-left shadow-xl transition-all   
                 w-full sm:max-w-c-500 md:max-w-500 px-3"
             >
               <>
-                <div className="sticky top-0 bg-white z-40 flex sm:px-6 px-4 
+                <div
+                  className="sticky top-0 bg-white z-40 flex sm:px-6 px-4 
                 py-6
-                 justify-between items-center ">
+                 justify-between items-center "
+                >
                   <p className="text-sm md:text-lg lg:text-lg font-bold ">
                     Edit Program Interest Information
                   </p>
@@ -236,16 +238,16 @@ const EditProgrammeInterest = ({
                           }),
                           control: (base) => ({
                             ...base,
-                            minHeight: "44px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
+                            minHeight: '44px',
+                            minWidth: '200px',
+                            borderColor: '#d1d5db',
+                            boxShadow: 'none',
+                            '&:hover': {
+                              borderColor: '#9ca3af',
                             },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
+                            '&:focus-within': {
+                              borderColor: '#9ca3af',
+                              boxShadow: 'none',
                             },
                           }),
                         }}
@@ -260,103 +262,105 @@ const EditProgrammeInterest = ({
                     </div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <div className="relative">
-                      <label className="block space-x-1 text-sm font-semibold mb-2">
-                        Second Choice Programme
-                        <span className="text-red-500"></span>
-                      </label>
-                      <Select
-                        options={programmesData?.map((item: ProgrammeType) => ({
-                          value: item.id,
-                          label: `${item.name}(${item.level})`,
-                        }))}
-                        defaultValue={{
-                          value: data?.second_choice_programme?.id,
-                          label: data?.second_choice_programme?.name,
-                        }}
-                        menuPortalTarget={document.body}
-                        menuPlacement="auto"
-                        menuPosition="absolute"
-                        styles={{
-                          menuPortal: (base) => ({
-                            ...base,
-                            zIndex: 9999,
-                          }),
-                          control: (base) => ({
-                            ...base,
-                            minHeight: "44px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
-                            },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
-                            },
-                          }),
-                        }}
-                        onChange={handleSecondChoiceChange}
-                      />
+                    <div>
+                      <div className="relative">
+                        <label className="block space-x-1 text-sm font-semibold mb-2">
+                          Second Choice Programme
+                          <span className="text-red-500"></span>
+                        </label>
+                        <Select
+                          options={programmesData?.map(
+                            (item: ProgrammeType) => ({
+                              value: item.id,
+                              label: `${item.name}(${item.level})`,
+                            }),
+                          )}
+                          defaultValue={{
+                            value: data?.second_choice_programme?.id,
+                            label: data?.second_choice_programme?.name,
+                          }}
+                          menuPortalTarget={document.body}
+                          menuPlacement="auto"
+                          menuPosition="absolute"
+                          styles={{
+                            menuPortal: (base) => ({
+                              ...base,
+                              zIndex: 9999,
+                            }),
+                            control: (base) => ({
+                              ...base,
+                              minHeight: '44px',
+                              minWidth: '200px',
+                              borderColor: '#d1d5db',
+                              boxShadow: 'none',
+                              '&:hover': {
+                                borderColor: '#9ca3af',
+                              },
+                              '&:focus-within': {
+                                borderColor: '#9ca3af',
+                                boxShadow: 'none',
+                              },
+                            }),
+                          }}
+                          onChange={handleSecondChoiceChange}
+                        />
 
-                      {errors.second_choice_programme && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {errors.second_choice_programme.message}
-                        </p>
-                      )}
+                        {errors.second_choice_programme && (
+                          <p className="text-red-500 text-sm mt-1">
+                            {errors.second_choice_programme.message}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <div className="relative">
-                      <label className="block space-x-1 text-sm font-semibold mb-2">
-                        Intake<span className="text-red-500">*</span>
-                      </label>
-                      <Select
-                        options={intakesData?.map((item: IntakeType) => ({
-                          value: item.id,
-                          label: `${item.name} (${new Date(
-                            item.start_date
-                          ).toLocaleDateString()})`,
-                        }))}
-                        defaultValue={{
-                          value: data?.intake?.id,
-                          label: `${data?.intake?.name})`,
-                        }}
-                        menuPortalTarget={document.body}
-                        menuPlacement="auto"
-                        menuPosition="absolute"
-                        styles={{
-                          menuPortal: (base) => ({
-                            ...base,
-                            zIndex: 9999,
-                          }),
-                          control: (base) => ({
-                            ...base,
-                            minHeight: "44px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
-                            },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
-                            },
-                          }),
-                        }}
-                        onChange={handleIntakeChange}
-                      />
+                    <div>
+                      <div className="relative">
+                        <label className="block space-x-1 text-sm font-semibold mb-2">
+                          Intake<span className="text-red-500">*</span>
+                        </label>
+                        <Select
+                          options={intakesData?.map((item: IntakeType) => ({
+                            value: item.id,
+                            label: `${item.name} (${new Date(
+                              item.start_date,
+                            ).toLocaleDateString()})`,
+                          }))}
+                          defaultValue={{
+                            value: data?.intake?.id,
+                            label: `${data?.intake?.name})`,
+                          }}
+                          menuPortalTarget={document.body}
+                          menuPlacement="auto"
+                          menuPosition="absolute"
+                          styles={{
+                            menuPortal: (base) => ({
+                              ...base,
+                              zIndex: 9999,
+                            }),
+                            control: (base) => ({
+                              ...base,
+                              minHeight: '44px',
+                              minWidth: '200px',
+                              borderColor: '#d1d5db',
+                              boxShadow: 'none',
+                              '&:hover': {
+                                borderColor: '#9ca3af',
+                              },
+                              '&:focus-within': {
+                                borderColor: '#9ca3af',
+                                boxShadow: 'none',
+                              },
+                            }),
+                          }}
+                          onChange={handleIntakeChange}
+                        />
 
-                      {errors.intake && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {errors.intake.message}
-                        </p>
-                      )}
+                        {errors.intake && (
+                          <p className="text-red-500 text-sm mt-1">
+                            {errors.intake.message}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                  </div>
                   </div>
                   <div>
                     <div className="relative">
@@ -382,16 +386,16 @@ const EditProgrammeInterest = ({
                           }),
                           control: (base) => ({
                             ...base,
-                            minHeight: "44px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
+                            minHeight: '44px',
+                            minWidth: '200px',
+                            borderColor: '#d1d5db',
+                            boxShadow: 'none',
+                            '&:hover': {
+                              borderColor: '#9ca3af',
                             },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
+                            '&:focus-within': {
+                              borderColor: '#9ca3af',
+                              boxShadow: 'none',
                             },
                           }),
                         }}
@@ -405,12 +409,11 @@ const EditProgrammeInterest = ({
                       )}
                     </div>
                   </div>
-            <ModalBottomButton
-                                     onCancel={handleCloseModal}
-                                     isSubmitting={isSubmitting}
-                                     isProcessing={isUpdating}
-                                   />
-                  
+                  <ModalBottomButton
+                    onCancel={handleCloseModal}
+                    isSubmitting={isSubmitting}
+                    isProcessing={isUpdating}
+                  />
                 </form>
               </>
             </div>

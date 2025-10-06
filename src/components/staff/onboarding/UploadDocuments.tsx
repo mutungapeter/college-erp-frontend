@@ -1,16 +1,16 @@
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
 import {
   StaffDocumentMultiCreate,
   staffDocumentMultiCreateSchema,
-} from "@/schemas/staff/main";
-import { useUploadStaffDocumentMutation } from "@/store/services/staff/staffService";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
-import { FiUpload, FiX } from "react-icons/fi";
-import { IoCloseOutline } from "react-icons/io5";
-import Select from "react-select";
-import { toast } from "react-toastify";
+} from '@/schemas/staff/main';
+import { useUploadStaffDocumentMutation } from '@/store/services/staff/staffService';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useFieldArray, useForm } from 'react-hook-form';
+import { FiUpload, FiX } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
+import Select from 'react-select';
+import { toast } from 'react-toastify';
 
 interface Props {
   staffId: string;
@@ -20,17 +20,17 @@ interface Props {
 type SelectOption = { value: string; label: string };
 
 const DOCUMENT_TYPE_OPTIONS: SelectOption[] = [
-  { value: "KRA_PIN", label: "KRA PIN" },
-  { value: "ID", label: "ID" },
-  { value: "NSSF", label: "NSSF" },
-  { value: "NHIF", label: "NHIF" },
-  { value: "Career Certifications", label: "Career Certifications" },
+  { value: 'KRA_PIN', label: 'KRA PIN' },
+  { value: 'ID', label: 'ID' },
+  { value: 'NSSF', label: 'NSSF' },
+  { value: 'NHIF', label: 'NHIF' },
+  { value: 'Career Certifications', label: 'Career Certifications' },
 ];
 
 const StaffDocumentMultiUpload = ({ staffId, refetchData }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
   const [uploadStaffDocuments, { isLoading: uploading }] =
     useUploadStaffDocumentMutation();
@@ -44,15 +44,15 @@ const StaffDocumentMultiUpload = ({ staffId, refetchData }: Props) => {
   } = useForm<StaffDocumentMultiCreate>({
     resolver: zodResolver(staffDocumentMultiCreateSchema),
     defaultValues: {
-      documents: [{ document_type: "", document_file: null }],
+      documents: [{ document_type: '', document_file: null }],
     },
   });
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "documents",
+    name: 'documents',
   });
 
   const openModal = () => setIsOpen(true);
@@ -71,19 +71,19 @@ const StaffDocumentMultiUpload = ({ staffId, refetchData }: Props) => {
 
   const onSubmit = async (data: StaffDocumentMultiCreate) => {
     if (data.documents.some((doc) => !doc.document_file)) {
-      toast.error("Please select a file for each document.");
+      toast.error('Please select a file for each document.');
       return;
     }
 
     try {
       const documentsMeta = data.documents.map((doc) => ({
         document_type: doc.document_type,
-        notes: doc.notes || "",
+        notes: doc.notes || '',
       }));
 
       const formData = new FormData();
-      formData.append("staff", staffId);
-      formData.append("documents", JSON.stringify(documentsMeta));
+      formData.append('staff', staffId);
+      formData.append('documents', JSON.stringify(documentsMeta));
 
       data.documents.forEach((doc, index) => {
         if (doc.document_file) {
@@ -93,18 +93,18 @@ const StaffDocumentMultiUpload = ({ staffId, refetchData }: Props) => {
 
       await uploadStaffDocuments(formData).unwrap();
       setIsError(false);
-      setSuccessMessage("Staff added to payroll  successfully!");
+      setSuccessMessage('Staff added to payroll  successfully!');
       setShowSuccessModal(true);
       refetchData();
     } catch (error: unknown) {
-        setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      setIsError(true);
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
-        setSuccessMessage(`${errorData.error}` || "Failed to upload documents");
+        setSuccessMessage(`${errorData.error}` || 'Failed to upload documents');
         setShowSuccessModal(true);
       }
     } finally {
-      reset({ documents: [{ document_type: "", document_file: undefined }] });
+      reset({ documents: [{ document_type: '', document_file: undefined }] });
       setShowSuccessModal(true);
     }
   };
@@ -166,10 +166,10 @@ const StaffDocumentMultiUpload = ({ staffId, refetchData }: Props) => {
                       onChange={(option) =>
                         setValue(
                           `documents.${index}.document_type`,
-                          option?.value || "",
+                          option?.value || '',
                           {
                             shouldValidate: true,
-                          }
+                          },
                         )
                       }
                       placeholder="Select document type"
@@ -212,7 +212,7 @@ const StaffDocumentMultiUpload = ({ staffId, refetchData }: Props) => {
                   <button
                     type="button"
                     onClick={() =>
-                      append({ document_type: "", document_file: null })
+                      append({ document_type: '', document_file: null })
                     }
                     className="px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700"
                   >
@@ -224,11 +224,11 @@ const StaffDocumentMultiUpload = ({ staffId, refetchData }: Props) => {
                     disabled={uploading || isSubmitting}
                     className={`px-3 py-2 rounded text-white  ${
                       uploading || isSubmitting
-                        ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-blue-600 hover:bg-blue-700"
+                        ? 'bg-gray-400 cursor-not-allowed'
+                        : 'bg-blue-600 hover:bg-blue-700'
                     }`}
                   >
-                    {uploading ? "Uploading..." : "Upload Documents"}
+                    {uploading ? 'Uploading...' : 'Upload Documents'}
                   </button>
                 </div>
               </form>

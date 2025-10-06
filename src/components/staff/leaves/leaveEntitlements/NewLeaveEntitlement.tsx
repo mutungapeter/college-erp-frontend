@@ -1,18 +1,18 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
 
 import {
   BulkLeaveEntitlementFormData,
   bulkLeaveEntitlementSchema,
-} from "@/schemas/staff/leaves";
-import { useCreateBulkLeaveEntitlementsMutation } from "@/store/services/staff/leaveService";
-import { FiPlus } from "react-icons/fi";
-import { IoCloseOutline } from "react-icons/io5";
+} from '@/schemas/staff/leaves';
+import { useCreateBulkLeaveEntitlementsMutation } from '@/store/services/staff/leaveService';
+import { FiPlus } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
 
 interface Props {
   refetchData: () => void;
@@ -22,7 +22,7 @@ const CreateBulkLeaveEntitlements = ({ refetchData, buttonText }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
   const [createBulkLeaveEntitlements, { isLoading: isCreating }] =
@@ -37,7 +37,7 @@ const CreateBulkLeaveEntitlements = ({ refetchData, buttonText }: Props) => {
     resolver: zodResolver(bulkLeaveEntitlementSchema),
   });
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -51,28 +51,29 @@ const CreateBulkLeaveEntitlements = ({ refetchData, buttonText }: Props) => {
   };
 
   const onSubmit = async (formData: BulkLeaveEntitlementFormData) => {
-    console.log("submitting form data", formData);
+    console.log('submitting form data', formData);
 
     try {
       const response = await createBulkLeaveEntitlements(formData).unwrap();
-      console.log("response", response);
-      const successMessage = response.message || "Leave Entitlements Added Successfully";
-      
+      console.log('response', response);
+      const successMessage =
+        response.message || 'Leave Entitlements Added Successfully';
+
       setIsError(false);
       setSuccessMessage(successMessage);
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(errorData.error);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occured. Please try again.");
+        setSuccessMessage('Unexpected error occured. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -84,7 +85,7 @@ const CreateBulkLeaveEntitlements = ({ refetchData, buttonText }: Props) => {
         onClick={handleOpenModal}
         title="Add Fee Item"
         className={`group relative flex items-center gap-2 ${
-          buttonText ? "px-4 py-2" : "p-2"
+          buttonText ? 'px-4 py-2' : 'p-2'
         } bg-emerald-500 text-white rounded-md hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md`}
       >
         <FiPlus className="w-4 h-4" />
@@ -142,7 +143,7 @@ const CreateBulkLeaveEntitlements = ({ refetchData, buttonText }: Props) => {
                     <input
                       id="name"
                       type="number"
-                      {...register("year")}
+                      {...register('year')}
                       placeholder="e.g 2023"
                       className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                     />
@@ -154,12 +155,13 @@ const CreateBulkLeaveEntitlements = ({ refetchData, buttonText }: Props) => {
                   </div>
                   <div>
                     <label className="block space-x-1  text-sm font-medium mb-2">
-                      Total Entitlement days p.a<span className="text-red-500">*</span>
+                      Total Entitlement days p.a
+                      <span className="text-red-500">*</span>
                     </label>
                     <input
                       id="name"
                       type="number"
-                      {...register("total_days")}
+                      {...register('total_days')}
                       placeholder="Enter days"
                       className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                     />

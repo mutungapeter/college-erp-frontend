@@ -1,24 +1,27 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FiEdit } from "react-icons/fi";
-import { IoCloseOutline } from "react-icons/io5";
-import Select from "react-select";
-import { z } from "zod";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiEdit } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
+import Select from 'react-select';
+import { z } from 'zod';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
 
-import { CourseSessionType, CourseType, ProgrammeCohortType } from "@/definitions/curiculum";
+import {
+  CourseSessionType,
+  CourseType,
+  ProgrammeCohortType,
+} from '@/definitions/curiculum';
 
-import IconButton from "@/components/common/IconButton";
-import { SessionStatusOptions } from "@/lib/constants";
-import { updateSessionsSchema } from "@/schemas/curriculum/Sessions";
-import { useGetCohortsQuery } from "@/store/services/curriculum/cohortsService";
-import { useUpdateCourseSessionMutation } from "@/store/services/curriculum/courseSessionService";
-import { useGetCoursesQuery } from "@/store/services/curriculum/coursesService";
-import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
-
+import CreateAndUpdateButton from '@/components/common/CreateAndUpdateButton';
+import { SessionStatusOptions } from '@/lib/constants';
+import { updateSessionsSchema } from '@/schemas/curriculum/Sessions';
+import { useGetCohortsQuery } from '@/store/services/curriculum/cohortsService';
+import { useUpdateCourseSessionMutation } from '@/store/services/curriculum/courseSessionService';
+import { useGetCoursesQuery } from '@/store/services/curriculum/coursesService';
+import ModalBottomButton from '@/components/common/StickyModalFooterButtons';
 
 export type SelectOption = {
   value: string | number;
@@ -26,8 +29,6 @@ export type SelectOption = {
 };
 
 type FormValues = z.infer<typeof updateSessionsSchema>;
-
-
 
 type EditCourseSessionProps = {
   data: CourseSessionType;
@@ -37,16 +38,22 @@ type EditCourseSessionProps = {
 const EditCourseSession = ({ data, refetchData }: EditCourseSessionProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
-  const [updateCourseSession, { isLoading: isUpdating }] = useUpdateCourseSessionMutation();
-  const { data: cohortsData } = useGetCohortsQuery({}, { refetchOnMountOrArgChange: true });
-  const { data: coursesData } = useGetCoursesQuery({}, { refetchOnMountOrArgChange: true });
-
+  const [updateCourseSession, { isLoading: isUpdating }] =
+    useUpdateCourseSessionMutation();
+  const { data: cohortsData } = useGetCohortsQuery(
+    {},
+    { refetchOnMountOrArgChange: true },
+  );
+  const { data: coursesData } = useGetCoursesQuery(
+    {},
+    { refetchOnMountOrArgChange: true },
+  );
 
   const formatDateForInput = (dateString: string) => {
-    if (!dateString) return "";
+    if (!dateString) return '';
     const date = new Date(dateString);
     return date.toISOString().slice(0, 16);
   };
@@ -60,20 +67,17 @@ const EditCourseSession = ({ data, refetchData }: EditCourseSessionProps) => {
   } = useForm<FormValues>({
     resolver: zodResolver(updateSessionsSchema),
     defaultValues: {
-     
       course: data.course.id,
       cohort: data.cohort.id,
       status: data.status,
       start_time: formatDateForInput(data.start_time),
       period: data.period,
-    }
+    },
   });
 
-  
   useEffect(() => {
     if (data) {
       reset({
-       
         course: data.course.id,
         cohort: data.cohort.id,
         status: data.status,
@@ -84,7 +88,7 @@ const EditCourseSession = ({ data, refetchData }: EditCourseSessionProps) => {
   }, [data, reset]);
 
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -92,57 +96,58 @@ const EditCourseSession = ({ data, refetchData }: EditCourseSessionProps) => {
   };
 
   const handleOpenModal = () => setIsOpen(true);
-  
+
   const handleCloseSuccessModal = () => {
     setShowSuccessModal(false);
     setIsError(false);
     handleCloseModal();
   };
-  
+
   const handleCohortChange = (selected: SelectOption | null) => {
     if (selected) {
       const cohortId = Number(selected.value);
-      setValue("cohort", cohortId);
+      setValue('cohort', cohortId);
     }
   };
-  
+
   const handleCourseChange = (selected: SelectOption | null) => {
     if (selected) {
       const courseId = Number(selected.value);
-      setValue("course", courseId);
+      setValue('course', courseId);
     }
   };
-  
+
   const handleStatusChange = (selected: SelectOption | null) => {
     if (selected && selected.value) {
-      setValue("status", String(selected.value));
+      setValue('status', String(selected.value));
     }
   };
 
   const onSubmit = async (formData: FormValues) => {
-    console.log("submitting form data", formData);
+    console.log('submitting form data', formData);
 
     try {
       const response = await updateCourseSession({
-        id:data.id,
+        id: data.id,
         data: formData,
-      
       }).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Course Session updated successfully!");
+      setSuccessMessage('Course Session updated successfully!');
       setShowSuccessModal(true);
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
-        setSuccessMessage(`Failed to update Course Session: ${errorData.error}`);
+        setSuccessMessage(
+          `Failed to update Course Session: ${errorData.error}`,
+        );
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occurred. Please try again.");
+        setSuccessMessage('Unexpected error occurred. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -150,7 +155,7 @@ const EditCourseSession = ({ data, refetchData }: EditCourseSessionProps) => {
 
   return (
     <>
-     <IconButton
+      <CreateAndUpdateButton
         onClick={handleOpenModal}
         title="Edit"
         icon={<FiEdit className="w-4 h-4" />}
@@ -198,8 +203,6 @@ const EditCourseSession = ({ data, refetchData }: EditCourseSessionProps) => {
                   onSubmit={handleSubmit(onSubmit)}
                   className="space-y-4 mt-2 p-4 md:p-4 lg:p-4"
                 >
-                  
-                  
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <div>
@@ -213,7 +216,7 @@ const EditCourseSession = ({ data, refetchData }: EditCourseSessionProps) => {
                           }))}
                           defaultValue={{
                             value: data.course.id,
-                            label: data.course.name
+                            label: data.course.name,
                           }}
                           menuPortalTarget={document.body}
                           styles={{
@@ -223,16 +226,16 @@ const EditCourseSession = ({ data, refetchData }: EditCourseSessionProps) => {
                             }),
                             control: (base) => ({
                               ...base,
-                              minHeight: "44px",
-                              minWidth: "200px",
-                              borderColor: "#d1d5db",
-                              boxShadow: "none",
-                              "&:hover": {
-                                borderColor: "#9ca3af",
+                              minHeight: '44px',
+                              minWidth: '200px',
+                              borderColor: '#d1d5db',
+                              boxShadow: 'none',
+                              '&:hover': {
+                                borderColor: '#9ca3af',
                               },
-                              "&:focus-within": {
-                                borderColor: "#9ca3af",
-                                boxShadow: "none",
+                              '&:focus-within': {
+                                borderColor: '#9ca3af',
+                                boxShadow: 'none',
                               },
                             }),
                           }}
@@ -252,13 +255,15 @@ const EditCourseSession = ({ data, refetchData }: EditCourseSessionProps) => {
                           Cohort<span className="text-red-500">*</span>
                         </label>
                         <Select
-                          options={cohortsData?.map((cohort: ProgrammeCohortType) => ({
-                            value: cohort.id,
-                            label: cohort.name,
-                          }))}
+                          options={cohortsData?.map(
+                            (cohort: ProgrammeCohortType) => ({
+                              value: cohort.id,
+                              label: cohort.name,
+                            }),
+                          )}
                           defaultValue={{
                             value: data.cohort.id,
-                            label: data.cohort.name
+                            label: data.cohort.name,
                           }}
                           menuPortalTarget={document.body}
                           styles={{
@@ -268,16 +273,16 @@ const EditCourseSession = ({ data, refetchData }: EditCourseSessionProps) => {
                             }),
                             control: (base) => ({
                               ...base,
-                              minHeight: "44px",
-                              minWidth: "200px",
-                              borderColor: "#d1d5db",
-                              boxShadow: "none",
-                              "&:hover": {
-                                borderColor: "#9ca3af",
+                              minHeight: '44px',
+                              minWidth: '200px',
+                              borderColor: '#d1d5db',
+                              boxShadow: 'none',
+                              '&:hover': {
+                                borderColor: '#9ca3af',
                               },
-                              "&:focus-within": {
-                                borderColor: "#9ca3af",
-                                boxShadow: "none",
+                              '&:focus-within': {
+                                borderColor: '#9ca3af',
+                                boxShadow: 'none',
                               },
                             }),
                           }}
@@ -292,7 +297,7 @@ const EditCourseSession = ({ data, refetchData }: EditCourseSessionProps) => {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block space-x-1 text-sm font-medium mb-2">
@@ -302,7 +307,7 @@ const EditCourseSession = ({ data, refetchData }: EditCourseSessionProps) => {
                         type="datetime-local"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                         defaultValue={formatDateForInput(data.start_time)}
-                        {...register("start_time")}
+                        {...register('start_time')}
                       />
                       {errors.start_time && (
                         <p className="text-red-500 text-sm mt-1">
@@ -310,7 +315,7 @@ const EditCourseSession = ({ data, refetchData }: EditCourseSessionProps) => {
                         </p>
                       )}
                     </div>
-                    
+
                     <div>
                       <label className="block space-x-1 text-sm font-medium mb-2">
                         Period (hours)
@@ -320,7 +325,7 @@ const EditCourseSession = ({ data, refetchData }: EditCourseSessionProps) => {
                         step="0.5"
                         defaultValue={data.period}
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
-                        {...register("period", {
+                        {...register('period', {
                           valueAsNumber: true,
                         })}
                       />
@@ -331,14 +336,16 @@ const EditCourseSession = ({ data, refetchData }: EditCourseSessionProps) => {
                       )}
                     </div>
                   </div>
-                  
+
                   <div>
                     <label className="block space-x-1 text-sm font-medium mb-2">
                       Status<span className="text-red-500">*</span>
                     </label>
                     <Select
                       options={SessionStatusOptions}
-                      defaultValue={SessionStatusOptions.find(option => option.value === data.status)}
+                      defaultValue={SessionStatusOptions.find(
+                        (option) => option.value === data.status,
+                      )}
                       menuPlacement="auto"
                       onChange={handleStatusChange}
                       menuPortalTarget={document.body}
@@ -349,15 +356,15 @@ const EditCourseSession = ({ data, refetchData }: EditCourseSessionProps) => {
                         }),
                         control: (base) => ({
                           ...base,
-                          minHeight: "44px",
-                          borderColor: "#d1d5db",
-                          boxShadow: "none",
-                          "&:hover": {
-                            borderColor: "#9ca3af",
+                          minHeight: '44px',
+                          borderColor: '#d1d5db',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: '#9ca3af',
                           },
-                          "&:focus-within": {
-                            borderColor: "#9ca3af",
-                            boxShadow: "none",
+                          '&:focus-within': {
+                            borderColor: '#9ca3af',
+                            boxShadow: 'none',
                           },
                         }),
                       }}
@@ -369,11 +376,11 @@ const EditCourseSession = ({ data, refetchData }: EditCourseSessionProps) => {
                     )}
                   </div>
 
-                     <ModalBottomButton
-                                     onCancel={handleCloseModal}
-                                     isSubmitting={isSubmitting}
-                                     isProcessing={isUpdating}
-                                   />
+                  <ModalBottomButton
+                    onCancel={handleCloseModal}
+                    isSubmitting={isSubmitting}
+                    isProcessing={isUpdating}
+                  />
                 </form>
               </>
             </div>

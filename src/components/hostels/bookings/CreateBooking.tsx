@@ -1,27 +1,27 @@
-"use client";
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { IoCloseOutline } from "react-icons/io5";
+'use client';
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { IoCloseOutline } from 'react-icons/io5';
 
-import { HostelRoomsType, HostelsType } from "@/definitions/hostels";
-import { LabelOptionsType } from "@/definitions/Labels/labelOptionsType";
-import { StudentDetailsType } from "@/definitions/students";
+import { HostelRoomsType, HostelsType } from '@/definitions/hostels';
+import { LabelOptionsType } from '@/definitions/Labels/labelOptionsType';
+import { StudentDetailsType } from '@/definitions/students';
 import {
   HostelRoomBookingCreateSchema,
   HostelRoomBookingCreateType,
-} from "@/schemas/hostels/main";
+} from '@/schemas/hostels/main';
 import {
   useCreateHostelRoomBookingMutation,
   useGetHostelRoomsQuery,
   useGetHostelsQuery,
-} from "@/store/services/hostels/hostelService";
-import { useGetStudentsQuery } from "@/store/services/students/studentsService";
+} from '@/store/services/hostels/hostelService';
+import { useGetStudentsQuery } from '@/store/services/students/studentsService';
 
-import { BsCalendarPlus } from "react-icons/bs";
-import Select from "react-select";
+import { BsCalendarPlus } from 'react-icons/bs';
+import Select from 'react-select';
 
 interface Props {
   refetchData: () => void;
@@ -30,7 +30,7 @@ interface Props {
 const CreateBooking = ({ refetchData }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
   const [selectedHostel, setSelectedHostel] = useState<number | null>(null);
 
@@ -38,19 +38,19 @@ const CreateBooking = ({ refetchData }: Props) => {
     useCreateHostelRoomBookingMutation();
   const { data: studentsData } = useGetStudentsQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
   const { data: hostelsData } = useGetHostelsQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
 
-  const { data: roomsData,  } = useGetHostelRoomsQuery(
+  const { data: roomsData } = useGetHostelRoomsQuery(
     { hostel_id: String(selectedHostel) },
     {
       skip: !selectedHostel,
       refetchOnMountOrArgChange: true,
-    }
+    },
   );
 
   const {
@@ -66,12 +66,11 @@ const CreateBooking = ({ refetchData }: Props) => {
     },
   });
 
-
   useEffect(() => {
-  setValue("hostel_room", undefined as unknown as number, { shouldValidate: true });
-
-}, [selectedHostel, setValue]);
-
+    setValue('hostel_room', undefined as unknown as number, {
+      shouldValidate: true,
+    });
+  }, [selectedHostel, setValue]);
 
   const handleCloseModal = () => {
     setIsOpen(false);
@@ -81,31 +80,25 @@ const CreateBooking = ({ refetchData }: Props) => {
 
   const handleOpenModal = () => setIsOpen(true);
 
-
-  
   const handleStudentChange = (selected: LabelOptionsType | null) => {
     if (selected) {
       const studentId = Number(selected.value);
-      setValue("student", studentId, { shouldValidate: true });
-    } 
+      setValue('student', studentId, { shouldValidate: true });
+    }
   };
-const handleRoomChange = (selected: LabelOptionsType | null) => {
-  if (selected) {
-    const roomId = Number(selected.value);
-    setValue("hostel_room", roomId, { shouldValidate: true });
-  } 
-};
+  const handleRoomChange = (selected: LabelOptionsType | null) => {
+    if (selected) {
+      const roomId = Number(selected.value);
+      setValue('hostel_room', roomId, { shouldValidate: true });
+    }
+  };
 
-
- 
   const handleHostelChange = (selected: LabelOptionsType | null) => {
     if (selected) {
       const hostelId = Number(selected.value);
       setSelectedHostel(hostelId);
     }
   };
-
-
 
   const handleCloseSuccessModal = () => {
     setShowSuccessModal(false);
@@ -114,27 +107,27 @@ const handleRoomChange = (selected: LabelOptionsType | null) => {
   };
 
   const onSubmit = async (formData: HostelRoomBookingCreateType) => {
-    console.log("submitting form data", formData);
+    console.log('submitting form data', formData);
 
     try {
       const response = await createRoomBooking(formData).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Booking created successfully!");
+      setSuccessMessage('Booking created successfully!');
       setShowSuccessModal(true);
       reset();
       setSelectedHostel(null);
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(`Failed to create booking: ${errorData.error}`);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occurred. Please try again.");
+        setSuccessMessage('Unexpected error occurred. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -160,17 +153,17 @@ const handleRoomChange = (selected: LabelOptionsType | null) => {
 
   return (
     <>
-<button
-  onClick={handleOpenModal}
-  className="group relative inline-flex items-center gap-2.5 px-3 py-2 bg-green-600 text-white 
+      <button
+        onClick={handleOpenModal}
+        className="group relative inline-flex items-center gap-2.5 px-3 py-2 bg-green-600 text-white 
     text-sm font-semibold rounded-lg shadow-sm border border-green-700 hover:bg-green-700 
     hover:border-green-800 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-green-500 
     focus:ring-offset-2 overflow-hidden transition-all duration-300"
->
-  <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
-  <BsCalendarPlus className="w-4 h-4 z-10 transition-transform duration-200 group-hover:scale-110" />
-  <span className="z-10">New Booking</span>
-</button>
+      >
+        <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+        <BsCalendarPlus className="w-4 h-4 z-10 transition-transform duration-200 group-hover:scale-110" />
+        <span className="z-10">New Booking</span>
+      </button>
 
       {isOpen && (
         <div
@@ -231,31 +224,31 @@ const handleRoomChange = (selected: LabelOptionsType | null) => {
                         }),
                         control: (base) => ({
                           ...base,
-                          minHeight: "40px",
-                          borderColor: errors.student ? "#ef4444" : "#d1d5db",
-                          boxShadow: "none",
-                          "&:hover": {
-                            borderColor: errors.student ? "#ef4444" : "#9ca3af",
+                          minHeight: '40px',
+                          borderColor: errors.student ? '#ef4444' : '#d1d5db',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: errors.student ? '#ef4444' : '#9ca3af',
                           },
-                          "&:focus-within": {
-                            borderColor: errors.student ? "#ef4444" : "#2563eb",
-                            boxShadow: "none",
+                          '&:focus-within': {
+                            borderColor: errors.student ? '#ef4444' : '#2563eb',
+                            boxShadow: 'none',
                           },
                         }),
                         option: (base, state) => ({
                           ...base,
-                          fontSize: "0.875rem",
-                          color: state.isSelected ? "#ffffff" : "#333333",
-                          cursor: "pointer",
+                          fontSize: '0.875rem',
+                          color: state.isSelected ? '#ffffff' : '#333333',
+                          cursor: 'pointer',
                           backgroundColor: state.isSelected
-                            ? "#4f46e5"
+                            ? '#4f46e5'
                             : state.isFocused
-                            ? "#e5e7eb"
-                            : "#ffffff",
-                          "&:hover": {
-                            backgroundColor: "#e5e7eb",
+                              ? '#e5e7eb'
+                              : '#ffffff',
+                          '&:hover': {
+                            backgroundColor: '#e5e7eb',
                           },
-                          padding: "8px 12px",
+                          padding: '8px 12px',
                         }),
                       }}
                     />
@@ -284,32 +277,32 @@ const handleRoomChange = (selected: LabelOptionsType | null) => {
                         }),
                         control: (base) => ({
                           ...base,
-                          minHeight: "40px",
-                          borderColor: "#d1d5db",
-                          boxShadow: "none",
-                          cursor: "pointer",
-                          "&:hover": {
-                            borderColor: "#9ca3af",
+                          minHeight: '40px',
+                          borderColor: '#d1d5db',
+                          boxShadow: 'none',
+                          cursor: 'pointer',
+                          '&:hover': {
+                            borderColor: '#9ca3af',
                           },
-                          "&:focus-within": {
-                            borderColor: "#2563eb",
-                            boxShadow: "none",
+                          '&:focus-within': {
+                            borderColor: '#2563eb',
+                            boxShadow: 'none',
                           },
                         }),
                         option: (base, state) => ({
                           ...base,
-                          fontSize: "0.875rem",
-                          color: state.isSelected ? "#ffffff" : "#333333",
-                          cursor: "pointer",
+                          fontSize: '0.875rem',
+                          color: state.isSelected ? '#ffffff' : '#333333',
+                          cursor: 'pointer',
                           backgroundColor: state.isSelected
-                            ? "#4f46e5"
+                            ? '#4f46e5'
                             : state.isFocused
-                            ? "#e5e7eb"
-                            : "#ffffff",
-                          "&:hover": {
-                            backgroundColor: "#e5e7eb",
+                              ? '#e5e7eb'
+                              : '#ffffff',
+                          '&:hover': {
+                            backgroundColor: '#e5e7eb',
                           },
-                          padding: "8px 12px",
+                          padding: '8px 12px',
                         }),
                       }}
                     />
@@ -325,8 +318,8 @@ const handleRoomChange = (selected: LabelOptionsType | null) => {
                       onChange={handleRoomChange}
                       placeholder={
                         selectedHostel
-                          ? "Select a room..."
-                          : "Please select a hostel first"
+                          ? 'Select a room...'
+                          : 'Please select a hostel first'
                       }
                       isDisabled={!selectedHostel}
                       isClearable
@@ -340,41 +333,41 @@ const handleRoomChange = (selected: LabelOptionsType | null) => {
                         }),
                         control: (base) => ({
                           ...base,
-                          minHeight: "40px",
+                          minHeight: '40px',
                           borderColor: errors.hostel_room
-                            ? "#ef4444"
-                            : "#d1d5db",
-                          boxShadow: "none",
-                          cursor: "pointer",
+                            ? '#ef4444'
+                            : '#d1d5db',
+                          boxShadow: 'none',
+                          cursor: 'pointer',
                           backgroundColor: !selectedHostel
-                            ? "#f9fafb"
-                            : "white",
-                          "&:hover": {
+                            ? '#f9fafb'
+                            : 'white',
+                          '&:hover': {
                             borderColor: errors.hostel_room
-                              ? "#ef4444"
-                              : "#9ca3af",
+                              ? '#ef4444'
+                              : '#9ca3af',
                           },
-                          "&:focus-within": {
+                          '&:focus-within': {
                             borderColor: errors.hostel_room
-                              ? "#ef4444"
-                              : "#2563eb",
-                            boxShadow: "none",
+                              ? '#ef4444'
+                              : '#2563eb',
+                            boxShadow: 'none',
                           },
                         }),
                         option: (base, state) => ({
                           ...base,
-                          fontSize: "0.875rem",
-                          color: state.isSelected ? "#ffffff" : "#333333",
-                          cursor: "pointer",
+                          fontSize: '0.875rem',
+                          color: state.isSelected ? '#ffffff' : '#333333',
+                          cursor: 'pointer',
                           backgroundColor: state.isSelected
-                            ? "#4f46e5"
+                            ? '#4f46e5'
                             : state.isFocused
-                            ? "#e5e7eb"
-                            : "#ffffff",
-                          "&:hover": {
-                            backgroundColor: "#e5e7eb",
+                              ? '#e5e7eb'
+                              : '#ffffff',
+                          '&:hover': {
+                            backgroundColor: '#e5e7eb',
                           },
-                          padding: "8px 12px",
+                          padding: '8px 12px',
                         }),
                       }}
                     />

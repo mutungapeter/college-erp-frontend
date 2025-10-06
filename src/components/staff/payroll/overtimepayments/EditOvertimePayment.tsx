@@ -1,27 +1,27 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FiEdit } from "react-icons/fi";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiEdit } from 'react-icons/fi';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
-import Select, { SingleValue } from "react-select";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
+import Select, { SingleValue } from 'react-select';
 
-import { OvertimePaymentType } from "@/definitions/payroll";
-import { StaffType } from "@/definitions/staff";
+import { OvertimePaymentType } from '@/definitions/payroll';
+import { StaffType } from '@/definitions/staff';
 import {
-    overtimeRecordSchema,
-    OvertimeRecordsFormData,
-} from "@/schemas/payroll/main";
+  overtimeRecordSchema,
+  OvertimeRecordsFormData,
+} from '@/schemas/payroll/main';
 import {
-    useGetStaffListQuery,
-    useUpdateOvertimePaymentMutation
-} from "@/store/services/staff/staffService";
-import { IoCloseOutline } from "react-icons/io5";
+  useGetStaffListQuery,
+  useUpdateOvertimePaymentMutation,
+} from '@/store/services/staff/staffService';
+import { IoCloseOutline } from 'react-icons/io5';
 
 const UpdateOvertimePayment = ({
-    data,
+  data,
   refetchData,
 }: {
   refetchData: () => void;
@@ -30,7 +30,7 @@ const UpdateOvertimePayment = ({
   const [isOpen, setIsOpen] = useState(false);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
 
   const [isError, setIsError] = useState(false);
 
@@ -39,7 +39,7 @@ const UpdateOvertimePayment = ({
 
   const { data: staffData } = useGetStaffListQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
 
   const {
@@ -52,14 +52,13 @@ const UpdateOvertimePayment = ({
     resolver: zodResolver(overtimeRecordSchema),
     defaultValues: {
       staff: data?.staff?.id ?? undefined,
-      date: data?.date ?? "",
+      date: data?.date ?? '',
       hours: Number(data?.hours) ?? 0,
       rate_per_hour: Number(data?.rate_per_hour) ?? 0,
-   
     },
   });
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -73,37 +72,37 @@ const UpdateOvertimePayment = ({
   };
 
   const handleStaffChange = (
-      selected: SingleValue<{ value: number | null; label: string }>
-    ) => {
-     if (selected) {
+    selected: SingleValue<{ value: number | null; label: string }>,
+  ) => {
+    if (selected) {
       const staffId = Number(selected.value);
-      setValue("staff", staffId);
+      setValue('staff', staffId);
     }
-    };
+  };
   const onSubmit = async (formData: OvertimeRecordsFormData) => {
-    console.log("submitting form data");
+    console.log('submitting form data');
 
     try {
       const response = await updateOvertimePayment({
         id: data.id,
-        data: formData
+        data: formData,
       }).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Overtime Payment Updated successfully!");
+      setSuccessMessage('Overtime Payment Updated successfully!');
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(errorData.error);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occured. Please try again.");
+        setSuccessMessage('Unexpected error occured. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -112,15 +111,15 @@ const UpdateOvertimePayment = ({
   return (
     <>
       <button
-             onClick={handleOpenModal}
-             title="Edit Structure"
-             className="group relative p-2 bg-amber-100 text-amber-500 rounded-md hover:bg-amber-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md"
-           >
-             <FiEdit className="text-sm" />
-             <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-               Edit Overtime Payment
-             </span>
-           </button>
+        onClick={handleOpenModal}
+        title="Edit Structure"
+        className="group relative p-2 bg-amber-100 text-amber-500 rounded-md hover:bg-amber-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md"
+      >
+        <FiEdit className="text-sm" />
+        <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+          Edit Overtime Payment
+        </span>
+      </button>
 
       {isOpen && (
         <div
@@ -150,10 +149,10 @@ const UpdateOvertimePayment = ({
                     Edit Overtime Payment
                   </p>
                   <IoCloseOutline
-                                     size={20}
-                                     className="cursor-pointer"
-                                     onClick={handleCloseModal}
-                                   />
+                    size={20}
+                    className="cursor-pointer"
+                    onClick={handleCloseModal}
+                  />
                 </div>
 
                 <form
@@ -171,7 +170,7 @@ const UpdateOvertimePayment = ({
                         value: data?.staff?.id || null,
                         label:
                           `${data?.staff.user?.first_name} ${data?.staff?.user.last_name} (${data?.staff.staff_number})` ||
-                          "",
+                          '',
                       }}
                       menuPortalTarget={document.body}
                       menuPlacement="auto"
@@ -182,16 +181,16 @@ const UpdateOvertimePayment = ({
                         }),
                         control: (base) => ({
                           ...base,
-                          minHeight: "24px",
-                          minWidth: "200px",
-                          borderColor: "#d1d5db",
-                          boxShadow: "none",
-                          "&:hover": {
-                            borderColor: "#9ca3af",
+                          minHeight: '24px',
+                          minWidth: '200px',
+                          borderColor: '#d1d5db',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: '#9ca3af',
                           },
-                          "&:focus-within": {
-                            borderColor: "#9ca3af",
-                            boxShadow: "none",
+                          '&:focus-within': {
+                            borderColor: '#9ca3af',
+                            boxShadow: 'none',
                           },
                         }),
                       }}
@@ -213,7 +212,7 @@ const UpdateOvertimePayment = ({
                       <input
                         type="date"
                         className="w-full py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-primary "
-                        {...register("date")}
+                        {...register('date')}
                       />
                     </div>
                     {errors.date && (
@@ -232,7 +231,7 @@ const UpdateOvertimePayment = ({
                         <input
                           type="number"
                           className="w-full py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-primary "
-                          {...register("rate_per_hour")}
+                          {...register('rate_per_hour')}
                           placeholder="Ksh"
                         />
                       </div>
@@ -252,7 +251,7 @@ const UpdateOvertimePayment = ({
                         <input
                           type="number"
                           className="w-full py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-primary "
-                          {...register("hours")}
+                          {...register('hours')}
                         />
                       </div>
                       {errors.hours && (

@@ -1,7 +1,6 @@
+'use client';
 
-"use client";
-
-import PageLoadingSpinner from "@/components/common/spinners/pageLoadingSpinner";
+import PageLoadingSpinner from '@/components/common/spinners/pageLoadingSpinner';
 
 export default function Loading() {
   return (

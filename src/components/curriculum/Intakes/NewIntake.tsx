@@ -1,24 +1,24 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FiPlus } from "react-icons/fi";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiPlus } from 'react-icons/fi';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
 
-
-
-import IconButton from "@/components/common/IconButton";
-import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
-import { CreateIntakeFormData, CreateIntakeSchema } from "@/schemas/curriculum/intakes";
-import { useCreateIntakeMutation } from "@/store/services/admissions/admissionsService";
-import { IoCloseOutline } from "react-icons/io5";
-
+import CreateAndUpdateButton from '@/components/common/CreateAndUpdateButton';
+import ModalBottomButton from '@/components/common/StickyModalFooterButtons';
+import {
+  CreateIntakeFormData,
+  CreateIntakeSchema,
+} from '@/schemas/curriculum/intakes';
+import { useCreateIntakeMutation } from '@/store/services/admissions/admissionsService';
+import { IoCloseOutline } from 'react-icons/io5';
 
 const AddIntake = ({ refetchData }: { refetchData: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
   const [createIntake, { isLoading: isCreating }] = useCreateIntakeMutation();
@@ -31,59 +31,56 @@ const AddIntake = ({ refetchData }: { refetchData: () => void }) => {
     formState: { isSubmitting, errors },
   } = useForm<CreateIntakeFormData>({
     resolver: zodResolver(CreateIntakeSchema),
-    
   });
 
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
     setIsOpen(false);
     reset();
   };
-const activeValue = watch("closed");
+  const activeValue = watch('closed');
   const handleOpenModal = () => setIsOpen(true);
-  
+
   const handleCloseSuccessModal = () => {
     setShowSuccessModal(false);
     setIsError(false);
     handleCloseModal();
   };
-  
-
 
   const onSubmit = async (formData: CreateIntakeFormData) => {
-    console.log("submitting form data", formData);
+    console.log('submitting form data', formData);
 
     try {
       const response = await createIntake(formData).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Intake added successfully!");
+      setSuccessMessage('Intake added successfully!');
       setShowSuccessModal(true);
       reset();
       // refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(`Failed to add Intake: ${errorData.error}`);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occurred. Please try again.");
+        setSuccessMessage('Unexpected error occurred. Please try again.');
         setShowSuccessModal(true);
       }
-    }finally{
+    } finally {
       refetchData();
     }
   };
 
   return (
     <>
-       <IconButton
+      <CreateAndUpdateButton
         onClick={handleOpenModal}
         title="Add New"
         label="New Intake"
@@ -131,15 +128,14 @@ const activeValue = watch("closed");
                   onSubmit={handleSubmit(onSubmit)}
                   className="space-y-4 mt-2 p-4 md:p-4 lg:p-4"
                 >
-                 
-                    <div>
+                  <div>
                     <label className="block space-x-1  text-sm font-medium mb-2">
                       name<span className="text-red-500">*</span>
                     </label>
                     <input
                       id="name"
                       type="text"
-                      {...register("name")}
+                      {...register('name')}
                       placeholder="e.g Sep Intake 2022"
                       className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                     />
@@ -149,8 +145,7 @@ const activeValue = watch("closed");
                       </p>
                     )}
                   </div>
-                
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block space-x-1 text-sm font-medium mb-2">
@@ -159,7 +154,7 @@ const activeValue = watch("closed");
                       <input
                         type="date"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
-                        {...register("start_date")}
+                        {...register('start_date')}
                       />
                       {errors.start_date && (
                         <p className="text-red-500 text-sm mt-1">
@@ -167,7 +162,7 @@ const activeValue = watch("closed");
                         </p>
                       )}
                     </div>
-                    
+
                     <div>
                       <label className="block space-x-1 text-sm font-medium mb-2">
                         End Date<span className="text-red-500">*</span>
@@ -175,7 +170,7 @@ const activeValue = watch("closed");
                       <input
                         type="date"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
-                        {...register("end_date")}
+                        {...register('end_date')}
                       />
                       {errors.end_date && (
                         <p className="text-red-500 text-sm mt-1">
@@ -184,27 +179,27 @@ const activeValue = watch("closed");
                       )}
                     </div>
                   </div>
-                  
-                   <div className="flex items-center space-x-2 mb-4">
+
+                  <div className="flex items-center space-x-2 mb-4">
                     <input
                       type="checkbox"
                       id="closed"
                       className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-                      {...register("closed")}
+                      {...register('closed')}
                     />
                     <label
                       htmlFor="closed"
                       className="ml-2 text-sm font-medium text-gray-700"
                     >
-                      Closed {activeValue ? "(Yes)" : "(No)"}
+                      Closed {activeValue ? '(Yes)' : '(No)'}
                     </label>
                   </div>
 
                   <ModalBottomButton
-                                                        onCancel={handleCloseModal}
-                                                        isSubmitting={isSubmitting}
-                                                        isProcessing={isCreating}
-                                                      />
+                    onCancel={handleCloseModal}
+                    isSubmitting={isSubmitting}
+                    isProcessing={isCreating}
+                  />
                 </form>
               </>
             </div>

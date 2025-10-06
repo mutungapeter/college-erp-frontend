@@ -1,7 +1,7 @@
-"use client";
-import Link from "next/link";
-import React from "react";
-import { GoArrowUpRight } from "react-icons/go";
+'use client';
+import Link from 'next/link';
+import React from 'react';
+import { GoArrowUpRight } from 'react-icons/go';
 
 interface MetricCardProps {
   icon: React.ReactNode;
@@ -18,42 +18,41 @@ const MetricCard: React.FC<MetricCardProps> = ({
   count,
   // subtitle,
   href,
-  iconBgColor = "bg-blue-500",
+  iconBgColor = 'bg-blue-500',
 }) => {
   return (
-   <div className="relative bg-white rounded-xl
-    border border-gray-200 shadow-md hover:shadow-lg transition-shadow duration-200 w-full min-h-[100px] p-4 group">
-
+    <div
+      className="relative bg-white rounded-xl
+    border border-gray-200 shadow-md hover:shadow-lg transition-shadow duration-200 w-full min-h-[100px] p-4 group"
+    >
       {/* Header with title and icon */}
       <div className="flex items-center justify-between mb-3">
-        <div className="text-gray-600 font-medium text-sm">
-          {title}
-        </div>
+        <div className="text-gray-600 font-medium text-sm">{title}</div>
         <div className={`${iconBgColor} p-2 rounded-xl flex-shrink-0`}>
           <div className="text-white text-sm ">{icon}</div>
         </div>
       </div>
-      
+
       {/* Main count/value */}
       <div className="mb-3 flex justify-between">
         <div className="text-2xl font-bold text-gray-900 tracking-tight">
-          {typeof count === "number" ? count.toLocaleString() : count}
+          {typeof count === 'number' ? count.toLocaleString() : count}
         </div>
-         {href && (
-        <div className="flex justify-end">
-          <Link
-            href={href}
-            className="inline-flex items-center text-sm text-gray-500 hover:text-gray-600 transition-colors duration-150"
-          >
-            <span className="mr-1">View</span>
-            <GoArrowUpRight className="h-3 w-3" />
-          </Link>
-        </div>
-      )}
+        {href && (
+          <div className="flex justify-end">
+            <Link
+              href={href}
+              className="inline-flex items-center text-sm text-gray-500 hover:text-gray-600 transition-colors duration-150"
+            >
+              <span className="mr-1">View</span>
+              <GoArrowUpRight className="h-3 w-3" />
+            </Link>
+          </div>
+        )}
       </div>
-      
+
       {/* Professional View Link Options - Choose one */}
-      
+
       {/* Option 1: Subtle button style */}
       {/* {href && (
         <Link
@@ -87,7 +86,6 @@ const MetricCard: React.FC<MetricCardProps> = ({
           <GoArrowUpRight className="ml-1 h-3 w-3 opacity-60 group-hover:opacity-100 transition-opacity" />
         </Link>
       )} */}
-     
 
       {/* Option 4: Badge style 
       {href && (
@@ -113,7 +111,6 @@ const MetricCard: React.FC<MetricCardProps> = ({
           </Link>
         </div>
       )} */}
-     
     </div>
   );
 };

@@ -1,21 +1,22 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FiEdit } from "react-icons/fi";
-import { IoCloseOutline } from "react-icons/io5";
-import Select from "react-select";
-import { z } from "zod";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiEdit } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
+import Select from 'react-select';
+import { z } from 'zod';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
 
-import { SemesterType } from "@/definitions/curiculum";
-import { SemesterNameOptions, SemesterStatusOptions } from "@/lib/constants";
-import { updateSemesterSchema } from "@/schemas/curriculum/semesters";
-import { useUpdateSemesterMutation } from "@/store/services/curriculum/semestersService";
-import IconButton from "@/components/common/IconButton";
-import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
-
+import CreateAndUpdateButton from '@/components/common/CreateAndUpdateButton';
+import ModalBottomButton from '@/components/common/StickyModalFooterButtons';
+import { SemesterType } from '@/definitions/curiculum';
+import { SemesterStatusOptions } from '@/lib/constants';
+import { updateSemesterSchema } from '@/schemas/curriculum/semesters';
+import { useGetAcademicYearsQuery } from '@/store/services/curriculum/academicYearsService';
+import { useUpdateSemesterMutation } from '@/store/services/curriculum/semestersService';
+import { AcademicYearType } from '../acadmicyYears/types';
 
 type SelectOption = {
   value: string | number;
@@ -32,15 +33,19 @@ type EditSemesterProps = {
 const EditSemester = ({ data, refetchData }: EditSemesterProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
-  const [updateSemester, { isLoading: isUpdating }] = useUpdateSemesterMutation();
-
+  const [updateSemester, { isLoading: isUpdating }] =
+    useUpdateSemesterMutation();
+  const { data: academicYearsData } = useGetAcademicYearsQuery(
+    {},
+    { refetchOnMountOrArgChange: true },
+  );
   const formatDateForInput = (dateString: string) => {
-    if (!dateString) return "";
+    if (!dateString) return '';
     const date = new Date(dateString);
-    return date.toISOString().split('T')[0]; 
+    return date.toISOString().split('T')[0];
   };
 
   const {
@@ -56,7 +61,8 @@ const EditSemester = ({ data, refetchData }: EditSemesterProps) => {
       start_date: formatDateForInput(data.start_date),
       end_date: formatDateForInput(data.end_date),
       status: data.status,
-    }
+      academic_year: data?.academic_year?.id ?? undefined,
+    },
   });
 
   useEffect(() => {
@@ -66,12 +72,13 @@ const EditSemester = ({ data, refetchData }: EditSemesterProps) => {
         start_date: formatDateForInput(data.start_date),
         end_date: formatDateForInput(data.end_date),
         status: data.status,
+        academic_year: data.academic_year.id,
       });
     }
   }, [data, reset]);
 
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -79,48 +86,48 @@ const EditSemester = ({ data, refetchData }: EditSemesterProps) => {
   };
 
   const handleOpenModal = () => setIsOpen(true);
-  
+
   const handleCloseSuccessModal = () => {
     setShowSuccessModal(false);
     setIsError(false);
     handleCloseModal();
   };
-  
-  const handleSemesterNameChange = (selected: SelectOption | null) => {
+
+  const handleAcademicYearChange = (selected: SelectOption | null) => {
     if (selected) {
-      setValue("name", String(selected.value));
+      setValue('academic_year', Number(selected.value));
     }
   };
-  
+
   const handleStatusChange = (selected: SelectOption | null) => {
     if (selected) {
-      setValue("status", String(selected.value));
+      setValue('status', String(selected.value));
     }
   };
 
   const onSubmit = async (formData: FormValues) => {
-    console.log("submitting form data", formData);
+    console.log('submitting form data', formData);
 
     try {
       const response = await updateSemester({
         id: data.id,
         data: formData,
       }).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Semester updated successfully!");
+      setSuccessMessage('Semester updated successfully!');
       setShowSuccessModal(true);
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(`Failed to update Semester: ${errorData.error}`);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occurred. Please try again.");
+        setSuccessMessage('Unexpected error occurred. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -128,15 +135,24 @@ const EditSemester = ({ data, refetchData }: EditSemesterProps) => {
 
   return (
     <>
-     <IconButton
-             onClick={handleOpenModal}
-             title="Edit"
-             icon={<FiEdit className="w-4 h-4" />}
-             className="group relative p-2 bg-amber-100 text-amber-500 hover:bg-amber-600 hover:text-white focus:ring-amber-500"
-             tooltip="Edit"
-           />
+      <CreateAndUpdateButton
+        onClick={handleOpenModal}
+        // title="Edit"
+        label="Edit"
+        icon={<FiEdit className="w-4 h-4 text-amber-500" />}
+        className="
+       px-4 py-2 w-full 
+       border-none 
+       focus:outline-none 
+       focus:border-transparent 
+       focus:ring-0 
+       active:outline-none 
+       active:ring-0
+       hover:bg-gray-100
+     "
+      />
 
-            {isOpen && (
+      {isOpen && (
         <div
           className="relative z-9999 animate-fadeIn"
           aria-labelledby="modal-title"
@@ -149,7 +165,7 @@ const EditSemester = ({ data, refetchData }: EditSemesterProps) => {
             aria-hidden="true"
           ></div>
 
-         <div
+          <div
             className="fixed inset-0 min-h-full z-100 w-screen flex flex-col text-center md:items-center
            justify-center overflow-y-auto p-2 md:p-3"
           >
@@ -172,98 +188,118 @@ const EditSemester = ({ data, refetchData }: EditSemesterProps) => {
                   </div>
                 </div>
 
-               <form
+                <form
                   onSubmit={handleSubmit(onSubmit)}
                   className="space-y-4 mt-2 p-4 md:p-4 lg:p-4 "
                 >
-                 
+                  <div>
                     <div>
-                      <div>
-                        <label className="block space-x-1 text-sm font-medium mb-2">
-                          Semester<span className="text-red-500">*</span>
-                        </label>
-                        <Select
-                          options={SemesterNameOptions}
-                          defaultValue={SemesterNameOptions.find(option => option.value === data.name)}
-                          menuPortalTarget={document.body}
-                          styles={{
-                            menuPortal: (base) => ({
-                              ...base,
-                              zIndex: 9999,
-                            }),
-                            control: (base) => ({
-                              ...base,
-                              minHeight: "20px",
-                              minWidth: "200px",
-                              borderColor: "#d1d5db",
-                              boxShadow: "none",
-                              "&:hover": {
-                                borderColor: "#9ca3af",
-                              },
-                              "&:focus-within": {
-                                borderColor: "#9ca3af",
-                                boxShadow: "none",
-                              },
-                            }),
-                          }}
-                          onChange={handleSemesterNameChange}
-                        />
-
-                        {errors.name && (
-                          <p className="text-red-500 text-sm mt-1">
-                            {errors.name.message}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  
-                  
-                  
-               
-                        <div>
-
                       <label className="block space-x-1 text-sm font-medium mb-2">
-                        Start Date<span className="text-red-500">*</span>
+                        Name<span className="text-red-500">*</span>
                       </label>
                       <input
-                        type="date"
+                        type="text"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
-                        defaultValue={formatDateForInput(data.start_date)}
-                        {...register("start_date")}
+                        placeholder="e.g. Semester One etc"
+                        {...register('name')}
                       />
-                      {errors.start_date && (
+                      {errors.name && (
                         <p className="text-red-500 text-sm mt-1">
-                          {errors.start_date.message}
+                          {errors.name.message}
                         </p>
                       )}
-                        </div>
-                        <div>
-
+                    </div>
+                  </div>
+                  <div>
+                    <div>
                       <label className="block space-x-1 text-sm font-medium mb-2">
-                        End Date<span className="text-red-500">*</span>
+                        Semester<span className="text-red-500">*</span>
                       </label>
-                      <input
-                        type="date"
-                        className="w-full  py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
-                        defaultValue={formatDateForInput(data.end_date)}
-                        {...register("end_date")}
+                      <Select
+                        options={academicYearsData?.map(
+                          (item: AcademicYearType) => ({
+                            value: item.id,
+                            label: item.name,
+                          }),
+                        )}
+                        defaultValue={{
+                          label: data.academic_year.name,
+                          value: data.academic_year.id,
+                        }}
+                        menuPortalTarget={document.body}
+                        styles={{
+                          menuPortal: (base) => ({
+                            ...base,
+                            zIndex: 9999,
+                          }),
+                          control: (base) => ({
+                            ...base,
+                            minHeight: '20px',
+                            minWidth: '200px',
+                            borderColor: '#d1d5db',
+                            boxShadow: 'none',
+                            '&:hover': {
+                              borderColor: '#9ca3af',
+                            },
+                            '&:focus-within': {
+                              borderColor: '#9ca3af',
+                              boxShadow: 'none',
+                            },
+                          }),
+                        }}
+                        onChange={handleAcademicYearChange}
                       />
-                      {errors.end_date && (
-                        <p className="flex flex-col text-red-500 text-sm mt-1">
-                          {errors.end_date.message}
+
+                      {errors.academic_year && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.academic_year.message}
                         </p>
                       )}
-                        </div>
-                    
-                
-                  
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block space-x-1 text-sm font-medium mb-2">
+                      Start Date<span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="date"
+                      className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
+                      defaultValue={formatDateForInput(data.start_date)}
+                      {...register('start_date')}
+                    />
+                    {errors.start_date && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.start_date.message}
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <label className="block space-x-1 text-sm font-medium mb-2">
+                      End Date<span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="date"
+                      className="w-full  py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
+                      defaultValue={formatDateForInput(data.end_date)}
+                      {...register('end_date')}
+                    />
+                    {errors.end_date && (
+                      <p className="flex flex-col text-red-500 text-sm mt-1">
+                        {errors.end_date.message}
+                      </p>
+                    )}
+                  </div>
+
                   <div>
                     <label className="block space-x-1 text-sm font-medium mb-2">
                       Status<span className="text-red-500">*</span>
                     </label>
                     <Select
                       options={SemesterStatusOptions}
-                      defaultValue={SemesterStatusOptions.find(option => option.value === data.status)}
+                      defaultValue={SemesterStatusOptions.find(
+                        (option) => option.value === data.status,
+                      )}
                       onChange={handleStatusChange}
                       menuPortalTarget={document.body}
                       styles={{
@@ -273,15 +309,15 @@ const EditSemester = ({ data, refetchData }: EditSemesterProps) => {
                         }),
                         control: (base) => ({
                           ...base,
-                          minHeight: "22px",
-                          borderColor: "#d1d5db",
-                          boxShadow: "none",
-                          "&:hover": {
-                            borderColor: "#9ca3af",
+                          minHeight: '22px',
+                          borderColor: '#d1d5db',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: '#9ca3af',
                           },
-                          "&:focus-within": {
-                            borderColor: "#9ca3af",
-                            boxShadow: "none",
+                          '&:focus-within': {
+                            borderColor: '#9ca3af',
+                            boxShadow: 'none',
                           },
                         }),
                       }}
@@ -294,10 +330,10 @@ const EditSemester = ({ data, refetchData }: EditSemesterProps) => {
                   </div>
 
                   <ModalBottomButton
-                                     onCancel={handleCloseModal}
-                                     isSubmitting={isSubmitting}
-                                     isProcessing={isUpdating}
-                                   />
+                    onCancel={handleCloseModal}
+                    isSubmitting={isSubmitting}
+                    isProcessing={isUpdating}
+                  />
                 </form>
               </>
             </div>

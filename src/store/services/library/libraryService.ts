@@ -1,19 +1,17 @@
+import { apiSlice } from '../../api/apiSlice';
 
-import { apiSlice } from "../../api/apiSlice";
-
-interface GetBooksInterface{
-
-  page?:number;
-  page_size?:number;
-  application_no?:string;
-  phone_no?:string;
-  intake?:string;
-  status?:string;
-  search?:string;
+interface GetBooksInterface {
+  page?: number;
+  page_size?: number;
+  application_no?: string;
+  phone_no?: string;
+  intake?: string;
+  status?: string;
+  search?: string;
 }
 export const libraryApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-  getBooks: builder.query({
+    getBooks: builder.query({
       query: ({
         page,
         page_size,
@@ -21,9 +19,12 @@ export const libraryApi = apiSlice.injectEndpoints({
         application_no,
         intake,
         phone_no,
-        search
+        search,
       }: GetBooksInterface = {}) => {
-        const queryParams: Record<string, string | number | boolean | undefined> = {};
+        const queryParams: Record<
+          string,
+          string | number | boolean | undefined
+        > = {};
         if (page) queryParams.page = page;
         if (page_size) queryParams.page_size = page_size;
         if (application_no) queryParams.application_no = application_no;
@@ -31,8 +32,8 @@ export const libraryApi = apiSlice.injectEndpoints({
         if (intake) queryParams.intake = intake;
         if (phone_no) queryParams.phone_no = phone_no;
         if (search) queryParams.search = search;
-        console.log("queryParams====",queryParams)
-  
+        console.log('queryParams====', queryParams);
+
         return {
           url: `library/books/list/`,
           method: 'GET',
@@ -40,39 +41,36 @@ export const libraryApi = apiSlice.injectEndpoints({
         };
       },
     }),
-   
+
     createBook: builder.mutation({
       query: (data) => ({
         url: `library/books/create/`,
-        method: "POST",
+        method: 'POST',
         body: data,
-        
       }),
     }),
-    
+
     updateBook: builder.mutation({
-      query: ({id, data}) => ({
+      query: ({ id, data }) => ({
         url: `library/books/update/${id}/`,
-        method: "PATCH",
+        method: 'PATCH',
         body: data,
-        
       }),
     }),
-     uploadBooks: builder.mutation({
+    uploadBooks: builder.mutation({
       query: (data) => ({
         url: `library/books/upload/`,
-        method: "POST",
+        method: 'POST',
         body: data,
-        
       }),
     }),
     getBookDetails: builder.query({
       query: (id) => ({
         url: `library/books/details/${id}/`,
-        method: "GET",
+        method: 'GET',
       }),
     }),
-    
+
     getMembers: builder.query({
       query: ({
         page,
@@ -80,17 +78,20 @@ export const libraryApi = apiSlice.injectEndpoints({
         status,
         application_no,
         intake,
-        phone_no
+        phone_no,
       }: GetBooksInterface = {}) => {
-        const queryParams: Record<string, string | number | boolean | undefined> = {};
+        const queryParams: Record<
+          string,
+          string | number | boolean | undefined
+        > = {};
         if (page) queryParams.page = page;
         if (page_size) queryParams.page_size = page_size;
         if (application_no) queryParams.application_no = application_no;
         if (status) queryParams.status = status;
         if (intake) queryParams.intake = intake;
         if (phone_no) queryParams.phone_no = phone_no;
-        console.log("queryParams====",queryParams)
-  
+        console.log('queryParams====', queryParams);
+
         return {
           url: `library/members/list/`,
           method: 'GET',
@@ -98,44 +99,41 @@ export const libraryApi = apiSlice.injectEndpoints({
         };
       },
     }),
-   createMember: builder.mutation({
+    createMember: builder.mutation({
       query: (data) => ({
         url: `library/members/create/`,
-        method: "POST",
+        method: 'POST',
         body: data,
-        
       }),
     }),
-   updateMember: builder.mutation({
-      query: ({id, data}) => ({
+    updateMember: builder.mutation({
+      query: ({ id, data }) => ({
         url: `library/members/update/${id}/`,
-        method: "PATCH",
+        method: 'PATCH',
         body: data,
-        
       }),
     }),
-   deactivateMember: builder.mutation({
+    deactivateMember: builder.mutation({
       query: (id) => ({
         url: `library/members/deactivate/${id}/`,
-        method: "PATCH",      
+        method: 'PATCH',
       }),
     }),
-   activateMember: builder.mutation({
+    activateMember: builder.mutation({
       query: (id) => ({
         url: `library/members/activate/${id}/`,
-        method: "PATCH",      
-      }),
-    }),
-   
-   getMemberDetails: builder.query({
-      query: (id) => ({
-        url: `library/members/details/${id}/`,
-        method: "GET",
-        
+        method: 'PATCH',
       }),
     }),
 
-     getBorrowedBooks: builder.query({
+    getMemberDetails: builder.query({
+      query: (id) => ({
+        url: `library/members/details/${id}/`,
+        method: 'GET',
+      }),
+    }),
+
+    getBorrowedBooks: builder.query({
       query: ({
         page,
         page_size,
@@ -143,9 +141,12 @@ export const libraryApi = apiSlice.injectEndpoints({
         application_no,
         intake,
         phone_no,
-        search
+        search,
       }: GetBooksInterface = {}) => {
-        const queryParams: Record<string, string | number | boolean | undefined> = {};
+        const queryParams: Record<
+          string,
+          string | number | boolean | undefined
+        > = {};
         if (page) queryParams.page = page;
         if (page_size) queryParams.page_size = page_size;
         if (application_no) queryParams.application_no = application_no;
@@ -153,8 +154,8 @@ export const libraryApi = apiSlice.injectEndpoints({
         if (intake) queryParams.intake = intake;
         if (phone_no) queryParams.phone_no = phone_no;
         if (search) queryParams.search = search;
-        console.log("queryParams====",queryParams)
-  
+        console.log('queryParams====', queryParams);
+
         return {
           url: `library/borrowed-books/list/`,
           method: 'GET',
@@ -166,20 +167,17 @@ export const libraryApi = apiSlice.injectEndpoints({
     issueBook: builder.mutation({
       query: (data) => ({
         url: `library/borrowed-books/create/`,
-        method: "POST",
+        method: 'POST',
         body: data,
-        
       }),
     }),
-   updateIssuedBook: builder.mutation({
-      query: ({id, data}) => ({
+    updateIssuedBook: builder.mutation({
+      query: ({ id, data }) => ({
         url: `library/borrowed-books/update/${id}/`,
-        method: "PATCH",
-        body: data
-        
+        method: 'PATCH',
+        body: data,
       }),
     }),
-  
 
     getBorrowedBooksFines: builder.query({
       query: ({
@@ -189,9 +187,12 @@ export const libraryApi = apiSlice.injectEndpoints({
         application_no,
         intake,
         phone_no,
-        search
+        search,
       }: GetBooksInterface = {}) => {
-        const queryParams: Record<string, string | number | boolean | undefined> = {};
+        const queryParams: Record<
+          string,
+          string | number | boolean | undefined
+        > = {};
         if (page) queryParams.page = page;
         if (page_size) queryParams.page_size = page_size;
         if (application_no) queryParams.application_no = application_no;
@@ -199,8 +200,8 @@ export const libraryApi = apiSlice.injectEndpoints({
         if (intake) queryParams.intake = intake;
         if (phone_no) queryParams.phone_no = phone_no;
         if (search) queryParams.search = search;
-        console.log("queryParams====",queryParams)
-  
+        console.log('queryParams====', queryParams);
+
         return {
           url: `library/borrowed-books-fines/list/`,
           method: 'GET',
@@ -212,27 +213,27 @@ export const libraryApi = apiSlice.injectEndpoints({
       query: (data) => ({
         url: `library/fine-payment-request/`,
         method: 'POST',
-        body:data,
+        body: data,
       }),
     }),
   }),
 });
 
 export const {
-useGetBorrowedBooksQuery,
-useGetBorrowedBooksFinesQuery,
-useFinePaymentRequestMutation,
-useCreateBookMutation,
-useGetBooksQuery,
-useGetBookDetailsQuery,
-useGetMemberDetailsQuery,
-useGetMembersQuery,
-useUpdateBookMutation,
-useIssueBookMutation,
-useUpdateIssuedBookMutation,
-useCreateMemberMutation,
-useUpdateMemberMutation,
-useDeactivateMemberMutation,
-useActivateMemberMutation,
-useUploadBooksMutation
+  useGetBorrowedBooksQuery,
+  useGetBorrowedBooksFinesQuery,
+  useFinePaymentRequestMutation,
+  useCreateBookMutation,
+  useGetBooksQuery,
+  useGetBookDetailsQuery,
+  useGetMemberDetailsQuery,
+  useGetMembersQuery,
+  useUpdateBookMutation,
+  useIssueBookMutation,
+  useUpdateIssuedBookMutation,
+  useCreateMemberMutation,
+  useUpdateMemberMutation,
+  useDeactivateMemberMutation,
+  useActivateMemberMutation,
+  useUploadBooksMutation,
 } = libraryApi;

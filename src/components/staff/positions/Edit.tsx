@@ -1,19 +1,20 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FiEdit } from "react-icons/fi";
-import { IoCloseOutline } from "react-icons/io5";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiEdit } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
 
-import { Position } from "@/definitions/staff";
+import CreateAndUpdateButton from '@/components/common/CreateAndUpdateButton';
+import ModalBottomButton from '@/components/common/StickyModalFooterButtons';
+import { Position } from '@/definitions/staff';
 import {
   createPositionFormData,
   createPositionSchema,
-} from "@/schemas/staff/main";
-import { useUpdatePositionMutation } from "@/store/services/staff/staffService";
+} from '@/schemas/staff/main';
+import { useUpdatePositionMutation } from '@/store/services/staff/staffService';
 
 const EditPosition = ({
   refetchData,
@@ -24,10 +25,10 @@ const EditPosition = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
-  const [updatePosition, { isLoading: isCreating }] =
+  const [updatePosition, { isLoading: isUpdating }] =
     useUpdatePositionMutation();
 
   const {
@@ -38,12 +39,12 @@ const EditPosition = ({
   } = useForm<createPositionFormData>({
     resolver: zodResolver(createPositionSchema),
     defaultValues: {
-      name: data.name ?? "",
+      name: data.name ?? '',
     },
   });
 
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -60,29 +61,29 @@ const EditPosition = ({
   };
 
   const onSubmit = async (formData: createPositionFormData) => {
-    console.log("submitting form data", formData);
+    console.log('submitting form data', formData);
 
     try {
       const response = await updatePosition({
         id: data.id,
         data: formData,
       }).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Position Updated successfully!");
+      setSuccessMessage('Position Updated successfully!');
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(`Failed to Update position: ${errorData.error}`);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occurred. Please try again.");
+        setSuccessMessage('Unexpected error occurred. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -90,16 +91,22 @@ const EditPosition = ({
 
   return (
     <>
-      <button
+      <CreateAndUpdateButton
         onClick={handleOpenModal}
-        title="Edit Structure"
-        className="group relative p-2 bg-amber-100 text-amber-500 rounded-md hover:bg-amber-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md"
-      >
-        <FiEdit className="w-4 h-4" />
-        <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-          Edit Position
-        </span>
-      </button>
+        // title="Edit"
+        label="Edit"
+        icon={<FiEdit className="w-4 h-4 text-amber-500" />}
+        className="
+    px-4 py-2 w-full 
+    border-none 
+    focus:outline-none 
+    focus:border-transparent 
+    focus:ring-0 
+    active:outline-none 
+    active:ring-0
+    hover:bg-gray-100
+  "
+      />
 
       {isOpen && (
         <div
@@ -150,7 +157,7 @@ const EditPosition = ({
                         type="text"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                         placeholder="e.g. H.O.D , Accountant"
-                        {...register("name")}
+                        {...register('name')}
                       />
                       {errors.name && (
                         <p className="text-red-500 text-sm mt-1">
@@ -160,29 +167,11 @@ const EditPosition = ({
                     </div>
                   </div>
 
-                  <div className="sticky bottom-0 bg-white z-40 flex  space-x-3 gap-4 md:justify-end items-center py-3">
-                    <button
-                      type="button"
-                      onClick={handleCloseModal}
-                      className="border border-gray-300 bg-white shadow-sm text-gray-700 py-2 text-sm px-4 rounded-md w-full min-w-[100px] md:w-auto hover:bg-gray-50"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting || isCreating}
-                      className="bg-primary-600 text-white py-2 hover:bg-blue-700 text-sm px-3 md:px-4 rounded-md w-full min-w-[100px] md:w-auto"
-                    >
-                      {isSubmitting || isCreating ? (
-                        <span className="flex items-center">
-                          <SubmitSpinner />
-                          <span>Add...</span>
-                        </span>
-                      ) : (
-                        <span>Add</span>
-                      )}
-                    </button>
-                  </div>
+                  <ModalBottomButton
+                    onCancel={handleCloseModal}
+                    isSubmitting={isSubmitting}
+                    isProcessing={isUpdating}
+                  />
                 </form>
               </>
             </div>

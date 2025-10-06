@@ -1,14 +1,17 @@
-"use client";
-import { ApplicationType } from "@/definitions/admissions";
-import { LuMail, LuPhone, LuUser } from "react-icons/lu";
-import EditStudentApplicationPersonalInfo from "../Edit/EditPersonalInfo";
+'use client';
+import { ApplicationType } from '@/definitions/admissions';
+import { LuMail, LuPhone, LuUser } from 'react-icons/lu';
+import EditStudentApplicationPersonalInfo from '../Edit/EditPersonalInfo';
 
 interface PersonalInfoCardProps {
   applicationDetails: ApplicationType;
   refetchData: () => void;
 }
 
-const PersonalInfoCard = ({ applicationDetails, refetchData }: PersonalInfoCardProps) => {
+const PersonalInfoCard = ({
+  applicationDetails,
+  refetchData,
+}: PersonalInfoCardProps) => {
   return (
     <div
       className="space-y-4 p-5 border 
@@ -16,16 +19,18 @@ const PersonalInfoCard = ({ applicationDetails, refetchData }: PersonalInfoCardP
     >
       <div>
         <div className="flex md:tems-center md:flex-row flex-col md:gap-0 gap-5 md:justify-between">
-
-        <div className="flex items-center gap-2 border-b pb-3">
-          <LuUser className="text-blue-600" size={20} />
-          <h3 className="md:text-lg text-sm font-semibold text-gray-800">
-            Personal Information
-          </h3>
-        </div>
-        <div className="flex items-center md:justify-normal justify-end ">
-        <EditStudentApplicationPersonalInfo data={applicationDetails} refetchData={refetchData} />
-        </div>
+          <div className="flex items-center gap-2 border-b pb-3">
+            <LuUser className="text-blue-600" size={20} />
+            <h3 className="md:text-lg text-sm font-semibold text-gray-800">
+              Personal Information
+            </h3>
+          </div>
+          <div className="flex items-center md:justify-normal justify-end ">
+            <EditStudentApplicationPersonalInfo
+              data={applicationDetails}
+              refetchData={refetchData}
+            />
+          </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-2 mb-2">
           <div className="space-y-3 p-3 rounded-xl border ">
@@ -82,7 +87,7 @@ const InfoRow = ({
 }) => (
   <div className="flex justify-between">
     <span className="text-gray-600 font-medium">{label}:</span>
-    <span className="text-gray-800">{value || "Not provided"}</span>
+    <span className="text-gray-800">{value || 'Not provided'}</span>
   </div>
 );
 

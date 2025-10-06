@@ -1,7 +1,6 @@
-import { IoCheckmarkCircleOutline, IoCloseOutline } from "react-icons/io5";
-import { PiSpinnerGap } from "react-icons/pi";
-import { FaExclamation } from "react-icons/fa6";
-
+import { IoCheckmarkCircleOutline, IoCloseOutline } from 'react-icons/io5';
+import { PiSpinnerGap } from 'react-icons/pi';
+import { FaExclamation } from 'react-icons/fa6';
 
 interface ActionModalProps {
   isOpen: boolean;
@@ -12,7 +11,7 @@ interface ActionModalProps {
   isDeleting?: boolean;
   title?: string;
   actionText?: string;
-  actionType?: "delete" | "submit" | "create" | "update" | "cancel" ; 
+  actionType?: 'delete' | 'submit' | 'create' | 'update' | 'cancel';
 }
 
 const ActionModal = ({
@@ -24,10 +23,10 @@ const ActionModal = ({
   isDeleting,
   title,
   actionText,
-  actionType = "delete",
+  actionType = 'delete',
 }: ActionModalProps) => {
   if (!isOpen) return null;
-  
+
   return (
     <>
       <div
@@ -45,39 +44,48 @@ const ActionModal = ({
           <div className="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
             <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all w-full max-w-lg p-6">
               <div className="flex items-center mb-4">
-                <div className={`flex-shrink-0 rounded-full p-2 mr-3 ${
-                  actionType === "delete" ? "bg-red-100" : 
-                  actionType === "cancel" ? "bg-red-100" :
-                  actionType === "update" ? "bg-yellow-100" : 
-                  "bg-green-100"
-                }`}>
-                  {actionType === "delete" || actionType === "cancel" ? (
+                <div
+                  className={`flex-shrink-0 rounded-full p-2 mr-3 ${
+                    actionType === 'delete'
+                      ? 'bg-red-100'
+                      : actionType === 'cancel'
+                        ? 'bg-red-100'
+                        : actionType === 'update'
+                          ? 'bg-yellow-100'
+                          : 'bg-green-100'
+                  }`}
+                >
+                  {actionType === 'delete' || actionType === 'cancel' ? (
                     <FaExclamation className="h-6 w-6 text-red-600" />
-                  ) : actionType === "update" ? (
+                  ) : actionType === 'update' ? (
                     <IoCheckmarkCircleOutline className="h-6 w-6 text-yellow-600" />
                   ) : (
                     <IoCheckmarkCircleOutline className="h-6 w-6 text-primary" />
                   )}
                 </div>
                 <h3 className="text-lg font-medium text-gray-900">
-                  {title || (actionType === "delete" ? "Confirm Deletion" : "Confirm Action")}
+                  {title ||
+                    (actionType === 'delete'
+                      ? 'Confirm Deletion'
+                      : 'Confirm Action')}
                 </h3>
 
                 <div
                   className="absolute top-4 right-4 cursor-pointer"
                   onClick={onClose}
                 >
-                  <IoCloseOutline size={20} className=" text-gray-500 hover:text-gray-500 transition-colors" />
+                  <IoCloseOutline
+                    size={20}
+                    className=" text-gray-500 hover:text-gray-500 transition-colors"
+                  />
                 </div>
               </div>
 
               <div className="bg-gray-50 px-6 py-4 space-y-4 rounded-lg mb-5">
-                <p className="text-sm text-gray-900">
-                  {confirmationMessage}
-                </p>
-                  <span className="font-medium text-gray-600 block mt-1">
-                    {deleteMessage}
-                  </span>
+                <p className="text-sm text-gray-900">{confirmationMessage}</p>
+                <span className="font-medium text-gray-600 block mt-1">
+                  {deleteMessage}
+                </span>
               </div>
 
               <div className="flex justify-between  space-x-3">
@@ -94,31 +102,41 @@ const ActionModal = ({
                   type="button"
                   className={`px-4 py-2 border border-transparent min-w-[180px] rounded-md text-sm font-medium text-white
                     transition-colors disabled:opacity-75 ${
-                      actionType === "delete" || actionType === "cancel" ? "bg-red-600 hover:bg-red-700" : 
-                      actionType === "update" ? "bg-yellow-600 hover:bg-yellow-700" : 
-                      "bg-primary hover:bg-primary-700"
+                      actionType === 'delete' || actionType === 'cancel'
+                        ? 'bg-red-600 hover:bg-red-700'
+                        : actionType === 'update'
+                          ? 'bg-yellow-600 hover:bg-yellow-700'
+                          : 'bg-primary hover:bg-primary-700'
                     }`}
                 >
                   {isDeleting ? (
                     <span className="flex items-center">
                       <PiSpinnerGap className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" />
-                      {actionText ? `${actionText}ing...` : 
-                      
-                        actionType === "delete" ? "Deleting..." :
-                        actionType === "cancel" ? "Cancelling..." :
-                        actionType === "submit" ? "Submitting..." :
-                        actionType === "create" ? "Creating..." :
-                        "Updating..."}
+                      {actionText
+                        ? `${actionText}ing...`
+                        : actionType === 'delete'
+                          ? 'Deleting...'
+                          : actionType === 'cancel'
+                            ? 'Cancelling...'
+                            : actionType === 'submit'
+                              ? 'Submitting...'
+                              : actionType === 'create'
+                                ? 'Creating...'
+                                : 'Updating...'}
                     </span>
                   ) : (
-                    actionText || (
-                      actionType === 'cancel' ? 'Cancel' 
-                      : actionType === 'submit' ? 'Submit'
-                       : actionType === 'create' ? 'Create' 
-                       : actionType === 'update' ? 'Update' 
-                       : actionType === 'delete' ? 'Delete'
-                       : "Save"  
-                    )
+                    actionText ||
+                    (actionType === 'cancel'
+                      ? 'Cancel'
+                      : actionType === 'submit'
+                        ? 'Submit'
+                        : actionType === 'create'
+                          ? 'Create'
+                          : actionType === 'update'
+                            ? 'Update'
+                            : actionType === 'delete'
+                              ? 'Delete'
+                              : 'Save')
                   )}
                 </button>
               </div>

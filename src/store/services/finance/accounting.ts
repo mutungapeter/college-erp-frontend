@@ -1,11 +1,10 @@
-import { apiSlice } from "../../api/apiSlice";
+import { apiSlice } from '../../api/apiSlice';
 
 interface BaseAccountsInterface {
   account_type?: string;
   page?: number;
   page_size?: number;
 }
-
 
 interface TransactionInterface {
   account?: string;
@@ -21,69 +20,71 @@ interface CashflowReportInterface {
 }
 interface TrialBalanceInterface {
   as_of_date?: string;
-  
 }
 interface BalanceSheetReportInterface {
   as_of_date?: string;
-  
 }
 export const accountingApis = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     createAccountType: builder.mutation({
       query: (data) => ({
         url: `accounts/account-types/create/`,
-        method: "POST",
+        method: 'POST',
         body: data,
       }),
     }),
     newAccount: builder.mutation({
       query: (data) => ({
         url: `accounts/create/`,
-        method: "POST",
+        method: 'POST',
         body: data,
       }),
     }),
-    
+
     updateFinAccount: builder.mutation({
-      query: ({id, data}) => ({
+      query: ({ id, data }) => ({
         url: `accounts/${id}/`,
-        method: "PATCH",
+        method: 'PATCH',
         body: data,
       }),
     }),
     deleteFinAccount: builder.mutation({
       query: (id) => ({
         url: `accounts/${id}/`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
     }),
     recoverFinAccount: builder.mutation({
       query: (id) => ({
         url: `accounts/${id}/unarchive/`,
-        method: "PATCH",
+        method: 'PATCH',
       }),
     }),
     deleteFinAccountType: builder.mutation({
       query: (id) => ({
         url: `accounts/account-types/${id}/`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
     }),
     recoverFinAccountType: builder.mutation({
       query: (id) => ({
         url: `accounts/account-types/${id}/unarchive/`,
-        method: "PATCH",
+        method: 'PATCH',
       }),
     }),
     updateAccountType: builder.mutation({
-      query: ({id, data}) => ({
+      query: ({ id, data }) => ({
         url: `accounts/account-types/${id}/`,
-        method: "PATCH",
+        method: 'PATCH',
         body: data,
       }),
     }),
     getAccounts: builder.query({
-      query: ({ account_type, page, page_size }: BaseAccountsInterface = {}) => {
+      query: ({
+        account_type,
+        page,
+        page_size,
+      }: BaseAccountsInterface = {}) => {
         const queryParams: Record<
           string,
           string | number | boolean | undefined
@@ -95,13 +96,17 @@ export const accountingApis = apiSlice.injectEndpoints({
         // console.log("query made");
         return {
           url: `accounts/`,
-          method: "GET",
+          method: 'GET',
           params: queryParams,
         };
       },
     }),
     getArchivedAccounts: builder.query({
-      query: ({ account_type, page, page_size }: BaseAccountsInterface = {}) => {
+      query: ({
+        account_type,
+        page,
+        page_size,
+      }: BaseAccountsInterface = {}) => {
         const queryParams: Record<
           string,
           string | number | boolean | undefined
@@ -113,13 +118,17 @@ export const accountingApis = apiSlice.injectEndpoints({
         // console.log("query made");
         return {
           url: `accounts/archived/`,
-          method: "GET",
+          method: 'GET',
           params: queryParams,
         };
       },
     }),
     getAccountTypes: builder.query({
-      query: ({ account_type, page, page_size }: BaseAccountsInterface = {}) => {
+      query: ({
+        account_type,
+        page,
+        page_size,
+      }: BaseAccountsInterface = {}) => {
         const queryParams: Record<
           string,
           string | number | boolean | undefined
@@ -131,13 +140,17 @@ export const accountingApis = apiSlice.injectEndpoints({
         // console.log("query made");
         return {
           url: `accounts/account-types/`,
-          method: "GET",
+          method: 'GET',
           params: queryParams,
         };
       },
     }),
     getArchievedAccountTypes: builder.query({
-      query: ({ account_type, page, page_size }: BaseAccountsInterface = {}) => {
+      query: ({
+        account_type,
+        page,
+        page_size,
+      }: BaseAccountsInterface = {}) => {
         const queryParams: Record<
           string,
           string | number | boolean | undefined
@@ -149,13 +162,18 @@ export const accountingApis = apiSlice.injectEndpoints({
         // console.log("query made");
         return {
           url: `accounts/account-types/archived/`,
-          method: "GET",
+          method: 'GET',
           params: queryParams,
         };
       },
     }),
     getTransactions: builder.query({
-      query: ({ account, reference, page, page_size }: TransactionInterface = {}) => {
+      query: ({
+        account,
+        reference,
+        page,
+        page_size,
+      }: TransactionInterface = {}) => {
         const queryParams: Record<
           string,
           string | number | boolean | undefined
@@ -168,13 +186,18 @@ export const accountingApis = apiSlice.injectEndpoints({
         // console.log("query made");
         return {
           url: `accounts/transactions/`,
-          method: "GET",
+          method: 'GET',
           params: queryParams,
         };
       },
     }),
     getCashflow: builder.query({
-      query: ({ start_date,end_date, page, page_size }: CashflowReportInterface = {}) => {
+      query: ({
+        start_date,
+        end_date,
+        page,
+        page_size,
+      }: CashflowReportInterface = {}) => {
         const queryParams: Record<
           string,
           string | number | boolean | undefined
@@ -187,13 +210,18 @@ export const accountingApis = apiSlice.injectEndpoints({
         // console.log("query made");
         return {
           url: `accounts/cashflow/`,
-          method: "GET",
+          method: 'GET',
           params: queryParams,
         };
       },
     }),
     getIncomeStatement: builder.query({
-      query: ({ start_date,end_date, page, page_size }: CashflowReportInterface = {}) => {
+      query: ({
+        start_date,
+        end_date,
+        page,
+        page_size,
+      }: CashflowReportInterface = {}) => {
         const queryParams: Record<
           string,
           string | number | boolean | undefined
@@ -206,7 +234,7 @@ export const accountingApis = apiSlice.injectEndpoints({
         // console.log("query made");
         return {
           url: `accounts/income-statement/`,
-          method: "GET",
+          method: 'GET',
           params: queryParams,
         };
       },
@@ -218,10 +246,10 @@ export const accountingApis = apiSlice.injectEndpoints({
           string | number | boolean | undefined
         > = {};
         if (as_of_date) queryParams.as_of_date = as_of_date;
-        
+
         return {
           url: `accounts/balance-sheet/`,
-          method: "GET",
+          method: 'GET',
           params: queryParams,
         };
       },
@@ -233,34 +261,33 @@ export const accountingApis = apiSlice.injectEndpoints({
           string | number | boolean | undefined
         > = {};
         if (as_of_date) queryParams.as_of_date = as_of_date;
-        
+
         return {
           url: `accounts/trial-balance/`,
-          method: "GET",
+          method: 'GET',
           params: queryParams,
         };
       },
     }),
- 
   }),
 });
 
 export const {
- useGetAccountsQuery,
- useNewAccountMutation,
- useUpdateFinAccountMutation,
- useCreateAccountTypeMutation,
- useUpdateAccountTypeMutation,
- useGetAccountTypesQuery,
- useDeleteFinAccountMutation,
- useDeleteFinAccountTypeMutation,
- useRecoverFinAccountMutation,
- useRecoverFinAccountTypeMutation,
- useGetArchivedAccountsQuery,
- useGetArchievedAccountTypesQuery,
- useGetTransactionsQuery,
- useGetCashflowQuery,
- useGetIncomeStatementQuery,
- useGetBalanceSheetQuery,
- useGetTrialBalanceQuery,
+  useGetAccountsQuery,
+  useNewAccountMutation,
+  useUpdateFinAccountMutation,
+  useCreateAccountTypeMutation,
+  useUpdateAccountTypeMutation,
+  useGetAccountTypesQuery,
+  useDeleteFinAccountMutation,
+  useDeleteFinAccountTypeMutation,
+  useRecoverFinAccountMutation,
+  useRecoverFinAccountTypeMutation,
+  useGetArchivedAccountsQuery,
+  useGetArchievedAccountTypesQuery,
+  useGetTransactionsQuery,
+  useGetCashflowQuery,
+  useGetIncomeStatementQuery,
+  useGetBalanceSheetQuery,
+  useGetTrialBalanceQuery,
 } = accountingApis;

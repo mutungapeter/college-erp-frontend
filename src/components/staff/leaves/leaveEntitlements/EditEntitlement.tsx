@@ -1,19 +1,19 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
 
-import { EntitlementType } from "@/definitions/leaves";
+import { EntitlementType } from '@/definitions/leaves';
 import {
   LeaveEntitlementFormData,
   LeaveEntitlementSchema,
-} from "@/schemas/staff/leaves";
-import { useUpdateLeaveEntitlementMutation } from "@/store/services/staff/leaveService";
-import { FiEdit } from "react-icons/fi";
-import { IoCloseOutline } from "react-icons/io5";
+} from '@/schemas/staff/leaves';
+import { useUpdateLeaveEntitlementMutation } from '@/store/services/staff/leaveService';
+import { FiEdit } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
 
 interface Props {
   refetchData: () => void;
@@ -23,7 +23,7 @@ const EditLeaveEntitlement = ({ refetchData, data }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
   const [updateLeaveEntitlement, { isLoading: isCreating }] =
@@ -42,7 +42,7 @@ const EditLeaveEntitlement = ({ refetchData, data }: Props) => {
     },
   });
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -56,16 +56,16 @@ const EditLeaveEntitlement = ({ refetchData, data }: Props) => {
   };
 
   const onSubmit = async (formData: LeaveEntitlementFormData) => {
-    console.log("submitting form data", formData);
+    console.log('submitting form data', formData);
 
     try {
       const response = await updateLeaveEntitlement({
         id: data.id,
         data: formData,
       }).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       const successMessage =
-        response.message || "Leave Entitlement Updated Successfully";
+        response.message || 'Leave Entitlement Updated Successfully';
 
       setIsError(false);
       setSuccessMessage(successMessage);
@@ -73,15 +73,15 @@ const EditLeaveEntitlement = ({ refetchData, data }: Props) => {
       //   reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(errorData.error);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occured. Please try again.");
+        setSuccessMessage('Unexpected error occured. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -182,7 +182,7 @@ const EditLeaveEntitlement = ({ refetchData, data }: Props) => {
                     <input
                       id="name"
                       type="number"
-                      {...register("year")}
+                      {...register('year')}
                       placeholder="e.g 2023"
                       className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                     />
@@ -200,7 +200,7 @@ const EditLeaveEntitlement = ({ refetchData, data }: Props) => {
                     <input
                       id="name"
                       type="number"
-                      {...register("total_days")}
+                      {...register('total_days')}
                       placeholder="Enter days"
                       className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                     />

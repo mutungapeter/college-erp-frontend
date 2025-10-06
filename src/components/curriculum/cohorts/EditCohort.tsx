@@ -1,28 +1,30 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { IoCloseOutline } from "react-icons/io5";
-import { z } from "zod";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { IoCloseOutline } from 'react-icons/io5';
+import { z } from 'zod';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import Select, { SingleValue } from "react-select";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import Select, { SingleValue } from 'react-select';
 
-import IconButton from "@/components/common/IconButton";
-import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
-import { IntakeType } from "@/definitions/admissions";
+import CreateAndUpdateButton from '@/components/common/CreateAndUpdateButton';
+import ModalBottomButton from '@/components/common/StickyModalFooterButtons';
+import { IntakeType } from '@/definitions/admissions';
 import {
   ProgrammeCohortType,
   ProgrammeType,
   SemesterType,
-} from "@/definitions/curiculum";
-import { CohortStatusOptions, YearsOptions } from "@/lib/constants";
-import { updateCohortSchema } from "@/schemas/curriculum/cohorts";
-import { useGetIntakesQuery } from "@/store/services/admissions/admissionsService";
-import { useUpdateCohortMutation } from "@/store/services/curriculum/cohortsService";
-import { useGetProgrammesQuery } from "@/store/services/curriculum/programmesService";
-import { useGetSemestersQuery } from "@/store/services/curriculum/semestersService";
-import { FiEdit } from "react-icons/fi";
+  StudyYearType,
+} from '@/definitions/curiculum';
+import { CohortStatusOptions } from '@/lib/constants';
+import { updateCohortSchema } from '@/schemas/curriculum/cohorts';
+import { useGetIntakesQuery } from '@/store/services/admissions/admissionsService';
+import { useGetStudyYearsQuery } from '@/store/services/curriculum/academicYearsService';
+import { useUpdateCohortMutation } from '@/store/services/curriculum/cohortsService';
+import { useGetProgrammesQuery } from '@/store/services/curriculum/programmesService';
+import { useGetSemestersQuery } from '@/store/services/curriculum/semestersService';
+import { FiEdit } from 'react-icons/fi';
 type SchoolOption = {
   value: string;
   label: string;
@@ -35,24 +37,28 @@ const UpdateCohort = ({
   refetchData: () => void;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  console.log("data", data);
+  console.log('data', data);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
 
   const [isError, setIsError] = useState(false);
 
   const [updateCohort, { isLoading: isUpdating }] = useUpdateCohortMutation();
   const { data: semeestersData } = useGetSemestersQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
   const { data: programmesData } = useGetProgrammesQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
   const { data: intakesData } = useGetIntakesQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
+  );
+  const { data: studyYearsData } = useGetStudyYearsQuery(
+    {},
+    { refetchOnMountOrArgChange: true },
   );
   type FormValues = z.infer<typeof updateCohortSchema>;
 
@@ -64,16 +70,16 @@ const UpdateCohort = ({
   } = useForm<FormValues>({
     resolver: zodResolver(updateCohortSchema),
     defaultValues: {
-      name: data?.name || "",
-      status: data?.status || "",
-      current_year: data?.current_year || "",
+      name: data?.name ?? '',
+      status: data?.status ?? '',
+      current_year: data?.current_year?.id ?? undefined,
       current_semester: data?.current_semester.id || undefined,
       programme: data?.programme.id || undefined,
       intake: data?.intake?.id || undefined,
     },
   });
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -86,69 +92,74 @@ const UpdateCohort = ({
     handleCloseModal();
   };
   const handleSemesterChange = (
-    selected: SingleValue<{ value: number | null; label: string }>
+    selected: SingleValue<{ value: number | null; label: string }>,
   ) => {
     if (selected) {
-      setValue("current_semester", Number(selected.value));
+      setValue('current_semester', Number(selected.value));
     } else {
-      setValue("current_semester", null);
+      setValue('current_semester', null);
     }
   };
   const handleIntakeChange = (
-    selected: SingleValue<{ value: number | null; label: string }>
+    selected: SingleValue<{ value: number | null; label: string }>,
   ) => {
     if (selected) {
-      setValue("intake", Number(selected.value));
+      setValue('intake', Number(selected.value));
     } else {
-      setValue("intake", null);
+      setValue('intake', null);
     }
   };
 
   const handleProgrammeChange = (
-    selected: SingleValue<{ value: number | null; label: string }>
+    selected: SingleValue<{ value: number | null; label: string }>,
   ) => {
     if (selected) {
-      setValue("programme", Number(selected.value));
+      setValue('programme', Number(selected.value));
     } else {
-      setValue("programme", null);
+      setValue('programme', null);
     }
   };
-  const handleYearChange = (selected: SchoolOption | null) => {
-    if (selected && selected.value) {
-      setValue("current_year", String(selected.value));
+  const handleYearChange = (
+    selected: SingleValue<{ value: number | null; label: string }>,
+  ) => {
+    if (selected) {
+      setValue('current_year', Number(selected.value));
     }
+    // else {
+    //   setValue("current_year", null);
+    // }
   };
 
   const handleStatusChange = (selected: SchoolOption | null) => {
     if (selected && selected.value) {
-      setValue("status", String(selected.value));
+      setValue('status', String(selected.value));
     }
   };
   const onSubmit = async (formData: FormValues) => {
-    console.log("submitting form data");
+    console.log('submitting form data');
 
     try {
       const response = await updateCohort({
         id: data.id,
         data: formData,
       }).unwrap();
-      console.log("response", response);
+      console.log('response', response);
 
       setIsError(false);
-      setSuccessMessage("Cohort Updated successfully!");
+      setSuccessMessage('Cohort Updated successfully!');
       setShowSuccessModal(true);
 
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(`Failed to update Cohort: ${errorData.error}`);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected Error occured. Please try again.");
+        setSuccessMessage('Unexpected Error occured. Please try again.');
         setShowSuccessModal(true);
       }
     } finally {
@@ -158,12 +169,21 @@ const UpdateCohort = ({
 
   return (
     <>
-      <IconButton
+      <CreateAndUpdateButton
         onClick={handleOpenModal}
-        title="Edit"
-        icon={<FiEdit className="w-4 h-4" />}
-        className="group relative p-2 bg-amber-100 text-amber-500 hover:bg-amber-600 hover:text-white focus:ring-amber-500"
-        tooltip="Edit"
+        // title="Edit"
+        label="Edit"
+        icon={<FiEdit className="w-4 h-4 text-amber-500" />}
+        className="
+         px-4 py-2 w-full 
+         border-none 
+         focus:outline-none 
+         focus:border-transparent 
+         focus:ring-0 
+         active:outline-none 
+         active:ring-0
+         hover:bg-gray-100
+       "
       />
 
       {isOpen && (
@@ -213,7 +233,7 @@ const UpdateCohort = ({
                     <input
                       id="name"
                       type="text"
-                      {...register("name")}
+                      {...register('name')}
                       placeholder="e.g X Copmuter Science Department"
                       className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                     />
@@ -226,17 +246,19 @@ const UpdateCohort = ({
                   <div className="grid grid-cols-1 md:grid-cols-2  gap-4">
                     <div>
                       <div>
-                        <label>Programme</label>
+                        <label className="block space-x-1  text-sm font-medium mb-2">
+                          Programme
+                        </label>
                         <Select
                           options={programmesData?.map(
                             (prog: ProgrammeType) => ({
                               value: prog.id,
                               label: `${prog.code} - ${prog.name}`,
-                            })
+                            }),
                           )}
                           defaultValue={{
                             value: data?.programme?.id || null,
-                            label: data?.programme?.name || "",
+                            label: data?.programme?.name || '',
                           }}
                           menuPortalTarget={document.body}
                           menuPlacement="auto"
@@ -247,16 +269,16 @@ const UpdateCohort = ({
                             }),
                             control: (base) => ({
                               ...base,
-                              minHeight: "24px",
-                              minWidth: "200px",
-                              borderColor: "#d1d5db",
-                              boxShadow: "none",
-                              "&:hover": {
-                                borderColor: "#9ca3af",
+                              minHeight: '24px',
+                              minWidth: '200px',
+                              borderColor: '#d1d5db',
+                              boxShadow: 'none',
+                              '&:hover': {
+                                borderColor: '#9ca3af',
                               },
-                              "&:focus-within": {
-                                borderColor: "#9ca3af",
-                                boxShadow: "none",
+                              '&:focus-within': {
+                                borderColor: '#9ca3af',
+                                boxShadow: 'none',
                               },
                             }),
                           }}
@@ -272,17 +294,19 @@ const UpdateCohort = ({
                     </div>
                     <div>
                       <div>
-                        <label>Current Semester</label>
+                        <label className="block space-x-1  text-sm font-medium mb-2">
+                          Current Semester
+                        </label>
                         <Select
                           options={semeestersData?.map((sem: SemesterType) => ({
                             value: sem.id,
-                            label: `${sem.name} -${sem.academic_year}`,
+                            label: `${sem.name} -${sem.academic_year.name}`,
                           }))}
                           defaultValue={{
                             value: data?.current_semester?.id || null,
                             label:
-                              `${data?.current_semester?.name}-${data.current_semester.academic_year}` ||
-                              "",
+                              `${data?.current_semester?.name} ${data.current_semester.academic_year.name}` ||
+                              '',
                           }}
                           menuPortalTarget={document.body}
                           menuPlacement="auto"
@@ -293,16 +317,16 @@ const UpdateCohort = ({
                             }),
                             control: (base) => ({
                               ...base,
-                              minHeight: "24px",
-                              minWidth: "200px",
-                              borderColor: "#d1d5db",
-                              boxShadow: "none",
-                              "&:hover": {
-                                borderColor: "#9ca3af",
+                              minHeight: '24px',
+                              minWidth: '200px',
+                              borderColor: '#d1d5db',
+                              boxShadow: 'none',
+                              '&:hover': {
+                                borderColor: '#9ca3af',
                               },
-                              "&:focus-within": {
-                                borderColor: "#9ca3af",
-                                boxShadow: "none",
+                              '&:focus-within': {
+                                borderColor: '#9ca3af',
+                                boxShadow: 'none',
                               },
                             }),
                           }}
@@ -319,15 +343,18 @@ const UpdateCohort = ({
 
                     <div>
                       <label className="block space-x-1  text-sm font-medium mb-2">
-                        Year
+                        Study Year
                       </label>
                       <Select
-                        options={YearsOptions}
+                        options={studyYearsData?.map((sem: StudyYearType) => ({
+                          value: sem.id,
+                          label: `${sem.name} `,
+                        }))}
                         onChange={handleYearChange}
                         menuPortalTarget={document.body}
                         defaultValue={{
-                          value: data?.current_year || "",
-                          label: data?.current_year || "",
+                          value: data?.current_year.id,
+                          label: data?.current_year.name,
                         }}
                         menuPlacement="auto"
                         styles={{
@@ -337,16 +364,16 @@ const UpdateCohort = ({
                           }),
                           control: (base) => ({
                             ...base,
-                            minHeight: "24px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
+                            minHeight: '24px',
+                            minWidth: '200px',
+                            borderColor: '#d1d5db',
+                            boxShadow: 'none',
+                            '&:hover': {
+                              borderColor: '#9ca3af',
                             },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
+                            '&:focus-within': {
+                              borderColor: '#9ca3af',
+                              boxShadow: 'none',
                             },
                           }),
                         }}
@@ -359,20 +386,22 @@ const UpdateCohort = ({
                     </div>
                     <div>
                       <div>
-                        <label>Inatake</label>
+                        <label className="block space-x-1  text-sm font-medium mb-2">
+                          Intake
+                        </label>
                         <Select
                           options={intakesData?.map((item: IntakeType) => ({
                             value: item.id,
                             label: `${item.name} (${new Date(
-                              item.start_date
+                              item.start_date,
                             ).getFullYear()})`,
                           }))}
                           defaultValue={{
                             value: data?.intake?.id || null,
                             label:
                               `${data?.intake?.name} (${new Date(
-                                data?.intake?.start_date
-                              ).getFullYear()})` || "",
+                                data?.intake?.start_date,
+                              ).getFullYear()})` || '',
                           }}
                           menuPortalTarget={document.body}
                           menuPlacement="auto"
@@ -383,16 +412,16 @@ const UpdateCohort = ({
                             }),
                             control: (base) => ({
                               ...base,
-                              minHeight: "24px",
-                              minWidth: "200px",
-                              borderColor: "#d1d5db",
-                              boxShadow: "none",
-                              "&:hover": {
-                                borderColor: "#9ca3af",
+                              minHeight: '24px',
+                              minWidth: '200px',
+                              borderColor: '#d1d5db',
+                              boxShadow: 'none',
+                              '&:hover': {
+                                borderColor: '#9ca3af',
                               },
-                              "&:focus-within": {
-                                borderColor: "#9ca3af",
-                                boxShadow: "none",
+                              '&:focus-within': {
+                                borderColor: '#9ca3af',
+                                boxShadow: 'none',
                               },
                             }),
                           }}
@@ -416,8 +445,8 @@ const UpdateCohort = ({
                       onChange={handleStatusChange}
                       menuPortalTarget={document.body}
                       defaultValue={{
-                        value: data?.status || "",
-                        label: data?.status || "",
+                        value: data?.status || '',
+                        label: data?.status || '',
                       }}
                       menuPlacement="auto"
                       styles={{
@@ -427,16 +456,16 @@ const UpdateCohort = ({
                         }),
                         control: (base) => ({
                           ...base,
-                          minHeight: "24px",
-                          minWidth: "200px",
-                          borderColor: "#d1d5db",
-                          boxShadow: "none",
-                          "&:hover": {
-                            borderColor: "#9ca3af",
+                          minHeight: '24px',
+                          minWidth: '200px',
+                          borderColor: '#d1d5db',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: '#9ca3af',
                           },
-                          "&:focus-within": {
-                            borderColor: "#9ca3af",
-                            boxShadow: "none",
+                          '&:focus-within': {
+                            borderColor: '#9ca3af',
+                            boxShadow: 'none',
                           },
                         }),
                       }}

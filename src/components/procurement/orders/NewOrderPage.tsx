@@ -1,28 +1,30 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
-import { IoAddOutline, IoTrashOutline } from "react-icons/io5";
-import Select from "react-select";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useFieldArray, useForm } from 'react-hook-form';
+import { IoAddOutline, IoTrashOutline } from 'react-icons/io5';
+import Select from 'react-select';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
-import { CategoryType, InventoryUnitType } from "@/components/inventory/types";
-import { MakeOrderFormData, makeOrderSchema } from "@/schemas/procurement/po";
-import { useGetCategoriesQuery, useGetUnitsQuery } from "@/store/services/finance/inventoryService";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
+import { CategoryType, InventoryUnitType } from '@/components/inventory/types';
+import { MakeOrderFormData, makeOrderSchema } from '@/schemas/procurement/po';
+import {
+  useGetCategoriesQuery,
+  useGetUnitsQuery,
+} from '@/store/services/finance/inventoryService';
 import {
   useGetVendorsQuery,
   useMakeOrderMutation,
-} from "@/store/services/finance/procurementService";
-import Link from "next/link";
-import { FiArrowLeft } from "react-icons/fi";
-import { VendorDetailedType } from "../vendors/types";
+} from '@/store/services/finance/procurementService';
+import Link from 'next/link';
+import { FiArrowLeft } from 'react-icons/fi';
+import { VendorDetailedType } from '../vendors/types';
 
 type SchoolOption = {
   value: string;
   label: string;
 };
-
 
 interface Props {
   refetchData?: () => void;
@@ -30,22 +32,21 @@ interface Props {
 
 const NewOrderPage = ({ refetchData }: Props) => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
-  
   const [makeOrder, { isLoading: isCreating }] = useMakeOrderMutation();
   const { data: vendorsData } = useGetVendorsQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
   const { data: categoriesData } = useGetCategoriesQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
   const { data: unitsData } = useGetUnitsQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
 
   const {
@@ -61,12 +62,12 @@ const NewOrderPage = ({ refetchData }: Props) => {
     defaultValues: {
       items: [
         {
-          name: "",
-          description: "",
+          name: '',
+          description: '',
           quantity: 1,
           unit: 1,
           unit_price: 0,
-          category: 1
+          category: 1,
         },
       ],
     },
@@ -74,19 +75,19 @@ const NewOrderPage = ({ refetchData }: Props) => {
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "items",
+    name: 'items',
   });
 
-  const watchedItems = watch("items");
+  const watchedItems = watch('items');
 
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleVendorChange = (selected: SchoolOption | null) => {
     if (selected) {
       const vendorId = Number(selected.value);
-      setValue("vendor", vendorId);
+      setValue('vendor', vendorId);
     }
   };
 
@@ -97,7 +98,10 @@ const NewOrderPage = ({ refetchData }: Props) => {
     }
   };
 
-  const handleCategoryChange = (selected: SchoolOption | null, index: number) => {
+  const handleCategoryChange = (
+    selected: SchoolOption | null,
+    index: number,
+  ) => {
     if (selected) {
       const catId = Number(selected.value);
       setValue(`items.${index}.category`, catId);
@@ -106,8 +110,8 @@ const NewOrderPage = ({ refetchData }: Props) => {
 
   const addNewItem = () => {
     append({
-      name: "",
-      description: "",
+      name: '',
+      description: '',
       quantity: 1,
       unit: 1,
       unit_price: 0,
@@ -126,9 +130,13 @@ const NewOrderPage = ({ refetchData }: Props) => {
   };
 
   const calculateSubtotal = () => {
-    return watchedItems?.reduce((total, item) => {
-      return total + calculateItemTotal(item.quantity || 0, item.unit_price || 0);
-    }, 0) || 0;
+    return (
+      watchedItems?.reduce((total, item) => {
+        return (
+          total + calculateItemTotal(item.quantity || 0, item.unit_price || 0)
+        );
+      }, 0) || 0
+    );
   };
 
   const calculateTax = (subtotal: number) => {
@@ -147,25 +155,25 @@ const NewOrderPage = ({ refetchData }: Props) => {
   };
 
   const onSubmit = async (formData: MakeOrderFormData) => {
-    console.log("submitting form data", formData);
+    console.log('submitting form data', formData);
     try {
       const response = await makeOrder(formData).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Order placed successfully");
+      setSuccessMessage('Order placed successfully');
       setShowSuccessModal(true);
       reset();
       refetchData?.();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(errorData.error);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occurred. Please try again.");
+        setSuccessMessage('Unexpected error occurred. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -173,12 +181,13 @@ const NewOrderPage = ({ refetchData }: Props) => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-6">
-        <Link href="/dashboard/procurement/orders"
+      <Link
+        href="/dashboard/procurement/orders"
         className="flex items-center space-x-2 mb-7 text-lg text-gray-500 hover:text-blue-700"
-        >
-            <FiArrowLeft className="text-lg" />
+      >
+        <FiArrowLeft className="text-lg" />
         <span>Back To Orders</span>
-        </Link>
+      </Link>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6">
@@ -186,7 +195,9 @@ const NewOrderPage = ({ refetchData }: Props) => {
             {/* <MdShoppingCart className="text-blue-600" /> */}
             Make New Order
           </h1>
-          <p className="text-gray-600 mt-2">Create a new purchase order for your vendor</p>
+          <p className="text-gray-600 mt-2">
+            Create a new purchase order for your vendor
+          </p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -195,8 +206,12 @@ const NewOrderPage = ({ refetchData }: Props) => {
             <div className="lg:col-span-2">
               <div className="bg-white rounded-lg shadow-sm border">
                 <div className="p-6 border-b">
-                  <h2 className="text-xl font-semibold text-gray-900">Order Items</h2>
-                  <p className="text-gray-600 text-sm mt-1">Add items to your purchase order</p>
+                  <h2 className="text-xl font-semibold text-gray-900">
+                    Order Items
+                  </h2>
+                  <p className="text-gray-600 text-sm mt-1">
+                    Add items to your purchase order
+                  </p>
                 </div>
 
                 <div className="p-6 space-y-6">
@@ -214,15 +229,15 @@ const NewOrderPage = ({ refetchData }: Props) => {
                       styles={{
                         control: (base) => ({
                           ...base,
-                          minHeight: "42px",
-                          borderColor: "#d1d5db",
-                          boxShadow: "none",
-                          "&:hover": {
-                            borderColor: "#9ca3af",
+                          minHeight: '42px',
+                          borderColor: '#d1d5db',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: '#9ca3af',
                           },
-                          "&:focus-within": {
-                            borderColor: "#2563eb",
-                            boxShadow: "0 0 0 1px #2563eb",
+                          '&:focus-within': {
+                            borderColor: '#2563eb',
+                            boxShadow: '0 0 0 1px #2563eb',
                           },
                         }),
                       }}
@@ -238,7 +253,9 @@ const NewOrderPage = ({ refetchData }: Props) => {
                   {/* Items List */}
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
-                      <h3 className="text-lg font-medium text-gray-900">Items</h3>
+                      <h3 className="text-lg font-medium text-gray-900">
+                        Items
+                      </h3>
                       <button
                         type="button"
                         onClick={addNewItem}
@@ -250,9 +267,14 @@ const NewOrderPage = ({ refetchData }: Props) => {
                     </div>
 
                     {fields.map((field, index) => (
-                      <div key={field.id} className="border rounded-lg p-4 bg-gray-50">
+                      <div
+                        key={field.id}
+                        className="border rounded-lg p-4 bg-gray-50"
+                      >
                         <div className="flex justify-between items-start mb-4">
-                          <h4 className="font-medium text-gray-900">Item {index + 1}</h4>
+                          <h4 className="font-medium text-gray-900">
+                            Item {index + 1}
+                          </h4>
                           {fields.length > 1 && (
                             <button
                               type="button"
@@ -289,19 +311,23 @@ const NewOrderPage = ({ refetchData }: Props) => {
                               Category
                             </label>
                             <Select
-                              options={categoriesData?.map((item: CategoryType) => ({
-                                value: item.id.toString(),
-                                label: `${item.name}(${item.category_type_label})`,
-                              }))}
+                              options={categoriesData?.map(
+                                (item: CategoryType) => ({
+                                  value: item.id.toString(),
+                                  label: `${item.name}(${item.category_type_label})`,
+                                }),
+                              )}
                               placeholder="Select category..."
                               styles={{
                                 control: (base) => ({
                                   ...base,
-                                  minHeight: "38px",
-                                  borderColor: "#d1d5db",
+                                  minHeight: '38px',
+                                  borderColor: '#d1d5db',
                                 }),
                               }}
-                              onChange={(selected: SchoolOption | null) => handleCategoryChange(selected, index)}
+                              onChange={(selected: SchoolOption | null) =>
+                                handleCategoryChange(selected, index)
+                              }
                             />
                           </div>
 
@@ -326,7 +352,9 @@ const NewOrderPage = ({ refetchData }: Props) => {
                             <input
                               type="number"
                               min="1"
-                              {...register(`items.${index}.quantity`, { valueAsNumber: true })}
+                              {...register(`items.${index}.quantity`, {
+                                valueAsNumber: true,
+                              })}
                               placeholder="0"
                               className="w-full py-2 px-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             />
@@ -343,19 +371,23 @@ const NewOrderPage = ({ refetchData }: Props) => {
                               Unit <span className="text-red-500">*</span>
                             </label>
                             <Select
-                              options={unitsData?.map((unit: InventoryUnitType) => ({
-                                value: unit.id.toString(),
-                                label: `${unit.name}`,
-                              }))}
+                              options={unitsData?.map(
+                                (unit: InventoryUnitType) => ({
+                                  value: unit.id.toString(),
+                                  label: `${unit.name}`,
+                                }),
+                              )}
                               placeholder="Select unit..."
                               styles={{
                                 control: (base) => ({
                                   ...base,
-                                  minHeight: "38px",
-                                  borderColor: "#d1d5db",
+                                  minHeight: '38px',
+                                  borderColor: '#d1d5db',
                                 }),
                               }}
-                              onChange={(selected: SchoolOption | null) => handleUnitChange(selected, index)}
+                              onChange={(selected: SchoolOption | null) =>
+                                handleUnitChange(selected, index)
+                              }
                             />
                             {errors.items?.[index]?.unit && (
                               <p className="text-red-500 text-sm mt-1">
@@ -367,13 +399,16 @@ const NewOrderPage = ({ refetchData }: Props) => {
                           {/* Unit Price */}
                           <div>
                             <label className="block text-sm font-medium mb-2">
-                              Unit Price (KSh) <span className="text-red-500">*</span>
+                              Unit Price (KSh){' '}
+                              <span className="text-red-500">*</span>
                             </label>
                             <input
                               type="number"
                               min="0"
                               step="0.01"
-                              {...register(`items.${index}.unit_price`, { valueAsNumber: true })}
+                              {...register(`items.${index}.unit_price`, {
+                                valueAsNumber: true,
+                              })}
                               placeholder="0.00"
                               className="w-full py-2 px-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             />
@@ -392,7 +427,7 @@ const NewOrderPage = ({ refetchData }: Props) => {
                             <div className="py-2 px-3 bg-gray-100 border rounded-md text-gray-700 font-medium">
                               {calculateItemTotal(
                                 watchedItems?.[index]?.quantity || 0,
-                                watchedItems?.[index]?.unit_price || 0
+                                watchedItems?.[index]?.unit_price || 0,
                               ).toLocaleString('en-KE', {
                                 minimumFractionDigits: 2,
                                 maximumFractionDigits: 2,
@@ -411,26 +446,33 @@ const NewOrderPage = ({ refetchData }: Props) => {
             <div className="lg:col-span-1">
               <div className="bg-white rounded-lg shadow-sm border sticky top-6">
                 <div className="p-6 border-b">
-                  <h2 className="text-xl font-semibold text-gray-900">Order Summary</h2>
+                  <h2 className="text-xl font-semibold text-gray-900">
+                    Order Summary
+                  </h2>
                 </div>
 
                 <div className="p-6 space-y-4">
                   {/* Items Summary */}
                   <div className="space-y-3">
                     {watchedItems?.map((item, index) => (
-                      <div key={index} className="flex justify-between items-start text-sm">
+                      <div
+                        key={index}
+                        className="flex justify-between items-start text-sm"
+                      >
                         <div className="flex-1 pr-2">
                           <p className="font-medium text-gray-900">
                             {item.name || `Item ${index + 1}`}
                           </p>
                           <p className="text-gray-500">
-                            {item.quantity || 0} × KSh {(item.unit_price || 0).toLocaleString()}
+                            {item.quantity || 0} × KSh{' '}
+                            {(item.unit_price || 0).toLocaleString()}
                           </p>
                         </div>
                         <div className="font-medium text-gray-900">
-                          KSh {calculateItemTotal(
+                          KSh{' '}
+                          {calculateItemTotal(
                             item.quantity || 0,
-                            item.unit_price || 0
+                            item.unit_price || 0,
                           ).toLocaleString('en-KE', {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
@@ -447,20 +489,25 @@ const NewOrderPage = ({ refetchData }: Props) => {
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Subtotal:</span>
                       <span className="font-medium text-gray-900">
-                        KSh {calculateSubtotal().toLocaleString('en-KE', {
+                        KSh{' '}
+                        {calculateSubtotal().toLocaleString('en-KE', {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
                         })}
                       </span>
                     </div>
-                    
+
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">VAT (16%):</span>
                       <span className="font-medium text-gray-900">
-                        KSh {calculateTax(calculateSubtotal()).toLocaleString('en-KE', {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })}
+                        KSh{' '}
+                        {calculateTax(calculateSubtotal()).toLocaleString(
+                          'en-KE',
+                          {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          },
+                        )}
                       </span>
                     </div>
 
@@ -469,15 +516,14 @@ const NewOrderPage = ({ refetchData }: Props) => {
                     <div className="flex justify-between text-lg font-bold">
                       <span className="text-gray-900">Total:</span>
                       <span className="text-blue-600">
-                        KSh {calculateTotal().toLocaleString('en-KE', {
+                        KSh{' '}
+                        {calculateTotal().toLocaleString('en-KE', {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
                         })}
                       </span>
                     </div>
                   </div>
-
-                 
 
                   {/* Submit Button */}
                   <div className="pt-4">
@@ -492,7 +538,7 @@ const NewOrderPage = ({ refetchData }: Props) => {
                           Processing...
                         </span>
                       ) : (
-                        "Place Order"
+                        'Place Order'
                       )}
                     </button>
                   </div>

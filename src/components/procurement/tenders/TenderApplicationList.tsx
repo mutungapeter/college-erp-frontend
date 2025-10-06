@@ -1,65 +1,63 @@
-"use client";
+'use client';
 
-import Pagination from "@/components/common/Pagination";
-import { useFilters } from "@/hooks/useFilters";
-import { PAGE_SIZE } from "@/lib/constants";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+import Pagination from '@/components/common/Pagination';
+import { useFilters } from '@/hooks/useFilters';
+import { PAGE_SIZE } from '@/lib/constants';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMemo } from 'react';
 
-import DataTable, { Column } from "@/components/common/Table/DataTable";
-import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
+import DataTable, { Column } from '@/components/common/Table/DataTable';
+import ContentSpinner from '@/components/common/spinners/dataLoadingSpinner';
 
-import NoData from "@/components/common/NoData";
-import {
-  useGetTenderApplicationsQuery
-} from "@/store/services/finance/procurementService";
-import { YearMonthCustomDate } from "@/utils/date";
-import Link from "next/link";
-import { FiEye } from "react-icons/fi";
-import { TenderApplicationType } from "./types";
+import NoData from '@/components/common/NoData';
+import { useGetTenderApplicationsQuery } from '@/store/services/finance/procurementService';
+import { YearMonthCustomDate } from '@/utils/date';
+import Link from 'next/link';
+import { FiEye } from 'react-icons/fi';
+import { TenderApplicationType } from './types';
 
 const TendersApplications = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+
   const { filters, currentPage, handlePageChange } = useFilters({
     initialFilters: {
-      reference: searchParams.get("reference") || "",
-      account: searchParams.get("account") || "",
+      reference: searchParams.get('reference') || '',
+      account: searchParams.get('account') || '',
     },
-    initialPage: parseInt(searchParams.get("page") || "1", 10),
+    initialPage: parseInt(searchParams.get('page') || '1', 10),
     router,
     debounceTime: 100,
-    debouncedFields: ["reference"],
+    debouncedFields: ['reference'],
   });
- 
+
   const queryParams = useMemo(
     () => ({
       page: currentPage,
       page_size: PAGE_SIZE,
       ...filters,
     }),
-    [currentPage, filters]
+    [currentPage, filters],
   );
-  console.log("queryParams", queryParams);
+  console.log('queryParams', queryParams);
 
   const { data, error, isLoading } = useGetTenderApplicationsQuery(
     queryParams,
     {
       refetchOnMountOrArgChange: true,
-    }
+    },
   );
-  console.log("data", data);
+  console.log('data', data);
 
   const columns: Column<TenderApplicationType>[] = [
     {
-      header: "Tender",
-      accessor: "tender",
+      header: 'Tender',
+      accessor: 'tender',
       cell: (item: TenderApplicationType) => <span>{item.tender.title}</span>,
     },
     {
-      header: "Company",
-      accessor: "company_name",
+      header: 'Company',
+      accessor: 'company_name',
       cell: (item: TenderApplicationType) => (
         <span className="text-sm whitespace-normal break-words">
           {item.company_name}
@@ -68,8 +66,8 @@ const TendersApplications = () => {
     },
 
     {
-      header: "Business Type",
-      accessor: "business_type",
+      header: 'Business Type',
+      accessor: 'business_type',
       cell: (item: TenderApplicationType) => (
         <span className="text-sm whitespace-normal break-words">
           {item.business_type}
@@ -77,8 +75,8 @@ const TendersApplications = () => {
       ),
     },
     {
-      header: "Submitted On",
-      accessor: "created_on",
+      header: 'Submitted On',
+      accessor: 'created_on',
       cell: (item: TenderApplicationType) => (
         <span className="text-sm whitespace-normal break-words">
           {YearMonthCustomDate(item.created_on)}
@@ -86,28 +84,28 @@ const TendersApplications = () => {
       ),
     },
     {
-      header: "Reviewed On",
-      accessor: "reviewed_on",
+      header: 'Reviewed On',
+      accessor: 'reviewed_on',
       cell: (item: TenderApplicationType) => (
         <span className="text-sm whitespace-normal break-words">
-          {YearMonthCustomDate(item?.reviewed_on ?? "")}
+          {YearMonthCustomDate(item?.reviewed_on ?? '')}
         </span>
       ),
     },
 
     {
-      header: "Status",
-      accessor: "status",
+      header: 'Status',
+      accessor: 'status',
       cell: (item: TenderApplicationType) => (
         <span
           className={`text-sm px-2 py-1 rounded-md border ${
-            item.status === "approved"
-              ? "bg-green-100 text-green-500 border-green-500"
-              : item.status === "rejected"
-              ? "bg-red-100 text-red-500 border-red-500"
-              : item.status === "pending"
-              ? "bg-yellow-100 text-yellow-500 border-yellow-500"
-              : "bg-gray-100 text-gray-500 border-gray-500"
+            item.status === 'approved'
+              ? 'bg-green-100 text-green-500 border-green-500'
+              : item.status === 'rejected'
+                ? 'bg-red-100 text-red-500 border-red-500'
+                : item.status === 'pending'
+                  ? 'bg-yellow-100 text-yellow-500 border-yellow-500'
+                  : 'bg-gray-100 text-gray-500 border-gray-500'
           }`}
         >
           {item.status}
@@ -116,10 +114,9 @@ const TendersApplications = () => {
     },
 
     {
-      header: "Actions",
-      accessor: "id",
+      header: 'Actions',
+      accessor: 'id',
       cell: (item: TenderApplicationType) => {
-      
         return (
           <div className="flex items-center justify-center space-x-2">
             <Link
@@ -132,7 +129,6 @@ const TendersApplications = () => {
                 View Details
               </span>
             </Link>
-
           </div>
         );
       },
@@ -182,7 +178,6 @@ const TendersApplications = () => {
           />
         )}
       </div>
-     
     </div>
   );
 };

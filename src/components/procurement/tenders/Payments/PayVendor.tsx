@@ -1,23 +1,23 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
-import { paymentMethodOptions } from "@/definitions/finance/fees/invoices";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
+import { paymentMethodOptions } from '@/definitions/finance/fees/invoices';
 import {
   payVendorBaseSchema,
   PayVendorFormData,
-} from "@/schemas/procurement/vendor";
+} from '@/schemas/procurement/vendor';
 import {
   useGetAwardedTendersQuery,
   usePayVendorMutation,
-} from "@/store/services/finance/procurementService";
-import { IoCloseOutline } from "react-icons/io5";
-import { MdPayment } from "react-icons/md";
-import Select from "react-select";
-import { AwardedTenderType } from "../types";
+} from '@/store/services/finance/procurementService';
+import { IoCloseOutline } from 'react-icons/io5';
+import { MdPayment } from 'react-icons/md';
+import Select from 'react-select';
+import { AwardedTenderType } from '../types';
 type SchoolOption = {
   value: string;
   label: string;
@@ -29,14 +29,14 @@ const PayVendor = ({ refetchData }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
-  
+  const [successMessage, setSuccessMessage] = useState('');
+
   const [isError, setIsError] = useState(false);
 
   const [payVendor, { isLoading: isCreating }] = usePayVendorMutation();
   const { data } = useGetAwardedTendersQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
   const {
     register,
@@ -48,12 +48,12 @@ const PayVendor = ({ refetchData }: Props) => {
     resolver: zodResolver(payVendorBaseSchema),
   });
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
   const handleTenderAwardChange = (selected: SchoolOption | null) => {
     if (selected) {
       const tenderId = Number(selected.value);
-      setValue("tender_award", tenderId);
+      setValue('tender_award', tenderId);
     }
   };
   const handleCloseModal = () => {
@@ -67,34 +67,34 @@ const PayVendor = ({ refetchData }: Props) => {
   };
 
   const onSubmit = async (formData: PayVendorFormData) => {
-    console.log("submitting form data");
+    console.log('submitting form data');
 
-    console.log("formData", formData);
+    console.log('formData', formData);
     try {
       const response = await payVendor(formData).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Payment Successful");
+      setSuccessMessage('Payment Successful');
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(errorData.error);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occured. Please try again.");
+        setSuccessMessage('Unexpected error occured. Please try again.');
         setShowSuccessModal(true);
       }
     }
   };
   const handlePaymentMethodChange = (selected: SchoolOption | null) => {
     if (selected && selected.value) {
-      setValue("payment_method", String(selected.value));
+      setValue('payment_method', String(selected.value));
     }
   };
 
@@ -114,13 +114,13 @@ const PayVendor = ({ refetchData }: Props) => {
       </div> */}
       <div
         onClick={handleOpenModal}
-  className="bg-green-600 inline-flex cursor-pointer w-max 
+        className="bg-green-600 inline-flex cursor-pointer w-max 
    items-center space-x-2 text-white px-4 py-2 rounded-lg shadow-md hover:shadow-lg
     hover:bg-green-800 transition duration-300"
->
-  <MdPayment size={18} />
-  <span className="text-sm font-medium">Pay Vendor</span>
-</div>
+      >
+        <MdPayment size={18} />
+        <span className="text-sm font-medium">Pay Vendor</span>
+      </div>
 
       {isOpen && (
         <div
@@ -179,16 +179,16 @@ const PayVendor = ({ refetchData }: Props) => {
                         }),
                         control: (base) => ({
                           ...base,
-                          minHeight: "24px",
-                          minWidth: "200px",
-                          borderColor: "#d1d5db",
-                          boxShadow: "none",
-                          "&:hover": {
-                            borderColor: "#9ca3af",
+                          minHeight: '24px',
+                          minWidth: '200px',
+                          borderColor: '#d1d5db',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: '#9ca3af',
                           },
-                          "&:focus-within": {
-                            borderColor: "#9ca3af",
-                            boxShadow: "none",
+                          '&:focus-within': {
+                            borderColor: '#9ca3af',
+                            boxShadow: 'none',
                           },
                         }),
                       }}
@@ -209,7 +209,7 @@ const PayVendor = ({ refetchData }: Props) => {
                       <input
                         id="name"
                         type="number"
-                        {...register("amount")}
+                        {...register('amount')}
                         placeholder="Ksh"
                         className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                       />
@@ -221,7 +221,7 @@ const PayVendor = ({ refetchData }: Props) => {
                     </div>
                     <div>
                       <label className="block space-x-1  text-sm font-medium mb-2">
-                        Payment Method{" "}
+                        Payment Method{' '}
                         <span className="text-red-500 mb-2">*</span>
                       </label>
                       <Select
@@ -236,16 +236,16 @@ const PayVendor = ({ refetchData }: Props) => {
                           }),
                           control: (base) => ({
                             ...base,
-                            minHeight: "24px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
+                            minHeight: '24px',
+                            minWidth: '200px',
+                            borderColor: '#d1d5db',
+                            boxShadow: 'none',
+                            '&:hover': {
+                              borderColor: '#9ca3af',
                             },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
+                            '&:focus-within': {
+                              borderColor: '#9ca3af',
+                              boxShadow: 'none',
                             },
                           }),
                         }}
@@ -263,7 +263,7 @@ const PayVendor = ({ refetchData }: Props) => {
                     </label>
                     <textarea
                       id="name"
-                      {...register("description")}
+                      {...register('description')}
                       placeholder="Description optional"
                       rows={3}
                       cols={5}

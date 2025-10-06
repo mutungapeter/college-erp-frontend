@@ -1,23 +1,21 @@
+'use client';
 
-"use client";
+import Pagination from '@/components/common/Pagination';
 
-import Pagination from "@/components/common/Pagination";
+import { useFilters } from '@/hooks/useFilters';
 
-import { useFilters } from "@/hooks/useFilters";
+import DataTable, { Column } from '@/components/common/Table/DataTable';
+import ContentSpinner from '@/components/common/spinners/dataLoadingSpinner';
 
-import DataTable, { Column } from "@/components/common/Table/DataTable";
-import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
-
-import { FIneType } from "@/definitions/library";
-import { PAGE_SIZE } from "@/lib/constants";
-import { useGetBorrowedBooksFinesQuery } from "@/store/services/library/libraryService";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
-import { GoSearch } from "react-icons/go";
-import { formatCurrency } from "@/utils/currency";
-import PayLibraryFine from "./Pay";
+import { FIneType } from '@/definitions/library';
+import { PAGE_SIZE } from '@/lib/constants';
+import { useGetBorrowedBooksFinesQuery } from '@/store/services/library/libraryService';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMemo } from 'react';
+import { GoSearch } from 'react-icons/go';
+import { formatCurrency } from '@/utils/currency';
+import PayLibraryFine from './Pay';
 // import RequestFinePayment from "./RequestFinePaymen";
-
 
 const LibraryPayments = () => {
   const router = useRouter();
@@ -26,12 +24,12 @@ const LibraryPayments = () => {
   const { filters, currentPage, handleFilterChange, handlePageChange } =
     useFilters({
       initialFilters: {
-        search: searchParams.get("search") || "",
+        search: searchParams.get('search') || '',
       },
-      initialPage: parseInt(searchParams.get("page") || "1", 10),
+      initialPage: parseInt(searchParams.get('page') || '1', 10),
       router,
       debounceTime: 100,
-      debouncedFields: ["search"],
+      debouncedFields: ['search'],
     });
 
   const queryParams = useMemo(
@@ -40,99 +38,108 @@ const LibraryPayments = () => {
       page_size: PAGE_SIZE,
       ...filters,
     }),
-    [currentPage, filters]
+    [currentPage, filters],
   );
-console.log("queryParams",queryParams)
-  
-  const { data:finesData, isLoading, error, refetch } = useGetBorrowedBooksFinesQuery(queryParams, {
+  console.log('queryParams', queryParams);
+
+  const {
+    data: finesData,
+    isLoading,
+    error,
+    refetch,
+  } = useGetBorrowedBooksFinesQuery(queryParams, {
     refetchOnMountOrArgChange: true,
   });
-console.log("finesData",finesData)
+  console.log('finesData', finesData);
 
- 
- 
   const columns: Column<FIneType>[] = [
     {
-      header: "Member",
-      accessor: "borrow_transaction",
-      cell: (item: FIneType) => <span className="font-semibold text-xs">{item.borrow_transaction.member.user.first_name} {item.borrow_transaction.member.user.last_name}</span>,
-    },
-    {
-      header: "Book",
-      accessor: "borrow_transaction",
-      cell: (item: FIneType) => <span className="font-semibold text-sm">{item.borrow_transaction.book.title}</span>,
-    },
-   
-  
-    
-   
-    {
-      header: "Daily Fine",
-      accessor: "fine_per_day",
+      header: 'Member',
+      accessor: 'borrow_transaction',
       cell: (item: FIneType) => (
-        <span>
-          <span className="text-xs font-normal">{formatCurrency(item.fine_per_day)}</span>
+        <span className="font-semibold text-xs">
+          {item.borrow_transaction.member.user.first_name}{' '}
+          {item.borrow_transaction.member.user.last_name}
         </span>
       ),
     },
     {
-      header: "Total Fine",
-      accessor: "calculated_fine",
+      header: 'Book',
+      accessor: 'borrow_transaction',
       cell: (item: FIneType) => (
-        <span>
-          <span className="text-xs font-normal">{formatCurrency(item.calculated_fine)}</span>
+        <span className="font-semibold text-sm">
+          {item.borrow_transaction.book.title}
         </span>
       ),
     },
-    
+
     {
-      header: "Status",
-      accessor: "status_text",
+      header: 'Daily Fine',
+      accessor: 'fine_per_day',
+      cell: (item: FIneType) => (
+        <span>
+          <span className="text-xs font-normal">
+            {formatCurrency(item.fine_per_day)}
+          </span>
+        </span>
+      ),
+    },
+    {
+      header: 'Total Fine',
+      accessor: 'calculated_fine',
+      cell: (item: FIneType) => (
+        <span>
+          <span className="text-xs font-normal">
+            {formatCurrency(item.calculated_fine)}
+          </span>
+        </span>
+      ),
+    },
+
+    {
+      header: 'Status',
+      accessor: 'status_text',
       cell: (item: FIneType) => (
         <span className="flex items-center gap-2">
-          <span className={`text-xs font-normal px-2 py-1 rounded-md
+          <span
+            className={`text-xs font-normal px-2 py-1 rounded-md
             ${
-        item.status_text === "Paid"
-          ? "bg-green-100 text-green-800"
-          : item.status_text === "Requested"
-          ? "bg-yellow-100 text-yellow-700"
-          : item.status_text === "Unpaid"
-          ? "bg-red-100 text-red-700"
-          : "bg-gray-500 text-white"
-          
-      }
-            `}>{item.status_text}</span>
+              item.status_text === 'Paid'
+                ? 'bg-green-100 text-green-800'
+                : item.status_text === 'Requested'
+                  ? 'bg-yellow-100 text-yellow-700'
+                  : item.status_text === 'Unpaid'
+                    ? 'bg-red-100 text-red-700'
+                    : 'bg-gray-500 text-white'
+            }
+            `}
+          >
+            {item.status_text}
+          </span>
         </span>
       ),
     },
-    
-   
-  
-   
+
     {
-      header: "Actions",
-      accessor: "id",
+      header: 'Actions',
+      accessor: 'id',
       cell: (item: FIneType) => (
         <div className="">
-        
-         
-        {(item.status_text === "Unpaid" || item.status_text=== "Requested" || item.status_text==="Pending")&&(
+          {(item.status_text === 'Unpaid' ||
+            item.status_text === 'Requested' ||
+            item.status_text === 'Pending') && (
             <PayLibraryFine refetchData={refetch} data={item} />
-        )}
-       
+          )}
         </div>
       ),
     },
   ];
- 
- 
+
   return (
     <>
       <div className="bg-white w-full  p-1 shadow-md rounded-lg font-nunito">
         <div className=" p-3  flex flex-col md:flex-row md:items-center lg:items-center md:gap-0 lg:gap-0 gap-4 lg:justify-between md:justify-between">
           <h2 className="font-semibold text-black text-xl">Library Fines </h2>
-          
-         
         </div>
 
         <div className="flex flex-col gap-4 mt-5 lg:gap-0 md:gap-0 lg:flex-row md:flex-row  md:items-center p-2 md:justify-between lg:items-center lg:justify-between">
@@ -148,7 +155,7 @@ console.log("finesData",finesData)
             />
           </div>
           <div className="flex flex-col gap-3  lg:p-0 lg:flex-row md:flex-row md:items-center md:space-x-2 lg:items-center lg:space-x-5">
-             {/* <FilterSelect
+            {/* <FilterSelect
             options={intakeOptions}
             value={intakeOptions.find(
               (option:LabelOptionsType) => option.value === filters.intake  
@@ -186,8 +193,6 @@ console.log("finesData",finesData)
             onPageChange={handlePageChange}
           />
         )}
-
-     
       </div>
     </>
   );

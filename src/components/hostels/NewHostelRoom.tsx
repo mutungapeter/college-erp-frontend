@@ -1,22 +1,20 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FiPlus } from "react-icons/fi";
-import { IoCloseOutline } from "react-icons/io5";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiPlus } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
 
-import { HostelsType } from "@/definitions/hostels";
+import { HostelsType } from '@/definitions/hostels';
 import {
-    HostelRoomCreateType,
-    hostelRoomCreateSchema,
-} from "@/schemas/hostels/main";
-import {
-    useCreateHostelRoomMutation
-} from "@/store/services/hostels/hostelService";
-
+  HostelRoomCreateType,
+  hostelRoomCreateSchema,
+} from '@/schemas/hostels/main';
+import { useCreateHostelRoomMutation } from '@/store/services/hostels/hostelService';
+import CreateAndUpdateButton from '../common/CreateAndUpdateButton';
+import ModalBottomButton from '../common/StickyModalFooterButtons';
 
 interface Props {
   data: HostelsType;
@@ -25,12 +23,12 @@ interface Props {
 const AddRoom = ({ refetchData, data }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
   const [createHostelRoom, { isLoading: isCreating }] =
     useCreateHostelRoomMutation();
-  console.log("data", data);
+  console.log('data', data);
   const {
     register,
     handleSubmit,
@@ -39,13 +37,13 @@ const AddRoom = ({ refetchData, data }: Props) => {
   } = useForm<HostelRoomCreateType>({
     resolver: zodResolver(hostelRoomCreateSchema),
     defaultValues: {
-      room_number: "",
+      room_number: '',
       room_capacity: 0,
     },
   });
 
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -62,29 +60,29 @@ const AddRoom = ({ refetchData, data }: Props) => {
   };
 
   const onSubmit = async (formData: HostelRoomCreateType) => {
-    console.log("submitting form data", formData);
+    console.log('submitting form data', formData);
     const submissionData = {
       hostel: data.id,
       ...formData,
     };
     try {
       const response = await createHostelRoom(submissionData).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Hostel Room added successfully!");
+      setSuccessMessage('Hostel Room added successfully!');
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(`Failed to add  Hostel Room: ${errorData.error}`);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occurred. Please try again.");
+        setSuccessMessage('Unexpected error occurred. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -92,18 +90,17 @@ const AddRoom = ({ refetchData, data }: Props) => {
 
   return (
     <>
-      <div
+      <CreateAndUpdateButton
         onClick={handleOpenModal}
-        className="flex flex-col md:flex-row md:items-center gap-4 w-full md:w-auto"
-      >
-        <div
-          className="bg-blue-600 inline-flex cursor-pointer w-max 
-         items-center space-x-2 text-white px-2 py-2 rounded-md hover:bg-blue-700 transition duration-300"
-        >
-          <FiPlus className="text-lg" />
-          <span className="text-xs font-medium">New Room</span>
-        </div>
-      </div>
+        title="Add New"
+        label="Add Room"
+        icon={<FiPlus className="w-4 h-4" />}
+        className="flex items-center space-x-2 px-4 py-2
+               bg-primary
+               text-white rounded-md hover:bg-emerald-600
+               focus:outline-none focus:ring-2 focus:ring-primary-500 
+               focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md"
+      />
 
       {isOpen && (
         <div
@@ -203,7 +200,7 @@ const AddRoom = ({ refetchData, data }: Props) => {
                         type="text"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                         placeholder="e.g 101"
-                        {...register("room_number")}
+                        {...register('room_number')}
                       />
                       {errors.room_number && (
                         <p className="text-red-500 text-sm mt-1">
@@ -219,7 +216,7 @@ const AddRoom = ({ refetchData, data }: Props) => {
                         type="number"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                         placeholder="e.g 3, 4 "
-                        {...register("room_capacity")}
+                        {...register('room_capacity')}
                       />
                       {errors.room_capacity && (
                         <p className="text-red-500 text-sm mt-1">
@@ -228,29 +225,11 @@ const AddRoom = ({ refetchData, data }: Props) => {
                       )}
                     </div>
                   </div>
-                  <div className="sticky bottom-0 bg-white z-40 flex space-x-3 gap-4 md:justify-end items-center py-3">
-                    <button
-                      type="button"
-                      onClick={handleCloseModal}
-                      className="border border-gray-300 bg-white shadow-sm text-gray-700 py-2 text-sm px-4 rounded-md w-full min-w-[100px] md:w-auto hover:bg-gray-50"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting || isCreating}
-                      className="bg-primary-600 text-white py-2 hover:bg-blue-700 text-sm px-3 md:px-4 rounded-md w-full min-w-[100px] md:w-auto"
-                    >
-                      {isSubmitting || isCreating ? (
-                        <span className="flex items-center">
-                          <SubmitSpinner />
-                          <span>Adding...</span>
-                        </span>
-                      ) : (
-                        <span>Add</span>
-                      )}
-                    </button>
-                  </div>
+                  <ModalBottomButton
+                    onCancel={handleCloseModal}
+                    isSubmitting={isSubmitting}
+                    isProcessing={isCreating}
+                  />
                 </form>
               </>
             </div>

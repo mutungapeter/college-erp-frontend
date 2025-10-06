@@ -1,20 +1,20 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FiPlus } from "react-icons/fi";
-import { IoCloseOutline } from "react-icons/io5";
-import { z } from "zod";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiPlus } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
+import { z } from 'zod';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import Select from "react-select";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import Select from 'react-select';
 
-import IconButton from "@/components/common/IconButton";
-import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
-import { ApplicationType } from "@/definitions/admissions";
-import { EducationHistoryOptions } from "@/lib/constants";
-import { applicationEducationHistoryCreateSchema } from "@/schemas/admissions/main";
-import { useCreateEducationHistoryMutation } from "@/store/services/admissions/admissionsService";
+import CreateAndUpdateButton from '@/components/common/CreateAndUpdateButton';
+import ModalBottomButton from '@/components/common/StickyModalFooterButtons';
+import { ApplicationType } from '@/definitions/admissions';
+import { EducationHistoryOptions } from '@/lib/constants';
+import { applicationEducationHistoryCreateSchema } from '@/schemas/admissions/main';
+import { useCreateEducationHistoryMutation } from '@/store/services/admissions/admissionsService';
 
 type SelectOption = {
   value: string | number;
@@ -23,14 +23,21 @@ type SelectOption = {
 
 type FormValues = z.infer<typeof applicationEducationHistoryCreateSchema>;
 
-const NewEducationHistory = ({ refetchData, data }: { refetchData: () => void; data: ApplicationType }) => {
+const NewEducationHistory = ({
+  refetchData,
+  data,
+}: {
+  refetchData: () => void;
+  data: ApplicationType;
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
-  const [createEducationHistory, { isLoading: isCreating }] = useCreateEducationHistoryMutation();
-  
+  const [createEducationHistory, { isLoading: isCreating }] =
+    useCreateEducationHistoryMutation();
+
   const {
     register,
     handleSubmit,
@@ -42,7 +49,7 @@ const NewEducationHistory = ({ refetchData, data }: { refetchData: () => void; d
   });
 
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -60,35 +67,35 @@ const NewEducationHistory = ({ refetchData, data }: { refetchData: () => void; d
 
   const handleLevelChange = (selected: SelectOption | null) => {
     if (selected && selected.value) {
-      setValue("level", String(selected.value));
+      setValue('level', String(selected.value));
     }
   };
-  
-  
+
   const onSubmit = async (formData: FormValues) => {
-    console.log("submitting form data", formData);
+    console.log('submitting form data', formData);
     const submissionData = {
-        student_application: data.id,
-         ...formData };
-         console.log("submissionData",submissionData)
+      student_application: data.id,
+      ...formData,
+    };
+    console.log('submissionData', submissionData);
     try {
       const response = await createEducationHistory(submissionData).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Education record successfully added!");
+      setSuccessMessage('Education record successfully added!');
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(`Failed to add education record: ${errorData.error}`);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occurred. Please try again.");
+        setSuccessMessage('Unexpected error occurred. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -96,7 +103,7 @@ const NewEducationHistory = ({ refetchData, data }: { refetchData: () => void; d
 
   return (
     <>
-      <IconButton
+      <CreateAndUpdateButton
         onClick={handleOpenModal}
         title="Add New"
         label="Add New"
@@ -144,26 +151,25 @@ const NewEducationHistory = ({ refetchData, data }: { refetchData: () => void; d
                   onSubmit={handleSubmit(onSubmit)}
                   className="space-y-4 mt-2 p-4 md:p-4 lg:p-4"
                 >
+                  <div>
                     <div>
-                      <div>
-                        <label className="block space-x-1 text-sm font-medium mb-2">
-                         Instituion<span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
-                          placeholder="e.g. Masinde Muliro University of Science and Technology"
-                          {...register("institution")}
-                        />
-                      </div>
-                        {errors.institution && (
-                          <p className="text-red-500 text-sm mt-1">
-                            {errors.institution.message}
-                          </p>
-                        )}
+                      <label className="block space-x-1 text-sm font-medium mb-2">
+                        Instituion<span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
+                        placeholder="e.g. Masinde Muliro University of Science and Technology"
+                        {...register('institution')}
+                      />
                     </div>
+                    {errors.institution && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.institution.message}
+                      </p>
+                    )}
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    
                     <div>
                       <div>
                         <label className="block space-x-1 text-sm font-medium mb-2">
@@ -173,7 +179,7 @@ const NewEducationHistory = ({ refetchData, data }: { refetchData: () => void; d
                           type="text"
                           className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                           placeholder="e.g. 2018"
-                          {...register("year")}
+                          {...register('year')}
                         />
                         {errors.year && (
                           <p className="text-red-500 text-sm mt-1">
@@ -191,7 +197,7 @@ const NewEducationHistory = ({ refetchData, data }: { refetchData: () => void; d
                           type="text"
                           className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                           placeholder="e.g. "
-                          {...register("grade_or_gpa")}
+                          {...register('grade_or_gpa')}
                         />
                         {errors.grade_or_gpa && (
                           <p className="text-red-500 text-sm mt-1">
@@ -209,7 +215,7 @@ const NewEducationHistory = ({ refetchData, data }: { refetchData: () => void; d
                           type="text"
                           className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                           placeholder="e.g user@example.com"
-                          {...register("major")}
+                          {...register('major')}
                         />
                         {errors.major && (
                           <p className="text-red-500 text-sm mt-1">
@@ -218,7 +224,7 @@ const NewEducationHistory = ({ refetchData, data }: { refetchData: () => void; d
                         )}
                       </div>
                     </div>
-                   
+
                     <div className="relative">
                       <label className="block space-x-1 text-sm font-medium mb-2">
                         Level<span className="text-red-500">*</span>
@@ -236,23 +242,23 @@ const NewEducationHistory = ({ refetchData, data }: { refetchData: () => void; d
                           }),
                           menu: (base) => ({
                             ...base,
-                            position: "absolute",
-                            width: "max-content",
-                            minWidth: "100%",
-                            minHeight: "50px",
+                            position: 'absolute',
+                            width: 'max-content',
+                            minWidth: '100%',
+                            minHeight: '50px',
                           }),
                           control: (base) => ({
                             ...base,
-                            minHeight: "24px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
+                            minHeight: '24px',
+                            minWidth: '200px',
+                            borderColor: '#d1d5db',
+                            boxShadow: 'none',
+                            '&:hover': {
+                              borderColor: '#9ca3af',
                             },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
+                            '&:focus-within': {
+                              borderColor: '#9ca3af',
+                              boxShadow: 'none',
                             },
                           }),
                         }}
@@ -263,17 +269,19 @@ const NewEducationHistory = ({ refetchData, data }: { refetchData: () => void; d
                         </p>
                       )}
                     </div>
-                    
                   </div>
-                <div className="mt-2">
+                  <div className="mt-2">
                     <div className="flex items-center">
                       <input
                         type="checkbox"
                         id="graduated"
                         className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-                        {...register("graduated")}
+                        {...register('graduated')}
                       />
-                      <label htmlFor="graduated" className="ml-2 text-sm font-medium text-gray-700">
+                      <label
+                        htmlFor="graduated"
+                        className="ml-2 text-sm font-medium text-gray-700"
+                      >
                         Graduated
                       </label>
                     </div>
@@ -284,10 +292,10 @@ const NewEducationHistory = ({ refetchData, data }: { refetchData: () => void; d
                     )}
                   </div>
                   <ModalBottomButton
-                                      onCancel={handleCloseModal}
-                                      isSubmitting={isSubmitting}
-                                      isProcessing={isCreating}
-                                    />
+                    onCancel={handleCloseModal}
+                    isSubmitting={isSubmitting}
+                    isProcessing={isCreating}
+                  />
                 </form>
               </>
             </div>

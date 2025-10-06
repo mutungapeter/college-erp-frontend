@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { StaffType } from "@/definitions/staff";
-import Image from "next/image";
-import { LuBriefcase, LuMail } from "react-icons/lu";
+import { StaffType } from '@/definitions/staff';
+import Image from 'next/image';
+import { LuBriefcase, LuMail } from 'react-icons/lu';
 
 interface Props {
   data: StaffType;
@@ -15,7 +15,7 @@ const StaffHeader = ({ data }: Props) => {
         <div className="flex flex-col sm:flex-row  gap-4">
           <div className="w-16 h-16 bg-slate-100 p-2 rounded-md border-4 border-white">
             <Image
-              src={"/avatar/avatar.jpg"}
+              src={'/avatar/avatar.jpg'}
               alt="Student Avatar"
               width={50}
               height={50}
@@ -47,7 +47,7 @@ const StaffHeader = ({ data }: Props) => {
             </div>
             <div className="py-4 flex items-center space-x-4">
               <span className="font-normal uppercase">
-                Staff No:{" "}
+                Staff No:{' '}
                 <span className="font-semibold"> {data.staff_number}</span>
               </span>
             </div>
@@ -57,13 +57,13 @@ const StaffHeader = ({ data }: Props) => {
           <span
             className={`font-semibold px-2 py-0 rounded-xl 
           ${
-            data.status === "Active"
-              ? "text-green-600 bg-green-100"
-              : data.status === "Inactive"
-              ? "text-yellow-600 bg-yellow-100"
-              : data.status === "Terminated"
-              ? "text-red-600 bg-red-100"
-              : "text-white bg-gray-500"
+            data.status === 'Active'
+              ? 'text-green-600 bg-green-100'
+              : data.status === 'Inactive'
+                ? 'text-yellow-600 bg-yellow-100'
+                : data.status === 'Terminated'
+                  ? 'text-red-600 bg-red-100'
+                  : 'text-white bg-gray-500'
           }`}
           >
             {data.status}

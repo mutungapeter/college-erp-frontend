@@ -1,25 +1,25 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
-import { IoCloseOutline } from "react-icons/io5";
-import Select from "react-select";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
+import { IoCloseOutline } from 'react-icons/io5';
+import Select from 'react-select';
 
-import { DepartmentType } from "@/definitions/curiculum";
+import { DepartmentType } from '@/definitions/curiculum';
 import {
   IssueInventoryItemFormData,
   issueInventoryItemSchema,
-} from "@/schemas/inventory";
-import { useGetDepartmentsQuery } from "@/store/services/curriculum/departmentsService";
+} from '@/schemas/inventory';
+import { useGetDepartmentsQuery } from '@/store/services/curriculum/departmentsService';
 import {
   useGetInventoryItemsQuery,
   useIssueInventoryMutation,
-} from "@/store/services/finance/inventoryService";
-import { FiPlus } from "react-icons/fi";
-import { InventoryItem } from "./types";
+} from '@/store/services/finance/inventoryService';
+import { FiPlus } from 'react-icons/fi';
+import { InventoryItem } from './types';
 type SchoolOption = {
   value: string;
   label: string;
@@ -31,7 +31,7 @@ const IssueInventoryItem = ({ refetchData }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
   const [issueInventory, { isLoading: isCreating }] =
@@ -48,27 +48,27 @@ const IssueInventoryItem = ({ refetchData }: Props) => {
   });
 
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
   const { data: inventoryData } = useGetInventoryItemsQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
   const { data: departmentsData } = useGetDepartmentsQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
 
   const handleInventoryItemChange = (selected: SchoolOption | null) => {
     if (selected) {
       const inventoryItemId = Number(selected.value);
-      setValue("inventory_item", inventoryItemId);
+      setValue('inventory_item', inventoryItemId);
     }
   };
   const handleIssuedToChange = (selected: SchoolOption | null) => {
     if (selected) {
       const issuedToId = Number(selected.value);
-      setValue("issued_to", issuedToId);
+      setValue('issued_to', issuedToId);
     }
   };
   const handleCloseModal = () => {
@@ -82,27 +82,27 @@ const IssueInventoryItem = ({ refetchData }: Props) => {
   };
 
   const onSubmit = async (formData: IssueInventoryItemFormData) => {
-    console.log("submitting form data");
+    console.log('submitting form data');
 
-    console.log("formData", formData);
+    console.log('formData', formData);
     try {
       const response = await issueInventory(formData).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Inventory Issued Successfully");
+      setSuccessMessage('Inventory Issued Successfully');
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(errorData.error);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occured. Please try again.");
+        setSuccessMessage('Unexpected error occured. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -158,47 +158,47 @@ const IssueInventoryItem = ({ refetchData }: Props) => {
                   onSubmit={handleSubmit(onSubmit)}
                   className="space-y-4   p-4 md:p-4 lg:p-4 "
                 >
-                    <div>
-                      <label className="block space-x-1  text-sm font-medium mb-2">
-                        InventoryItem
-                        <span className="text-red-500 mb-2">*</span>
-                      </label>
-                      <Select
-                        options={inventoryData?.map((item: InventoryItem) => ({
-                          value: item.id.toString(),
-                          label: `${item.name} (Remaining: ${item.quantity_in_stock} ${item.unit.name})`,
-                        }))}
-                        menuPortalTarget={document.body}
-                        menuPlacement="auto"
-                        styles={{
-                          menuPortal: (base) => ({
-                            ...base,
-                            zIndex: 9999,
-                          }),
-                          control: (base) => ({
-                            ...base,
-                            minHeight: "24px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
-                            },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
-                            },
-                          }),
-                        }}
-                        onChange={handleInventoryItemChange}
-                      />
+                  <div>
+                    <label className="block space-x-1  text-sm font-medium mb-2">
+                      InventoryItem
+                      <span className="text-red-500 mb-2">*</span>
+                    </label>
+                    <Select
+                      options={inventoryData?.map((item: InventoryItem) => ({
+                        value: item.id.toString(),
+                        label: `${item.name} (Remaining: ${item.quantity_in_stock} ${item.unit.name})`,
+                      }))}
+                      menuPortalTarget={document.body}
+                      menuPlacement="auto"
+                      styles={{
+                        menuPortal: (base) => ({
+                          ...base,
+                          zIndex: 9999,
+                        }),
+                        control: (base) => ({
+                          ...base,
+                          minHeight: '24px',
+                          minWidth: '200px',
+                          borderColor: '#d1d5db',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: '#9ca3af',
+                          },
+                          '&:focus-within': {
+                            borderColor: '#9ca3af',
+                            boxShadow: 'none',
+                          },
+                        }),
+                      }}
+                      onChange={handleInventoryItemChange}
+                    />
 
-                      {errors.inventory_item && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {errors.inventory_item.message}
-                        </p>
-                      )}
-                    </div>
+                    {errors.inventory_item && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.inventory_item.message}
+                      </p>
+                    )}
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block space-x-1  text-sm font-medium mb-2">
@@ -210,7 +210,7 @@ const IssueInventoryItem = ({ refetchData }: Props) => {
                           (item: DepartmentType) => ({
                             value: item.id.toString(),
                             label: `${item.name} ${item.office}(${item.department_type})`,
-                          })
+                          }),
                         )}
                         menuPortalTarget={document.body}
                         menuPlacement="auto"
@@ -221,16 +221,16 @@ const IssueInventoryItem = ({ refetchData }: Props) => {
                           }),
                           control: (base) => ({
                             ...base,
-                            minHeight: "24px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
+                            minHeight: '24px',
+                            minWidth: '200px',
+                            borderColor: '#d1d5db',
+                            boxShadow: 'none',
+                            '&:hover': {
+                              borderColor: '#9ca3af',
                             },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
+                            '&:focus-within': {
+                              borderColor: '#9ca3af',
+                              boxShadow: 'none',
                             },
                           }),
                         }}
@@ -250,7 +250,7 @@ const IssueInventoryItem = ({ refetchData }: Props) => {
                       <input
                         id="quantity"
                         type="number"
-                        {...register("quantity")}
+                        {...register('quantity')}
                         placeholder="0"
                         className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                       />
@@ -267,7 +267,7 @@ const IssueInventoryItem = ({ refetchData }: Props) => {
                     </label>
                     <textarea
                       id="remarks"
-                      {...register("remarks")}
+                      {...register('remarks')}
                       placeholder="Description optional"
                       rows={3}
                       cols={5}

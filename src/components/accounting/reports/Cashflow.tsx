@@ -1,37 +1,37 @@
-"use client";
+'use client';
 import {
   Financing,
   Investing,
   Operating,
-} from "@/definitions/finance/accounts/reports";
-import { useFilters } from "@/hooks/useFilters";
-import { useGetCashflowQuery } from "@/store/services/finance/accounting";
-import { formatCurrency } from "@/utils/currency";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
-import { BiArrowBack } from "react-icons/bi";
-import { exportCashflowToPDF } from "./CashflowDoc";
+} from '@/definitions/finance/accounts/reports';
+import { useFilters } from '@/hooks/useFilters';
+import { useGetCashflowQuery } from '@/store/services/finance/accounting';
+import { formatCurrency } from '@/utils/currency';
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMemo } from 'react';
+import { BiArrowBack } from 'react-icons/bi';
+import { exportCashflowToPDF } from './CashflowDoc';
 const CashflowReports = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const { filters, handleFilterChange } = useFilters({
     initialFilters: {
-      start_date: searchParams.get("start_date") || "",
-      end_date: searchParams.get("end_date") || "",
+      start_date: searchParams.get('start_date') || '',
+      end_date: searchParams.get('end_date') || '',
     },
 
     router,
     debounceTime: 100,
-    debouncedFields: ["reference"],
+    debouncedFields: ['reference'],
   });
 
   const queryParams = useMemo(
     () => ({
       ...filters,
     }),
-    [filters]
+    [filters],
   );
   const { data, isLoading, error } = useGetCashflowQuery(queryParams, {
     refetchOnMountOrArgChange: true,
@@ -39,10 +39,10 @@ const CashflowReports = () => {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
     });
   };
 
@@ -63,8 +63,8 @@ const CashflowReports = () => {
             <span
               className={`font-semibold ${
                 parseFloat(data.totals.net_cash_flow) >= 0
-                  ? "text-green-600"
-                  : "text-red-600"
+                  ? 'text-green-600'
+                  : 'text-red-600'
               }`}
             >
               {formatCurrency(data.totals.net_cash_flow)}
@@ -90,8 +90,8 @@ const CashflowReports = () => {
               <div
                 className={`font-semibold ${
                   parseFloat(data.totals.net_cash_flow) >= 0
-                    ? "text-green-600"
-                    : "text-red-600"
+                    ? 'text-green-600'
+                    : 'text-red-600'
                 }`}
               >
                 {formatCurrency(data.totals.net_cash_flow)}
@@ -159,7 +159,7 @@ const CashflowReports = () => {
   const getPeriodText = () => {
     if (filters.start_date && filters.end_date) {
       return `For the period from ${formatDate(
-        filters.start_date
+        filters.start_date,
       )} to ${formatDate(filters.end_date)}`;
     } else if (filters.start_date) {
       return `As of ${formatDate(filters.start_date)}`;
@@ -169,10 +169,10 @@ const CashflowReports = () => {
   };
   const handleExportPDF = async (): Promise<void> => {
     try {
-      const periodText = getPeriodText() ?? "";
+      const periodText = getPeriodText() ?? '';
       await exportCashflowToPDF(data, periodText);
     } catch (error) {
-      console.error("Error exporting PDF:", error);
+      console.error('Error exporting PDF:', error);
     }
   };
   return (
@@ -281,15 +281,15 @@ const CashflowReports = () => {
             <div
               className={`${
                 parseFloat(data.summary.net_cash_change) >= 0
-                  ? "bg-green-50 border-green-200 hover:border-green-300"
-                  : "bg-red-50 border-red-200 hover:border-red-300"
+                  ? 'bg-green-50 border-green-200 hover:border-green-300'
+                  : 'bg-red-50 border-red-200 hover:border-red-300'
               } border rounded-lg p-4 hover:shadow-md transition-all duration-300`}
             >
               <div
                 className={`text-sm mb-1 ${
                   parseFloat(data.summary.net_cash_change) >= 0
-                    ? "text-green-700"
-                    : "text-red-700"
+                    ? 'text-green-700'
+                    : 'text-red-700'
                 }`}
               >
                 Net Cash Change
@@ -297,8 +297,8 @@ const CashflowReports = () => {
               <div
                 className={`text-xl font-semibold ${
                   parseFloat(data.summary.net_cash_change) >= 0
-                    ? "text-green-800"
-                    : "text-red-800"
+                    ? 'text-green-800'
+                    : 'text-red-800'
                 }`}
               >
                 {formatCurrency(data.summary.net_cash_change)}

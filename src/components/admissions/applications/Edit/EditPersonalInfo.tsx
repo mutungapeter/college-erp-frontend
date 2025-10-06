@@ -1,17 +1,17 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-import IconButton from "@/components/common/IconButton";
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
-import { ApplicationType } from "@/definitions/admissions";
-import { updateApplicationPersonalInfoSchema } from "@/schemas/admissions/main";
-import { useUpdateApplicationMutation } from "@/store/services/admissions/admissionsService";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FiEdit } from "react-icons/fi";
-import { IoCloseOutline } from "react-icons/io5";
-import { z } from "zod";
+import CreateAndUpdateButton from '@/components/common/CreateAndUpdateButton';
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import ModalBottomButton from '@/components/common/StickyModalFooterButtons';
+import { ApplicationType } from '@/definitions/admissions';
+import { updateApplicationPersonalInfoSchema } from '@/schemas/admissions/main';
+import { useUpdateApplicationMutation } from '@/store/services/admissions/admissionsService';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiEdit } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
+import { z } from 'zod';
 
 const EditStudentApplicationPersonalInfo = ({
   data,
@@ -23,7 +23,7 @@ const EditStudentApplicationPersonalInfo = ({
   const [isOpen, setIsOpen] = useState(false);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
 
   const [isError, setIsError] = useState(false);
 
@@ -38,22 +38,22 @@ const EditStudentApplicationPersonalInfo = ({
   } = useForm({
     resolver: zodResolver(updateApplicationPersonalInfoSchema),
     defaultValues: {
-      first_name: data?.first_name || "",
-      last_name: data?.last_name || "",
-      email: data?.email || "",
-      phone_number: data?.phone_number || "",
-      gender: data?.gender || "",
-      id_number: data?.id_number || "",
-      passport_number: data?.passport_number || "",
-      date_of_birth: data?.date_of_birth || "",
-      postal_code: data?.postal_code || "",
-      city: data?.city || "",
-      country: data?.country || "",
+      first_name: data?.first_name || '',
+      last_name: data?.last_name || '',
+      email: data?.email || '',
+      phone_number: data?.phone_number || '',
+      gender: data?.gender || '',
+      id_number: data?.id_number || '',
+      passport_number: data?.passport_number || '',
+      date_of_birth: data?.date_of_birth || '',
+      postal_code: data?.postal_code || '',
+      city: data?.city || '',
+      country: data?.country || '',
     },
   });
 
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -69,35 +69,35 @@ const EditStudentApplicationPersonalInfo = ({
   };
 
   const onSubmit = async (
-    formData: z.infer<typeof updateApplicationPersonalInfoSchema>
+    formData: z.infer<typeof updateApplicationPersonalInfoSchema>,
   ) => {
-    console.log("submitting form data for update", formData);
-    console.log("data", formData);
+    console.log('submitting form data for update', formData);
+    console.log('data', formData);
     try {
       const response = await updateApplication({
         id: data?.id,
         data: formData,
       }).unwrap();
-      console.log("response", response);
+      console.log('response', response);
 
       setIsError(false);
-      setSuccessMessage("Personal Info updated successfully!");
+      setSuccessMessage('Personal Info updated successfully!');
       setShowSuccessModal(true);
 
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      console.log('error', error);
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
-        console.log("errorData", errorData);
+        console.log('errorData', errorData);
         setIsError(true);
         setSuccessMessage(
-          "An error occured while updating Personal Info.Please try again!."
+          'An error occured while updating Personal Info.Please try again!.',
         );
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occured. Please try again.");
+        setSuccessMessage('Unexpected error occured. Please try again.');
         setShowSuccessModal(true);
       }
     } finally {
@@ -107,7 +107,7 @@ const EditStudentApplicationPersonalInfo = ({
 
   return (
     <>
-      <IconButton
+      <CreateAndUpdateButton
         onClick={handleOpenModal}
         title="Edit"
         icon={<FiEdit className="w-4 h-4" />}
@@ -134,14 +134,16 @@ const EditStudentApplicationPersonalInfo = ({
           >
             <div
               className="relative transform justify-center
-               animate-fadeIn max-h-[90vh]
+               animate-fadeIn max-h-[90vh] font-inter
                 overflow-y-auto rounded-2xl bg-white text-left
                  shadow-xl transition-all   
                 w-full sm:max-w-c-500 md:max-w-500 px-3"
             >
               <>
-                <div className="sticky top-0 bg-white z-40 flex  px-2
-                justify-between items-center py-6 ">
+                <div
+                  className="sticky top-0 bg-white z-40 flex  px-2
+                justify-between items-center py-6 "
+                >
                   <p className="text-sm md:text-lg lg:text-lg font-bold ">
                     Edit Personal Information
                   </p>
@@ -166,7 +168,7 @@ const EditStudentApplicationPersonalInfo = ({
                       <input
                         id="first_name"
                         type="text"
-                        {...register("first_name")}
+                        {...register('first_name')}
                         placeholder="Enter new First name"
                         className="w-full py-2 px-4  text-sm font-light border placeholder:text-sm rounded-md focus:outline-none"
                       />
@@ -184,7 +186,7 @@ const EditStudentApplicationPersonalInfo = ({
                       <input
                         id="last_name"
                         type="text"
-                        {...register("last_name")}
+                        {...register('last_name')}
                         placeholder="Enter new last name"
                         className="w-full py-2 px-4 text-sm border font-light placeholder:text-sm rounded-md focus:outline-none"
                       />
@@ -202,7 +204,7 @@ const EditStudentApplicationPersonalInfo = ({
                       <input
                         id="email"
                         type="email"
-                        {...register("email")}
+                        {...register('email')}
                         placeholder="e.g +2547..."
                         className="w-full py-2 px-4 text-sm border  font-light placeholder:text-sm rounded-md focus:outline-none"
                       />
@@ -220,7 +222,7 @@ const EditStudentApplicationPersonalInfo = ({
                       <input
                         id="id_number"
                         type="text"
-                        {...register("id_number")}
+                        {...register('id_number')}
                         placeholder="e.g XXXXXXX"
                         className="w-full py-2 px-4 text-sm border font-light placeholder:text-sm rounded-md focus:outline-none"
                       />
@@ -237,7 +239,7 @@ const EditStudentApplicationPersonalInfo = ({
                       <input
                         id="passport_number"
                         type="text"
-                        {...register("passport_number")}
+                        {...register('passport_number')}
                         placeholder="e.g XXXXXXX"
                         className="w-full py-2 px-4 text-sm border font-light placeholder:text-sm rounded-md focus:outline-none"
                       />
@@ -256,7 +258,7 @@ const EditStudentApplicationPersonalInfo = ({
                       <input
                         id="city"
                         type="text"
-                        {...register("city")}
+                        {...register('city')}
                         placeholder="e.g Thika"
                         className="w-full py-2 text-sm px-4 border font-light placeholder:text-sm rounded-md focus:outline-none"
                       />
@@ -273,7 +275,7 @@ const EditStudentApplicationPersonalInfo = ({
                       <input
                         id="country"
                         type="text"
-                        {...register("country")}
+                        {...register('country')}
                         placeholder="e.g Kenya"
                         className="w-full py-2 px-4 text-sm border font-light placeholder:text-sm rounded-md focus:outline-none"
                       />
@@ -290,7 +292,7 @@ const EditStudentApplicationPersonalInfo = ({
                       <input
                         id="postal_code"
                         type="text"
-                        {...register("postal_code")}
+                        {...register('postal_code')}
                         placeholder="e.g 82-90119 "
                         className="w-full py-2 px-4 text-sm border font-light placeholder:text-sm rounded-md focus:outline-none"
                       />

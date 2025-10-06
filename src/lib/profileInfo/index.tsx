@@ -1,11 +1,12 @@
-import { useAppSelector } from "@/store/hooks";
-import { RootState } from "@/store/store";
-import React from "react";
-
+import { useAppSelector } from '@/store/hooks';
+import { RootState } from '@/store/store';
+import React from 'react';
 
 const ProfileInfo: React.FC = () => {
-  const { user, loading, error } = useAppSelector((state: RootState) => state.auth);
-console.log("user", user)
+  const { user, loading, error } = useAppSelector(
+    (state: RootState) => state.auth,
+  );
+  console.log('user', user);
   if (loading) return <span className="text-primary">Loading...</span>;
   if (error) return <span className="text-primary">Error</span>;
 
@@ -16,7 +17,9 @@ console.log("user", user)
           Welcome, {user.username}
         </span>
       ) : (
-        <span className="block text-sm font-normal font-satoshi dark:text-white">Guest</span>
+        <span className="block text-sm font-normal font-satoshi dark:text-white">
+          Guest
+        </span>
       )}
     </>
   );

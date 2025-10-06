@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import { VscClose } from "react-icons/vsc";
-import { menuItems } from "../../admin/MenuLinks/menu";
-import SidebarItem from "./SidebarItem";
-import { RolePermission } from "@/store/definitions";
-import { useAppSelector } from "@/store/hooks";
-import { RootState } from "@/store/store";
-import React from "react";
-import { MenuItem } from "@/definitions/menu";
+import Image from 'next/image';
+import { VscClose } from 'react-icons/vsc';
+import { menuItems } from '../../admin/MenuLinks/menu';
+import SidebarItem from './SidebarItem';
+import { RolePermission } from '@/store/definitions';
+import { useAppSelector } from '@/store/hooks';
+import { RootState } from '@/store/store';
+import React from 'react';
+import { MenuItem } from '@/definitions/menu';
 const Menu = ({
   isOpen,
   isMobileOpen,
@@ -19,7 +19,7 @@ const Menu = ({
   onCloseMobile: () => void;
 }) => {
   const { user } = useAppSelector((state: RootState) => state.auth);
-  console.log("user", user);
+  console.log('user', user);
 
   const permissions: RolePermission[] = React.useMemo(() => {
     return user?.role?.permissions ?? [];
@@ -30,7 +30,7 @@ const Menu = ({
       permissions
         .filter((p) => p?.can_view)
         .map((p) => p?.module?.code)
-        .filter(Boolean)
+        .filter(Boolean),
     );
   }, [permissions]);
 
@@ -53,10 +53,10 @@ const Menu = ({
   return (
     <div
       className={`fixed bg-white border-r
-         border-gray-200 left-0 top-0 z-[999] font-montserrat
+         border-gray-200 left-0 top-0 z-50 font-montserrat
           duration-300 ease-linear h-screen transition-all md:relative md:translate-x-0 
-    ${isMobileOpen ? "translate-x-0 w-[80%]" : "-translate-x-full"}
-    ${isOpen ? "md:w-[20%] lg:w-[20%]" : "md:w-[6%] lg:w-[6%]"}
+    ${isMobileOpen ? 'translate-x-0 w-[80%]' : '-translate-x-full'}
+    ${isOpen ? 'md:w-[20%] lg:w-[20%]' : 'md:w-[6%] lg:w-[6%]'}
 
    px-4 py-3 flex flex-col`}
     >
@@ -74,8 +74,8 @@ const Menu = ({
             </div>
             {isOpen && (
               <div className="text-left">
-                <h1 className="text-sm  md:text-sm font-poppins leading-tight ">
-                  Maweng College Series
+                <h1 className="text-sm md:text-lg   font-poppins leading-tight ">
+                  Maweng College
                 </h1>
               </div>
             )}

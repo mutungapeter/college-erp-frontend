@@ -1,9 +1,7 @@
-import React from 'react'
+import React from 'react';
 
 const GatecheckinsPage = () => {
-  return (
-    <div>GatecheckinsPage</div>
-  )
-}
+  return <div>GatecheckinsPage</div>;
+};
 
-export default GatecheckinsPage
+export default GatecheckinsPage;

@@ -1,26 +1,19 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
 
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiEdit } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
+import { z } from 'zod';
 
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import { StudentDetailsType } from '@/definitions/students';
 
-
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FiEdit } from "react-icons/fi";
-import { IoCloseOutline } from "react-icons/io5";
-import { z } from "zod";
-
-
-
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
-import { StudentDetailsType } from "@/definitions/students";
-
-import { useUpdateStudentMutation } from "@/store/services/students/studentsService";
-import { updateGurdianDetailsSchema } from "@/schemas/students/main";
-import IconButton from "@/components/common/IconButton";
-import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
-
+import CreateAndUpdateButton from '@/components/common/CreateAndUpdateButton';
+import ModalBottomButton from '@/components/common/StickyModalFooterButtons';
+import { updateGurdianDetailsSchema } from '@/schemas/students/main';
+import { useUpdateStudentMutation } from '@/store/services/students/studentsService';
 
 const EditGuardianDetails = ({
   data,
@@ -32,34 +25,32 @@ const EditGuardianDetails = ({
   const [isOpen, setIsOpen] = useState(false);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
 
   const [isError, setIsError] = useState(false);
 
-  const [updaateStudent,{isLoading:isUpdating}] = useUpdateStudentMutation();
+  const [updaateStudent, { isLoading: isUpdating }] =
+    useUpdateStudentMutation();
 
- type FormValues = z.infer<typeof updateGurdianDetailsSchema>;
+  type FormValues = z.infer<typeof updateGurdianDetailsSchema>;
   const {
     register,
     handleSubmit,
-    
+
     formState: { isSubmitting, errors },
   } = useForm({
     resolver: zodResolver(updateGurdianDetailsSchema),
     defaultValues: {
-      guardian_name: data?.guardian_name || "",    
-      guardian_phone_number: data?.guardian_phone_number || "",
-      guardian_relationship: data?.guardian_relationship || "",
-      guardian_email: data?.guardian_email || "",
-
+      guardian_name: data?.guardian_name || '',
+      guardian_phone_number: data?.guardian_phone_number || '',
+      guardian_relationship: data?.guardian_relationship || '',
+      guardian_email: data?.guardian_email || '',
     },
   });
 
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
-
- 
 
   const handleCloseModal = () => {
     setIsOpen(false);
@@ -74,49 +65,49 @@ const EditGuardianDetails = ({
   };
 
   const onSubmit = async (formData: FormValues) => {
-    console.log("submitting form data for update", formData);
-    console.log("data", formData)
+    console.log('submitting form data for update', formData);
+    console.log('data', formData);
     try {
-      const response = await updaateStudent({ 
+      const response = await updaateStudent({
         id: data?.id,
-        data: formData
-    }).unwrap();
-      console.log("response", response);
+        data: formData,
+      }).unwrap();
+      console.log('response', response);
 
       setIsError(false);
-      setSuccessMessage("Guardian details updated successfully!");
+      setSuccessMessage('Guardian details updated successfully!');
       setShowSuccessModal(true);
 
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      console.log('error', error);
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
-        console.log("errorData", errorData);
+        console.log('errorData', errorData);
         setIsError(true);
         setSuccessMessage(
-          "An error occured while updating Guardian details.Please try again!."
+          'An error occured while updating Guardian details.Please try again!.',
         );
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occured. Please try again.");
+        setSuccessMessage('Unexpected error occured. Please try again.');
         setShowSuccessModal(true);
       }
-    }finally{
-        refetchData();
+    } finally {
+      refetchData();
     }
   };
 
   return (
     <>
-      <IconButton
-              onClick={handleOpenModal}
-              title="Edit"
-              icon={<FiEdit className="w-4 h-4" />}
-              className="group relative p-2 bg-amber-100 text-amber-500 hover:bg-amber-600 hover:text-white focus:ring-amber-500"
-              tooltip="Edit"
-            />
+      <CreateAndUpdateButton
+        onClick={handleOpenModal}
+        title="Edit"
+        icon={<FiEdit className="w-4 h-4" />}
+        className="group relative p-2 bg-amber-100 text-amber-500 hover:bg-amber-600 hover:text-white focus:ring-amber-500"
+        tooltip="Edit"
+      />
 
       {isOpen && (
         <div
@@ -166,7 +157,7 @@ const EditGuardianDetails = ({
                       <input
                         id="guardian_name"
                         type="text"
-                        {...register("guardian_name")}
+                        {...register('guardian_name')}
                         placeholder="Enter new First name"
                         className="w-full py-2 px-4  text-sm font-light border placeholder:text-sm rounded-md focus:outline-none"
                       />
@@ -179,12 +170,12 @@ const EditGuardianDetails = ({
 
                     <div>
                       <label className="block text-xs font-bold mb-2">
-                       Guardian Email<span className="text-red-500">*</span>
+                        Guardian Email<span className="text-red-500">*</span>
                       </label>
                       <input
                         id="guardian_email"
                         type="text"
-                        {...register("guardian_email")}
+                        {...register('guardian_email')}
                         placeholder="Enter new last name"
                         className="w-full py-2 px-4 text-sm border font-light placeholder:text-sm rounded-md focus:outline-none"
                       />
@@ -202,7 +193,7 @@ const EditGuardianDetails = ({
                       <input
                         id="phone_number"
                         type="text"
-                        {...register("guardian_phone_number")}
+                        {...register('guardian_phone_number')}
                         placeholder="e.g +2547..."
                         className="w-full py-2 px-4 text-sm border  font-light placeholder:text-sm rounded-md focus:outline-none"
                       />
@@ -219,7 +210,7 @@ const EditGuardianDetails = ({
                       <input
                         id="guardian_relationship"
                         type="text"
-                        {...register("guardian_relationship")}
+                        {...register('guardian_relationship')}
                         placeholder="e.g Father, Mother, Guardian etc"
                         className="w-full py-2 px-4 text-sm border font-light placeholder:text-sm rounded-md focus:outline-none"
                       />
@@ -229,12 +220,12 @@ const EditGuardianDetails = ({
                         </p>
                       )}
                     </div>
-                    </div>
-                   <ModalBottomButton
-                                     onCancel={handleCloseModal}
-                                     isSubmitting={isSubmitting}
-                                     isProcessing={isUpdating}
-                                   />
+                  </div>
+                  <ModalBottomButton
+                    onCancel={handleCloseModal}
+                    isSubmitting={isSubmitting}
+                    isProcessing={isUpdating}
+                  />
                 </form>
               </>
             </div>

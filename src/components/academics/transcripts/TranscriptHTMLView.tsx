@@ -1,34 +1,38 @@
-
 import React from 'react';
-import { TranscriptType } from "@/definitions/transcripts";
+import { TranscriptType } from '@/definitions/transcripts';
 import Image from 'next/image';
 
 interface TranscriptHTMLViewProps {
   transcriptData: TranscriptType[];
 }
 
-const TranscriptHTMLView: React.FC<TranscriptHTMLViewProps> = ({ transcriptData }) => {
+const TranscriptHTMLView: React.FC<TranscriptHTMLViewProps> = ({
+  transcriptData,
+}) => {
   const gradingData = [
-    { points: "70-100", grade: "A" },
-    { points: "60-69", grade: "B" },
-    { points: "50-59", grade: "C" },
-    { points: "40-49", grade: "D" },
-    { points: "0-39", grade: "E" },
+    { points: '70-100', grade: 'A' },
+    { points: '60-69', grade: 'B' },
+    { points: '50-59', grade: 'C' },
+    { points: '40-49', grade: 'D' },
+    { points: '0-39', grade: 'E' },
   ];
 
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
     });
   };
 
   return (
     <div className="space-y-8">
       {transcriptData?.map((transcript: TranscriptType, index: number) => (
-        <div key={index} className="bg-white border-1 border-gray-400 p-8 shadow-md font-helvetica max-w-4xl mx-auto">
+        <div
+          key={index}
+          className="bg-white border-1 border-gray-400 p-8 shadow-md font-helvetica max-w-4xl mx-auto"
+        >
           {/* Header Section */}
           <div className="mb-6 flex flex-col items-center">
             <div className="flex flex-col items-center mb-4">
@@ -38,7 +42,6 @@ const TranscriptHTMLView: React.FC<TranscriptHTMLViewProps> = ({ transcriptData 
                 src="/logo/university_logo.png"
                 width={80}
                 height={80}
-    
               />
               <div className="text-center">
                 <h1 className="text-lg font-bold mb-1">
@@ -63,9 +66,12 @@ const TranscriptHTMLView: React.FC<TranscriptHTMLViewProps> = ({ transcriptData 
           <div className="mt-8 pt-4 border-t border-gray-500 flex justify-between mb-8">
             <div className="space-y-3">
               <div className="flex gap-2">
-                <span className="text-xs font-bold uppercase">Student Name:</span>
+                <span className="text-xs font-bold uppercase">
+                  Student Name:
+                </span>
                 <span className="text-xs uppercase">
-                  {transcript?.student?.user.first_name} {transcript?.student?.user.last_name}
+                  {transcript?.student?.user.first_name}{' '}
+                  {transcript?.student?.user.last_name}
                 </span>
               </div>
               <div className="flex gap-2">
@@ -89,15 +95,19 @@ const TranscriptHTMLView: React.FC<TranscriptHTMLViewProps> = ({ transcriptData 
             </div>
             <div className="space-y-3">
               <div className="flex gap-2">
-                <span className="text-xs font-bold uppercase">Reg. Number:</span>
+                <span className="text-xs font-bold uppercase">
+                  Reg. Number:
+                </span>
                 <span className="text-xs uppercase">
                   {transcript?.student?.registration_number}
                 </span>
               </div>
               <div className="flex gap-2">
-                <span className="text-xs font-bold uppercase">Year Of Study:</span>
+                <span className="text-xs font-bold uppercase">
+                  Year Of Study:
+                </span>
                 <span className="text-xs uppercase">
-                  {transcript?.student?.cohort.current_year}
+                  {transcript?.student?.cohort?.current_year?.name}
                 </span>
               </div>
               <div className="flex gap-2">
@@ -107,7 +117,9 @@ const TranscriptHTMLView: React.FC<TranscriptHTMLViewProps> = ({ transcriptData 
                 </span>
               </div>
               <div className="flex gap-2">
-                <span className="text-xs font-bold uppercase">Admission Year:</span>
+                <span className="text-xs font-bold uppercase">
+                  Admission Year:
+                </span>
                 <span className="text-xs uppercase">
                   {formatDate(transcript?.student?.created_on)}
                 </span>
@@ -144,7 +156,10 @@ const TranscriptHTMLView: React.FC<TranscriptHTMLViewProps> = ({ transcriptData 
 
             {/* Table Rows */}
             {transcript?.marks?.map((course) => (
-              <div key={course.id} className="flex border-b border-gray-300 last:border-b-0">
+              <div
+                key={course.id}
+                className="flex border-b border-gray-300 last:border-b-0"
+              >
                 <div className="w-[15%] text-xs p-3 text-left border-r border-gray-300">
                   {course.course.course_code}
                 </div>
@@ -174,7 +189,9 @@ const TranscriptHTMLView: React.FC<TranscriptHTMLViewProps> = ({ transcriptData 
           <div className="mt-6 p-2">
             <div className="flex justify-between mb-2">
               <span className="text-xs font-bold">Total Units:</span>
-              <span className="text-xs uppercase">{transcript?.marks?.length}</span>
+              <span className="text-xs uppercase">
+                {transcript?.marks?.length}
+              </span>
             </div>
           </div>
 
@@ -216,7 +233,8 @@ const TranscriptHTMLView: React.FC<TranscriptHTMLViewProps> = ({ transcriptData 
           {/* Footer */}
           <div className="mt-8 border-t border-gray-300 pt-4 text-center text-xs text-gray-500 space-y-1">
             <p>
-              This is an official transcript of the Kathangaita University of Science and Technology.
+              This is an official transcript of the Kathangaita University of
+              Science and Technology.
             </p>
             <p>This document is void if altered in any way.</p>
           </div>

@@ -1,40 +1,35 @@
-"use client";
+'use client';
 
-import Pagination from "@/components/common/Pagination";
-import { useFilters } from "@/hooks/useFilters";
-import { PAGE_SIZE } from "@/lib/constants";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+import Pagination from '@/components/common/Pagination';
+import { useFilters } from '@/hooks/useFilters';
+import { PAGE_SIZE } from '@/lib/constants';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMemo } from 'react';
 
-import DataTable, { Column } from "@/components/common/Table/DataTable";
-import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
+import DataTable, { Column } from '@/components/common/Table/DataTable';
+import ContentSpinner from '@/components/common/spinners/dataLoadingSpinner';
 
-import NoData from "@/components/common/NoData";
-import {
-  useGetVendorPaymentsQuery
-} from "@/store/services/finance/procurementService";
-import { formatCurrency } from "@/utils/currency";
-import { CustomDate } from "@/utils/date";
-import { VendorPaymentInterface } from "../../vendors/types";
-import PayVendor from "./PayVendor";
-
+import NoData from '@/components/common/NoData';
+import { useGetVendorPaymentsQuery } from '@/store/services/finance/procurementService';
+import { formatCurrency } from '@/utils/currency';
+import { CustomDate } from '@/utils/date';
+import { VendorPaymentInterface } from '../../vendors/types';
+import PayVendor from './PayVendor';
 
 const VendorPayments = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  
-  const { filters, currentPage, handlePageChange } =
-    useFilters({
-      initialFilters: {
-        reference: searchParams.get("reference") || "",
-        account: searchParams.get("account") || "",
-      },
-      initialPage: parseInt(searchParams.get("page") || "1", 10),
-      router,
-      debounceTime: 100,
-      debouncedFields: ["reference"],
-    });
+  const { filters, currentPage, handlePageChange } = useFilters({
+    initialFilters: {
+      reference: searchParams.get('reference') || '',
+      account: searchParams.get('account') || '',
+    },
+    initialPage: parseInt(searchParams.get('page') || '1', 10),
+    router,
+    debounceTime: 100,
+    debouncedFields: ['reference'],
+  });
 
   const queryParams = useMemo(
     () => ({
@@ -42,25 +37,29 @@ const VendorPayments = () => {
       page_size: PAGE_SIZE,
       ...filters,
     }),
-    [currentPage, filters]
+    [currentPage, filters],
   );
-  console.log("queryParams", queryParams);
+  console.log('queryParams', queryParams);
 
-  const { data, error, isLoading, refetch } = useGetVendorPaymentsQuery(queryParams, {
-    refetchOnMountOrArgChange: true,
-  });
-  console.log("data", data);
+  const { data, error, isLoading, refetch } = useGetVendorPaymentsQuery(
+    queryParams,
+    {
+      refetchOnMountOrArgChange: true,
+    },
+  );
+  console.log('data', data);
 
-  
   const columns: Column<VendorPaymentInterface>[] = [
     {
-      header: "Tender",
-      accessor: "tender_award",
-      cell: (item: VendorPaymentInterface) => <span>{item.tender_award.tender.title}</span>,
+      header: 'Tender',
+      accessor: 'tender_award',
+      cell: (item: VendorPaymentInterface) => (
+        <span>{item.tender_award.tender.title}</span>
+      ),
     },
     {
-      header: "Vendor",
-      accessor: "vendor",
+      header: 'Vendor',
+      accessor: 'vendor',
       cell: (item: VendorPaymentInterface) => (
         <span className="text-sm whitespace-normal break-words">
           {item.vendor.name}
@@ -68,58 +67,51 @@ const VendorPayments = () => {
       ),
     },
     {
-      header: "Payment Method",
-      accessor: "payment_method",
+      header: 'Payment Method',
+      accessor: 'payment_method',
       cell: (item: VendorPaymentInterface) => (
         <span>{item.payment_method}</span>
       ),
     },
 
-   
-
     {
-      header: "Amount",
-      accessor: "amount",
+      header: 'Amount',
+      accessor: 'amount',
       cell: (item: VendorPaymentInterface) => (
         <span>{formatCurrency(item.amount)}</span>
       ),
     },
     {
-      header: "Ref No",
-      accessor: "reference",
+      header: 'Ref No',
+      accessor: 'reference',
+      cell: (item: VendorPaymentInterface) => <span>{item.reference}</span>,
+    },
+    {
+      header: 'Paid On',
+      accessor: 'created_on',
       cell: (item: VendorPaymentInterface) => (
-        <span>
-          {item.reference} 
-        
-        </span>
+        <span>{CustomDate(item.created_on)}</span>
       ),
     },
     {
-      header: "Paid On",
-      accessor: "created_on",
+      header: 'Paid By',
+      accessor: 'paid_by',
       cell: (item: VendorPaymentInterface) => (
         <span>
-          {CustomDate(item.created_on)}
+          {item.paid_by.first_name} {item.paid_by.last_name} - (
+          {item.paid_by.role.name})
         </span>
       ),
     },
-    {
-      header: "Paid By",
-      accessor: "paid_by",
-      cell: (item: VendorPaymentInterface) => (
-        <span>
-          {item.paid_by.first_name} {item.paid_by.last_name} - ({item.paid_by.role.name})
-        </span>
-      ),
-    },
-    
   ];
   return (
     <div className=" w-full ">
       {/* Header */}
       <div className="mb-8 md:p-4 flex md:flex-row flex-col gap-4 md:gap-0 md:justify-between items-start">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Vendor Payments</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Vendor Payments
+          </h1>
           {/* <p className="text-gray-600">All Tenders</p> */}
         </div>
         <div className="">
@@ -174,7 +166,6 @@ const VendorPayments = () => {
           />
         )}
       </div>
-      
     </div>
   );
 };

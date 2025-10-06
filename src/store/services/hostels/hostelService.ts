@@ -1,4 +1,4 @@
-import { apiSlice } from "../../api/apiSlice";
+import { apiSlice } from '../../api/apiSlice';
 
 interface GetHostelsInterface {
   page?: number;
@@ -24,12 +24,11 @@ interface GetRoomsByHostelsInterface {
 interface GetRoomsOccupantsInterface {
   page?: number;
   page_size?: number;
-  room_id: string
+  room_id: string;
   search?: string;
   name?: string;
   reg_no?: string;
   room_no?: string;
-
 }
 interface GetBookingsInterface {
   page?: number;
@@ -39,7 +38,6 @@ interface GetBookingsInterface {
   reg_no?: string;
   hostel_room?: string;
   hostel?: string;
-
 }
 export const hostelsApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -66,7 +64,7 @@ export const hostelsApi = apiSlice.injectEndpoints({
 
         return {
           url: `hostels/list/`,
-          method: "GET",
+          method: 'GET',
           params: queryParams,
         };
       },
@@ -75,7 +73,7 @@ export const hostelsApi = apiSlice.injectEndpoints({
     createHostels: builder.mutation({
       query: (data) => ({
         url: `hostels/create/`,
-        method: "POST",
+        method: 'POST',
         body: data,
       }),
     }),
@@ -83,14 +81,14 @@ export const hostelsApi = apiSlice.injectEndpoints({
     updateHostel: builder.mutation({
       query: ({ id, data }) => ({
         url: `hostels/update/${id}/`,
-        method: "PATCH",
+        method: 'PATCH',
         body: data,
       }),
     }),
     getHostelDetails: builder.query({
       query: (id) => ({
         url: `hostel/details/${id}/`,
-        method: "GET",
+        method: 'GET',
       }),
     }),
 
@@ -119,7 +117,7 @@ export const hostelsApi = apiSlice.injectEndpoints({
 
         return {
           url: `hostels/${hostel_id}/rooms/`,
-          method: "GET",
+          method: 'GET',
           params: queryParams,
         };
       },
@@ -147,7 +145,7 @@ export const hostelsApi = apiSlice.injectEndpoints({
 
         return {
           url: `hostels/rooms/${room_id}/occupants/`,
-          method: "GET",
+          method: 'GET',
           params: queryParams,
         };
       },
@@ -160,8 +158,7 @@ export const hostelsApi = apiSlice.injectEndpoints({
         name,
         search,
         hostel,
-        hostel_room
-        
+        hostel_room,
       }: GetBookingsInterface) => {
         const queryParams: Record<
           string,
@@ -177,7 +174,7 @@ export const hostelsApi = apiSlice.injectEndpoints({
 
         return {
           url: `hostels/bookings/`,
-          method: "GET",
+          method: 'GET',
           params: queryParams,
         };
       },
@@ -186,61 +183,58 @@ export const hostelsApi = apiSlice.injectEndpoints({
     createHostelRoom: builder.mutation({
       query: (data) => ({
         url: `hostels/rooms/create/`,
-        method: "POST",
+        method: 'POST',
         body: data,
       }),
     }),
     updateHostelRoom: builder.mutation({
       query: ({ id, data }) => ({
         url: `hostels/rooms/${id}/update/`,
-        method: "PATCH",
+        method: 'PATCH',
         body: data,
       }),
     }),
 
-  
     updateHostelRoomBooking: builder.mutation({
       query: (id) => ({
         url: `hostels/bookings/${id}/update/`,
-        method: "PATCH",
+        method: 'PATCH',
       }),
     }),
     CreateHostelRoomBooking: builder.mutation({
       query: (data) => ({
         url: `hostels/bookings/create/`,
-        method: "POST",
+        method: 'POST',
         body: data,
       }),
     }),
     addHostelRoomOccupant: builder.mutation({
       query: (data) => ({
         url: `hostels/occupants/create/`,
-        method: "POST",
+        method: 'POST',
         body: data,
       }),
     }),
     removeHostelRoomOccupant: builder.mutation({
       query: (data) => ({
         url: `hostels/occupants/remove/`,
-        method: "POST",
+        method: 'POST',
         body: data,
       }),
     }),
     deletHostelRoom: builder.mutation({
       query: (id) => ({
         url: `hostels/rooms/${id}/delete/`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
     }),
     confirmHostelRoomBooking: builder.mutation({
-      query: ({id, data}) => ({
+      query: ({ id, data }) => ({
         url: `hostels/bookings/${id}/confirm-or-cancel/`,
-        method: "PATCH",
+        method: 'PATCH',
         body: data,
       }),
     }),
-
-    
   }),
 });
 
@@ -260,6 +254,4 @@ export const {
   useRemoveHostelRoomOccupantMutation,
   useDeletHostelRoomMutation,
   useGetHostelRoomBookingsQuery,
-
 } = hostelsApi;
-

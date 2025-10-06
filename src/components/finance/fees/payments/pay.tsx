@@ -1,47 +1,53 @@
 "use client";
+import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
+import SubmitSpinner from "@/components/common/spinners/submitSpinner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
+import { IoCloseOutline } from "react-icons/io5";
 import Select from "react-select";
 
-import {
-  InvoiceType,
-  paymentMethodOptions,
-} from "@/definitions/finance/fees/invoices";
-import { FeesPaymentSchema, FeesPaymentType } from "@/schemas/finance/fees";
+import { SemesterType } from "@/definitions/curiculum";
+import { paymentMethodOptions } from "@/definitions/finance/fees/invoices";
+import { LabelOptionsType } from "@/definitions/Labels/labelOptionsType";
+import { FeesPaymentFormData, payFeesBaseSchema } from "@/schemas/finance/fees";
+import { useGetSemestersQuery } from "@/store/services/curriculum/semestersService";
 import { usePayFeesMutation } from "@/store/services/finance/feesService";
+import { FiCreditCard } from "react-icons/fi";
+
 type SchoolOption = {
   value: string;
   label: string;
 };
 interface Props {
   refetchData: () => void;
-  data: InvoiceType;
 }
-const PayFees = ({ refetchData, data }: Props) => {
+const PayFees = ({ refetchData }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
-  const [isExpanded, setIsExpanded] = useState(false);
   const [isError, setIsError] = useState(false);
 
   const [payFees, { isLoading: isCreating }] = usePayFeesMutation();
-
+  const { data: semestersData } = useGetSemestersQuery(
+    {},
+    { refetchOnMountOrArgChange: true }
+  );
   const {
     register,
     handleSubmit,
     reset,
     setValue,
     formState: { isSubmitting, errors },
-  } = useForm<FeesPaymentType>({
-    resolver: zodResolver(FeesPaymentSchema),
+  } = useForm<FeesPaymentFormData>({
+    resolver: zodResolver(payFeesBaseSchema),
     defaultValues: {
       amount: 0,
       payment_method: "",
+      registration_number: "",
+      semester: undefined,
+      notes: "",
     },
   });
   useEffect(() => {
@@ -58,16 +64,11 @@ const PayFees = ({ refetchData, data }: Props) => {
     handleCloseModal();
   };
 
-  const onSubmit = async (formData: FeesPaymentType) => {
+  const onSubmit = async (formData: FeesPaymentFormData) => {
     console.log("submitting form data");
-    const payload = {
-        student: data.student_id,
-        semester: data.semester.id,
-        ...formData
-    }
-    console.log("payload", payload)
+    console.log("payload", formData);
     try {
-      const response = await payFees(payload).unwrap();
+      const response = await payFees(formData).unwrap();
       console.log("response", response);
       setIsError(false);
       setSuccessMessage("Payment Successful");
@@ -88,6 +89,14 @@ const PayFees = ({ refetchData, data }: Props) => {
       }
     }
   };
+  const handleSemesterChange = (selected: LabelOptionsType | null) => {
+    console.log("semester:", selected?.value, typeof selected?.value);
+
+    if (selected) {
+      const levelId = Number(selected.value);
+      setValue("semester", levelId);
+    }
+  };
   const handlePaymentMethodChange = (selected: SchoolOption | null) => {
     if (selected && selected.value) {
       setValue("payment_method", String(selected.value));
@@ -101,11 +110,12 @@ const PayFees = ({ refetchData, data }: Props) => {
         className="flex flex-col md:flex-row md:items-center gap-4 w-full md:w-auto"
       >
         <div
-          className="bg-green-600 inline-flex cursor-pointer w-max 
-         items-center space-x-2 text-white px-3 py-2 rounded-lg shadow-md hover:shadow-lg
-          hover:bg-green-800 transition duration-300"
+          className="bg-primary-600 inline-flex cursor-pointer w-max 
+         items-center space-x-2 text-white px-4 py-2 rounded-lg shadow-md hover:shadow-lg
+          hover:bg-primary-700 transition duration-300"
         >
-          <span className="text-xs font-medium">Pay</span>
+            <FiCreditCard className="h-4 w-4" />
+          <span className="text-sm font-medium">Make Payment</span>
         </div>
       </div>
 
@@ -129,73 +139,83 @@ const PayFees = ({ refetchData, data }: Props) => {
             <div
               className="relative transform justify-center animate-fadeIn max-h-[90vh]
                 overflow-y-auto rounded-md  bg-white text-left shadow-xl transition-all   
-                w-full sm:max-w-c-450 md:max-w-450 px-3"
+                w-full sm:max-w-c-500 md:max-w-500 px-3"
             >
               <>
                 <div className="sticky top-0 bg-white z-40 flex  px-4 justify-between items-center py-4 ">
                   <p className="text-sm md:text-lg lg:text-lg font-semibold ">
                     Make Fee Payment
                   </p>
-                </div>
-                <div className="mx-4 mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                  <div className="mb-3">
-                    <div className="flex justify-between items-start mb-2">
-                      <h3 className="text-sm font-semibold text-blue-800">
-                        Payment Information
-                      </h3>
-                    </div>
-                    <div className="text-sm text-gray-700 space-y-1">
-                      <p className="whitespace-normal break-words">
-                        <span className="font-medium">Student:</span>{" "}
-                        {data.student_name}
-                      </p>
-                      <p className="whitespace-normal break-words">
-                        <span className="font-medium">Registration No:</span>{" "}
-                        {data.student_reg_no}
-                      </p>
-                      <p className="whitespace-normal break-words">
-                        <span className="font-medium">Semester:</span>{" "}
-                        {data.semester?.name || "-"} {data.semester.academic_year}
-                      </p>
-                      <p className="whitespace-normal break-words">
-                        <span className="font-medium">
-                          Current Balance Due:
-                        </span>{" "}
-                        Ksh {data.bal_due?.toLocaleString() || "0"}
-                      </p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setIsExpanded(!isExpanded)}
-                      className="text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors"
-                    >
-                      {isExpanded ? "Show Less" : "Show More"}
-                    </button>
-                  </div>
-
-                  {isExpanded && (
-                    <div className="pt-3 border-t border-blue-200 animate-fadeIn">
-                      <h4 className="text-sm font-medium text-blue-800 mb-2">
-                        Payment Policy Notice
-                      </h4>
-                      <div className="text-xs text-gray-600 space-y-2">
-                        <p className="whitespace-normal break-words">
-                          • Payments will be applied to previous semester
-                          arrears first, if any exist.
-                        </p>
-                        <p className="whitespace-normal break-words">
-                          • Any remaining amount will be credited to the current
-                          semester fees.
-                        </p>
-                      </div>
-                    </div>
-                  )}
+                   <IoCloseOutline
+                    size={20}
+                    className="cursor-pointer"
+                    onClick={handleCloseModal}
+                  />
                 </div>
 
                 <form
                   onSubmit={handleSubmit(onSubmit)}
                   className="space-y-4   p-4 md:p-4 lg:p-4 "
                 >
+                  <div>
+                    <label className="block space-x-1  text-sm font-medium mb-2">
+                      Reg No.<span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      id="name"
+                      type="text"
+                      {...register("registration_number")}
+                      placeholder="Enter a valid reg number"
+                      className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
+                    />
+                    {errors.registration_number && (
+                      <p className="text-red-500 text-sm">
+                        {errors.registration_number.message}
+                      </p>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block space-x-1  text-sm font-medium mb-2">
+                      Semester Within Payment Date
+                      <span className="text-red-500">*</span>
+                    </label>
+                    <Select
+                      options={semestersData?.map((item: SemesterType) => ({
+                        value: item.id,
+                        label: `${item.name} ${item.academic_year.name} `,
+                      }))}
+                      menuPortalTarget={document.body}
+                      menuPlacement="auto"
+                      styles={{
+                        menuPortal: (base) => ({
+                          ...base,
+                          zIndex: 9999,
+                        }),
+                        control: (base) => ({
+                          ...base,
+                          minHeight: "24px",
+                          minWidth: "200px",
+                          borderColor: "#d1d5db",
+                          boxShadow: "none",
+                          "&:hover": {
+                            borderColor: "#9ca3af",
+                          },
+                          "&:focus-within": {
+                            borderColor: "#9ca3af",
+                            boxShadow: "none",
+                          },
+                        }),
+                      }}
+                      onChange={handleSemesterChange}
+                    />
+
+                    {errors.semester && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.semester.message}
+                      </p>
+                    )}
+                  </div>
                   <div>
                     <label className="block space-x-1  text-sm font-medium mb-2">
                       Amount<span className="text-red-500">*</span>
@@ -213,7 +233,8 @@ const PayFees = ({ refetchData, data }: Props) => {
                       </p>
                     )}
                   </div>
-                  <div>
+                  </div>
+                       <div>
                     <label className="block space-x-1  text-sm font-medium mb-2">
                       Payment Method
                     </label>
@@ -249,6 +270,24 @@ const PayFees = ({ refetchData, data }: Props) => {
                       </p>
                     )}
                   </div>
+                  <div>
+                    <label className="block space-x-1  text-sm font-medium mb-2">
+                      Transaction Reference Code(Mpesa or Bank if Availale)
+                    </label>
+                    <input
+                      id="receipt_number"
+                      type="text"
+                      {...register("reference")}
+                      placeholder="e.g THRMFERW"
+                      className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
+                    />
+                    {errors.reference && (
+                      <p className="text-red-500 text-sm">
+                        {errors.reference.message}
+                      </p>
+                    )}
+                  </div>
+             
 
                   <div className="sticky bottom-0 bg-white z-40 flex md:px-4  gap-4 md:justify-between items-center py-2 ">
                     <button

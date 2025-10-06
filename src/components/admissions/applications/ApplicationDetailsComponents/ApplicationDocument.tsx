@@ -1,14 +1,14 @@
-"use client";
-import ActionModal from "@/components/common/Modals/ActionModal";
-import { ApplicationType } from "@/definitions/admissions";
-import { handleApiError } from "@/lib/ApiError";
-import { useDeleteDocumentMutation } from "@/store/services/admissions/admissionsService";
-import React, { useState } from "react";
-import { FiTrash } from "react-icons/fi";
-import { LuDownload, LuFileText } from "react-icons/lu";
-import { toast } from "react-toastify";
-import ApplicationDocumentUpdateButton from "../Edit/EditApplicationDocument";
-import ApplicationDocumentUploadButton from "../New/NewApplicationDocument";
+'use client';
+import ActionModal from '@/components/common/Modals/ActionModal';
+import { ApplicationType } from '@/definitions/admissions';
+import { handleApiError } from '@/lib/ApiError';
+import { useDeleteDocumentMutation } from '@/store/services/admissions/admissionsService';
+import React, { useState } from 'react';
+import { FiTrash } from 'react-icons/fi';
+import { LuDownload, LuFileText } from 'react-icons/lu';
+import { toast } from 'react-toastify';
+import ApplicationDocumentUpdateButton from '../Edit/EditApplicationDocument';
+import ApplicationDocumentUploadButton from '../New/NewApplicationDocument';
 interface ApplicationDocumentsCardProps {
   applicationDetails: ApplicationType;
   refetchData: () => void;
@@ -21,7 +21,7 @@ const ApplicationDocumentsCard = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState<number | null>(null);
   const documents = applicationDetails.application_document || [];
-  console.log(documents, "documents");
+  console.log(documents, 'documents');
   const [deleteDocument, { isLoading: isDeleting }] =
     useDeleteDocumentMutation();
 
@@ -36,30 +36,30 @@ const ApplicationDocumentsCard = ({
   const handleDeleteDocument = async () => {
     try {
       await deleteDocument(selectedDocument).unwrap();
-      toast.success("Application deleted successfully!");
+      toast.success('Application deleted successfully!');
       closeActionModal();
       refetchData();
     } catch (error: unknown) {
-      handleApiError(error, "Deleting  document");
+      handleApiError(error, 'Deleting  document');
     }
   };
 
   const getFileName = (path: string) => {
-    if (!path) return "";
-    const parts = path.split("/");
+    if (!path) return '';
+    const parts = path.split('/');
     return parts[parts.length - 1];
   };
 
   const getDocumentTypeColor = (type: string) => {
     switch (type) {
-      case "Certificate":
-        return "bg-green-100 text-green-800";
-      case "Transcript":
-        return "bg-blue-100 text-blue-800";
-      case "Indentification":
-        return "bg-purple-100 text-purple-800";
+      case 'Certificate':
+        return 'bg-green-100 text-green-800';
+      case 'Transcript':
+        return 'bg-blue-100 text-blue-800';
+      case 'Indentification':
+        return 'bg-purple-100 text-purple-800';
       default:
-        return "bg-gray-100 text-gray-800";
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -123,7 +123,7 @@ const ApplicationDocumentsCard = ({
                     <td className="px-4 py-3 whitespace-nowrap">
                       <span
                         className={`px-2 py-1 inline-flex text-xs leading-5 font-medium rounded-full ${getDocumentTypeColor(
-                          document.document_type
+                          document.document_type,
                         )}`}
                       >
                         {document.document_type}

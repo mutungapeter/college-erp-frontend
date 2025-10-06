@@ -1,25 +1,20 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { IoCloseOutline } from "react-icons/io5";
-import { LuNotebookPen } from "react-icons/lu";
-import Select from "react-select";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { IoCloseOutline } from 'react-icons/io5';
+import { LuNotebookPen } from 'react-icons/lu';
+import Select from 'react-select';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
 
-
-
-import { BookType, Member } from "@/definitions/library";
-import {
-  IssueBookSchema,
-  IssueBookType
-} from "@/schemas/library/main";
+import { BookType, Member } from '@/definitions/library';
+import { IssueBookSchema, IssueBookType } from '@/schemas/library/main';
 import {
   useGetMembersQuery,
   useIssueBookMutation,
-} from "@/store/services/library/libraryService";
+} from '@/store/services/library/libraryService';
 
 type SelectOption = {
   value: string | number;
@@ -34,14 +29,14 @@ interface IssueBookProps {
 const IssueBook = ({ refetchData, data }: IssueBookProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
   const [issueBook, { isLoading: isCreating }] = useIssueBookMutation();
 
   const { data: membersData } = useGetMembersQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
 
   const {
@@ -55,7 +50,7 @@ const IssueBook = ({ refetchData, data }: IssueBookProps) => {
   });
 
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -74,7 +69,7 @@ const IssueBook = ({ refetchData, data }: IssueBookProps) => {
   const handleMemberChange = (selected: SelectOption | null) => {
     if (selected) {
       const memberId = Number(selected.value);
-      setValue("member", memberId);
+      setValue('member', memberId);
     }
   };
 
@@ -84,26 +79,26 @@ const IssueBook = ({ refetchData, data }: IssueBookProps) => {
       book: data?.id,
       due_date: new Date(formData.due_date).toISOString().split('T')[0],
     };
-    console.log("submitting form data", submissionData);
+    console.log('submitting form data', submissionData);
 
     try {
       const response = await issueBook(submissionData).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Book issued successfully!");
+      setSuccessMessage('Book issued successfully!');
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(`Failed to issue book: ${errorData.error}`);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occurred. Please try again.");
+        setSuccessMessage('Unexpected error occurred. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -111,26 +106,22 @@ const IssueBook = ({ refetchData, data }: IssueBookProps) => {
 
   return (
     <>
-<div
-      onClick={handleOpenModal}
-      className="relative group"
-    >
-      <div
-        className="bg-green-100 inline-flex cursor-pointer p-2
+      <div onClick={handleOpenModal} className="relative group">
+        <div
+          className="bg-green-100 inline-flex cursor-pointer p-2
          items-center justify-center text-green-700 rounded-xl hover:bg-green-700 hover:text-white transition duration-300"
-        title="Issue Book" 
-      >
-      
-        <LuNotebookPen className="text-sm" />
-      </div>
-    
-      {/* <div className="absolute bottom-full left-1/2 transform 
+          title="Issue Book"
+        >
+          <LuNotebookPen className="text-sm" />
+        </div>
+
+        {/* <div className="absolute bottom-full left-1/2 transform 
       -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs
        rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 
        pointer-events-none whitespace-nowrap">
         Issue Book
       </div> */}
-    </div>
+      </div>
 
       {isOpen && (
         <div
@@ -237,21 +228,21 @@ const IssueBook = ({ refetchData, data }: IssueBookProps) => {
                           menuPortal: (base) => ({
                             ...base,
                             zIndex: 10000,
-                            overflow: "visible",
-                            maxHeight: "300px",
+                            overflow: 'visible',
+                            maxHeight: '300px',
                           }),
                           control: (base) => ({
                             ...base,
-                            minHeight: "26px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
+                            minHeight: '26px',
+                            minWidth: '200px',
+                            borderColor: '#d1d5db',
+                            boxShadow: 'none',
+                            '&:hover': {
+                              borderColor: '#9ca3af',
                             },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
+                            '&:focus-within': {
+                              borderColor: '#9ca3af',
+                              boxShadow: 'none',
                             },
                           }),
                         }}
@@ -286,7 +277,7 @@ const IssueBook = ({ refetchData, data }: IssueBookProps) => {
                       <input
                         type="date"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
-                        {...register("due_date")}
+                        {...register('due_date')}
                       />
                       {errors.due_date && (
                         <p className="text-red-500 text-sm mt-1">
@@ -297,7 +288,7 @@ const IssueBook = ({ refetchData, data }: IssueBookProps) => {
                   </div>
 
                   <div className="sticky bottom-0 bg-white z-40 flex space-x-3 gap-4 md:justify-between items-center py-3">
-                   <button
+                    <button
                       type="button"
                       onClick={handleCloseModal}
                       className="border border-red-500 bg-white shadow-sm text-red-700 py-2 text-sm px-4 rounded-md w-full min-w-[100px] md:w-auto hover:bg-red-500 hover:text-white "

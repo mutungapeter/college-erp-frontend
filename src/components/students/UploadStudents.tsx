@@ -1,21 +1,29 @@
-import { useEffect, useRef, useState } from "react";
-import { FiCheckCircle, FiUpload, FiUploadCloud, FiX } from "react-icons/fi";
-import { PiSpinnerGap } from "react-icons/pi";
-import { toast } from "react-toastify";
+import { useEffect, useRef, useState } from 'react';
+import { FiCheckCircle, FiUploadCloud, FiX } from 'react-icons/fi';
+import { toast } from 'react-toastify';
 
-import { uploadStudentSchema } from "@/schemas/students/main";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { uploadStudentSchema } from '@/schemas/students/main';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import { CampusType, ProgrammeCohortType, ProgrammeType } from "@/definitions/curiculum";
-import { useGetCampusesQuery } from "@/store/services/curriculum/campusService";
-import { useGetCohortsQuery } from "@/store/services/curriculum/cohortsService";
-import { useGetProgrammesQuery } from "@/store/services/curriculum/programmesService";
-import { useUploadStudentsMutation } from "@/store/services/students/studentsService";
-import { useForm } from "react-hook-form";
-import Select from "react-select";
-import { z } from "zod";
-import IconButton from "../common/IconButton";
+import {
+  CampusType,
+  ProgrammeCohortType,
+  ProgrammeType,
+} from '@/definitions/curiculum';
+import { useGetCampusesQuery } from '@/store/services/curriculum/campusService';
+import { useGetCohortsQuery } from '@/store/services/curriculum/cohortsService';
+import { useGetProgrammesQuery } from '@/store/services/curriculum/programmesService';
+import { useGetUserRolesQuery } from '@/store/services/permissions/permissionsService';
+import { useUploadStudentsMutation } from '@/store/services/students/studentsService';
+import { getApiErrorMessage } from '@/utils/errorHandler';
+import { useForm } from 'react-hook-form';
+import { IoCloseOutline } from 'react-icons/io5';
+import { MdOutlineCloudUpload } from 'react-icons/md';
+import Select from 'react-select';
+import { z } from 'zod';
+import { RoleType } from '../accounts/permissions/types';
+import CreateAndUpdateButton from '../common/CreateAndUpdateButton';
+import SubmitSpinner from '../common/spinners/submitSpinner';
 interface Props {
   refetchData: () => void;
 }
@@ -28,36 +36,35 @@ const StudentUploadButton = ({ refetchData }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [error, setError] = useState<string>("");
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [error, setError] = useState<string>('');
+
+ 
   const [uploadStudents, { isLoading: isUploading }] =
     useUploadStudentsMutation();
   const { data: programmesData } = useGetProgrammesQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
   const { data: cohortsData } = useGetCohortsQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
   const { data: campusData } = useGetCampusesQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
+  );
+  const { data: rolesData } = useGetUserRolesQuery(
+    {},
+    { refetchOnMountOrArgChange: true },
   );
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
     setIsModalOpen(false);
     setFile(null);
-    setError("");
+    setError('');
     reset();
   };
-  const handleCloseSuccessModal = () => {
-    setShowSuccessModal(false);
-    setIsError(false);
-    closeModal();
-  };
+ 
   const {
     setValue,
     reset,
@@ -68,36 +75,41 @@ const StudentUploadButton = ({ refetchData }: Props) => {
     resolver: zodResolver(uploadStudentSchema),
   });
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleProgrammeChange = (selected: SelectOption | null) => {
     if (selected) {
       const progId = Number(selected.value);
-      setValue("programme", progId);
+      setValue('programme', progId);
     }
   };
   const handleCohortChange = (selected: SelectOption | null) => {
     if (selected) {
-      const cohortId= Number(selected.value);
-      setValue("cohort", cohortId);
+      const cohortId = Number(selected.value);
+      setValue('cohort', cohortId);
     }
   };
   const handleCampusChange = (selected: SelectOption | null) => {
     if (selected) {
-      const campusId= Number(selected.value);
-      setValue("campus", campusId);
+      const campusId = Number(selected.value);
+      setValue('campus', campusId);
     }
   };
-
+  const handleRoleChange = (selected: SelectOption | null) => {
+    if (selected) {
+      const itemId = Number(selected.value);
+      setValue('role', itemId);
+    }
+  };
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
-    setError("");
+    setError('');
 
     if (!selectedFile) return;
 
     setFile(selectedFile);
-    setValue("file", selectedFile, {
+    setValue('file', selectedFile, {
       shouldValidate: true,
       shouldDirty: true,
     });
@@ -105,13 +117,13 @@ const StudentUploadButton = ({ refetchData }: Props) => {
 
   const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    setError("");
+    setError('');
 
     const selectedFile = e.dataTransfer.files[0];
     if (!selectedFile) return;
 
     setFile(selectedFile);
-    setValue("file", selectedFile, {
+    setValue('file', selectedFile, {
       shouldValidate: true,
       shouldDirty: true,
     });
@@ -123,51 +135,46 @@ const StudentUploadButton = ({ refetchData }: Props) => {
 
   const onSubmit = async (data: FormValues) => {
     if (!file) {
-      setError("Please select a file to upload");
+      setError('Please select a file to upload');
       return;
     }
 
     const formData = new FormData();
-    formData.append("file", file);
-    formData.append("programme", String(data.programme));
-    formData.append("cohort", String(data.cohort));
-    formData.append("campus", String(data.campus));
-    console.log("formData", formData);
+    formData.append('file', file);
+    formData.append('programme', String(data.programme));
+    formData.append('cohort', String(data.cohort));
+    formData.append('campus', String(data.campus));
+    formData.append('role', String(data.role));
+    console.log('formData', formData);
     try {
       const response = await uploadStudents(formData).unwrap();
-      console.log("response", response);
+      console.log('response', response);
 
-      setSuccessMessage(
-        `Upload complete! ${response.count} student(s) Uploaded, ${response.failed_count} failed.`
+      // setSuccessMessage(
+      //   `Upload complete! ${response.count} student(s) Uploaded, ${response.failed_count} failed.`
+      // );
+      toast.success(
+        `Upload complete! ${response.count} student(s) Uploaded, ${response.failed_count} failed.`,
       );
+      // setShowSuccessModal(true);
 
-      setShowSuccessModal(true);
-      setIsError(false);
       refetchData();
       setFile(null);
-      setError("");
+      setError('');
       reset();
+      closeModal();
     } catch (error: unknown) {
-      console.log("error", error);
-      setIsError(true);
+      console.log('error', error);
+   
       setError(
-        "Failed to upload Students,confirm that all required data is included in the uploaded file."
+        'Failed to upload Students,confirm that all required data is included in the uploaded file.',
       );
-      if (error && typeof error === "object" && "data" in error && error.data) {
-        const errorData = (error as { data: { error: string } }).data;
-        console.log("errorData", errorData);
+      closeModal();
 
-        const msg =
-          errorData.error ||
-          "Students upload failed.Look for duplicate entries.";
-        setSuccessMessage(msg);
-        setShowSuccessModal(true);
-      } else {
-        toast.error("Unexpected erorr occured. Please try again.");
-      }
+      toast.error(getApiErrorMessage(error));
     } finally {
       setFile(null);
-      setError("");
+      setError('');
     }
   };
 
@@ -179,294 +186,375 @@ const StudentUploadButton = ({ refetchData }: Props) => {
 
   return (
     <>
-    <IconButton
-            onClick={openModal}
-            title="Add New"
-            label="Upload Students"
-            icon={<FiUploadCloud className="w-4 h-4" />}
-                    className="flex items-center space-x-2 px-4 py-2 border-2 border-secondary-500 text-secondary-600 hover:bg-secondary-50 hover:border-secondary-600 hover:text-secondary-700 rounded-md transition duration-300 cursor-pointer"
-
-          />
-     {/* <div
+      <CreateAndUpdateButton
         onClick={openModal}
-        className="flex items-center space-x-2 px-4 py-2 border-2 border-secondary-500 text-secondary-600 hover:bg-secondary-50 hover:border-secondary-600 hover:text-secondary-700 rounded-md transition duration-300 cursor-pointer"
-      >
-        <FiUploadCloud className="w-4 h-4" />
-        <span className="text-sm">Upload Students</span>
-      </div>
-      <div
-        onClick={openModal}
-        className="flex items-center space-x-2 md:p-2 p-1 bg-blue-600
-         hover:bg-blue-700 text-white   rounded-md transition duration-300 shadow-sm cursor-pointer"
-      >
-        <FiUpload className="text-sm" />
-        <span className="text-xs">Upload Students</span>
-      </div> */}
+        // title="Add New"
+        label="Upload Students"
+        icon={<FiUploadCloud className="text-xl" />}
+        className="flex items-center space-x-2 px-4 py-2 border-2
+         border-primary-500 text-primary-600
+          hover:bg-primary-50 hover:border-primary-600
+          focus:outline-none
+           hover:text-primary-700 rounded-md transition duration-300 
+           cursor-pointer"
+      />
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6 relative">
-            <button
-              onClick={closeModal}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+        <div
+          className="relative z-9999 animate-fadeIn"
+          aria-labelledby="modal-title"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div
+            onClick={closeModal}
+            className="fixed inset-0 bg-black bg-opacity-50 transition-opacity animate-fadeIn"
+            aria-hidden="true"
+          ></div>
+
+          <div
+            className="fixed inset-0 min-h-full z-100 w-screen flex flex-col text-center md:items-center
+               justify-center overflow-y-auto p-2 md:p-3"
+          >
+            <div
+              className="relative transform justify-center font-inter animate-fadeIn max-h-[90vh]
+                    overflow-y-auto rounded-2xl bg-white text-left shadow-xl transition-all   
+                    w-full sm:max-w-c-500 md:max-w-500 px-3"
             >
-              <FiX size={20} />
-            </button>
-
-            <h3 className="text-xl font-bold text-gray-800 mb-6">
-              Upload Bulky Students
-            </h3>
-
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              encType="multipart/form-data"
-              className="space-y-4"
-            >
-              <div>
-                <div className="relative">
-                  <label className="block space-x-1 text-sm font-medium mb-2">
-                    Course<span className="text-red-500">*</span>
-                  </label>
-                  <Select
-                    options={programmesData?.map((item: ProgrammeType) => ({
-                      value: item.id,
-                      label: `${item.name}(${item.level})`,
-                    }))}
-                    menuPortalTarget={document.body}
-                    menuPlacement="auto"
-                    styles={{
-                      menuPortal: (base) => ({
-                        ...base,
-                        zIndex: 9999,
-                      }),
-                      control: (base) => ({
-                        ...base,
-                        minHeight: "44px",
-                        minWidth: "200px",
-                        borderColor: "#d1d5db",
-                        boxShadow: "none",
-                        "&:hover": {
-                          borderColor: "#9ca3af",
-                        },
-                        "&:focus-within": {
-                          borderColor: "#9ca3af",
-                          boxShadow: "none",
-                        },
-                      }),
-                    }}
-                    onChange={handleProgrammeChange}
-                  />
-
-                  {errors.programme && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.programme.message}
-                    </p>
-                  )}
-                </div>
-              </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2  gap-4">
-
-              <div className="relative">
-                <div className="relative">
-                  <label className="block space-x-1 text-sm font-medium mb-2">
-                    Class<span className="text-red-500">*</span>
-                  </label>
-                  <Select
-                    options={cohortsData?.map((item: ProgrammeCohortType) => ({
-                      value: item.id,
-                      label: `${item.name}(${item.current_year} ${item.current_semester.name})`,
-                    }))}
-                    menuPortalTarget={document.body}
-                    menuPlacement="auto"
-                    // menuPosition="absolute"
-                    styles={{
-                      menuPortal: (base) => ({
-                        ...base,
-                        zIndex: 9999,
-                      }),
-                      control: (base) => ({
-                        ...base,
-                        minHeight: "44px",
-                        minWidth: "200px",
-                        borderColor: "#d1d5db",
-                        boxShadow: "none",
-                        "&:hover": {
-                          borderColor: "#9ca3af",
-                        },
-                        "&:focus-within": {
-                          borderColor: "#9ca3af",
-                          boxShadow: "none",
-                        },
-                      }),
-                    }}
-                    onChange={handleCohortChange}
-                  />
-
-                  {errors.cohort && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.cohort.message}
-                    </p>
-                  )}
-                </div>
-              </div>
-                 <div className="relative">
-                <div className="relative">
-                  <label className="block space-x-1 text-sm font-medium mb-2">
-                    Campus<span className="text-red-500">*</span>
-                  </label>
-                  <Select
-                    options={campusData?.map((item: CampusType) => ({
-                      value: item.id,
-                      label: `${item.name}`,
-                    }))}
-                    menuPortalTarget={document.body}
-                    menuPlacement="auto"
-                    // menuPosition="absolute"
-                    styles={{
-                      menuPortal: (base) => ({
-                        ...base,
-                        zIndex: 9999,
-                      }),
-                      control: (base) => ({
-                        ...base,
-                        minHeight: "44px",
-                        minWidth: "200px",
-                        borderColor: "#d1d5db",
-                        boxShadow: "none",
-                        "&:hover": {
-                          borderColor: "#9ca3af",
-                        },
-                        "&:focus-within": {
-                          borderColor: "#9ca3af",
-                          boxShadow: "none",
-                        },
-                      }),
-                    }}
-                    onChange={handleCampusChange}
-                  />
-
-                  {errors.campus && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.campus.message}
-                    </p>
-                  )}
-                </div>
-              </div>
+              <>
+                <div
+                  className="sticky top-0 bg-white z-40 
+                    flex  px-4 justify-between items-center py-6"
+                >
+                  <p className="text-sm md:text-lg lg:text-lg font-semibold">
+                    Upload students
+                  </p>
+                  <div className="flex justify-end cursor-pointer">
+                    <IoCloseOutline
+                      size={20}
+                      onClick={closeModal}
+                      className="text-gray-500"
+                    />
                   </div>
-              <div
-                className={`border-2 border-dashed rounded-lg p-8 flex flex-col items-center justify-center cursor-pointer mb-6
+                </div>
+
+                <form
+                  onSubmit={handleSubmit(onSubmit)}
+                  encType="multipart/form-data"
+                  className="space-y-4 px-3"
+                >
+                  <div>
+                    <div className="relative">
+                      <label className="block space-x-1 text-sm font-medium mb-2">
+                        Course<span className="text-red-500">*</span>
+                      </label>
+                      <Select
+                        options={programmesData?.map((item: ProgrammeType) => ({
+                          value: item.id,
+                          label: `${item.name}(${item.level})`,
+                        }))}
+                        menuPortalTarget={document.body}
+                        menuPlacement="auto"
+                        styles={{
+                          menuPortal: (base) => ({
+                            ...base,
+                            zIndex: 9999,
+                          }),
+                          control: (base) => ({
+                            ...base,
+                            minHeight: '24px',
+                            minWidth: '200px',
+                            borderColor: '#d1d5db',
+                            boxShadow: 'none',
+                            '&:hover': {
+                              borderColor: '#9ca3af',
+                            },
+                            '&:focus-within': {
+                              borderColor: '#9ca3af',
+                              boxShadow: 'none',
+                            },
+                          }),
+                        }}
+                        onChange={handleProgrammeChange}
+                      />
+
+                      {errors.programme && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.programme.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2  gap-4">
+                    <div className="relative">
+                      <div className="relative">
+                        <label className="block space-x-1 text-sm font-medium mb-2">
+                          Class<span className="text-red-500">*</span>
+                        </label>
+                        <Select
+                          options={cohortsData?.map(
+                            (item: ProgrammeCohortType) => ({
+                              value: item.id,
+                              label: `${item.name} ${
+                                item?.current_year ?? ''
+                              } ${item?.current_semester?.name ?? ''}`,
+                            }),
+                          )}
+                          menuPortalTarget={document.body}
+                          menuPlacement="auto"
+                          // menuPosition="absolute"
+                          styles={{
+                            menuPortal: (base) => ({
+                              ...base,
+                              zIndex: 9999,
+                            }),
+                            control: (base) => ({
+                              ...base,
+                              minHeight: '24px',
+                              minWidth: '200px',
+                              borderColor: '#d1d5db',
+                              boxShadow: 'none',
+                              '&:hover': {
+                                borderColor: '#9ca3af',
+                              },
+                              '&:focus-within': {
+                                borderColor: '#9ca3af',
+                                boxShadow: 'none',
+                              },
+                            }),
+                          }}
+                          onChange={handleCohortChange}
+                        />
+
+                        {errors.cohort && (
+                          <p className="text-red-500 text-sm mt-1">
+                            {errors.cohort.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="relative">
+                      <div className="relative">
+                        <label className="block space-x-1 text-sm font-medium mb-2">
+                          Campus<span className="text-red-500">*</span>
+                        </label>
+                        <Select
+                          options={campusData?.map((item: CampusType) => ({
+                            value: item.id,
+                            label: `${item.name}`,
+                          }))}
+                          menuPortalTarget={document.body}
+                          menuPlacement="auto"
+                          // menuPosition="absolute"
+                          styles={{
+                            menuPortal: (base) => ({
+                              ...base,
+                              zIndex: 9999,
+                            }),
+                            control: (base) => ({
+                              ...base,
+                              minHeight: '24px',
+                              minWidth: '200px',
+                              borderColor: '#d1d5db',
+                              boxShadow: 'none',
+                              '&:hover': {
+                                borderColor: '#9ca3af',
+                              },
+                              '&:focus-within': {
+                                borderColor: '#9ca3af',
+                                boxShadow: 'none',
+                              },
+                            }),
+                          }}
+                          onChange={handleCampusChange}
+                        />
+
+                        {errors.campus && (
+                          <p className="text-red-500 text-sm mt-1">
+                            {errors.campus.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="pb-3 border-b mt-5">
+                    <h2 className="text-lg font-semibold">
+                      Student Portal Access Permission
+                    </h2>
+                    <p className="text-sm text-gray-600 mt-1">
+                      Enrolling a student here will automatically create their
+                      student account for accessing the university student
+                      portal. Selecting a role is{' '}
+                      <span className="font-semibold">mandatory </span>
+                      because it determines their level of access. Once
+                      enrolled, the student will receive their login credentials
+                      and a temporary password sent to their registered email
+                      address.
+                    </p>
+                  </div>
+                  <div className="relative">
+                    <label className="block space-x-1 text-sm font-medium mb-2">
+                      Role<span className="text-red-500">*</span>
+                    </label>
+                    <Select
+                      options={rolesData?.map((item: RoleType) => ({
+                        value: item.id,
+                        label: `${item?.name}`,
+                      }))}
+                      menuPortalTarget={document.body}
+                      menuPlacement="auto"
+                      // menuPosition="absolute"
+                      styles={{
+                        menuPortal: (base) => ({
+                          ...base,
+                          zIndex: 10000,
+                          overflow: 'visible',
+                          maxHeight: '300px',
+                          paddingY: '20px',
+                        }),
+                        control: (base) => ({
+                          ...base,
+                          minHeight: '24px',
+                          minWidth: '200px',
+                          borderColor: '#d1d5db',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: '#9ca3af',
+                          },
+                          '&:focus-within': {
+                            borderColor: '#9ca3af',
+                            boxShadow: 'none',
+                          },
+                        }),
+                      }}
+                      onChange={handleRoleChange}
+                    />
+
+                    {errors.role && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.role.message}
+                      </p>
+                    )}
+                  </div>
+                  <label className="block space-x-1 text-sm font-medium mb-2">
+                    Csv File <span className="text-red-500">*</span>
+                  </label>
+                  <div
+                    className={`border-2 border-dashed rounded-lg p-8 flex flex-col items-center justify-center cursor-pointer mb-6
                   ${
                     file
-                      ? "border-green-400 bg-green-50"
+                      ? 'border-primary bg-primary-50'
                       : error
-                      ? "border-red-400 bg-red-50"
-                      : "border-gray-300 hover:border-blue-400 hover:bg-blue-50"
+                        ? 'border-red-400 bg-red-50'
+                        : 'border-gray-300 hover:border-primary hover:bg-primary-50'
                   }`}
-                onClick={triggerFileInput}
-                onDrop={onDrop}
-                onDragOver={onDragOver}
-              >
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleFileChange}
-                  className="hidden"
-                  accept=".csv,.xls,.xlsx"
-                />
-
-                {file ? (
-                  <>
-                    <div className="flex flex-col items-center relative w-full">
-                      <FiCheckCircle className="text-green-500 text-4xl mb-3" />
-                      <p className="text-gray-700 font-medium">{file.name}</p>
-                      <p className="text-gray-500 text-sm mt-1">
-                        {(file.size / 1024).toFixed(2)} KB
-                      </p>
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setFile(null);
-                        }}
-                        className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
-                      >
-                        <FiX size={16} />
-                      </button>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <FiUpload
-                      className={`text-4xl mb-3 ${
-                        error ? "text-red-500" : "text-blue-500"
-                      }`}
+                    onClick={triggerFileInput}
+                    onDrop={onDrop}
+                    onDragOver={onDragOver}
+                  >
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleFileChange}
+                      className="hidden"
+                      accept=".csv,.xls,.xlsx"
                     />
-                    <p className="text-gray-700 font-medium">
-                      Click to select or drag a file here
-                    </p>
-                    <p className="text-gray-500 text-sm mt-1">
-                      Supported formats: CSV, Excel (.xls, .xlsx)
-                    </p>
-                  </>
-                )}
-              </div>
 
-              {error && (
-                <div className="text-red-600 text-sm mb-4 bg-red-50 p-2 rounded border border-red-200">
-                  {error}
-                </div>
-              )}
+                    {file ? (
+                      <>
+                        <div className="flex flex-col items-center relative w-full">
+                          <FiCheckCircle className="text-green-500 text-4xl mb-3" />
+                          <p className="text-gray-700 font-medium">
+                            {file.name}
+                          </p>
+                          <p className="text-gray-500 text-sm mt-1">
+                            {(file.size / 1024).toFixed(2)} KB
+                          </p>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setFile(null);
+                            }}
+                            className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
+                          >
+                            <FiX size={16} />
+                          </button>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <MdOutlineCloudUpload
+                          className={`text-4xl mb-3 ${
+                            error ? 'text-red-500' : 'text-primary'
+                          }`}
+                        />
+                        <p className="text-gray-700 font-medium">
+                          Click to select or drag a file here
+                        </p>
+                        <p className="text-gray-500 text-sm mt-1">
+                          Supported formats: CSV
+                        </p>
+                      </>
+                    )}
+                  </div>
 
-              <div className="mb-6 text-center">
-                <a
-                  href="/students.csv"
-                  download
-                  className="text-blue-600 hover:text-blue-800 text-sm underline"
-                >
-                  Download template file
-                </a>
-              </div>
+                  {error && (
+                    <div className="text-red-600 text-sm mb-4 bg-red-50 p-2 rounded border border-red-200">
+                      {error}
+                    </div>
+                  )}
 
-              <div className="flex justify-between gap-3">
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 font-medium"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={!file || isSubmitting || isUploading}
-                  className={`px-4 py-2 rounded-md text-white font-medium flex items-center gap-2
+                  <div className="mb-6 text-center">
+                    <a
+                      href="/students.csv"
+                      download
+                      className="text-primary hover:text-primary-800 text-sm underline"
+                    >
+                      Download template file
+                    </a>
+                  </div>
+                  {/* <ModalBottomButton
+                    onCancel={closeModal}
+                    isSubmitting={isSubmitting}
+                    isProcessing={isUploading}
+                  /> */}
+                  <div className="flex justify-between bg-white sticky bottom-0 py-3 px-3 gap-3">
+                    <button
+                      type="button"
+                      onClick={closeModal}
+                      className="px-4 py-2 border min-w-[120px] border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 font-medium"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={!file || isSubmitting || isUploading}
+                      className={`px-4 py-2 rounded-md text-white min-w-[120px] font-medium flex items-center gap-2
                     ${
                       !file || isUploading
-                        ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-blue-600 hover:bg-blue-700"
+                        ? 'bg-gray-400 cursor-not-allowed'
+                        : 'bg-primary hover:bg-primary-700'
                     }`}
-                >
-                  {isUploading ? (
-                    <>
-                      <PiSpinnerGap className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" />
-                      Uploading...
-                    </>
-                  ) : (
-                    <>
-                      <FiUpload />
-                      Upload
-                    </>
-                  )}
-                </button>
-              </div>
-            </form>
+                    >
+                      {isUploading ? (
+                        <>
+                          <SubmitSpinner />
+                        </>
+                      ) : (
+                        <>
+                          <MdOutlineCloudUpload />
+                          Upload
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              </>
+            </div>
+
+            
           </div>
-          {showSuccessModal && (
-            <SuccessFailModal
-              message={successMessage}
-              onClose={handleCloseSuccessModal}
-              isError={isError}
-            />
-          )}
         </div>
       )}
     </>

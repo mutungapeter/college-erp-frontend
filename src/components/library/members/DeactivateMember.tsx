@@ -1,15 +1,15 @@
-"use client";
-import { useState } from "react";
-import { FiInfo } from "react-icons/fi";
-import { IoCloseOutline } from "react-icons/io5";
+'use client';
+import { useState } from 'react';
+import { FiInfo } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
 
-import { MemberType } from "@/definitions/library";
-import { useDeactivateMemberMutation } from "@/store/services/library/libraryService";
-import { YearMonthCustomDate } from "@/utils/date";
-import { MdBlock } from "react-icons/md";
+import { MemberType } from '@/definitions/library';
+import { useDeactivateMemberMutation } from '@/store/services/library/libraryService';
+import { YearMonthCustomDate } from '@/utils/date';
+import { MdBlock } from 'react-icons/md';
 
 interface Props {
   data: MemberType | null;
@@ -19,13 +19,11 @@ interface Props {
 const DeactivateLibraryMember = ({ refetchData, data }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
   const [deactivateMember, { isLoading: isCreating }] =
     useDeactivateMemberMutation();
-
-  
 
   const handleCloseModal = () => {
     setIsOpen(false);
@@ -44,27 +42,26 @@ const DeactivateLibraryMember = ({ refetchData, data }: Props) => {
 
     try {
       const response = await deactivateMember(memberId).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Member Deactivated successfully!");
+      setSuccessMessage('Member Deactivated successfully!');
       setShowSuccessModal(true);
 
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(`Failed to Deactivate member: ${errorData.error}`);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occurred. Please try again.");
+        setSuccessMessage('Unexpected error occurred. Please try again.');
         setShowSuccessModal(true);
       }
     }
   };
-
 
   return (
     <>
@@ -74,7 +71,7 @@ const DeactivateLibraryMember = ({ refetchData, data }: Props) => {
            w-fit text-red-700 rounded-xl hover:bg-red-700 hover:text-white transition duration-300"
           title="Request Fine Payment"
         >
-          <MdBlock  className="text-sm" />
+          <MdBlock className="text-sm" />
         </div>
 
         {/* <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">
@@ -167,8 +164,8 @@ const DeactivateLibraryMember = ({ refetchData, data }: Props) => {
                           <span
                             className={`inline-block px-2 py-1 text-xs font-medium rounded-full ${
                               data?.active
-                                ? "bg-green-100 text-green-800"
-                                : "bg-red-100 text-red-800"
+                                ? 'bg-green-100 text-green-800'
+                                : 'bg-red-100 text-red-800'
                             }`}
                           >
                             {data?.status_text}
@@ -178,7 +175,7 @@ const DeactivateLibraryMember = ({ refetchData, data }: Props) => {
                           <p className="text-gray-600 font-semibold">
                             Date Joined
                           </p>
-                          <p>{YearMonthCustomDate(data?.date_joined || "")}</p>
+                          <p>{YearMonthCustomDate(data?.date_joined || '')}</p>
                         </div>
                       </div>
                     </div>
@@ -198,7 +195,7 @@ const DeactivateLibraryMember = ({ refetchData, data }: Props) => {
                       disabled={isCreating}
                       className="bg-green-600 text-white py-2 hover:bg-green-700 text-sm px-4 rounded-md w-full min-w-[140px] md:w-auto disabled:bg-gray-400"
                     >
-                      { isCreating ? (
+                      {isCreating ? (
                         <span className="flex items-center justify-center">
                           <SubmitSpinner />
                           <span>Deactivating...</span>

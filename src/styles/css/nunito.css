@@ -2,7 +2,6 @@
 
 /* Nunito */
 
-
 @font-face {
   font-family: 'Nunito';
   src: url('../fonts/Nunito/static/Nunito-ExtraLight.ttf') format('truetype');
@@ -60,7 +59,6 @@
 }
 
 /* Nunito Sans */
-
 
 /* Pacifico */
 @font-face {
@@ -122,7 +120,7 @@
 
 @font-face {
   font-family: 'Roboto';
-  src: url('../fonts/Roboto/static/Roboto-BlackItalic.ttf') format('truetype'); 
+  src: url('../fonts/Roboto/static/Roboto-BlackItalic.ttf') format('truetype');
   font-weight: 900;
   font-style: italic;
 }
@@ -154,7 +152,6 @@
   font-weight: 100;
   font-style: italic;
 }
-
 
 /* Pacifico */
 @font-face {

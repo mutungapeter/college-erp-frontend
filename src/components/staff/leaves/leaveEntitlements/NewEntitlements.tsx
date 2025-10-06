@@ -1,11 +1,7 @@
-import React from 'react'
+import React from 'react';
 
 const NewEntitlements = () => {
-  return (
-    <div>
-      New Entitlement
-    </div>
-  )
-}
+  return <div>New Entitlement</div>;
+};
 
-export default NewEntitlements
+export default NewEntitlements;

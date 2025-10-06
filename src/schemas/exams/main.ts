@@ -19,26 +19,33 @@ export const examDataCreateSchema = z.object({
 });
 
 export const uploadMarksSchema = z.object({
-  course: z.number().int().positive("Cohort is required"),
-  semester: z.number().int().positive("Campus is required"),
-  cohort: z.number().int().positive("Cohort is required"),
-  file: z.instanceof(File)
-    .refine(file => {
-      const validTypes = ['text/csv', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+  course: z.number().int().positive('Cohort is required'),
+  study_year: z.number().int().positive('Study Year is required'),
+  semester: z.number().int().positive('Campus is required'),
+  cohort: z.number().int().positive('Cohort is required'),
+  file: z
+    .instanceof(File)
+    .refine((file) => {
+      const validTypes = [
+        'text/csv',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      ];
       return validTypes.includes(file.type);
-    }, "Please upload a CSV or Excel file")
-    .refine(file => file.size <= 10 * 1024 * 1024, "File size should be less than 10MB")
+    }, 'Please upload a CSV or Excel file')
+    .refine(
+      (file) => file.size <= 10 * 1024 * 1024,
+      'File size should be less than 10MB',
+    ),
 });
 
-export const updateStudentsCohortSchema= z.object({
-    cohort: z.coerce.number().nullable().optional(),
+export const updateStudentsCohortSchema = z.object({
+  cohort: z.coerce.number().nullable().optional(),
 });
 export const updateExamDataSchema = z.object({
- 
   cat_one: examDataBaseSchema.cat_one,
   cat_two: examDataBaseSchema.cat_two,
   exam_marks: examDataBaseSchema.exam_marks,
- 
 });
 
 export type ExamDataCreate = z.infer<typeof examDataCreateSchema>;

@@ -1,7 +1,7 @@
-"use client";
-import PageLoadingSpinner from "@/components/common/spinners/pageLoadingSpinner";
-import OrdersList from "@/components/procurement/orders";
-import { Suspense } from "react";
+'use client';
+import PageLoadingSpinner from '@/components/common/spinners/pageLoadingSpinner';
+import OrdersList from '@/components/procurement/orders';
+import { Suspense } from 'react';
 
 const OrdersPage = () => {
   return (

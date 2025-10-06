@@ -1,9 +1,7 @@
-import React from 'react'
+import React from 'react';
 
 const StudensDshboardPage = () => {
-  return (
-    <div>StudensDshboardPage</div>
-  )
-}
+  return <div>StudensDshboardPage</div>;
+};
 
-export default StudensDshboardPage
+export default StudensDshboardPage;

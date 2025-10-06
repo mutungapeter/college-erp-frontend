@@ -1,80 +1,76 @@
 export interface Transaction {
-	account: string;
-	amount: string;
-	type: string;
+  account: string;
+  amount: string;
+  type: string;
 }
 
 export interface Journal {
-	journal_id: number;
-	date: string;
-	description: string;
-	reference: string;
-	transactions: Transaction[];
+  journal_id: number;
+  date: string;
+  description: string;
+  reference: string;
+  transactions: Transaction[];
 }
 
 export interface Total {
-	inflows: string;
-	outflows: string;
-	net_cash_flow: string;
+  inflows: string;
+  outflows: string;
+  net_cash_flow: string;
 }
 
 export interface Operating {
-	journals: Journal[];
-	totals: Total;
+  journals: Journal[];
+  totals: Total;
 }
 
-
 export interface Investing {
-	journals: Journal[];
-	totals: Total;
+  journals: Journal[];
+  totals: Total;
 }
 
 export interface Financing {
-	journals: Journal[];
-	totals: Total;
+  journals: Journal[];
+  totals: Total;
 }
 
 export interface Summary {
-	opening_balance: string;
-	gross_inflows: string;
-	gross_outflows: string;
-	net_cash_change: string;
-	ending_balance: string;
+  opening_balance: string;
+  gross_inflows: string;
+  gross_outflows: string;
+  net_cash_change: string;
+  ending_balance: string;
 }
 
 export interface CashFlowType {
-	operating: Operating;
-	investing: Investing;
-	financing: Financing;
-	summary: Summary;
+  operating: Operating;
+  investing: Investing;
+  financing: Financing;
+  summary: Summary;
 }
 
-
-
 export interface Income {
-	name: string;
-	amount: number;
+  name: string;
+  amount: number;
 }
 
 export interface Expense {
-	name: string;
-	amount: number;
+  name: string;
+  amount: number;
 }
 
 export interface Total {
-	total_income: number;
-	total_expenses: number;
-	net_profit: number;
-	profit_margin: number;
+  total_income: number;
+  total_expenses: number;
+  net_profit: number;
+  profit_margin: number;
 }
 
 export interface IncomeStatementType {
-	income: Income[];
-	expenses: Expense[];
-	totals: Total;
-	net_profit: number;
+  income: Income[];
+  expenses: Expense[];
+  totals: Total;
+  net_profit: number;
 }
-
 
 // Balance Sheet
 export interface BalanceSheetItem {
@@ -84,7 +80,7 @@ export interface BalanceSheetItem {
 
 export interface BalanceSheetTotals {
   Assets: number;
-  "Liabilities + Equity": number;
+  'Liabilities + Equity': number;
   Balanced: boolean;
 }
 
@@ -94,8 +90,6 @@ export interface BalanceSheetType {
   Equity: BalanceSheetItem[];
   Totals: BalanceSheetTotals;
 }
-
-
 
 // Trial Balance
 export interface TrialBalanceAccount {
@@ -110,8 +104,8 @@ export interface TrialBalanceAccount {
 export interface TrialBalanceType {
   accounts: TrialBalanceAccount[];
   totals: {
-	total_debit: number;
-	total_credit: number;
-	balanced: boolean;
+    total_debit: number;
+    total_credit: number;
+    balanced: boolean;
   };
 }

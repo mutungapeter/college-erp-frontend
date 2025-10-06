@@ -1,26 +1,24 @@
-"use client";
+'use client';
 
-import Pagination from "@/components/common/Pagination";
+import Pagination from '@/components/common/Pagination';
 
-import { useFilters } from "@/hooks/useFilters";
+import { useFilters } from '@/hooks/useFilters';
 
-import DataTable, { Column } from "@/components/common/Table/DataTable";
-import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
+import DataTable, { Column } from '@/components/common/Table/DataTable';
+import ContentSpinner from '@/components/common/spinners/dataLoadingSpinner';
 
-import FilterSelect from "@/components/common/Select";
-import { LabelOptionsType } from "@/definitions/Labels/labelOptionsType";
-import { DepartmentType } from "@/definitions/curiculum";
-import { EntitlementType } from "@/definitions/leaves";
-import { PAGE_SIZE } from "@/lib/constants";
-import { useGetDepartmentsQuery } from "@/store/services/curriculum/departmentsService";
-import {
-  useGetLeaveEntitlementsQuery
-} from "@/store/services/staff/leaveService";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
-import { GoSearch } from "react-icons/go";
-import EditLeaveEntitlement from "./EditEntitlement";
-import CreateBulkLeaveEntitlements from "./NewLeaveEntitlement";
+import FilterSelect from '@/components/common/Select';
+import { LabelOptionsType } from '@/definitions/Labels/labelOptionsType';
+import { DepartmentType } from '@/definitions/curiculum';
+import { EntitlementType } from '@/definitions/leaves';
+import { PAGE_SIZE } from '@/lib/constants';
+import { useGetDepartmentsQuery } from '@/store/services/curriculum/departmentsService';
+import { useGetLeaveEntitlementsQuery } from '@/store/services/staff/leaveService';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMemo } from 'react';
+import { GoSearch } from 'react-icons/go';
+import EditLeaveEntitlement from './EditEntitlement';
+import CreateBulkLeaveEntitlements from './NewLeaveEntitlement';
 
 const LeaveEntitlements = () => {
   const router = useRouter();
@@ -28,14 +26,14 @@ const LeaveEntitlements = () => {
   const { filters, currentPage, handleFilterChange, handlePageChange } =
     useFilters({
       initialFilters: {
-        search: searchParams.get("search") || "",
-        department: searchParams.get("department") || "",
-        status: searchParams.get("status") || "",
+        search: searchParams.get('search') || '',
+        department: searchParams.get('department') || '',
+        status: searchParams.get('status') || '',
       },
-      initialPage: parseInt(searchParams.get("page") || "1", 10),
+      initialPage: parseInt(searchParams.get('page') || '1', 10),
       router,
       debounceTime: 100,
-      debouncedFields: ["search"],
+      debouncedFields: ['search'],
     });
 
   const queryParams = useMemo(
@@ -44,9 +42,9 @@ const LeaveEntitlements = () => {
       page_size: PAGE_SIZE,
       ...filters,
     }),
-    [currentPage, filters]
+    [currentPage, filters],
   );
-  console.log("queryParams", queryParams);
+  console.log('queryParams', queryParams);
 
   const {
     data: entitlementsData,
@@ -57,14 +55,14 @@ const LeaveEntitlements = () => {
     refetchOnMountOrArgChange: true,
   });
 
-  console.log("entitlementsData", entitlementsData);
+  console.log('entitlementsData', entitlementsData);
 
   const { data: departmentsData } = useGetDepartmentsQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
 
-  console.log("departmentsData", departmentsData);
+  console.log('departmentsData', departmentsData);
   const departmentOptions =
     departmentsData?.map((item: DepartmentType) => ({
       value: item.id,
@@ -72,7 +70,7 @@ const LeaveEntitlements = () => {
     })) || [];
 
   const handleIntakeChange = (selectedOption: LabelOptionsType | null) => {
-    const departmentValue = selectedOption ? selectedOption.value : "";
+    const departmentValue = selectedOption ? selectedOption.value : '';
     handleFilterChange({
       department: departmentValue,
     });
@@ -80,17 +78,13 @@ const LeaveEntitlements = () => {
 
   const columns: Column<EntitlementType>[] = [
     {
-      header: "Year",
-      accessor: "year",
-      cell: (item: EntitlementType) => (
-        <span>
-          {item.year}
-        </span>
-      ),
+      header: 'Year',
+      accessor: 'year',
+      cell: (item: EntitlementType) => <span>{item.year}</span>,
     },
     {
-      header: "Name",
-      accessor: "staff",
+      header: 'Name',
+      accessor: 'staff',
       cell: (item: EntitlementType) => (
         <span>
           {item.staff.user.first_name} {item.staff.user.last_name}
@@ -98,14 +92,14 @@ const LeaveEntitlements = () => {
       ),
     },
     {
-      header: "Staff No",
-      accessor: "staff",
+      header: 'Staff No',
+      accessor: 'staff',
       cell: (item: EntitlementType) => <span>{item.staff.staff_number}</span>,
     },
 
     {
-      header: "Department",
-      accessor: "staff",
+      header: 'Department',
+      accessor: 'staff',
       cell: (item: EntitlementType) => (
         <span className="text-sm whitespace-normal break-words">
           {item.staff.department.name}
@@ -113,8 +107,8 @@ const LeaveEntitlements = () => {
       ),
     },
     {
-      header: "Entitlement P.a",
-      accessor: "total_days",
+      header: 'Entitlement P.a',
+      accessor: 'total_days',
       cell: (item: EntitlementType) => (
         <span>
           <span className="text-sm">{item.total_days} days</span>
@@ -122,8 +116,8 @@ const LeaveEntitlements = () => {
       ),
     },
     {
-      header: "Used",
-      accessor: "used_days",
+      header: 'Used',
+      accessor: 'used_days',
       cell: (item: EntitlementType) => (
         <span>
           <span className="text-sm">{item.used_days} days</span>
@@ -131,8 +125,8 @@ const LeaveEntitlements = () => {
       ),
     },
     {
-      header: "Remaining",
-      accessor: "remaining_days",
+      header: 'Remaining',
+      accessor: 'remaining_days',
       cell: (item: EntitlementType) => (
         <span>
           <span className="text-sm">{item.remaining_days} days</span>
@@ -140,8 +134,8 @@ const LeaveEntitlements = () => {
       ),
     },
     {
-      header: "Actions",
-      accessor: "id",
+      header: 'Actions',
+      accessor: 'id',
       cell: (item: EntitlementType) => (
         <div>
           <EditLeaveEntitlement refetchData={refetch} data={item} />
@@ -150,7 +144,7 @@ const LeaveEntitlements = () => {
     },
   ];
 
-  console.log("entitlementsData", entitlementsData);
+  console.log('entitlementsData', entitlementsData);
   return (
     <>
       <div className="bg-white w-full  p-1 shadow-md rounded-lg font-nunito">
@@ -185,8 +179,8 @@ const LeaveEntitlements = () => {
               value={
                 departmentOptions.find(
                   (option: LabelOptionsType) =>
-                    option.value === filters.department
-                ) || { value: "", label: "All Departments" }
+                    option.value === filters.department,
+                ) || { value: '', label: 'All Departments' }
               }
               onChange={handleIntakeChange}
               placeholder=""

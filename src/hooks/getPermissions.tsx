@@ -7,11 +7,14 @@ import { useGetPermissionsQuery } from '@/store/services/auth/authService';
 
 export const usePermissions = () => {
   const dispatch = useAppDispatch();
-  const { user, accessToken, loading } = useAppSelector(state => state.auth);
-  
+  const { user, accessToken, loading } = useAppSelector((state) => state.auth);
+
   // Check if we need to fetch permissions
-  const needsPermissions = accessToken && user && (!user.role?.permissions || user.role.permissions.length === 0);
-  
+  const needsPermissions =
+    accessToken &&
+    user &&
+    (!user.role?.permissions || user.role.permissions.length === 0);
+
   const {
     data: permissionsData,
     isLoading: isLoadingPermissions,
@@ -29,7 +32,7 @@ export const usePermissions = () => {
           accessToken,
           refreshToken: Cookies.get('refreshToken') || '',
           user: permissionsData,
-        })
+        }),
       );
     }
   }, [permissionsData, accessToken, dispatch]);

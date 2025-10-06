@@ -1,28 +1,28 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FiPlus } from "react-icons/fi";
-import { IoCloseOutline } from "react-icons/io5";
-import { z } from "zod";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiPlus } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
+import { z } from 'zod';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
 
-import IconButton from "@/components/common/IconButton";
-import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
-import { studyYearSchema } from "@/schemas/curriculum/studyYears";
-import { useCreateAcademicYearMutation } from "@/store/services/curriculum/academicYearsService";
+import CreateAndUpdateButton from '@/components/common/CreateAndUpdateButton';
+import ModalBottomButton from '@/components/common/StickyModalFooterButtons';
+import { studyYearSchema } from '@/schemas/curriculum/studyYears';
+import { useCreateStudyYearMutation } from '@/store/services/curriculum/academicYearsService';
 
 type FormValues = z.infer<typeof studyYearSchema>;
 
 const AddNewStudyYear = ({ refetchData }: { refetchData: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
-  const [createAcademicYear, { isLoading: isCreating }] =
-    useCreateAcademicYearMutation();
+  const [createStudyYear, { isLoading: isCreating }] =
+    useCreateStudyYearMutation();
 
   const {
     register,
@@ -33,12 +33,12 @@ const AddNewStudyYear = ({ refetchData }: { refetchData: () => void }) => {
   } = useForm<FormValues>({
     resolver: zodResolver(studyYearSchema),
     defaultValues: {
-      name: "",
+      name: '',
     },
   });
 
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -55,26 +55,26 @@ const AddNewStudyYear = ({ refetchData }: { refetchData: () => void }) => {
   };
 
   const onSubmit = async (formData: FormValues) => {
-    console.log("submitting form data", formData);
+    console.log('submitting form data', formData);
 
     try {
-      const response = await createAcademicYear(formData).unwrap();
-      console.log("response", response);
+      const response = await createStudyYear(formData).unwrap();
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Study Year added successfully!");
+      setSuccessMessage('Study Year added successfully!');
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(`Failed to add Study Year: ${errorData.error}`);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occurred. Please try again.");
+        setSuccessMessage('Unexpected error occurred. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -82,10 +82,10 @@ const AddNewStudyYear = ({ refetchData }: { refetchData: () => void }) => {
 
   return (
     <>
-      <IconButton
+      <CreateAndUpdateButton
         onClick={handleOpenModal}
         title="Add New"
-        label="New Academic Year"
+        label="New Study Year"
         icon={<FiPlus className="w-4 h-4" />}
         className="bg-primary-500 text-white px-4 py-2 hover:bg-primary-600 focus:ring-primary-500 focus:ring-offset-1"
       />
@@ -140,7 +140,7 @@ const AddNewStudyYear = ({ refetchData }: { refetchData: () => void }) => {
                         type="text"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                         placeholder="e.g. First Year, Second Year"
-                        {...register("name")}
+                        {...register('name')}
                       />
                       {errors.name && (
                         <p className="text-red-500 text-sm mt-1">

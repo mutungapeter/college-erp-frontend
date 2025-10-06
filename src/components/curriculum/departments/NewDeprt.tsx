@@ -1,22 +1,23 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FiPlus } from "react-icons/fi";
-import { IoCloseOutline } from "react-icons/io5";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiPlus } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
-import Select from "react-select";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import Select from 'react-select';
 
-import { SchoolType } from "@/definitions/curiculum";
-import { DepartmentTypeOptions } from "@/lib/constants";
+import CreateAndUpdateButton from '@/components/common/CreateAndUpdateButton';
+import ModalBottomButton from '@/components/common/StickyModalFooterButtons';
+import { SchoolType } from '@/definitions/curiculum';
+import { DepartmentTypeOptions } from '@/lib/constants';
 import {
   createDepartmentFormData,
   departmentSchema,
-} from "@/schemas/curriculum/departments";
-import { useCreateDepartmentMutation } from "@/store/services/curriculum/departmentsService";
-import { useGetSchoolsQuery } from "@/store/services/curriculum/schoolSService";
+} from '@/schemas/curriculum/departments';
+import { useCreateDepartmentMutation } from '@/store/services/curriculum/departmentsService';
+import { useGetSchoolsQuery } from '@/store/services/curriculum/schoolSService';
 type SchoolOption = {
   value: string;
   label: string;
@@ -26,7 +27,7 @@ const AddDepartment = ({ refetchData }: { refetchData: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
 
   const [isError, setIsError] = useState(false);
 
@@ -34,7 +35,7 @@ const AddDepartment = ({ refetchData }: { refetchData: () => void }) => {
     useCreateDepartmentMutation();
   const { data: schoolsData } = useGetSchoolsQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
 
   const {
@@ -46,14 +47,14 @@ const AddDepartment = ({ refetchData }: { refetchData: () => void }) => {
   } = useForm({
     resolver: zodResolver<createDepartmentFormData>(departmentSchema),
     defaultValues: {
-      name: "",
+      name: '',
       school: undefined,
-      office: "",
-      department_type: "",
+      office: '',
+      department_type: '',
     },
   });
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -68,36 +69,36 @@ const AddDepartment = ({ refetchData }: { refetchData: () => void }) => {
   const handleSchoolChange = (selected: SchoolOption | null) => {
     if (selected) {
       const schoolId = Number(selected.value);
-      setValue("school", schoolId);
+      setValue('school', schoolId);
     }
   };
   const handleDepartmentTypeChange = (selected: SchoolOption | null) => {
     if (selected) {
-      setValue("department_type", String(selected.value));
+      setValue('department_type', String(selected.value));
     }
   };
   const onSubmit = async (formData: createDepartmentFormData) => {
-    console.log("submitting form data");
+    console.log('submitting form data');
 
     try {
       const response = await createDepartment(formData).unwrap();
-      console.log("response", response);
+      console.log('response', response);
 
       setIsError(false);
-      setSuccessMessage("Department added successfully!");
+      setSuccessMessage('Department added successfully!');
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(`Failed to add Department: ${errorData.error}`);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Failed to add campus. Please try again.");
+        setSuccessMessage('Failed to add campus. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -105,14 +106,17 @@ const AddDepartment = ({ refetchData }: { refetchData: () => void }) => {
 
   return (
     <>
-      <button
-              onClick={handleOpenModal}
-              title="Add New"
-              className="flex items-center space-x-2 px-4 py-2 bg-emerald-500 text-white rounded-md hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md"
-            >
-              <FiPlus className="w-4 h-4" />
-              <span>New Department</span>
-            </button>
+      <CreateAndUpdateButton
+        onClick={handleOpenModal}
+        title="Add New"
+        label="New Department"
+        icon={<FiPlus className="w-4 h-4" />}
+        className="flex items-center space-x-2 px-4 py-2
+               bg-emerald-500
+               text-white rounded-md hover:bg-emerald-600
+               focus:outline-none focus:ring-2 focus:ring-emerald-500 
+               focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md"
+      />
 
       {isOpen && (
         <div
@@ -161,7 +165,7 @@ const AddDepartment = ({ refetchData }: { refetchData: () => void }) => {
                     <input
                       id="name"
                       type="text"
-                      {...register("name")}
+                      {...register('name')}
                       placeholder="e.g X Copmuter Science Department"
                       className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                     />
@@ -189,16 +193,16 @@ const AddDepartment = ({ refetchData }: { refetchData: () => void }) => {
                           }),
                           control: (base) => ({
                             ...base,
-                            minHeight: "30px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
+                            minHeight: '30px',
+                            minWidth: '200px',
+                            borderColor: '#d1d5db',
+                            boxShadow: 'none',
+                            '&:hover': {
+                              borderColor: '#9ca3af',
                             },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
+                            '&:focus-within': {
+                              borderColor: '#9ca3af',
+                              boxShadow: 'none',
                             },
                           }),
                         }}
@@ -219,7 +223,7 @@ const AddDepartment = ({ refetchData }: { refetchData: () => void }) => {
                       <input
                         id="office"
                         type="text"
-                        {...register("office")}
+                        {...register('office')}
                         placeholder="e.g Greec Towers, 5th Floor"
                         className="w-full py-2 px-4 border placeholder:text-sm 
                          rounded-md focus:outline-none "
@@ -246,15 +250,15 @@ const AddDepartment = ({ refetchData }: { refetchData: () => void }) => {
                         }),
                         control: (base) => ({
                           ...base,
-                          minHeight: "25px",
-                          borderColor: "#d1d5db",
-                          boxShadow: "none",
-                          "&:hover": {
-                            borderColor: "#9ca3af",
+                          minHeight: '25px',
+                          borderColor: '#d1d5db',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: '#9ca3af',
                           },
-                          "&:focus-within": {
-                            borderColor: "#9ca3af",
-                            boxShadow: "none",
+                          '&:focus-within': {
+                            borderColor: '#9ca3af',
+                            boxShadow: 'none',
                           },
                         }),
                       }}
@@ -265,29 +269,11 @@ const AddDepartment = ({ refetchData }: { refetchData: () => void }) => {
                       </p>
                     )}
                   </div>
-                  <div className="sticky bottom-0 bg-white z-40 flex md:px-6  gap-4 md:justify-between items-center py-3 ">
-                    <button
-                      type="button"
-                      onClick={handleCloseModal}
-                      className="border border-red-500 bg-white shadow-sm text-red-500 py-2 text-sm px-4 rounded-lg w-full min-w-[100px] md:w-auto hover:bg-red-500 hover:text-white"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting || isCreating}
-                      className="bg-primary-600 text-white py-2 hover:bg-primary-700 text-sm px-3 md:px-4 rounded-md w-full min-w-[100px] md:w-auto"
-                    >
-                      {isSubmitting || isCreating ? (
-                        <span className="flex items-center">
-                          <SubmitSpinner />
-                          <span>Adding...</span>
-                        </span>
-                      ) : (
-                        <span>Sumbit</span>
-                      )}
-                    </button>
-                  </div>
+                  <ModalBottomButton
+                    onCancel={handleCloseModal}
+                    isSubmitting={isSubmitting}
+                    isProcessing={isCreating}
+                  />
                 </form>
               </>
             </div>

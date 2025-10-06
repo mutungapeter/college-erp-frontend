@@ -1,24 +1,20 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { IoCloseOutline } from "react-icons/io5";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { IoCloseOutline } from 'react-icons/io5';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
-import Select, { SingleValue } from "react-select";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import Select, { SingleValue } from 'react-select';
 
-import {
-    CampusType
-} from "@/definitions/curiculum";
-import { HostelsType } from "@/definitions/hostels";
-import {
-    HostelGenderOptions
-} from "@/lib/constants";
-import { hostelUpdateSchema, HostelUpdateType } from "@/schemas/hostels/main";
-import { useGetCampusesQuery } from "@/store/services/curriculum/campusService";
-import { useUpdateHostelMutation } from "@/store/services/hostels/hostelService";
-import { FiEdit } from "react-icons/fi";
+import { CampusType } from '@/definitions/curiculum';
+import { HostelsType } from '@/definitions/hostels';
+import { HostelGenderOptions } from '@/lib/constants';
+import { hostelUpdateSchema, HostelUpdateType } from '@/schemas/hostels/main';
+import { useGetCampusesQuery } from '@/store/services/curriculum/campusService';
+import { useUpdateHostelMutation } from '@/store/services/hostels/hostelService';
+import { FiEdit } from 'react-icons/fi';
+import ModalBottomButton from '../common/StickyModalFooterButtons';
 type SchoolOption = {
   value: string;
   label: string;
@@ -33,17 +29,15 @@ const EditHostel = ({
   const [isOpen, setIsOpen] = useState(false);
   //   console.log("data", data);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
 
   const [isError, setIsError] = useState(false);
 
   const [updateHostel, { isLoading: isUpdating }] = useUpdateHostelMutation();
   const { data: campusData } = useGetCampusesQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
- 
-  
 
   const {
     register,
@@ -53,16 +47,16 @@ const EditHostel = ({
   } = useForm<HostelUpdateType>({
     resolver: zodResolver(hostelUpdateSchema),
     defaultValues: {
-      name: data?.name || "",
-      gender: data?.gender || "",
+      name: data?.name || '',
+      gender: data?.gender || '',
       rooms: data?.rooms || 0,
-      room_cost: Number(data?.room_cost) || 0 ,
+      room_cost: Number(data?.room_cost) || 0,
       capacity: data?.capacity || 0,
-     campus: data?.campus.id || undefined,
+      campus: data?.campus.id || undefined,
     },
   });
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -75,47 +69,45 @@ const EditHostel = ({
     handleCloseModal();
   };
   const handleCampusChange = (
-    selected: SingleValue<{ value: number | null; label: string }>
+    selected: SingleValue<{ value: number | null; label: string }>,
   ) => {
     if (selected) {
-      setValue("campus", Number(selected.value));
+      setValue('campus', Number(selected.value));
     } else {
-      setValue("campus", null);
+      setValue('campus', null);
     }
   };
-
- 
 
   const handleGenderChange = (selected: SchoolOption | null) => {
     if (selected && selected.value) {
-      setValue("gender", String(selected.value));
+      setValue('gender', String(selected.value));
     }
   };
   const onSubmit = async (formData: HostelUpdateType) => {
-    console.log("submitting form data");
+    console.log('submitting form data');
 
     try {
       const response = await updateHostel({
         id: data.id,
         data: formData,
       }).unwrap();
-      console.log("response", response);
+      console.log('response', response);
 
       setIsError(false);
-      setSuccessMessage("Hostel Updated successfully!");
+      setSuccessMessage('Hostel Updated successfully!');
       setShowSuccessModal(true);
 
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(`Failed to update Hostel: ${errorData.error}`);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected Error occured. Please try again.");
+        setSuccessMessage('Unexpected Error occured. Please try again.');
         setShowSuccessModal(true);
       }
     } finally {
@@ -158,11 +150,11 @@ const EditHostel = ({
               <>
                 <div className="sticky top-0 bg-white z-40 flex sm:px-6 px-4 justify-between items-center py-3 ">
                   <p className="text-sm md:text-lg lg:text-lg font-semibold ">
-                    Edit Hostel 
+                    Edit Hostel
                   </p>
                   <div className="flex justify-end cursor-pointer">
                     <IoCloseOutline
-                      size={30}
+                      size={20}
                       onClick={handleCloseModal}
                       className="text-gray-500  "
                     />
@@ -173,7 +165,7 @@ const EditHostel = ({
                   onSubmit={handleSubmit(onSubmit)}
                   className="space-y-4 mt-2  p-4 md:p-4 lg:p-4 "
                 >
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block space-x-1 text-sm font-medium mb-2">
                         Name<span className="text-red-500">*</span>
@@ -182,7 +174,7 @@ const EditHostel = ({
                         type="text"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                         placeholder="e.g. The Richest Man In Babylon"
-                        {...register("name")}
+                        {...register('name')}
                       />
                       {errors.name && (
                         <p className="text-red-500 text-sm mt-1">
@@ -200,8 +192,8 @@ const EditHostel = ({
                         onChange={handleGenderChange}
                         menuPortalTarget={document.body}
                         defaultValue={{
-                          value: data?.gender || "",
-                          label: data?.gender || "",
+                          value: data?.gender || '',
+                          label: data?.gender || '',
                         }}
                         menuPlacement="auto"
                         styles={{
@@ -211,23 +203,23 @@ const EditHostel = ({
                           }),
                           menu: (base) => ({
                             ...base,
-                            position: "absolute",
-                            width: "max-content",
-                            minWidth: "100%",
-                            minHeight: "50px",
+                            position: 'absolute',
+                            width: 'max-content',
+                            minWidth: '100%',
+                            minHeight: '50px',
                           }),
                           control: (base) => ({
                             ...base,
-                            minHeight: "44px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
+                            minHeight: '44px',
+                            minWidth: '200px',
+                            borderColor: '#d1d5db',
+                            boxShadow: 'none',
+                            '&:hover': {
+                              borderColor: '#9ca3af',
                             },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
+                            '&:focus-within': {
+                              borderColor: '#9ca3af',
+                              boxShadow: 'none',
                             },
                           }),
                         }}
@@ -246,7 +238,7 @@ const EditHostel = ({
                         type="number"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                         placeholder="no. of rooms"
-                        {...register("rooms")}
+                        {...register('rooms')}
                       />
                       {errors.rooms && (
                         <p className="text-red-500 text-sm mt-1">
@@ -262,7 +254,7 @@ const EditHostel = ({
                         type="number"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                         placeholder="total capacity"
-                        {...register("capacity")}
+                        {...register('capacity')}
                       />
                       {errors.capacity && (
                         <p className="text-red-500 text-sm mt-1">
@@ -278,7 +270,7 @@ const EditHostel = ({
                         type="number"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                         placeholder="Ksh."
-                        {...register("room_cost")}
+                        {...register('room_cost')}
                       />
                       {errors.room_cost && (
                         <p className="text-red-500 text-sm mt-1">
@@ -294,9 +286,9 @@ const EditHostel = ({
                           label: item.name,
                         }))}
                         defaultValue={{
-                            value: data?.campus?.id || null,
-                            label: data?.campus?.name || "",
-                          }}
+                          value: data?.campus?.id || null,
+                          label: data?.campus?.name || '',
+                        }}
                         menuPortalTarget={document.body}
                         menuPlacement="auto"
                         styles={{
@@ -306,16 +298,16 @@ const EditHostel = ({
                           }),
                           control: (base) => ({
                             ...base,
-                            minHeight: "24px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
+                            minHeight: '24px',
+                            minWidth: '200px',
+                            borderColor: '#d1d5db',
+                            boxShadow: 'none',
+                            '&:hover': {
+                              borderColor: '#9ca3af',
                             },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
+                            '&:focus-within': {
+                              borderColor: '#9ca3af',
+                              boxShadow: 'none',
                             },
                           }),
                         }}
@@ -329,31 +321,12 @@ const EditHostel = ({
                       )}
                     </div>
                   </div>
-                 
 
-                  <div className="sticky bottom-0 bg-white z-40 flex md:px-6  gap-4 md:justify-end items-center py-3 ">
-                    <button
-                      type="button"
-                      onClick={handleCloseModal}
-                      className="border border-gray-300 bg-white shadow-sm text-gray-700 py-2 text-sm px-4 rounded-md w-full min-w-[100px] md:w-auto hover:bg-gray-50"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting || isUpdating}
-                      className="bg-primary-600 text-white py-2 hover:bg-blue-700 text-sm px-3 md:px-4 rounded-md w-full min-w-[100px] md:w-auto"
-                    >
-                      {isSubmitting || isUpdating ? (
-                        <span className="flex items-center">
-                          <SubmitSpinner />
-                          <span>Editing...</span>
-                        </span>
-                      ) : (
-                        <span>Edit</span>
-                      )}
-                    </button>
-                  </div>
+                  <ModalBottomButton
+                    onCancel={handleCloseModal}
+                    isSubmitting={isSubmitting}
+                    isProcessing={isUpdating}
+                  />
                 </form>
               </>
             </div>

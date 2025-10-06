@@ -1,9 +1,9 @@
-import { UserType } from "@/definitions/students";
-import { useGetRecentActionsQuery } from "@/store/services/curriculum/campusService";
-import { FaRegTrashAlt } from "react-icons/fa";
-import { FiEdit, FiPlus } from "react-icons/fi";
-import { LuUserRound } from "react-icons/lu";
-import { MdAccessTime } from "react-icons/md";
+import { UserType } from '@/definitions/students';
+import { useGetRecentActionsQuery } from '@/store/services/curriculum/campusService';
+import { FaRegTrashAlt } from 'react-icons/fa';
+import { FiEdit, FiPlus } from 'react-icons/fi';
+import { LuUserRound } from 'react-icons/lu';
+import { MdAccessTime } from 'react-icons/md';
 
 export interface RecentActionType {
   id: number;
@@ -19,10 +19,10 @@ export interface RecentActionType {
 const RecentActivity = () => {
   const { data = [], isLoading } = useGetRecentActionsQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
-  console.log("data", data);
-  
+  console.log('data', data);
+
   const getIcon = (flag: number) => {
     if (flag === 1) return <FiPlus className="w-4 h-4 text-emerald-600" />;
     if (flag === 2) return <FiEdit className="w-4 h-4 text-blue-600" />;
@@ -31,17 +31,21 @@ const RecentActivity = () => {
   };
 
   const getActionColor = (flag: number) => {
-    if (flag === 1) return "border-l-emerald-500 bg-emerald-50/30";
-    if (flag === 2) return "border-l-blue-500 bg-blue-50/30";
-    if (flag === 3) return "border-l-red-500 bg-red-50/30";
-    return "border-l-gray-400 bg-gray-50/30";
+    if (flag === 1) return 'border-l-emerald-500 bg-emerald-50/30';
+    if (flag === 2) return 'border-l-blue-500 bg-blue-50/30';
+    if (flag === 3) return 'border-l-red-500 bg-red-50/30';
+    return 'border-l-gray-400 bg-gray-50/30';
   };
 
   const getActionBadge = (flag: number) => {
-    const baseClasses = "px-2.5 py-0.5 rounded-md text-xs font-medium inline-flex items-center gap-1";
-    if (flag === 1) return `${baseClasses} bg-emerald-100 text-emerald-700 border border-emerald-200`;
-    if (flag === 2) return `${baseClasses} bg-blue-100 text-blue-700 border border-blue-200`;
-    if (flag === 3) return `${baseClasses} bg-red-100 text-red-700 border border-red-200`;
+    const baseClasses =
+      'px-2.5 py-0.5 rounded-md text-xs font-medium inline-flex items-center gap-1';
+    if (flag === 1)
+      return `${baseClasses} bg-emerald-100 text-emerald-700 border border-emerald-200`;
+    if (flag === 2)
+      return `${baseClasses} bg-blue-100 text-blue-700 border border-blue-200`;
+    if (flag === 3)
+      return `${baseClasses} bg-red-100 text-red-700 border border-red-200`;
     return `${baseClasses} bg-gray-100 text-gray-700 border border-gray-200`;
   };
 
@@ -51,9 +55,9 @@ const RecentActivity = () => {
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
 
-    const timeString = date.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
+    const timeString = date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
       hour12: true,
     });
 
@@ -63,11 +67,11 @@ const RecentActivity = () => {
       return `Yesterday, ${timeString}`;
     } else {
       return (
-        date.toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
+        date.toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
           year:
-            date.getFullYear() !== today.getFullYear() ? "numeric" : undefined,
+            date.getFullYear() !== today.getFullYear() ? 'numeric' : undefined,
         }) + `, ${timeString}`
       );
     }
@@ -77,10 +81,10 @@ const RecentActivity = () => {
     const date = new Date(time);
     const now = new Date();
     const diffInMinutes = Math.floor(
-      (now.getTime() - date.getTime()) / (1000 * 60)
+      (now.getTime() - date.getTime()) / (1000 * 60),
     );
 
-    if (diffInMinutes < 1) return "Just now";
+    if (diffInMinutes < 1) return 'Just now';
     if (diffInMinutes < 60) return `${diffInMinutes}min ago`;
     if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`;
     return `${Math.floor(diffInMinutes / 1440)}d ago`;
@@ -123,7 +127,7 @@ const RecentActivity = () => {
             Recent Activity
           </h3>
           <span className="bg-gray-100 text-gray-600 text-sm px-3 py-1 rounded-full font-medium">
-            {data.length} {data.length === 1 ? "action" : "actions"}
+            {data.length} {data.length === 1 ? 'action' : 'actions'}
           </span>
         </div>
       </div>
@@ -135,18 +139,13 @@ const RecentActivity = () => {
             key={item.id}
             className={`relative p-5 hover:bg-gray-50/50 transition-all duration-200 border-l-4 ${getActionColor(item.action_flag)}`}
           >
-            
             <div className="grid grid-cols-12 gap-4 items-start">
-              
-         
               <div className="col-span-3">
                 <div className="flex items-center space-x-2">
-
-                 {getIcon(item.action_flag)}
-               <div className={getActionBadge(item.action_flag)}>
-  <span className="truncate">{item.action_flag_display}</span>
-</div>
-
+                  {getIcon(item.action_flag)}
+                  <div className={getActionBadge(item.action_flag)}>
+                    <span className="truncate">{item.action_flag_display}</span>
+                  </div>
                 </div>
               </div>
 
@@ -191,8 +190,6 @@ const RecentActivity = () => {
                 </div>
               </div>
             </div>
-
-         
           </div>
         ))}
 
@@ -205,13 +202,13 @@ const RecentActivity = () => {
               No Recent Activity
             </h4>
             <p className="text-gray-500 text-sm max-w-sm mx-auto">
-              When actions are performed on the system, they&apos;ll appear here for easy tracking.
+              When actions are performed on the system, they&apos;ll appear here
+              for easy tracking.
             </p>
           </div>
         )}
       </div>
 
-     
       {/* {data.length > 10 && (
         <div className="p-4 border-t border-gray-100 bg-gray-50/50">
           <button className="w-full text-center text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 py-3 px-4 rounded-lg transition-colors duration-200 border border-transparent hover:border-blue-200">

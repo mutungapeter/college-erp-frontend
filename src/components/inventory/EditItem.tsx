@@ -1,24 +1,24 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
-import { IoCloseOutline } from "react-icons/io5";
-import Select from "react-select";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
+import { IoCloseOutline } from 'react-icons/io5';
+import Select from 'react-select';
 
 import {
-    InventoryItemFormData,
-    inventoryItemSchema,
-} from "@/schemas/inventory";
+  InventoryItemFormData,
+  inventoryItemSchema,
+} from '@/schemas/inventory';
 import {
-    useGetCategoriesQuery,
-    useGetUnitsQuery,
-    useUpdateInventoryItemMutation
-} from "@/store/services/finance/inventoryService";
-import { FiEdit } from "react-icons/fi";
-import { CategoryType, InventoryItem, InventoryUnitType } from "./types";
+  useGetCategoriesQuery,
+  useGetUnitsQuery,
+  useUpdateInventoryItemMutation,
+} from '@/store/services/finance/inventoryService';
+import { FiEdit } from 'react-icons/fi';
+import { CategoryType, InventoryItem, InventoryUnitType } from './types';
 type SchoolOption = {
   value: string;
   label: string;
@@ -31,7 +31,7 @@ const UpdateInventoryItem = ({ refetchData, data }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
   const [updateInventoryItem, { isLoading: isCreating }] =
@@ -47,9 +47,8 @@ const UpdateInventoryItem = ({ refetchData, data }: Props) => {
   } = useForm<InventoryItemFormData>({
     resolver: zodResolver(inventoryItemSchema),
     defaultValues: {
-    
-      name: data?.name ?? "",
-      description: data?.description ?? "",
+      name: data?.name ?? '',
+      description: data?.description ?? '',
       quantity_in_stock: data?.quantity_in_stock ?? 0,
       unit_valuation: Number(data?.unit_valuation ?? 0),
       total_valuation: Number(data?.total_valuation ?? 0),
@@ -57,43 +56,43 @@ const UpdateInventoryItem = ({ refetchData, data }: Props) => {
       unit: data?.unit.id ?? undefined,
     },
   });
-  const quantityInStock = watch("quantity_in_stock");
-  const unitValuation = watch("unit_valuation");
-   useEffect(() => {
+  const quantityInStock = watch('quantity_in_stock');
+  const unitValuation = watch('unit_valuation');
+  useEffect(() => {
     if (quantityInStock && unitValuation) {
       const quantity = parseFloat(quantityInStock.toString());
       const unitPrice = parseFloat(unitValuation.toString());
-      
+
       if (!isNaN(quantity) && !isNaN(unitPrice)) {
         const totalValuation = quantity * unitPrice;
-        setValue("total_valuation", totalValuation)
+        setValue('total_valuation', totalValuation);
       }
     } else {
-      setValue("total_valuation", 0)
+      setValue('total_valuation', 0);
     }
   }, [quantityInStock, unitValuation, setValue]);
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
   const { data: catData } = useGetCategoriesQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
   const { data: unitsData } = useGetUnitsQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
 
   const handleCategoryChange = (selected: SchoolOption | null) => {
     if (selected) {
       const categoryId = Number(selected.value);
-      setValue("category", categoryId);
+      setValue('category', categoryId);
     }
   };
   const handleUnitChange = (selected: SchoolOption | null) => {
     if (selected) {
       const unitId = Number(selected.value);
-      setValue("unit", unitId);
+      setValue('unit', unitId);
     }
   };
   const handleCloseModal = () => {
@@ -107,30 +106,30 @@ const UpdateInventoryItem = ({ refetchData, data }: Props) => {
   };
 
   const onSubmit = async (formData: InventoryItemFormData) => {
-    console.log("submitting form data");
+    console.log('submitting form data');
 
-    console.log("formData", formData);
+    console.log('formData', formData);
     try {
       const response = await updateInventoryItem({
         id: data.id,
-        data: formData
+        data: formData,
       }).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Inventory Updated Successfully");
+      setSuccessMessage('Inventory Updated Successfully');
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(errorData.error);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occured. Please try again.");
+        setSuccessMessage('Unexpected error occured. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -139,15 +138,15 @@ const UpdateInventoryItem = ({ refetchData, data }: Props) => {
   return (
     <>
       <button
-                       onClick={handleOpenModal}
-                       title="Edit Structure"
-                       className="group relative p-2 bg-amber-100 text-amber-500 rounded-md hover:bg-amber-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md"
-                     >
-                       <FiEdit className="w-4 h-4" />
-                       <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                         Edit Inventory Item
-                       </span>
-                     </button>
+        onClick={handleOpenModal}
+        title="Edit Structure"
+        className="group relative p-2 bg-amber-100 text-amber-500 rounded-md hover:bg-amber-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md"
+      >
+        <FiEdit className="w-4 h-4" />
+        <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+          Edit Inventory Item
+        </span>
+      </button>
 
       {isOpen && (
         <div
@@ -174,7 +173,7 @@ const UpdateInventoryItem = ({ refetchData, data }: Props) => {
               <>
                 <div className="sticky top-0 bg-white z-40 flex  px-4 justify-between items-center py-4 ">
                   <p className="text-sm md:text-lg lg:text-lg font-semibold ">
-                    Update  Inventory Item
+                    Update Inventory Item
                   </p>
                   <IoCloseOutline
                     size={20}
@@ -195,7 +194,7 @@ const UpdateInventoryItem = ({ refetchData, data }: Props) => {
                       <input
                         id="name"
                         type="text"
-                        {...register("name")}
+                        {...register('name')}
                         placeholder="Name"
                         className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                       />
@@ -216,8 +215,8 @@ const UpdateInventoryItem = ({ refetchData, data }: Props) => {
                           label: `${item.name} (${item.category_type_label})`,
                         }))}
                         defaultValue={{
-                            value: data?.category.id.toString(),
-                            label: `${data?.category.name} (${data?.category.category_type_label})`,
+                          value: data?.category.id.toString(),
+                          label: `${data?.category.name} (${data?.category.category_type_label})`,
                         }}
                         menuPortalTarget={document.body}
                         menuPlacement="auto"
@@ -228,16 +227,16 @@ const UpdateInventoryItem = ({ refetchData, data }: Props) => {
                           }),
                           control: (base) => ({
                             ...base,
-                            minHeight: "24px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
+                            minHeight: '24px',
+                            minWidth: '200px',
+                            borderColor: '#d1d5db',
+                            boxShadow: 'none',
+                            '&:hover': {
+                              borderColor: '#9ca3af',
                             },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
+                            '&:focus-within': {
+                              borderColor: '#9ca3af',
+                              boxShadow: 'none',
                             },
                           }),
                         }}
@@ -250,59 +249,59 @@ const UpdateInventoryItem = ({ refetchData, data }: Props) => {
                         </p>
                       )}
                     </div>
-                     <div>
-                    <label className="block space-x-1  text-sm font-medium mb-2">
-                      Unit of Measure
-                      <span className="text-red-500 mb-2">*</span>
-                    </label>
-                    <Select
-                      options={unitsData?.map((unit: InventoryUnitType) => ({
-                        value: unit.id.toString(),
-                        label: `${unit.name}`,
-                      }))}
-                      defaultValue={{
-                        value: data?.unit.id.toString(),
-                        label: `${data?.unit.name}`,
-                      }}
-                      menuPortalTarget={document.body}
-                      menuPlacement="auto"
-                      styles={{
-                        menuPortal: (base) => ({
-                          ...base,
-                          zIndex: 9999,
-                        }),
-                        control: (base) => ({
-                          ...base,
-                          minHeight: "24px",
-                          minWidth: "200px",
-                          borderColor: "#d1d5db",
-                          boxShadow: "none",
-                          "&:hover": {
-                            borderColor: "#9ca3af",
-                          },
-                          "&:focus-within": {
-                            borderColor: "#9ca3af",
-                            boxShadow: "none",
-                          },
-                        }),
-                      }}
-                      onChange={handleUnitChange}
-                    />
+                    <div>
+                      <label className="block space-x-1  text-sm font-medium mb-2">
+                        Unit of Measure
+                        <span className="text-red-500 mb-2">*</span>
+                      </label>
+                      <Select
+                        options={unitsData?.map((unit: InventoryUnitType) => ({
+                          value: unit.id.toString(),
+                          label: `${unit.name}`,
+                        }))}
+                        defaultValue={{
+                          value: data?.unit.id.toString(),
+                          label: `${data?.unit.name}`,
+                        }}
+                        menuPortalTarget={document.body}
+                        menuPlacement="auto"
+                        styles={{
+                          menuPortal: (base) => ({
+                            ...base,
+                            zIndex: 9999,
+                          }),
+                          control: (base) => ({
+                            ...base,
+                            minHeight: '24px',
+                            minWidth: '200px',
+                            borderColor: '#d1d5db',
+                            boxShadow: 'none',
+                            '&:hover': {
+                              borderColor: '#9ca3af',
+                            },
+                            '&:focus-within': {
+                              borderColor: '#9ca3af',
+                              boxShadow: 'none',
+                            },
+                          }),
+                        }}
+                        onChange={handleUnitChange}
+                      />
 
-                    {errors.unit && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.unit.message}
-                      </p>
-                    )}
-                  </div>
-                      <div>
+                      {errors.unit && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.unit.message}
+                        </p>
+                      )}
+                    </div>
+                    <div>
                       <label className="block space-x-1  text-sm font-medium mb-2">
                         Quantity<span className="text-red-500">*</span>
                       </label>
                       <input
                         id="quantity_in_stock"
                         type="text"
-                        {...register("quantity_in_stock")}
+                        {...register('quantity_in_stock')}
                         placeholder="0"
                         className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                       />
@@ -320,7 +319,7 @@ const UpdateInventoryItem = ({ refetchData, data }: Props) => {
                         id="unit_valuation"
                         type="text"
                         step="0.01"
-                        {...register("unit_valuation")}
+                        {...register('unit_valuation')}
                         placeholder="Ksh 0.00"
                         className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                       />
@@ -338,7 +337,7 @@ const UpdateInventoryItem = ({ refetchData, data }: Props) => {
                         id="total_valuation"
                         type="text"
                         step="0.01"
-                        {...register("total_valuation")}
+                        {...register('total_valuation')}
                         placeholder="Ksh 0.00"
                         className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                       />
@@ -355,14 +354,14 @@ const UpdateInventoryItem = ({ refetchData, data }: Props) => {
                     </label>
                     <textarea
                       id="name"
-                      {...register("description")}
+                      {...register('description')}
                       placeholder="Description optional"
                       rows={3}
                       cols={5}
                       className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                     />
                   </div>
-                 
+
                   <div className="sticky bottom-0 bg-white z-40 flex md:px-4  gap-4 md:justify-between items-center py-2 ">
                     <button
                       type="button"

@@ -1,6 +1,6 @@
-import PageLoadingSpinner from "@/components/common/spinners/pageLoadingSpinner";
-import FeeStructureItems from "@/components/finance/fees/structure/FeeStructureItems";
-import { Suspense } from "react";
+import PageLoadingSpinner from '@/components/common/spinners/pageLoadingSpinner';
+import FeeStructureItems from '@/components/finance/fees/structure/FeeStructureItems';
+import { Suspense } from 'react';
 const FeeStructureItemsPage = async ({
   params,
 }: {

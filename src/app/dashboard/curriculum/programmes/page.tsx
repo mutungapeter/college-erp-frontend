@@ -1,13 +1,13 @@
-import PageLoadingSpinner from '@/components/common/spinners/pageLoadingSpinner'
-import Programmes from '@/components/curriculum/programmes'
-import React, { Suspense } from 'react'
+import PageLoadingSpinner from '@/components/common/spinners/pageLoadingSpinner';
+import Programmes from '@/components/curriculum/programmes';
+import React, { Suspense } from 'react';
 
 const ProgrammesPage = () => {
   return (
     <Suspense fallback={<PageLoadingSpinner />}>
-               <Programmes />
-               </Suspense>
-  )
-}
+      <Programmes />
+    </Suspense>
+  );
+};
 
-export default ProgrammesPage
+export default ProgrammesPage;

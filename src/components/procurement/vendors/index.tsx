@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import Pagination from "@/components/common/Pagination";
-import { useFilters } from "@/hooks/useFilters";
-import { PAGE_SIZE } from "@/lib/constants";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+import Pagination from '@/components/common/Pagination';
+import { useFilters } from '@/hooks/useFilters';
+import { PAGE_SIZE } from '@/lib/constants';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMemo } from 'react';
 
-import DataTable, { Column } from "@/components/common/Table/DataTable";
-import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
+import DataTable, { Column } from '@/components/common/Table/DataTable';
+import ContentSpinner from '@/components/common/spinners/dataLoadingSpinner';
 
-import NoData from "@/components/common/NoData";
-import { useGetVendorsQuery } from "@/store/services/finance/procurementService";
-import { CustomDate } from "@/utils/date";
-import Link from "next/link";
-import { FiEye } from "react-icons/fi";
-import { GoSearch } from "react-icons/go";
-import { VendorInterface } from "./types";
+import NoData from '@/components/common/NoData';
+import { useGetVendorsQuery } from '@/store/services/finance/procurementService';
+import { CustomDate } from '@/utils/date';
+import Link from 'next/link';
+import { FiEye } from 'react-icons/fi';
+import { GoSearch } from 'react-icons/go';
+import { VendorInterface } from './types';
 
 const Vendors = () => {
   const router = useRouter();
@@ -24,12 +24,12 @@ const Vendors = () => {
   const { filters, currentPage, handleFilterChange, handlePageChange } =
     useFilters({
       initialFilters: {
-        vendor_no: searchParams.get("vendor_no") || "",
+        vendor_no: searchParams.get('vendor_no') || '',
       },
-      initialPage: parseInt(searchParams.get("page") || "1", 10),
+      initialPage: parseInt(searchParams.get('page') || '1', 10),
       router,
       debounceTime: 100,
-      debouncedFields: ["vendor_no"],
+      debouncedFields: ['vendor_no'],
     });
 
   const queryParams = useMemo(
@@ -38,52 +38,52 @@ const Vendors = () => {
       page_size: PAGE_SIZE,
       ...filters,
     }),
-    [currentPage, filters]
+    [currentPage, filters],
   );
-  console.log("queryParams", queryParams);
+  console.log('queryParams', queryParams);
 
   const { data, error, isLoading } = useGetVendorsQuery(queryParams, {
     refetchOnMountOrArgChange: true,
   });
-  console.log("data", data);
+  console.log('data', data);
 
   const columns: Column<VendorInterface>[] = [
     {
-      header: "Name",
-      accessor: "name",
+      header: 'Name',
+      accessor: 'name',
       cell: (item: VendorInterface) => <span>{item.name}</span>,
     },
     {
-      header: "Vendor No",
-      accessor: "vendor_no",
+      header: 'Vendor No',
+      accessor: 'vendor_no',
       cell: (item: VendorInterface) => <span>{item.vendor_no}</span>,
     },
     {
-      header: "Tel",
-      accessor: "phone",
+      header: 'Tel',
+      accessor: 'phone',
       cell: (item: VendorInterface) => <span>{item.phone}</span>,
     },
     {
-      header: "Email",
-      accessor: "email",
+      header: 'Email',
+      accessor: 'email',
       cell: (item: VendorInterface) => <span>{item.email}</span>,
     },
 
     {
-      header: "Address",
-      accessor: "address",
+      header: 'Address',
+      accessor: 'address',
       cell: (item: VendorInterface) => <span>{item.address}</span>,
     },
     {
-      header: "Approved On",
-      accessor: "created_on",
+      header: 'Approved On',
+      accessor: 'created_on',
       cell: (item: VendorInterface) => (
         <span>{CustomDate(item.created_on)}</span>
       ),
     },
     {
-      header: "Actions",
-      accessor: "id",
+      header: 'Actions',
+      accessor: 'id',
       cell: (item: VendorInterface) => {
         return (
           <div className="flex items-center justify-center space-x-2">

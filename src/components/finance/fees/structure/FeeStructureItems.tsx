@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
-import Pagination from "@/components/common/Pagination";
+import Pagination from '@/components/common/Pagination';
 
-import { useFilters } from "@/hooks/useFilters";
+import { useFilters } from '@/hooks/useFilters';
 
-import DataTable, { Column } from "@/components/common/Table/DataTable";
-import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
+import DataTable, { Column } from '@/components/common/Table/DataTable';
+import ContentSpinner from '@/components/common/spinners/dataLoadingSpinner';
 
-import { Feeitem } from "@/definitions/finance/fees/feeStructure";
-import { PAGE_SIZE } from "@/lib/constants";
-import { useGetFeeStructureItemsQuery } from "@/store/services/finance/finaceServices";
-import { formatCurrency } from "@/utils/currency";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
-import EditFeeStructureItem from "./EditFeeStructureItem";
-import AddFeeStructureItem from "./NewFeeStructureItem";
-import { IoArrowBackOutline } from "react-icons/io5";
-import Link from "next/link";
+import { Feeitem } from '@/definitions/finance/fees/feeStructure';
+import { PAGE_SIZE } from '@/lib/constants';
+import { useGetFeeStructureItemsQuery } from '@/store/services/finance/finaceServices';
+import { formatCurrency } from '@/utils/currency';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMemo } from 'react';
+import EditFeeStructureItem from './EditFeeStructureItem';
+import AddFeeStructureItem from './NewFeeStructureItem';
+import { IoArrowBackOutline } from 'react-icons/io5';
+import Link from 'next/link';
 interface Props {
   structure_id: string;
 }
@@ -30,9 +30,9 @@ const FeeStructureItems = ({ structure_id }: Props) => {
 
   const { filters, currentPage, handlePageChange } = useFilters({
     initialFilters: {
-      semester: searchParams.get("semester") || "",
+      semester: searchParams.get('semester') || '',
     },
-    initialPage: parseInt(searchParams.get("page") || "1", 10),
+    initialPage: parseInt(searchParams.get('page') || '1', 10),
     router,
   });
 
@@ -42,20 +42,20 @@ const FeeStructureItems = ({ structure_id }: Props) => {
       page_size: PAGE_SIZE,
       ...filters,
     }),
-    [currentPage, filters]
+    [currentPage, filters],
   );
-  console.log("queryParams", queryParams);
-  console.log("data", data);
+  console.log('queryParams', queryParams);
+  console.log('data', data);
 
   const columns: Column<Feeitem>[] = [
     {
-      header: "Description",
-      accessor: "description",
+      header: 'Description',
+      accessor: 'description',
       cell: (item: Feeitem) => <span>{item.description}</span>,
     },
     {
-      header: "Amount",
-      accessor: "amount",
+      header: 'Amount',
+      accessor: 'amount',
       cell: (item: Feeitem) => (
         <span className="text-sm font-normal">
           {formatCurrency(item.amount)}
@@ -64,8 +64,8 @@ const FeeStructureItems = ({ structure_id }: Props) => {
     },
 
     {
-      header: "Actions",
-      accessor: "id",
+      header: 'Actions',
+      accessor: 'id',
       cell: (item: Feeitem) => (
         <div className="flex items-center  space-x-2">
           <EditFeeStructureItem data={item} refetchData={refetch} />
@@ -76,13 +76,13 @@ const FeeStructureItems = ({ structure_id }: Props) => {
 
   return (
     <>
-    <Link 
-    href={"/dashboard/finance/fees/fee-structure"}
-    className="flex items-center space-x-2 hover:text-blue-500 mb-3 p-3 text-gray-600"
-    >
-    <IoArrowBackOutline size={18}/>
-    <span>Back to Fee Structures</span>
-    </Link>
+      <Link
+        href={'/dashboard/finance/fees/fee-structure'}
+        className="flex items-center space-x-2 hover:text-blue-500 mb-3 p-3 text-gray-600"
+      >
+        <IoArrowBackOutline size={18} />
+        <span>Back to Fee Structures</span>
+      </Link>
       <div
         className="bg-white w-full relative font-nunito
        p-1 shadow-md rounded-lg "
@@ -136,7 +136,7 @@ const FeeStructureItems = ({ structure_id }: Props) => {
             </div>
             {data && data.count > 0 && (
               <div className="text-xs sm:text-sm text-gray-500 bg-gray-50 px-2 sm:px-3 py-1 rounded-full whitespace-nowrap">
-                {data.count} {data.count === 1 ? "item" : "items"}
+                {data.count} {data.count === 1 ? 'item' : 'items'}
               </div>
             )}
           </div>

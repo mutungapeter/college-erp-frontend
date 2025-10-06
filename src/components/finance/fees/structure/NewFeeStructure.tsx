@@ -1,28 +1,26 @@
-"use client";
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import Select from "react-select";
+'use client';
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import Select from 'react-select';
 
 import {
   ProgrammeType,
   SemesterType,
   StudyYearType,
-} from "@/definitions/curiculum";
+} from '@/definitions/curiculum';
 import {
   FeeStructureFormData,
   feeStructureSchema,
-} from "@/schemas/finance/fees";
-import { useGetAcademicYearsQuery } from "@/store/services/curriculum/academicYearsService";
-import { useGetProgrammesQuery } from "@/store/services/curriculum/programmesService";
-import { useGetSemestersQuery } from "@/store/services/curriculum/semestersService";
-import {
-  useCreateFeeStructureMutation
-} from "@/store/services/finance/finaceServices";
-import { FiPlus } from "react-icons/fi";
-import { IoCloseOutline } from "react-icons/io5";
+} from '@/schemas/finance/fees';
+import { useGetStudyYearsQuery } from '@/store/services/curriculum/academicYearsService';
+import { useGetProgrammesQuery } from '@/store/services/curriculum/programmesService';
+import { useGetSemestersQuery } from '@/store/services/curriculum/semestersService';
+import { useCreateFeeStructureMutation } from '@/store/services/finance/finaceServices';
+import { FiPlus } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
 type SchoolOption = {
   value: string;
   label: string;
@@ -34,22 +32,22 @@ const AddFeeStructure = ({ refetchData }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
   const [createFeeStructure, { isLoading: isCreating }] =
     useCreateFeeStructureMutation();
   const { data: semeestersData } = useGetSemestersQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
   const { data: programmesData } = useGetProgrammesQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
-  const { data: yearsData } = useGetAcademicYearsQuery(
+  const { data: yearsData } = useGetStudyYearsQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
 
   const {
@@ -61,7 +59,7 @@ const AddFeeStructure = ({ refetchData }: Props) => {
     resolver: zodResolver(feeStructureSchema),
   });
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -76,43 +74,43 @@ const AddFeeStructure = ({ refetchData }: Props) => {
   const handleSemesterChange = (selected: SchoolOption | null) => {
     if (selected) {
       const semesterId = Number(selected.value);
-      setValue("semester", semesterId);
+      setValue('semester', semesterId);
     }
   };
 
   const handleProgrammeChange = (selected: SchoolOption | null) => {
     if (selected) {
       const programmeId = Number(selected.value);
-      setValue("programme", programmeId);
+      setValue('programme', programmeId);
     }
   };
   const handleYearChange = (selected: SchoolOption | null) => {
     if (selected && selected.value) {
-      setValue("year_of_study", Number(selected.value));
+      setValue('year_of_study', Number(selected.value));
     }
   };
   const onSubmit = async (formData: FeeStructureFormData) => {
-    console.log("submitting form data");
+    console.log('submitting form data');
 
-    console.log("payload", formData);
+    console.log('payload', formData);
     try {
       const response = await createFeeStructure(formData).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Fee Stucture Created Successfully");
+      setSuccessMessage('Fee Stucture Created Successfully');
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(errorData.error);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occured. Please try again.");
+        setSuccessMessage('Unexpected error occured. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -154,7 +152,11 @@ const AddFeeStructure = ({ refetchData }: Props) => {
                   <p className="text-sm md:text-lg lg:text-lg font-semibold ">
                     Add new Fee Structure
                   </p>
-                  <IoCloseOutline size={20} className="cursor-pointer" onClick={handleCloseModal} />
+                  <IoCloseOutline
+                    size={20}
+                    className="cursor-pointer"
+                    onClick={handleCloseModal}
+                  />
                 </div>
 
                 <form
@@ -177,16 +179,16 @@ const AddFeeStructure = ({ refetchData }: Props) => {
                         }),
                         control: (base) => ({
                           ...base,
-                          minHeight: "24px",
-                          minWidth: "200px",
-                          borderColor: "#d1d5db",
-                          boxShadow: "none",
-                          "&:hover": {
-                            borderColor: "#9ca3af",
+                          minHeight: '24px',
+                          minWidth: '200px',
+                          borderColor: '#d1d5db',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: '#9ca3af',
                           },
-                          "&:focus-within": {
-                            borderColor: "#9ca3af",
-                            boxShadow: "none",
+                          '&:focus-within': {
+                            borderColor: '#9ca3af',
+                            boxShadow: 'none',
                           },
                         }),
                       }}
@@ -204,7 +206,7 @@ const AddFeeStructure = ({ refetchData }: Props) => {
                     <Select
                       options={semeestersData?.map((sem: SemesterType) => ({
                         value: sem.id,
-                        label: `${sem.name}(${sem.academic_year})`,
+                        label: `${sem.name}(${sem.academic_year.name})`,
                       }))}
                       menuPortalTarget={document.body}
                       menuPlacement="auto"
@@ -215,16 +217,16 @@ const AddFeeStructure = ({ refetchData }: Props) => {
                         }),
                         control: (base) => ({
                           ...base,
-                          minHeight: "24px",
-                          minWidth: "200px",
-                          borderColor: "#d1d5db",
-                          boxShadow: "none",
-                          "&:hover": {
-                            borderColor: "#9ca3af",
+                          minHeight: '24px',
+                          minWidth: '200px',
+                          borderColor: '#d1d5db',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: '#9ca3af',
                           },
-                          "&:focus-within": {
-                            borderColor: "#9ca3af",
-                            boxShadow: "none",
+                          '&:focus-within': {
+                            borderColor: '#9ca3af',
+                            boxShadow: 'none',
                           },
                         }),
                       }}
@@ -253,16 +255,16 @@ const AddFeeStructure = ({ refetchData }: Props) => {
                         }),
                         control: (base) => ({
                           ...base,
-                          minHeight: "24px",
-                          minWidth: "200px",
-                          borderColor: "#d1d5db",
-                          boxShadow: "none",
-                          "&:hover": {
-                            borderColor: "#9ca3af",
+                          minHeight: '24px',
+                          minWidth: '200px',
+                          borderColor: '#d1d5db',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: '#9ca3af',
                           },
-                          "&:focus-within": {
-                            borderColor: "#9ca3af",
-                            boxShadow: "none",
+                          '&:focus-within': {
+                            borderColor: '#9ca3af',
+                            boxShadow: 'none',
                           },
                         }),
                       }}

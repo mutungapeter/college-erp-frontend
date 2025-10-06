@@ -1,24 +1,23 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FiUserPlus } from "react-icons/fi";
-import { IoCloseOutline } from "react-icons/io5";
-import { z } from "zod";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiUserPlus } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
+import { z } from 'zod';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
-import Select from "react-select";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import Select from 'react-select';
 
-import { ApplicationType } from "@/definitions/admissions";
-import {
-    ProgrammeCohortType
-} from "@/definitions/curiculum";
-import { enrollStudentSchema } from "@/schemas/admissions/main";
-import { useEnrollApplicationMutation } from "@/store/services/admissions/admissionsService";
-import { useGetCohortsQuery } from "@/store/services/curriculum/cohortsService";
-import IconButton from "@/components/common/IconButton";
-import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
+import { RoleType } from '@/components/accounts/permissions/types';
+import CreateAndUpdateButton from '@/components/common/CreateAndUpdateButton';
+import ModalBottomButton from '@/components/common/StickyModalFooterButtons';
+import { ApplicationType } from '@/definitions/admissions';
+import { ProgrammeCohortType } from '@/definitions/curiculum';
+import { enrollStudentSchema } from '@/schemas/admissions/main';
+import { useEnrollApplicationMutation } from '@/store/services/admissions/admissionsService';
+import { useGetCohortsQuery } from '@/store/services/curriculum/cohortsService';
+import { useGetUserRolesQuery } from '@/store/services/permissions/permissionsService';
 
 type SelectOption = {
   value: string | number;
@@ -28,32 +27,38 @@ type SelectOption = {
 type FormValues = z.infer<typeof enrollStudentSchema>;
 interface Props {
   refetchData: () => void;
-  data: ApplicationType  | null;
+  data: ApplicationType | null;
 }
-const EnrollStudent = ({ refetchData, data }:Props) => {
+const EnrollStudent = ({ refetchData, data }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
-  const [enrollApplication, { isLoading: isCreating }] = useEnrollApplicationMutation();
- 
+  const [enrollApplication, { isLoading: isCreating }] =
+    useEnrollApplicationMutation();
+
   const { data: cohortsData } = useGetCohortsQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
-  
+  const { data: rolesData } = useGetUserRolesQuery(
+    {},
+    { refetchOnMountOrArgChange: true },
+  );
+  console.log('CohortsData', cohortsData);
   const {
     handleSubmit,
     reset,
     setValue,
+    register,
     formState: { isSubmitting, errors },
   } = useForm<FormValues>({
     resolver: zodResolver(enrollStudentSchema),
   });
 
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -69,40 +74,45 @@ const EnrollStudent = ({ refetchData, data }:Props) => {
     handleCloseModal();
   };
 
- 
   const handleCohortChange = (selected: SelectOption | null) => {
     if (selected) {
       const cohortId = Number(selected.value);
-      setValue("cohort", cohortId);
+      setValue('cohort', cohortId);
+    }
+  };
+  const handleRoleChange = (selected: SelectOption | null) => {
+    if (selected) {
+      const itemId = Number(selected.value);
+      setValue('role', itemId);
     }
   };
 
   const onSubmit = async (formData: FormValues) => {
-    console.log("submitting form data", formData);
+    console.log('submitting form data', formData);
 
     try {
       const response = await enrollApplication({
         application: data?.id,
         campus: data?.campus?.id,
-        
+
         ...formData,
       }).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Student admitted successfully!");
+      setSuccessMessage('Student admitted successfully!');
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(`Failed to admit Student: ${errorData.error}`);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occurred. Please try again.");
+        setSuccessMessage('Unexpected error occurred. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -110,9 +120,7 @@ const EnrollStudent = ({ refetchData, data }:Props) => {
 
   return (
     <>
-    
- 
-<IconButton
+      <CreateAndUpdateButton
         onClick={handleOpenModal}
         title="Add New"
         label="Enroll Applicant"
@@ -137,13 +145,15 @@ const EnrollStudent = ({ refetchData, data }:Props) => {
            justify-center overflow-y-auto p-2 md:p-3"
           >
             <div
-              className="relative transform justify-center animate-fadeIn max-h-[90vh]
+              className="relative transform justify-center font-inter animate-fadeIn max-h-[90vh]
                 overflow-y-auto rounded-2xl bg-white text-left shadow-xl transition-all   
-                w-full sm:max-w-c-450 md:max-w-450 px-3"
+                w-full sm:max-w-c-500 md:max-w-500 px-3"
             >
               <>
-                <div className="sticky top-0 bg-white z-40 
-                flex  px-4 justify-between items-center py-6">
+                <div
+                  className="sticky top-0 bg-white z-40 
+                flex  px-4 justify-between items-center py-6"
+                >
                   <p className="text-sm md:text-lg lg:text-lg font-semibold">
                     Enroll Applicant
                   </p>
@@ -160,60 +170,135 @@ const EnrollStudent = ({ refetchData, data }:Props) => {
                   onSubmit={handleSubmit(onSubmit)}
                   className="space-y-4 mt-2 p-4 md:p-4 lg:p-4"
                 >
-                  
-                   <div className="relative">
-                      <label className="block space-x-1 text-sm font-medium mb-2">
-                        Class/Cohort Enrolling To<span className="text-red-500">*</span>
-                      </label>
-                      <Select
-                        options={cohortsData?.map(
-                          (item: ProgrammeCohortType) => ({
-                            value: item.id,
-                            label: `${item.name}(${item.current_year} - ${item.current_semester.name})`,
-                          })
-                        )}
-                        menuPortalTarget={document.body}
-                        menuPlacement="auto"
-                        // menuPosition="absolute"
-                        styles={{
-                          menuPortal: (base) => ({
-                            ...base,
-                            zIndex: 10000,
-                            overflow: "visible",
-                            maxHeight: "300px",
-                            paddingY: "20px",
-                          }),
-                          control: (base) => ({
-                            ...base,
-                            minHeight: "44px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
-                            },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
-                            },
-                          }),
-                        }}
-                        onChange={handleCohortChange}
-                      />
-
-                      {errors.cohort && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {errors.cohort.message}
-                        </p>
+                  <div>
+                    <label className="block space-x-1  text-sm font-medium mb-2">
+                      Reg/Adm No<span className="text-red-500"></span>
+                    </label>
+                    <input
+                      type="text"
+                      id="admissionNumber"
+                      placeholder="Enter Adm/Reg No"
+                      {...register('registration_number')}
+                      className="w-full py-2 px-4 rounded-md border border-1 border-gray-400 focus:outline-none focus:border-primary focus:bg-white placeholder:text-sm md:placeholder:text-sm lg:placeholder:text-sm"
+                    />
+                    {errors.registration_number && (
+                      <p className="text-red-500 text-sm">
+                        {String(errors.registration_number.message)}
+                      </p>
+                    )}
+                  </div>
+                  <div className="relative">
+                    <label className="block space-x-1 text-sm font-medium mb-2">
+                      Class/Cohort Enrolling To
+                      <span className="text-red-500">*</span>
+                    </label>
+                    <Select
+                      options={cohortsData?.map(
+                        (item: ProgrammeCohortType) => ({
+                          value: item.id,
+                          label: `${item?.name}(${item?.current_year} - ${item?.current_semester?.name})`,
+                        }),
                       )}
-                    </div>
-                  
-                
-                 <ModalBottomButton
-                                      onCancel={handleCloseModal}
-                                      isSubmitting={isSubmitting}
-                                      isProcessing={isCreating}
-                                    />
+                      menuPortalTarget={document.body}
+                      menuPlacement="auto"
+                      // menuPosition="absolute"
+                      styles={{
+                        menuPortal: (base) => ({
+                          ...base,
+                          zIndex: 10000,
+                          overflow: 'visible',
+                          maxHeight: '300px',
+                          paddingY: '20px',
+                        }),
+                        control: (base) => ({
+                          ...base,
+                          minHeight: '44px',
+                          minWidth: '200px',
+                          borderColor: '#d1d5db',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: '#9ca3af',
+                          },
+                          '&:focus-within': {
+                            borderColor: '#9ca3af',
+                            boxShadow: 'none',
+                          },
+                        }),
+                      }}
+                      onChange={handleCohortChange}
+                    />
+
+                    {errors.cohort && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.cohort.message}
+                      </p>
+                    )}
+                  </div>
+                  <div className="pb-3 border-b mt-5">
+                    <h2 className="text-lg font-semibold">
+                      Student Portal Access Permission
+                    </h2>
+                    <p className="text-sm text-gray-600 mt-1">
+                      Enrolling a student here will automatically create their
+                      student account for accessing the university student
+                      portal. Selecting a role is{' '}
+                      <span className="font-semibold">mandatory </span>
+                      because it determines their level of access. Once
+                      enrolled, the student will receive their login credentials
+                      and a temporary password sent to their registered email
+                      address.
+                    </p>
+                  </div>
+                  <div className="relative">
+                    <label className="block space-x-1 text-sm font-medium mb-2">
+                      Role<span className="text-red-500">*</span>
+                    </label>
+                    <Select
+                      options={rolesData?.map((item: RoleType) => ({
+                        value: item.id,
+                        label: `${item?.name}`,
+                      }))}
+                      menuPortalTarget={document.body}
+                      menuPlacement="auto"
+                      // menuPosition="absolute"
+                      styles={{
+                        menuPortal: (base) => ({
+                          ...base,
+                          zIndex: 10000,
+                          overflow: 'visible',
+                          maxHeight: '300px',
+                          paddingY: '20px',
+                        }),
+                        control: (base) => ({
+                          ...base,
+                          minHeight: '44px',
+                          minWidth: '200px',
+                          borderColor: '#d1d5db',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: '#9ca3af',
+                          },
+                          '&:focus-within': {
+                            borderColor: '#9ca3af',
+                            boxShadow: 'none',
+                          },
+                        }),
+                      }}
+                      onChange={handleRoleChange}
+                    />
+
+                    {errors.role && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.role.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <ModalBottomButton
+                    onCancel={handleCloseModal}
+                    isSubmitting={isSubmitting}
+                    isProcessing={isCreating}
+                  />
                 </form>
               </>
             </div>

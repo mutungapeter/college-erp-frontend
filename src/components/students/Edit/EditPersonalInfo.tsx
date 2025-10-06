@@ -1,25 +1,18 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
 
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiEdit } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
+import { z } from 'zod';
 
-
-
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FiEdit } from "react-icons/fi";
-import { IoCloseOutline } from "react-icons/io5";
-import { z } from "zod";
-
-
-
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
-import { StudentDetailsType } from "@/definitions/students";
-import { UpdateUserInfoSchema } from "@/schemas/auth/user";
-import { useUpdateStudentAccountMutation } from "@/store/services/students/studentsService";
-import IconButton from "@/components/common/IconButton";
-import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
-
+import CreateAndUpdateButton from '@/components/common/CreateAndUpdateButton';
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import ModalBottomButton from '@/components/common/StickyModalFooterButtons';
+import { StudentDetailsType } from '@/definitions/students';
+import { UpdateUserInfoSchema } from '@/schemas/auth/user';
+import { useUpdateStudentAccountMutation } from '@/store/services/students/studentsService';
 
 const EditStudentPersonalInfo = ({
   data,
@@ -31,44 +24,39 @@ const EditStudentPersonalInfo = ({
   const [isOpen, setIsOpen] = useState(false);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
 
   const [isError, setIsError] = useState(false);
 
-  const [updateStudentAccount,{isLoading:isUpdating}] = useUpdateStudentAccountMutation();
+  const [updateStudentAccount, { isLoading: isUpdating }] =
+    useUpdateStudentAccountMutation();
 
- 
   const {
     register,
     handleSubmit,
-    
+
     formState: { isSubmitting, errors },
   } = useForm({
     resolver: zodResolver(UpdateUserInfoSchema),
     defaultValues: {
-      
-        address: data?.user.address || "",
-        city: data?.user.city || "",
-        country: data?.user.country || "",
-        date_of_birth: data?.user.date_of_birth || "",
-        gender: data?.user.gender || "",
-        phone_number: data?.user.phone_number || "",
-        postal_code: data?.user.postal_code || "",
-        first_name: data?.user.first_name || "",
-        last_name: data?.user.last_name || "",
-        email: data?.user.email || "",
-        id_number: data?.user.id_number || "",
-        passport_number: data?.user.passport_number || "",
-        
-    
+      address: data?.user.address || '',
+      city: data?.user.city || '',
+      country: data?.user.country || '',
+      date_of_birth: data?.user.date_of_birth || '',
+      gender: data?.user.gender || '',
+      phone_number: data?.user.phone_number || '',
+      postal_code: data?.user.postal_code || '',
+      first_name: data?.user.first_name || '',
+      last_name: data?.user.last_name || '',
+      email: data?.user.email || '',
+      id_number: data?.user.id_number || '',
+      passport_number: data?.user.passport_number || '',
     },
   });
 
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
-
- 
 
   const handleCloseModal = () => {
     setIsOpen(false);
@@ -83,43 +71,43 @@ const EditStudentPersonalInfo = ({
   };
 
   const onSubmit = async (formData: z.infer<typeof UpdateUserInfoSchema>) => {
-    console.log("submitting form data for update", formData);
-    console.log("data", formData)
+    console.log('submitting form data for update', formData);
+    console.log('data', formData);
     try {
-      const response = await updateStudentAccount({ 
+      const response = await updateStudentAccount({
         id: data?.user.id,
-        data: formData
-    }).unwrap();
-      console.log("response", response);
+        data: formData,
+      }).unwrap();
+      console.log('response', response);
 
       setIsError(false);
-      setSuccessMessage("Student  Personal updated successfully!");
+      setSuccessMessage('Student  Personal updated successfully!');
       setShowSuccessModal(true);
 
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      console.log('error', error);
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
-        console.log("errorData", errorData);
+        console.log('errorData', errorData);
         setIsError(true);
         setSuccessMessage(
-          "An error occured while updating Student Personal Info.Please try again!."
+          'An error occured while updating Student Personal Info.Please try again!.',
         );
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occured. Please try again.");
+        setSuccessMessage('Unexpected error occured. Please try again.');
         setShowSuccessModal(true);
       }
-    }finally{
-        refetchData();
+    } finally {
+      refetchData();
     }
   };
 
   return (
     <>
-       <IconButton
+      <CreateAndUpdateButton
         onClick={handleOpenModal}
         title="Edit"
         icon={<FiEdit className="w-4 h-4" />}
@@ -175,7 +163,7 @@ const EditStudentPersonalInfo = ({
                       <input
                         id="first_name"
                         type="text"
-                        {...register("first_name")}
+                        {...register('first_name')}
                         placeholder="Enter new First name"
                         className="w-full py-2 px-4  text-sm font-light border placeholder:text-sm rounded-md focus:outline-none"
                       />
@@ -188,12 +176,12 @@ const EditStudentPersonalInfo = ({
 
                     <div>
                       <label className="block text-xs font-bold mb-2">
-                       Last Name<span className="text-red-500">*</span>
+                        Last Name<span className="text-red-500">*</span>
                       </label>
                       <input
                         id="last_name"
                         type="text"
-                        {...register("last_name")}
+                        {...register('last_name')}
                         placeholder="Enter new last name"
                         className="w-full py-2 px-4 text-sm border font-light placeholder:text-sm rounded-md focus:outline-none"
                       />
@@ -211,7 +199,7 @@ const EditStudentPersonalInfo = ({
                       <input
                         id="email"
                         type="email"
-                        {...register("email")}
+                        {...register('email')}
                         placeholder="e.g +2547..."
                         className="w-full py-2 px-4 text-sm border  font-light placeholder:text-sm rounded-md focus:outline-none"
                       />
@@ -228,7 +216,7 @@ const EditStudentPersonalInfo = ({
                       <input
                         id="id_number"
                         type="text"
-                        {...register("id_number")}
+                        {...register('id_number')}
                         placeholder="e.g XXXXXXX"
                         className="w-full py-2 px-4 text-sm border font-light placeholder:text-sm rounded-md focus:outline-none"
                       />
@@ -245,7 +233,7 @@ const EditStudentPersonalInfo = ({
                       <input
                         id="passport_number"
                         type="text"
-                        {...register("passport_number")}
+                        {...register('passport_number')}
                         placeholder="e.g XXXXXXX"
                         className="w-full py-2 px-4 text-sm border font-light placeholder:text-sm rounded-md focus:outline-none"
                       />
@@ -262,7 +250,7 @@ const EditStudentPersonalInfo = ({
                       <input
                         id="address"
                         type="text"
-                        {...register("address")}
+                        {...register('address')}
                         placeholder="e.g Saika"
                         className="w-full py-2 px-4 text-sm border font-light placeholder:text-sm rounded-md focus:outline-none"
                       />
@@ -280,7 +268,7 @@ const EditStudentPersonalInfo = ({
                       <input
                         id="city"
                         type="text"
-                        {...register("city")}
+                        {...register('city')}
                         placeholder="e.g Thika"
                         className="w-full py-2 text-sm px-4 border font-light placeholder:text-sm rounded-md focus:outline-none"
                       />
@@ -289,15 +277,15 @@ const EditStudentPersonalInfo = ({
                           {errors.city.message}
                         </p>
                       )}
-                    </div>           
-                  <div>
+                    </div>
+                    <div>
                       <label className="block text-xs font-bold mb-2">
-                       Country<span className="text-red-500"></span>
+                        Country<span className="text-red-500"></span>
                       </label>
                       <input
                         id="country"
                         type="text"
-                        {...register("country")}
+                        {...register('country')}
                         placeholder="e.g Kenya"
                         className="w-full py-2 px-4 text-sm border font-light placeholder:text-sm rounded-md focus:outline-none"
                       />
@@ -308,28 +296,28 @@ const EditStudentPersonalInfo = ({
                       )}
                     </div>
                   </div>
-                      <div>
-                      <label className="block text-xs font-bold mb-2">
-                       Postal Code<span className="text-red-500"></span>
-                      </label>
-                      <input
-                        id="postal_code"
-                        type="text"
-                        {...register("postal_code")}
-                        placeholder="e.g 82-90119 "
-                        className="w-full py-2 px-4 text-sm border font-light placeholder:text-sm rounded-md focus:outline-none"
-                      />
-                      {errors.postal_code && (
-                        <p className="text-red-500 text-sm">
-                          {errors.postal_code.message}
-                        </p>
-                      )}
-                    </div>
+                  <div>
+                    <label className="block text-xs font-bold mb-2">
+                      Postal Code<span className="text-red-500"></span>
+                    </label>
+                    <input
+                      id="postal_code"
+                      type="text"
+                      {...register('postal_code')}
+                      placeholder="e.g 82-90119 "
+                      className="w-full py-2 px-4 text-sm border font-light placeholder:text-sm rounded-md focus:outline-none"
+                    />
+                    {errors.postal_code && (
+                      <p className="text-red-500 text-sm">
+                        {errors.postal_code.message}
+                      </p>
+                    )}
+                  </div>
                   <ModalBottomButton
-                                     onCancel={handleCloseModal}
-                                     isSubmitting={isSubmitting}
-                                     isProcessing={isUpdating}
-                                   />
+                    onCancel={handleCloseModal}
+                    isSubmitting={isSubmitting}
+                    isProcessing={isUpdating}
+                  />
                 </form>
               </>
             </div>

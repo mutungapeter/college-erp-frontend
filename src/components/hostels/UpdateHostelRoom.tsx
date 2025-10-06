@@ -1,19 +1,19 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { IoCloseOutline } from "react-icons/io5";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { IoCloseOutline } from 'react-icons/io5';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
 
-import { HostelRoomsType } from "@/definitions/hostels";
+import { HostelRoomsType } from '@/definitions/hostels';
 import {
   hostelRoomUpdateSchema,
   HostelRoomUpdateType,
-} from "@/schemas/hostels/main";
-import { useUpdateHostelRoomMutation } from "@/store/services/hostels/hostelService";
-import { FiEdit } from "react-icons/fi";
+} from '@/schemas/hostels/main';
+import { useUpdateHostelRoomMutation } from '@/store/services/hostels/hostelService';
+import { FiEdit } from 'react-icons/fi';
 
 const EditHostelRoom = ({
   data,
@@ -24,13 +24,13 @@ const EditHostelRoom = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
 
   const [isError, setIsError] = useState(false);
 
   const [updateHostelRoom, { isLoading: isUpdating }] =
     useUpdateHostelRoomMutation();
- 
+
   const {
     register,
     handleSubmit,
@@ -38,12 +38,12 @@ const EditHostelRoom = ({
   } = useForm<HostelRoomUpdateType>({
     resolver: zodResolver(hostelRoomUpdateSchema),
     defaultValues: {
-      room_number: data?.room_number || "",
+      room_number: data?.room_number || '',
       room_capacity: data?.room_capacity || 0,
     },
   });
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -57,30 +57,30 @@ const EditHostelRoom = ({
   };
 
   const onSubmit = async (formData: HostelRoomUpdateType) => {
-    console.log("submitting form data");
+    console.log('submitting form data');
 
     try {
       const response = await updateHostelRoom({
         id: data.id,
         data: formData,
       }).unwrap();
-      console.log("response", response);
+      console.log('response', response);
 
       setIsError(false);
-      setSuccessMessage("Hostel Room Updated successfully!");
+      setSuccessMessage('Hostel Room Updated successfully!');
       setShowSuccessModal(true);
 
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(`Failed to update Hostel Room: ${errorData.error}`);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected Error occured. Please try again.");
+        setSuccessMessage('Unexpected Error occured. Please try again.');
         setShowSuccessModal(true);
       }
     } finally {
@@ -196,7 +196,7 @@ const EditHostelRoom = ({
                         type="text"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                         placeholder="e.g 101"
-                        {...register("room_number")}
+                        {...register('room_number')}
                       />
                       {errors.room_number && (
                         <p className="text-red-500 text-sm mt-1">
@@ -212,7 +212,7 @@ const EditHostelRoom = ({
                         type="number"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                         placeholder="e.g 3, 4 "
-                        {...register("room_capacity")}
+                        {...register('room_capacity')}
                       />
                       {errors.room_capacity && (
                         <p className="text-red-500 text-sm mt-1">

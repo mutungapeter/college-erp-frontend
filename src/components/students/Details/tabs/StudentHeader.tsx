@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { StudentDetailsType } from "@/definitions/students";
-import Image from "next/image";
-import { LuBriefcase, LuMail } from "react-icons/lu";
+import { StudentDetailsType } from '@/definitions/students';
+import Image from 'next/image';
+import { LuBriefcase, LuMail } from 'react-icons/lu';
 
 interface Props {
   studentDetails: StudentDetailsType;
@@ -14,7 +14,7 @@ const StudentHeader = ({ studentDetails }: Props) => {
       <div className="flex flex-col sm:flex-row items-center gap-4">
         <div className="w-50 h-50 bg-slate-100 p-2 rounded-md border-4 border-white">
           <Image
-            src={"/avatar/avatar.jpg"}
+            src={'/avatar/avatar.jpg'}
             alt="Student Avatar"
             width={80}
             height={80}
@@ -46,9 +46,12 @@ const StudentHeader = ({ studentDetails }: Props) => {
             <div className="hidden sm:block w-1 h-1 bg-gray-400 rounded-full"></div>
           </div>
           <div className="py-4 flex items-center space-x-4">
-           
             <span className="font-normal uppercase">
-               Reg No: <span className="font-semibold"> {studentDetails.registration_number}</span>
+              Reg No:{' '}
+              <span className="font-semibold">
+                {' '}
+                {studentDetails.registration_number}
+              </span>
             </span>
           </div>
         </div>

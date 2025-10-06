@@ -1,35 +1,35 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FiPlus } from "react-icons/fi";
-import { IoCloseOutline } from "react-icons/io5";
-import { z } from "zod";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiPlus } from 'react-icons/fi';
+import { IoCloseOutline } from 'react-icons/io5';
+import { z } from 'zod';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
 
-import IconButton from "@/components/common/IconButton";
-import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
-import { ProgrammeDetailsType } from "@/definitions/curiculum";
-import { AddunitSchema } from "@/schemas/curriculum/courses";
-import { useCreateCourseMutation } from "@/store/services/curriculum/coursesService";
+import CreateAndUpdateButton from '@/components/common/CreateAndUpdateButton';
+import ModalBottomButton from '@/components/common/StickyModalFooterButtons';
+import { ProgrammeDetailsType } from '@/definitions/curiculum';
+import { AddunitSchema } from '@/schemas/curriculum/courses';
+import { useCreateCourseMutation } from '@/store/services/curriculum/coursesService';
 
 type FormValues = z.infer<typeof AddunitSchema>;
-interface Props{
+interface Props {
   refetchData: () => void;
- data: ProgrammeDetailsType
- programme_id: number;
+  data: ProgrammeDetailsType;
+  programme_id: number;
 }
 const AddUnit = ({ refetchData, data, programme_id }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
 
   const [isError, setIsError] = useState(false);
 
   const [createCourse, { isLoading: isCreating }] = useCreateCourseMutation();
- const {
+  const {
     register,
     handleSubmit,
     reset,
@@ -37,10 +37,9 @@ const AddUnit = ({ refetchData, data, programme_id }: Props) => {
     formState: { isSubmitting, errors },
   } = useForm({
     resolver: zodResolver(AddunitSchema),
-    
   });
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -53,36 +52,34 @@ const AddUnit = ({ refetchData, data, programme_id }: Props) => {
     handleCloseModal();
   };
 
- 
   const onSubmit = async (formData: FormValues) => {
-    console.log("submitting form data");
-    const submissionData= {
-        school: data?.school?.id,
-        department: data?.department?.id,
-        programme: programme_id,
-       ...formData
-
-    }
+    console.log('submitting form data');
+    const submissionData = {
+      school: data?.school?.id,
+      department: data?.department?.id,
+      programme: programme_id,
+      ...formData,
+    };
 
     try {
       const response = await createCourse(submissionData).unwrap();
-      console.log("response", response);
+      console.log('response', response);
 
       setIsError(false);
-      setSuccessMessage("Unit added successfully!");
+      setSuccessMessage('Unit added successfully!');
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(`Failed to add Unit: ${errorData.error}`);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occured. Please try again.");
+        setSuccessMessage('Unexpected error occured. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -90,13 +87,13 @@ const AddUnit = ({ refetchData, data, programme_id }: Props) => {
 
   return (
     <>
-       <IconButton
-              onClick={handleOpenModal}
-              title="Add New"
-              label="New Unit"
-              icon={<FiPlus className="w-4 h-4" />}
-              className="bg-primary-500 text-white px-4 py-2 hover:bg-primary-600 focus:ring-primary-500 focus:ring-offset-1"
-            />
+      <CreateAndUpdateButton
+        onClick={handleOpenModal}
+        title="Add New"
+        label="New Unit"
+        icon={<FiPlus className="w-4 h-4" />}
+        className="bg-primary-500 text-white px-4 py-2 hover:bg-primary-600 focus:ring-primary-500 focus:ring-offset-1"
+      />
 
       {isOpen && (
         <div
@@ -145,7 +142,7 @@ const AddUnit = ({ refetchData, data, programme_id }: Props) => {
                     <input
                       id="name"
                       type="text"
-                      {...register("name")}
+                      {...register('name')}
                       placeholder="e.g Web programming "
                       className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
                     />
@@ -155,30 +152,29 @@ const AddUnit = ({ refetchData, data, programme_id }: Props) => {
                       </p>
                     )}
                   </div>
-                    <div>
-                      <label className="block space-x-1  text-sm font-medium mb-2">
-                        Unit Code
-                      </label>
-                      <input
-                        id="course_code"
-                        type="text"
-                        {...register("course_code")}
-                        placeholder="e.g BIT"
-                        className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
-                      />
-                      {errors.course_code && (
-                        <p className="text-red-500 text-sm">
-                          {errors.course_code.message}
-                        </p>
-                      )}
-                    </div>
-                  
+                  <div>
+                    <label className="block space-x-1  text-sm font-medium mb-2">
+                      Unit Code
+                    </label>
+                    <input
+                      id="course_code"
+                      type="text"
+                      {...register('course_code')}
+                      placeholder="e.g BIT"
+                      className="w-full py-2 px-4 border placeholder:text-sm  rounded-md focus:outline-none "
+                    />
+                    {errors.course_code && (
+                      <p className="text-red-500 text-sm">
+                        {errors.course_code.message}
+                      </p>
+                    )}
+                  </div>
 
-                    <ModalBottomButton
-                                      onCancel={handleCloseModal}
-                                      isSubmitting={isSubmitting}
-                                      isProcessing={isCreating}
-                                    />
+                  <ModalBottomButton
+                    onCancel={handleCloseModal}
+                    isSubmitting={isSubmitting}
+                    isProcessing={isCreating}
+                  />
                 </form>
               </>
             </div>

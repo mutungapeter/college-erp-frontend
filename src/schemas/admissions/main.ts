@@ -1,15 +1,12 @@
 import { z } from 'zod';
 
-
-
-
 const applicationBaseSchema = {
   application_number: z.string().min(1).max(255).nullable().optional(),
   lead: z.number().int().nullable().optional(),
-  first_name: z.string().min(1, "First name is required").max(255),
-  last_name: z.string().min(1, "Last name is required").max(255),
+  first_name: z.string().min(1, 'First name is required').max(255),
+  last_name: z.string().min(1, 'Last name is required').max(255),
   email: z.string().email().max(254),
-  phone_number: z.string().min(1, "Phone number is required").max(20),
+  phone_number: z.string().min(1, 'Phone number is required').max(20),
   id_number: z.string().max(255).nullable().optional(),
   passport_number: z.string().max(255).nullable().optional(),
   date_of_birth: z.string().nullable().optional(),
@@ -27,9 +24,8 @@ const applicationBaseSchema = {
   intake: z.number().int().nullable().optional(),
   status: z.string().max(255).nullable().optional(),
   campus: z.number().int().nullable().optional(),
-//   z.number().int().positive().nullable().optional(),
+  //   z.number().int().positive().nullable().optional(),
 };
-
 
 export const applicationCreateSchema = z.object({
   first_name: applicationBaseSchema.first_name,
@@ -38,14 +34,16 @@ export const applicationCreateSchema = z.object({
   phone_number: applicationBaseSchema.phone_number,
   gender: applicationBaseSchema.gender,
   status: applicationBaseSchema.status,
-  
 
   application_number: applicationBaseSchema.application_number,
   lead: applicationBaseSchema.lead,
   id_number: applicationBaseSchema.id_number,
   passport_number: applicationBaseSchema.passport_number,
-  date_of_birth: z.string().min(1, "Date of birth is required"),
-  first_choice_programme: z.number().int().positive("First choice programme is required"),
+  date_of_birth: z.string().min(1, 'Date of birth is required'),
+  first_choice_programme: z
+    .number()
+    .int()
+    .positive('First choice programme is required'),
   second_choice_programme: applicationBaseSchema.second_choice_programme,
   guardian_name: applicationBaseSchema.guardian_name,
   guardian_email: applicationBaseSchema.guardian_email,
@@ -59,7 +57,6 @@ export const applicationCreateSchema = z.object({
   campus: applicationBaseSchema.campus,
 });
 
-
 export const updateApplicationSchema = z.object({
   first_name: applicationBaseSchema.first_name.optional(),
   last_name: applicationBaseSchema.last_name.optional(),
@@ -67,7 +64,7 @@ export const updateApplicationSchema = z.object({
   phone_number: applicationBaseSchema.phone_number.optional(),
   gender: applicationBaseSchema.gender.optional(),
   status: applicationBaseSchema.status.optional(),
-  
+
   lead: applicationBaseSchema.lead,
   id_number: applicationBaseSchema.id_number,
   passport_number: applicationBaseSchema.passport_number,
@@ -86,7 +83,6 @@ export const updateApplicationSchema = z.object({
   campus: applicationBaseSchema.campus,
 });
 
-
 export const updateApplicationPersonalInfoSchema = z.object({
   first_name: applicationBaseSchema.first_name.optional(),
   last_name: applicationBaseSchema.last_name.optional(),
@@ -101,12 +97,11 @@ export const updateApplicationPersonalInfoSchema = z.object({
   country: applicationBaseSchema.country,
 });
 export const updateGurdianSchema = z.object({
-    guardian_name: applicationBaseSchema.guardian_name,
-    guardian_email: applicationBaseSchema.guardian_email,
-    guardian_relationship: applicationBaseSchema.guardian_relationship,
-    guardian_phone_number: applicationBaseSchema.guardian_phone_number,
-    
-})
+  guardian_name: applicationBaseSchema.guardian_name,
+  guardian_email: applicationBaseSchema.guardian_email,
+  guardian_relationship: applicationBaseSchema.guardian_relationship,
+  guardian_phone_number: applicationBaseSchema.guardian_phone_number,
+});
 const applicationEducationHistoryBaseSchema = {
   level: z.string().max(255).nullable().optional(),
   grade_or_gpa: z.string().max(255).nullable().optional(),
@@ -114,30 +109,46 @@ const applicationEducationHistoryBaseSchema = {
   major: z.string().max(255).nullable().optional(),
   institution: z.string().max(255).nullable().optional(),
   graduated: z.boolean().nullable().optional(),
-}
+};
 
 export const applicationEducationHistoryCreateSchema = z.object({
-    institution: z.string().min(1, "Institution required").max(255, "Institution must be less than 255 characters"),
-    grade_or_gpa: z.string().min(1, "Grade or GPA required").max(255, "Grade or GPA must be less than 255 characters"),
-    year: z.string().min(1, "Year required").max(255, "Year must be less than 255 characters"),
-    major: applicationEducationHistoryBaseSchema.major,
-    graduated: applicationEducationHistoryBaseSchema.graduated,
-    level: z.string().min(1, "Level required").max(255, "Level must be less than 255 characters"),
-})
+  institution: z
+    .string()
+    .min(1, 'Institution required')
+    .max(255, 'Institution must be less than 255 characters'),
+  grade_or_gpa: z
+    .string()
+    .min(1, 'Grade or GPA required')
+    .max(255, 'Grade or GPA must be less than 255 characters'),
+  year: z
+    .string()
+    .min(1, 'Year required')
+    .max(255, 'Year must be less than 255 characters'),
+  major: applicationEducationHistoryBaseSchema.major,
+  graduated: applicationEducationHistoryBaseSchema.graduated,
+  level: z
+    .string()
+    .min(1, 'Level required')
+    .max(255, 'Level must be less than 255 characters'),
+});
 
 export const updateApplicationEducationHistorySchema = z.object({
-    ...applicationEducationHistoryBaseSchema
-})
+  ...applicationEducationHistoryBaseSchema,
+});
 export const updateProgrammeInterestSchema = z.object({
-    first_choice_programme: applicationBaseSchema.first_choice_programme,
-    second_choice_programme: applicationBaseSchema.second_choice_programme,
-    intake:  applicationBaseSchema.intake,
-    campus:  applicationBaseSchema.campus,
-})
+  first_choice_programme: applicationBaseSchema.first_choice_programme,
+  second_choice_programme: applicationBaseSchema.second_choice_programme,
+  intake: applicationBaseSchema.intake,
+  campus: applicationBaseSchema.campus,
+});
 export const enrollStudentSchema = z.object({
-    cohort: z.number().int().positive('Class/Cohort is required'),
-})
+  cohort: z.number().int().positive('Class/Cohort is required'),
+  role: z.number().int().positive('Role  is required'),
+  registration_number: z.string().optional(),
+});
 
-export type StudentApplicationProgrammeInterestUpdate = z.infer<typeof updateProgrammeInterestSchema>;
+export type StudentApplicationProgrammeInterestUpdate = z.infer<
+  typeof updateProgrammeInterestSchema
+>;
 export type StudentApplicationCreate = z.infer<typeof applicationCreateSchema>;
 export type StudentApplicationUpdate = z.infer<typeof updateApplicationSchema>;

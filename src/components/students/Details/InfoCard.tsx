@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { JSX } from "react";
+import { JSX } from 'react';
 
 interface InfoCardItem {
   label: string;
-value: string | null | undefined;
+  value: string | null | undefined;
 }
 
 interface InfoCardProps {
@@ -24,9 +24,11 @@ const InfoCard = ({ icon, title, items }: InfoCardProps) => (
     <div className="space-y-3">
       {items.map((item, index) => (
         <div key={index}>
-          <label className="block text-xs font-medium text-gray-500 mb-1">{item.label}</label>
+          <label className="block text-xs font-medium text-gray-500 mb-1">
+            {item.label}
+          </label>
           <p className="text-sm font-medium bg-white border border-gray-200 rounded-lg py-2 px-3 text-gray-800">
-            {item.value ?? "—"}
+            {item.value ?? '—'}
           </p>
         </div>
       ))}

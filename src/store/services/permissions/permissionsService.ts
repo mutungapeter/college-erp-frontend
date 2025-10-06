@@ -1,4 +1,4 @@
-import { apiSlice } from "../../api/apiSlice";
+import { apiSlice } from '../../api/apiSlice';
 
 interface BaseInterfacce {
   page?: number;
@@ -33,46 +33,44 @@ export const rolesApi = apiSlice.injectEndpoints({
 
         return {
           url: `core/roles/`,
-          method: "GET",
+          method: 'GET',
           params: queryParams,
         };
       },
     }),
 
-
     createRole: builder.mutation({
       query: (data) => ({
         url: `core/roles/create/`,
-        method: "POST",
+        method: 'POST',
         body: data,
       }),
     }),
-  updateRole: builder.mutation({
+    updateRole: builder.mutation({
       query: ({ id, data }) => ({
         url: `core/roles/${id}/`,
-        method: "PATCH",
+        method: 'PATCH',
         body: data,
       }),
     }),
     deleteRole: builder.mutation({
       query: (id) => ({
         url: `core/roles/${id}/`,
-        method: "DELETE"
+        method: 'DELETE',
       }),
     }),
     createUpdateRolePermission: builder.mutation({
       query: ({ id, data }) => ({
         url: `core/roles/${id}/permissions/update/`,
-        method: "PATCH",
+        method: 'PATCH',
         body: data,
       }),
     }),
     getRolesPermissions: builder.query({
       query: (id) => {
-      
-      return {
+        return {
           url: `core/roles/${id}/permissions/`,
-          method: "GET",
+          method: 'GET',
         };
       },
     }),
@@ -80,11 +78,10 @@ export const rolesApi = apiSlice.injectEndpoints({
 });
 
 export const {
-useCreateRoleMutation,
-useGetUserRolesQuery,
-useUpdateRoleMutation,
-useGetRolesPermissionsQuery,
-useDeleteRoleMutation,
-useCreateUpdateRolePermissionMutation
+  useCreateRoleMutation,
+  useGetUserRolesQuery,
+  useUpdateRoleMutation,
+  useGetRolesPermissionsQuery,
+  useDeleteRoleMutation,
+  useCreateUpdateRolePermissionMutation,
 } = rolesApi;
-

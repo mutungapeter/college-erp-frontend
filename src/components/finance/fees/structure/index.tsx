@@ -1,31 +1,29 @@
-"use client";
+'use client';
 
-import Pagination from "@/components/common/Pagination";
+import Pagination from '@/components/common/Pagination';
 
-import { useFilters } from "@/hooks/useFilters";
+import { useFilters } from '@/hooks/useFilters';
 
-import DataTable, { Column } from "@/components/common/Table/DataTable";
-import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
+import DataTable, { Column } from '@/components/common/Table/DataTable';
+import ContentSpinner from '@/components/common/spinners/dataLoadingSpinner';
 
-import FilterSelect from "@/components/common/Select";
-import { LabelOptionsType } from "@/definitions/Labels/labelOptionsType";
+import FilterSelect from '@/components/common/Select';
+import { LabelOptionsType } from '@/definitions/Labels/labelOptionsType';
 
-import { PAGE_SIZE } from "@/lib/constants";
-import { SemesterType } from "@/definitions/curiculum";
+import { PAGE_SIZE } from '@/lib/constants';
+import { SemesterType } from '@/definitions/curiculum';
 
-import { FeeStructure } from "@/definitions/finance/fees/feeStructure";
-import { useGetSemestersQuery } from "@/store/services/curriculum/semestersService";
-import { useGetFeeStructuresListQuery } from "@/store/services/finance/finaceServices";
-import { formatCurrency } from "@/utils/currency";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
-import {
-  FiEye
-} from "react-icons/fi";
-import EditFeeStructure from "./EditFeeStructure";
-import AddFeeStructure from "./NewFeeStructure";
-import AddFeeStructureItem from "./NewFeeStructureItem";
+import { FeeStructure } from '@/definitions/finance/fees/feeStructure';
+import { useGetSemestersQuery } from '@/store/services/curriculum/semestersService';
+import { useGetFeeStructuresListQuery } from '@/store/services/finance/finaceServices';
+import { formatCurrency } from '@/utils/currency';
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useMemo } from 'react';
+import { FiEye } from 'react-icons/fi';
+import EditFeeStructure from './EditFeeStructure';
+import AddFeeStructure from './NewFeeStructure';
+import AddFeeStructureItem from './NewFeeStructureItem';
 
 const FeeStructuresList = () => {
   const router = useRouter();
@@ -34,12 +32,12 @@ const FeeStructuresList = () => {
   const { filters, currentPage, handleFilterChange, handlePageChange } =
     useFilters({
       initialFilters: {
-        semester: searchParams.get("semester") || "",
+        semester: searchParams.get('semester') || '',
       },
-      initialPage: parseInt(searchParams.get("page") || "1", 10),
+      initialPage: parseInt(searchParams.get('page') || '1', 10),
       router,
       debounceTime: 100,
-      debouncedFields: ["search"],
+      debouncedFields: ['search'],
     });
 
   const queryParams = useMemo(
@@ -48,9 +46,9 @@ const FeeStructuresList = () => {
       page_size: PAGE_SIZE,
       ...filters,
     }),
-    [currentPage, filters]
+    [currentPage, filters],
   );
-  console.log("queryParams", queryParams);
+  console.log('queryParams', queryParams);
 
   const {
     data: feeSstructreData,
@@ -60,22 +58,22 @@ const FeeStructuresList = () => {
   } = useGetFeeStructuresListQuery(queryParams, {
     refetchOnMountOrArgChange: true,
   });
-  console.log("feeSstructreData", feeSstructreData);
+  console.log('feeSstructreData', feeSstructreData);
 
   const { data: semestersData } = useGetSemestersQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
 
-  console.log("semestersData", semestersData);
+  console.log('semestersData', semestersData);
   const semmestersOptions =
     semestersData?.map((item: SemesterType) => ({
       value: item.id,
-      label: `${item.name} - ${item.academic_year}`,
+      label: `${item.name} - ${item.academic_year.name}`,
     })) || [];
 
   const handleSemesterChange = (selectedOption: LabelOptionsType | null) => {
-    const semesterId = selectedOption ? selectedOption.value : "";
+    const semesterId = selectedOption ? selectedOption.value : '';
     handleFilterChange({
       semester: semesterId,
     });
@@ -83,32 +81,36 @@ const FeeStructuresList = () => {
 
   const columns: Column<FeeStructure>[] = [
     {
-      header: "Programme",
-      accessor: "programme",
-      cell: (item: FeeStructure) => <span className="text-sm whitespace-normal break-words">{item.programme.name}</span>,
+      header: 'Programme',
+      accessor: 'programme',
+      cell: (item: FeeStructure) => (
+        <span className="text-sm whitespace-normal break-words">
+          {item.programme.name}
+        </span>
+      ),
     },
     {
-      header: "Year of Study",
-      accessor: "year_of_study",
+      header: 'Year of Study',
+      accessor: 'year_of_study',
       cell: (item: FeeStructure) => (
         <span className="text-sm font-normal">{item.year_of_study.name}</span>
       ),
     },
     {
-      header: "Semester",
-      accessor: "semester",
+      header: 'Semester',
+      accessor: 'semester',
       cell: (item: FeeStructure) => (
         <span>
           <span className="text-sm">
-            {item.semester.name}({item.semester.academic_year})
+            {item.semester.name} {item.semester.academic_year.name}
           </span>
         </span>
       ),
     },
 
     {
-      header: "Total",
-      accessor: "total",
+      header: 'Total',
+      accessor: 'total',
       cell: (item: FeeStructure) => (
         <span>
           <span className="text-sm font-bold">
@@ -119,11 +121,10 @@ const FeeStructuresList = () => {
     },
 
     {
-      header: "Actions",
-      accessor: "id",
+      header: 'Actions',
+      accessor: 'id',
       cell: (item: FeeStructure) => (
         <div className="flex items-center justify-center space-x-2">
-          
           <AddFeeStructureItem refetchData={refetch} data={item} />
           <EditFeeStructure refetchData={refetch} data={item} />
           <Link
@@ -136,22 +137,20 @@ const FeeStructuresList = () => {
               View Details
             </span>
           </Link>
-
-          
         </div>
       ),
     },
   ];
 
-  console.log("feeSstructreData", feeSstructreData);
+  console.log('feeSstructreData', feeSstructreData);
   return (
     <>
       <div className="bg-white w-full relative  p-1 shadow-md rounded-lg font-nunito">
         <div className=" p-4  flex flex-col md:flex-row md:items-center lg:items-center md:gap-0 lg:gap-0 gap-4 lg:justify-between md:justify-between">
           <h2 className="font-semibold text-black text-xl">Fee Structures</h2>
-        <div>
-          <AddFeeStructure refetchData={refetch} />
-        </div>
+          <div>
+            <AddFeeStructure refetchData={refetch} />
+          </div>
         </div>
 
         <div className="flex flex-col gap-4 mt-5 lg:gap-0 md:gap-0 lg:flex-row md:flex-row  md:items-center p-2 md:justify-end lg:items-center lg:justify-end">
@@ -161,8 +160,8 @@ const FeeStructuresList = () => {
               value={
                 semmestersOptions.find(
                   (option: LabelOptionsType) =>
-                    option.value === filters.semester
-                ) || { value: "", label: "All Semesters" }
+                    option.value === filters.semester,
+                ) || { value: '', label: 'All Semesters' }
               }
               onChange={handleSemesterChange}
               placeholder=""

@@ -1,6 +1,6 @@
-import { useEffect, useState, ChangeEvent } from "react";
-import { useDebouncedCallback } from "use-debounce";
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { useEffect, useState, ChangeEvent } from 'react';
+import { useDebouncedCallback } from 'use-debounce';
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 
 interface UseFiltersProps<T> {
   initialFilters: T;
@@ -12,20 +12,19 @@ interface UseFiltersProps<T> {
 
 export function useFilters<T extends Record<string, string>>({
   initialFilters,
-  initialPage=1,
+  initialPage = 1,
   router,
   debounceTime = 300,
-  debouncedFields = []
+  debouncedFields = [],
 }: UseFiltersProps<T>) {
-  console.log("initialFilters", initialFilters)
+  console.log('initialFilters', initialFilters);
   const [filters, setFilters] = useState<T>(initialFilters);
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [previousFilters, setPreviousFilters] = useState<T>(initialFilters);
-  
 
   useEffect(() => {
     const params = new URLSearchParams();
-    params.set("page", currentPage.toString());
+    params.set('page', currentPage.toString());
     Object.entries(filters).forEach(([key, value]) => {
       if (value) {
         params.set(key, value);
@@ -34,32 +33,35 @@ export function useFilters<T extends Record<string, string>>({
 
     router.push(`?${params.toString()}`, { scroll: false });
   }, [filters, currentPage, router]);
-  
+
   useEffect(() => {
     const filtersChanged = Object.entries(filters).some(
-      ([key, value]) => previousFilters[key] !== value
+      ([key, value]) => previousFilters[key] !== value,
     );
-    
+
     if (filtersChanged && currentPage !== 1) {
       setCurrentPage(1);
     }
-    
+
     if (filtersChanged) {
-      setPreviousFilters({...filters});
+      setPreviousFilters({ ...filters });
     }
   }, [filters, currentPage, previousFilters]);
-  
-  const handleDebouncedFilter = useDebouncedCallback((name: string, value: string) => {
-    setFilters((prev) => ({ ...prev, [name]: value }));
-  }, debounceTime);
-  
+
+  const handleDebouncedFilter = useDebouncedCallback(
+    (name: string, value: string) => {
+      setFilters((prev) => ({ ...prev, [name]: value }));
+    },
+    debounceTime,
+  );
+
   const handleFilterChange = (
-    e: ChangeEvent<HTMLSelectElement | HTMLInputElement> | Partial<T>
+    e: ChangeEvent<HTMLSelectElement | HTMLInputElement> | Partial<T>,
   ) => {
     if ('target' in e) {
       const target = e.target as HTMLInputElement | HTMLSelectElement;
       const { name, value } = target;
-      
+
       if (debouncedFields.includes(name)) {
         handleDebouncedFilter(name, value);
       } else {
@@ -69,7 +71,7 @@ export function useFilters<T extends Record<string, string>>({
       setFilters((prev) => ({ ...prev, ...e }));
     }
   };
-  
+
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -81,6 +83,6 @@ export function useFilters<T extends Record<string, string>>({
     setCurrentPage,
     handleFilterChange,
     handleDebouncedFilter,
-    handlePageChange
+    handlePageChange,
   };
 }

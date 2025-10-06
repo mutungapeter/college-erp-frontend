@@ -1,23 +1,22 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FiEdit } from "react-icons/fi";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiEdit } from 'react-icons/fi';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
 
-import { IoCloseOutline } from "react-icons/io5";
-import { z } from "zod";
+import { IoCloseOutline } from 'react-icons/io5';
+import { z } from 'zod';
 
-import { Application_education_history } from "@/definitions/admissions";
-import { LabelOptionsType } from "@/definitions/Labels/labelOptionsType";
-import { EducationHistoryOptions } from "@/lib/constants";
-import { updateApplicationEducationHistorySchema } from "@/schemas/admissions/main";
-import Select from "react-select";
-import { useUpdateEducationHistoryMutation } from "@/store/services/admissions/admissionsService";
-import ModalBottomButton from "@/components/common/StickyModalFooterButtons";
-import IconButton from "@/components/common/IconButton";
+import CreateAndUpdateButton from '@/components/common/CreateAndUpdateButton';
+import ModalBottomButton from '@/components/common/StickyModalFooterButtons';
+import { Application_education_history } from '@/definitions/admissions';
+import { LabelOptionsType } from '@/definitions/Labels/labelOptionsType';
+import { EducationHistoryOptions } from '@/lib/constants';
+import { updateApplicationEducationHistorySchema } from '@/schemas/admissions/main';
+import { useUpdateEducationHistoryMutation } from '@/store/services/admissions/admissionsService';
+import Select from 'react-select';
 
 const EditEducationHistory = ({
   data,
@@ -30,13 +29,13 @@ const EditEducationHistory = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
 
   const [isError, setIsError] = useState(false);
 
   const [updateEducationHistory, { isLoading: isUpdating }] =
     useUpdateEducationHistoryMutation();
-  console.log("data", data);
+  console.log('data', data);
   type FormValues = z.infer<typeof updateApplicationEducationHistorySchema>;
   const {
     handleSubmit,
@@ -47,23 +46,23 @@ const EditEducationHistory = ({
   } = useForm({
     resolver: zodResolver(updateApplicationEducationHistorySchema),
     defaultValues: {
-      institution: data?.institution || "",
-      grade_or_gpa: data?.grade_or_gpa || "",
-      level: data?.level || "",
-      year: data?.year || "",
-      major: data?.major || "",
+      institution: data?.institution || '',
+      grade_or_gpa: data?.grade_or_gpa || '',
+      level: data?.level || '',
+      year: data?.year || '',
+      major: data?.major || '',
       graduated: data?.graduated || false,
     },
   });
-  const graduatedValue = watch("graduated");
+  const graduatedValue = watch('graduated');
   const handleLevelChange = (selected: LabelOptionsType | null) => {
     if (selected && selected.value) {
-      setValue("level", String(selected.value));
+      setValue('level', String(selected.value));
     }
   };
 
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -79,37 +78,37 @@ const EditEducationHistory = ({
   };
 
   const onSubmit = async (formData: FormValues) => {
-    console.log("submitting form data for update", formData);
+    console.log('submitting form data for update', formData);
 
     const submissionData = {
       student_application: application_id,
       ...formData,
     };
-    console.log("submissionData", submissionData);
+    console.log('submissionData', submissionData);
 
     try {
       const response = await updateEducationHistory({
         id: data?.id,
         data: submissionData,
       }).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Education history details updated successfully!");
+      setSuccessMessage('Education history details updated successfully!');
       setShowSuccessModal(true);
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      console.log('error', error);
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
-        console.log("errorData", errorData);
+        console.log('errorData', errorData);
         setIsError(true);
         setSuccessMessage(
-          "An error occured while updating Education History details.Please try again!."
+          'An error occured while updating Education History details.Please try again!.',
         );
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occured. Please try again.");
+        setSuccessMessage('Unexpected error occured. Please try again.');
         setShowSuccessModal(true);
       }
     } finally {
@@ -119,7 +118,7 @@ const EditEducationHistory = ({
 
   return (
     <>
-      <IconButton
+      <CreateAndUpdateButton
         onClick={handleOpenModal}
         title="Edit"
         icon={<FiEdit className="text-sm" />}
@@ -146,7 +145,7 @@ const EditEducationHistory = ({
           >
             <div
               className="relative transform justify-center animate-fadeIn max-h-[90vh]
-                overflow-y-auto rounded-2xl bg-white text-left shadow-xl transition-all   
+                overflow-y-auto rounded-2xl font-inter bg-white text-left shadow-xl transition-all   
                 w-full sm:max-w-c-500 md:max-w-500 px-3"
             >
               <>
@@ -177,7 +176,7 @@ const EditEducationHistory = ({
                         type="text"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                         placeholder="e.g. Masinde Muliro University of Science and Technology"
-                        {...register("institution")}
+                        {...register('institution')}
                       />
                       {errors.institution && (
                         <p className="text-red-500 text-sm mt-1">
@@ -196,7 +195,7 @@ const EditEducationHistory = ({
                           type="text"
                           className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                           placeholder="e.g. 2018"
-                          {...register("year")}
+                          {...register('year')}
                         />
                         {errors.year && (
                           <p className="text-red-500 text-sm mt-1">
@@ -214,7 +213,7 @@ const EditEducationHistory = ({
                           type="text"
                           className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                           placeholder="e.g. "
-                          {...register("grade_or_gpa")}
+                          {...register('grade_or_gpa')}
                         />
                         {errors.grade_or_gpa && (
                           <p className="text-red-500 text-sm mt-1">
@@ -232,7 +231,7 @@ const EditEducationHistory = ({
                           type="text"
                           className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                           placeholder="e.g user@example.com"
-                          {...register("major")}
+                          {...register('major')}
                         />
                         {errors.major && (
                           <p className="text-red-500 text-sm mt-1">
@@ -250,8 +249,8 @@ const EditEducationHistory = ({
                         options={EducationHistoryOptions}
                         onChange={handleLevelChange}
                         defaultValue={{
-                          value: data?.level || "",
-                          label: data?.level || "",
+                          value: data?.level || '',
+                          label: data?.level || '',
                         }}
                         menuPortalTarget={document.body}
                         menuPlacement="auto"
@@ -263,23 +262,23 @@ const EditEducationHistory = ({
                           }),
                           menu: (base) => ({
                             ...base,
-                            position: "absolute",
-                            width: "max-content",
-                            minWidth: "100%",
-                            minHeight: "50px",
+                            position: 'absolute',
+                            width: 'max-content',
+                            minWidth: '100%',
+                            minHeight: '50px',
                           }),
                           control: (base) => ({
                             ...base,
-                            minHeight: "44px",
-                            minWidth: "200px",
-                            borderColor: "#d1d5db",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#9ca3af",
+                            minHeight: '44px',
+                            minWidth: '200px',
+                            borderColor: '#d1d5db',
+                            boxShadow: 'none',
+                            '&:hover': {
+                              borderColor: '#9ca3af',
                             },
-                            "&:focus-within": {
-                              borderColor: "#9ca3af",
-                              boxShadow: "none",
+                            '&:focus-within': {
+                              borderColor: '#9ca3af',
+                              boxShadow: 'none',
                             },
                           }),
                         }}
@@ -297,13 +296,13 @@ const EditEducationHistory = ({
                         type="checkbox"
                         id="graduated"
                         className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-                        {...register("graduated")}
+                        {...register('graduated')}
                       />
                       <label
                         htmlFor="graduated"
                         className="ml-2 text-sm font-medium text-gray-700"
                       >
-                        Graduated {graduatedValue ? "(Yes)" : "(No)"}
+                        Graduated {graduatedValue ? '(Yes)' : '(No)'}
                       </label>
                     </div>
                     {errors.graduated && (

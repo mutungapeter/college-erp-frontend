@@ -1,6 +1,6 @@
-import PageLoadingSpinner from "@/components/common/spinners/pageLoadingSpinner";
-import StaffDetails from "@/components/staff/details";
-import { Suspense } from "react";
+import PageLoadingSpinner from '@/components/common/spinners/pageLoadingSpinner';
+import StaffDetails from '@/components/staff/details';
+import { Suspense } from 'react';
 const StaffDetailsPage = async ({
   params,
 }: {

@@ -1,16 +1,14 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { IoCloseOutline } from "react-icons/io5";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { IoCloseOutline } from 'react-icons/io5';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
-import { OnboardingType } from "@/definitions/onboarding";
-import { payrollCreateSchema, PayrollCreateType } from "@/schemas/staff/main";
-import { useAddStaffToPayrollMutation } from "@/store/services/staff/staffService";
-
-
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
+import { OnboardingType } from '@/definitions/onboarding';
+import { payrollCreateSchema, PayrollCreateType } from '@/schemas/staff/main';
+import { useAddStaffToPayrollMutation } from '@/store/services/staff/staffService';
 
 interface Props {
   refetchData: () => void;
@@ -18,13 +16,14 @@ interface Props {
 }
 
 const AddStaffPayroll = ({ refetchData, data }: Props) => {
-    console.log("data", data)
+  console.log('data', data);
   const [isOpen, setIsOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
-  const [addStaffToPayroll, { isLoading: isCreating }] = useAddStaffToPayrollMutation();
+  const [addStaffToPayroll, { isLoading: isCreating }] =
+    useAddStaffToPayrollMutation();
 
   const {
     register,
@@ -36,7 +35,7 @@ const AddStaffPayroll = ({ refetchData, data }: Props) => {
   });
 
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -53,29 +52,32 @@ const AddStaffPayroll = ({ refetchData, data }: Props) => {
   };
 
   const onSubmit = async (formData: PayrollCreateType) => {
-    console.log("submitting form data", formData);
+    console.log('submitting form data', formData);
     const submissionData = {
-        staff: data.staff.id,
-         ...formData };
-         console.log("submissionData", submissionData);
+      staff: data.staff.id,
+      ...formData,
+    };
+    console.log('submissionData', submissionData);
     try {
       const response = await addStaffToPayroll(submissionData).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Staff added to payroll  successfully!");
+      setSuccessMessage('Staff added to payroll  successfully!');
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
-        setSuccessMessage(`${errorData.error}` || "Failed to add staff to payroll");
+        setSuccessMessage(
+          `${errorData.error}` || 'Failed to add staff to payroll',
+        );
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occurred. Please try again.");
+        setSuccessMessage('Unexpected error occurred. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -146,7 +148,7 @@ const AddStaffPayroll = ({ refetchData, data }: Props) => {
                           type="number"
                           className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                           placeholder="Ksh 0"
-                          {...register("basic_salary")}
+                          {...register('basic_salary')}
                         />
                         {errors.basic_salary && (
                           <p className="text-red-500 text-sm mt-1">
@@ -164,7 +166,7 @@ const AddStaffPayroll = ({ refetchData, data }: Props) => {
                           type="number"
                           className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                           placeholder="e.g Ksh 5000 "
-                          {...register("house_allowance")}
+                          {...register('house_allowance')}
                         />
                         {errors.house_allowance && (
                           <p className="text-red-500 text-sm mt-1">
@@ -183,7 +185,7 @@ const AddStaffPayroll = ({ refetchData, data }: Props) => {
                           type="number"
                           className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                           placeholder="e.g. Ksh 8000"
-                          {...register("transport_allowance")}
+                          {...register('transport_allowance')}
                         />
                         {errors.transport_allowance && (
                           <p className="text-red-500 text-sm mt-1">
@@ -202,7 +204,7 @@ const AddStaffPayroll = ({ refetchData, data }: Props) => {
                           type="number"
                           className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                           placeholder="e.g Ksh 1000"
-                          {...register("other_allowances")}
+                          {...register('other_allowances')}
                         />
                         {errors.other_allowances && (
                           <p className="text-red-500 text-sm mt-1">
@@ -218,7 +220,7 @@ const AddStaffPayroll = ({ refetchData, data }: Props) => {
                       <input
                         type="text"
                         className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
-                        {...register("kra_pin")}
+                        {...register('kra_pin')}
                         placeholder="Enter valid KRA pin"
                       />
                       {errors.kra_pin && (
@@ -237,7 +239,7 @@ const AddStaffPayroll = ({ refetchData, data }: Props) => {
                           type="text"
                           className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                           placeholder="e.g. ADXXXXX"
-                          {...register("nssf_number")}
+                          {...register('nssf_number')}
                         />
                         {errors.nssf_number && (
                           <p className="text-red-500 text-sm mt-1">
@@ -255,7 +257,7 @@ const AddStaffPayroll = ({ refetchData, data }: Props) => {
                           type="text"
                           className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                           placeholder="e.g. 346XXXX"
-                          {...register("nhif_number")}
+                          {...register('nhif_number')}
                         />
                         {errors.nhif_number && (
                           <p className="text-red-500 text-sm mt-1">
@@ -273,7 +275,7 @@ const AddStaffPayroll = ({ refetchData, data }: Props) => {
                           type="text"
                           className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                           placeholder="e.g KCB, EQUITY"
-                          {...register("bank_name")}
+                          {...register('bank_name')}
                         />
                         {errors.bank_name && (
                           <p className="text-red-500 text-sm mt-1">
@@ -291,7 +293,7 @@ const AddStaffPayroll = ({ refetchData, data }: Props) => {
                           type="text"
                           className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                           placeholder="e.g  12348XXXX"
-                          {...register("bank_account_number")}
+                          {...register('bank_account_number')}
                         />
                         {errors.bank_account_number && (
                           <p className="text-red-500 text-sm mt-1">
@@ -309,7 +311,7 @@ const AddStaffPayroll = ({ refetchData, data }: Props) => {
                           type="text"
                           className="w-full py-2 px-4 border placeholder:text-sm rounded-md focus:outline-none"
                           placeholder="e.g 07xxxx"
-                          {...register("mpesa_number")}
+                          {...register('mpesa_number')}
                         />
                         {errors.mpesa_number && (
                           <p className="text-red-500 text-sm mt-1">

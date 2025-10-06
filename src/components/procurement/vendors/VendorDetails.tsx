@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import ContentSpinner from "@/components/common/spinners/dataLoadingSpinner";
-import { useGetVendorDetailsQuery } from "@/store/services/finance/procurementService";
-import { formatCurrency } from "@/utils/currency";
-import { CustomDate, YearMonthCustomDate } from "@/utils/date";
-import Link from "next/link";
-import { FiArrowLeft } from "react-icons/fi";
-import { VendorDetailedType } from "./types";
+import ContentSpinner from '@/components/common/spinners/dataLoadingSpinner';
+import { useGetVendorDetailsQuery } from '@/store/services/finance/procurementService';
+import { formatCurrency } from '@/utils/currency';
+import { CustomDate, YearMonthCustomDate } from '@/utils/date';
+import Link from 'next/link';
+import { FiArrowLeft } from 'react-icons/fi';
+import { VendorDetailedType } from './types';
 
 interface Props {
   id: string | number | null;
@@ -16,7 +16,7 @@ const VendorDetails = ({ id }: Props) => {
   const { data, isLoading, error } = useGetVendorDetailsQuery(id, {
     skip: !id,
   });
-console.log("data", data)
+  console.log('data', data);
   const vendor = data as VendorDetailedType;
 
   if (isLoading) {
@@ -143,7 +143,9 @@ console.log("data", data)
         {/* Awards */}
         <div className="bg-white rounded-lg shadow border">
           <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-900">Tender Awards</h2>
+            <h2 className="text-lg font-semibold text-gray-900">
+              Tender Awards
+            </h2>
           </div>
 
           {vendor.awards.length > 0 ? (
@@ -175,24 +177,28 @@ console.log("data", data)
                         {award.tender.title}
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-800">
-                        {YearMonthCustomDate(award.tender.start_date)} - {YearMonthCustomDate(award.tender.end_date)}
+                        {YearMonthCustomDate(award.tender.start_date)} -{' '}
+                        {YearMonthCustomDate(award.tender.end_date)}
                       </td>
                       <td className="px-6 py-4 text-sm text-green-700 font-medium">
                         {formatCurrency(award.award_amount)}
                       </td>
                       <td className={`px-6 py-4 text-sm`}>
-                            <span className={` border rounded-md px-3 py-1
-                      ${award.status === "approved" 
-                      ? "border-green-700 text-green-500 bg-green-100 " 
-                      : award.status === "revoked" 
-                      ? "border-red-700 text-red-500 bg-red-100 "
-                      : award.status === "completed"
-                      ? "border-blue-700 bg-blue-100 text-blue-500"
-                      : "border-red-700" }
-                        `}>
-   {award.status}
-                            </span>
-                     
+                        <span
+                          className={` border rounded-md px-3 py-1
+                      ${
+                        award.status === 'approved'
+                          ? 'border-green-700 text-green-500 bg-green-100 '
+                          : award.status === 'revoked'
+                            ? 'border-red-700 text-red-500 bg-red-100 '
+                            : award.status === 'completed'
+                              ? 'border-blue-700 bg-blue-100 text-blue-500'
+                              : 'border-red-700'
+                      }
+                        `}
+                        >
+                          {award.status}
+                        </span>
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-500">
                         {CustomDate(award.created_on)}

@@ -1,14 +1,14 @@
-import PageLoadingSpinner from '@/components/common/spinners/pageLoadingSpinner'
-import Units from '@/components/curriculum/units'
+import PageLoadingSpinner from '@/components/common/spinners/pageLoadingSpinner';
+import Units from '@/components/curriculum/units';
 
-import React, { Suspense } from 'react'
+import React, { Suspense } from 'react';
 
 const CoursesPage = () => {
   return (
     <Suspense fallback={<PageLoadingSpinner />}>
-                  <Units />
-                  </Suspense>
-  )
-}
+      <Units />
+    </Suspense>
+  );
+};
 
-export default CoursesPage
+export default CoursesPage;

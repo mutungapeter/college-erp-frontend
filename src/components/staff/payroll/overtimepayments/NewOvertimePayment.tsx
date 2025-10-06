@@ -1,22 +1,22 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FiPlus } from "react-icons/fi";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiPlus } from 'react-icons/fi';
 
-import SuccessFailModal from "@/components/common/Modals/SuccessFailModal";
-import SubmitSpinner from "@/components/common/spinners/submitSpinner";
-import Select from "react-select";
+import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
+import Select from 'react-select';
 
-import { StaffType } from "@/definitions/staff";
+import { StaffType } from '@/definitions/staff';
 import {
   overtimeRecordSchema,
   OvertimeRecordsFormData,
-} from "@/schemas/payroll/main";
+} from '@/schemas/payroll/main';
 import {
   useCreateOvertimePaymentMutation,
   useGetStaffListQuery,
-} from "@/store/services/staff/staffService";
+} from '@/store/services/staff/staffService';
 type SchoolOption = {
   value: string;
   label: string;
@@ -29,7 +29,7 @@ const CreateOvertimePayment = ({
   const [isOpen, setIsOpen] = useState(false);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
 
   const [isError, setIsError] = useState(false);
 
@@ -38,7 +38,7 @@ const CreateOvertimePayment = ({
 
   const { data: staffData } = useGetStaffListQuery(
     {},
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
 
   const {
@@ -51,14 +51,14 @@ const CreateOvertimePayment = ({
     resolver: zodResolver(overtimeRecordSchema),
     defaultValues: {
       staff: undefined,
-      date: "",
+      date: '',
       hours: 0,
       rate_per_hour: 0,
       approved: false,
     },
   });
   useEffect(() => {
-    console.log("Form Errors:", errors);
+    console.log('Form Errors:', errors);
   }, [errors]);
 
   const handleCloseModal = () => {
@@ -74,31 +74,31 @@ const CreateOvertimePayment = ({
   const handleStaffChange = (selected: SchoolOption | null) => {
     if (selected) {
       const staffId = Number(selected.value);
-      setValue("staff", staffId);
+      setValue('staff', staffId);
     }
   };
 
   const onSubmit = async (formData: OvertimeRecordsFormData) => {
-    console.log("submitting form data");
+    console.log('submitting form data');
 
     try {
       const response = await createOvertimePayment(formData).unwrap();
-      console.log("response", response);
+      console.log('response', response);
       setIsError(false);
-      setSuccessMessage("Overtime Payment Added successfully!");
+      setSuccessMessage('Overtime Payment Added successfully!');
       setShowSuccessModal(true);
       reset();
       refetchData();
     } catch (error: unknown) {
-      console.log("error", error);
+      console.log('error', error);
       setIsError(true);
-      if (error && typeof error === "object" && "data" in error && error.data) {
+      if (error && typeof error === 'object' && 'data' in error && error.data) {
         const errorData = (error as { data: { error: string } }).data;
         setSuccessMessage(errorData.error);
         setShowSuccessModal(true);
       } else {
         setIsError(true);
-        setSuccessMessage("Unexpected error occured. Please try again.");
+        setSuccessMessage('Unexpected error occured. Please try again.');
         setShowSuccessModal(true);
       }
     }
@@ -164,16 +164,16 @@ const CreateOvertimePayment = ({
                         }),
                         control: (base) => ({
                           ...base,
-                          minHeight: "24px",
-                          minWidth: "200px",
-                          borderColor: "#d1d5db",
-                          boxShadow: "none",
-                          "&:hover": {
-                            borderColor: "#9ca3af",
+                          minHeight: '24px',
+                          minWidth: '200px',
+                          borderColor: '#d1d5db',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: '#9ca3af',
                           },
-                          "&:focus-within": {
-                            borderColor: "#9ca3af",
-                            boxShadow: "none",
+                          '&:focus-within': {
+                            borderColor: '#9ca3af',
+                            boxShadow: 'none',
                           },
                         }),
                       }}
@@ -195,7 +195,7 @@ const CreateOvertimePayment = ({
                       <input
                         type="date"
                         className="w-full py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-primary "
-                        {...register("date")}
+                        {...register('date')}
                       />
                     </div>
                     {errors.date && (
@@ -214,7 +214,7 @@ const CreateOvertimePayment = ({
                         <input
                           type="number"
                           className="w-full py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-primary "
-                          {...register("rate_per_hour")}
+                          {...register('rate_per_hour')}
                           placeholder="Ksh"
                         />
                       </div>
@@ -234,7 +234,7 @@ const CreateOvertimePayment = ({
                         <input
                           type="number"
                           className="w-full py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-primary "
-                          {...register("hours")}
+                          {...register('hours')}
                         />
                       </div>
                       {errors.hours && (

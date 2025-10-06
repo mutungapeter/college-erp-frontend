@@ -1,9 +1,7 @@
-import React from 'react'
+import React from 'react';
 
 const staffAttendancePage = () => {
-  return (
-    <div>staffAttendancePage</div>
-  )
-}
+  return <div>staffAttendancePage</div>;
+};
 
-export default staffAttendancePage
+export default staffAttendancePage;

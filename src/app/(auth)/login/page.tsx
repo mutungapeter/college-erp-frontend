@@ -1,15 +1,10 @@
-"use client";
+'use client';
 
-
-
-
-import Login from "@/components/auth/Login";
+import Login from '@/components/auth/Login';
 const LoginPage = () => {
-
- 
   return (
     <>
-     <Login />
+      <Login />
     </>
   );
 };
