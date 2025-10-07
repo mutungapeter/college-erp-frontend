@@ -2,6 +2,7 @@
 
 import FilterSelect from '@/components/common/Select';
 import ContentSpinner from '@/components/common/spinners/dataLoadingSpinner';
+import SubmitSpinner from '@/components/common/spinners/submitSpinner';
 import { LabelOptionsType } from '@/definitions/Labels/labelOptionsType';
 import {
   ProgrammeCohortType,
@@ -18,11 +19,10 @@ import { useGetProgrammesQuery } from '@/store/services/curriculum/programmesSer
 import { useGetSemestersQuery } from '@/store/services/curriculum/semestersService';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
+import { BsFileEarmarkPdf, BsStars } from 'react-icons/bs';
 import { GoSearch } from 'react-icons/go';
 import TranscriptHTMLView from './TranscriptHTMLView';
 import { exportTranscriptToPDF } from './TranscriptsPdf';
-import { BsFileEarmarkPdf, BsStars } from 'react-icons/bs';
-import SubmitSpinner from '@/components/common/spinners/submitSpinner';
 
 const Transcripts = () => {
   const router = useRouter();
@@ -127,7 +127,7 @@ const Transcripts = () => {
   const semestersOptions =
     semesters?.map((item: SemesterType) => ({
       value: item.id,
-      label: `${item.name} (${item.academic_year})`,
+      label: `${item.name} (${item.academic_year.name})`,
     })) || [];
 
   const handleProgrammeChange = (selectedOption: LabelOptionsType | null) => {
@@ -183,20 +183,27 @@ const Transcripts = () => {
             )}
           </div>
         </div>
-
-        <div className="flex flex-col gap-4 mt-5 lg:gap-0 md:gap-0 lg:flex-row md:flex-row md:items-center p-2 md:justify-between lg:items-center lg:justify-between">
-          <div className="relative w-full md:w-auto md:min-w-[40%] flex-grow flex items-center gap-2 text-gray-500 focus-within:text-blue-600 px-2">
-            <GoSearch size={20} className="" />
+        <div
+          className="flex flex-col gap-4 mt-5 lg:gap-0 md:gap-0 lg:flex-row md:flex-row md:items-center
+  p-2 md:justify-end lg:items-center lg:justify-end"
+        ></div>
+        {/* <div className="flex flex-col gap-4 mt-5 lg:gap-0 md:gap-0 lg:flex-row md:flex-row md:items-center p-2 md:justify-between lg:items-center lg:justify-between">
+          <div className="flex items-center w-full md:w-auto md:min-w-[35%] rounded-md border border-gray-300 px-3 py-2 text-gray-500 focus-within:border-blue-600 focus-within:text-blue-600 transition-colors">
+            <GoSearch size={18} className="mr-2 text-gray-400" />
             <input
               type="text"
               name="reg_no"
               onChange={handleFilterChange}
               value={filters.reg_no}
-              placeholder="generate by student's reg no"
-              className="w-full md:w-auto text-gray-900 md:min-w-[60%] text-sm px-2 py-2 bg-transparent outline-none border-b border-gray-300 focus:border-blue-600"
+              placeholder="Generate by student's reg no"
+              className="w-full text-sm text-gray-900 md:w-auto md:min-w-[35%] bg-transparent focus:outline-none placeholder-gray-400"
             />
           </div>
-          <div className="flex flex-col gap-3 lg:p-0 lg:flex-row md:flex-row md:items-center md:space-x-2 lg:items-center lg:space-x-5">
+
+          <div
+            className="flex flex-col  lg:p-0 lg:flex-row
+           md:flex-row md:items-center lg:items-center gap-2 "
+          >
             <FilterSelect
               options={cohortsOptions}
               value={
@@ -233,6 +240,56 @@ const Transcripts = () => {
               defaultLabel="All Semesters"
             />
           </div>
+        </div> */}
+        <div className="flex flex-col gap-3 mt-5 md:flex-row md:items-center md:justify-between p-2">
+          {/* 🔍 Search input */}
+          <div className="flex items-center w-full md:w-[35%] rounded-md border border-gray-300 px-3 py-2 bg-white text-gray-500 focus-within:border-blue-600 focus-within:text-blue-600 transition-colors">
+            <GoSearch size={18} className="mr-2 text-gray-400" />
+            <input
+              type="text"
+              name="reg_no"
+              onChange={handleFilterChange}
+              value={filters.reg_no}
+              placeholder="Search by registration number"
+              className="w-full text-sm text-gray-900 bg-transparent focus:outline-none placeholder-gray-400"
+            />
+          </div>
+
+          {/* 🧭 Dropdown filters */}
+          <div className="flex flex-col md:flex-row gap-2 md:gap-3">
+            <FilterSelect
+              options={cohortsOptions}
+              value={
+                cohortsOptions.find(
+                  (option: LabelOptionsType) => option.value === filters.cohort,
+                ) || { value: '', label: 'All Classes' }
+              }
+              onChange={handleCohortChange}
+              defaultLabel="All Classes"
+            />
+            <FilterSelect
+              options={programmeOptions}
+              value={
+                programmeOptions.find(
+                  (option: LabelOptionsType) =>
+                    option.value === filters.programme,
+                ) || { value: '', label: 'All Courses' }
+              }
+              onChange={handleProgrammeChange}
+              defaultLabel="All Courses"
+            />
+            <FilterSelect
+              options={semestersOptions}
+              value={
+                semestersOptions.find(
+                  (option: LabelOptionsType) =>
+                    option.value === filters.semester,
+                ) || { value: '', label: 'All Semesters' }
+              }
+              onChange={handleSemesterChange}
+              defaultLabel="All Semesters"
+            />
+          </div>
         </div>
       </div>
 
@@ -247,7 +304,7 @@ const Transcripts = () => {
           </p>
         </div>
       ) : isDataLoaded && newData.length > 0 ? (
-        <div className="bg-gray-100 p-4">
+        <div className="bg-gray-100 p-2">
           <TranscriptHTMLView transcriptData={newData} />
         </div>
       ) : (

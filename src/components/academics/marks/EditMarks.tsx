@@ -3,17 +3,19 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FiEdit } from 'react-icons/fi';
+import Select, { SingleValue } from 'react-select';
 
 import SuccessFailModal from '@/components/common/Modals/SuccessFailModal';
 
 import { IoCloseOutline } from 'react-icons/io5';
-import { z } from 'zod';
 
 import CreateAndUpdateButton from '@/components/common/CreateAndUpdateButton';
 import ModalBottomButton from '@/components/common/StickyModalFooterButtons';
 import { MarksType } from '@/definitions/academics';
-import { updateExamDataSchema } from '@/schemas/exams/main';
+import { StudyYearType } from '@/definitions/curiculum';
+import { ExamDataCreate, examDataCreateSchema } from '@/schemas/exams/main';
 import { useUpdateMarksMutation } from '@/store/services/academics/acadmicsService';
+import { useGetStudyYearsQuery } from '@/store/services/curriculum/academicYearsService';
 
 const EditMarks = ({
   data,
@@ -23,24 +25,30 @@ const EditMarks = ({
   refetchData: () => void;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-
+  console.log("data", data)
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
 
   const [isError, setIsError] = useState(false);
 
   const [updateMarks, { isLoading: isUpdating }] = useUpdateMarksMutation();
-  type FormValues = z.infer<typeof updateExamDataSchema>;
+    const { data: studyYears } = useGetStudyYearsQuery(
+      {},
+      { refetchOnMountOrArgChange: true },
+    );
+
   const {
     handleSubmit,
     register,
+    setValue,
     formState: { isSubmitting, errors },
-  } = useForm({
-    resolver: zodResolver(updateExamDataSchema),
+  } =  useForm<ExamDataCreate>({
+      resolver: zodResolver(examDataCreateSchema),
     defaultValues: {
       cat_one: data?.cat_one ? Number(data.cat_one) : 0,
       cat_two: data?.cat_two ? Number(data.cat_two) : 0,
       exam_marks: data?.exam_marks ? Number(data.exam_marks) : 0,
+      study_year: data?.study_year?.id ?? undefined,
     },
   });
   console.log('data', data);
@@ -60,7 +68,16 @@ const EditMarks = ({
     handleCloseModal();
   };
 
-  const onSubmit = async (formData: FormValues) => {
+const handleStudyYearChange = (
+  selected: SingleValue<{ value: number | undefined; label?: string }>
+) => {
+  if (selected) {
+    const itemId = Number(selected.value);
+    setValue('study_year', itemId);
+  }
+};
+
+  const onSubmit = async (formData: ExamDataCreate) => {
     console.log('submitting form data for update', formData);
     console.log('data', formData);
     try {
@@ -143,7 +160,7 @@ const EditMarks = ({
                     />
                   </div>
                 </div>
-                <div className="p-3 space-y-2">
+                {/* <div className="p-3 space-y-2">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
                     <div>
                       <label className="block text-sm font-medium text-gray-700">
@@ -204,11 +221,67 @@ const EditMarks = ({
                       className="w-full py-2 px-4 border bg-gray-200 placeholder:text-sm rounded-md focus:outline-none"
                     />
                   </div>
-                </div>
+                </div> */}
                 <form
                   onSubmit={handleSubmit(onSubmit)}
                   className="space-y-3 mt-2 p-3"
                 >
+                    <div className="relative">
+                                      <label className="block space-x-1 text-sm font-medium mb-2">
+                                        Study Year<span className="text-red-500">*</span>
+                                      </label>
+                                      <Select
+                                        options={studyYears?.map((item: StudyYearType) => ({
+                                          value: item.id,
+                                          label: `${item.name}`,
+                                        }))}
+                                        defaultValue={{
+                                          label: data?.study_year?.name,
+                                          value: data?.study_year?.id,
+                                        }}
+                                        menuPortalTarget={document.body}
+                                        menuPlacement="auto"
+                                        isClearable={true}
+                                        isSearchable={true}
+                                        styles={{
+                                          menuPortal: (base) => ({
+                                            ...base,
+                                            zIndex: 9999,
+                                          }),
+                                          control: (base) => ({
+                                            ...base,
+                                            minHeight: '26px',
+                                            minWidth: '200px',
+                                            borderColor: '#d1d5db',
+                                            boxShadow: 'none',
+                                            cursor: 'pointer',
+                                            '&:hover': {
+                                              borderColor: '#9ca3af',
+                                            },
+                                            '&:focus-within': {
+                                              borderColor: '#9ca3af',
+                                              boxShadow: 'none',
+                                            },
+                                          }),
+                                          menu: (base) => ({
+                                            ...base,
+                                            zIndex: 9999,
+                                            cursor: 'pointer',
+                                          }),
+                                          option: (base) => ({
+                                            ...base,
+                                            cursor: 'pointer',
+                                          }),
+                                        }}
+                                        onChange={handleStudyYearChange}
+                                      />
+                  
+                                      {errors.study_year && (
+                                        <p className="text-red-500 text-sm mt-1">
+                                          {errors.study_year.message}
+                                        </p>
+                                      )}
+                                    </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm">Cat One</label>

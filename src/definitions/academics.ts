@@ -1,4 +1,4 @@
-import { CourseType, ProgrammeCohortType, SemesterType } from './curiculum';
+import { CourseType, ProgrammeCohortType, SemesterType, StudyYearType } from './curiculum';
 import { StudentDetailsType } from './students';
 
 export interface Role {
@@ -38,4 +38,5 @@ export interface MarksType {
   total_marks: string;
   recorded_by: RecordedBy;
   grade: string;
+  study_year: StudyYearType;
 }

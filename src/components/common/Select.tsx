@@ -16,7 +16,7 @@ const FilterSelect: React.FC<FilterSelectProps> = ({
   onChange,
   placeholder,
   defaultLabel,
-  className = 'w-full md:w-auto md:min-w-[180px]',
+  className = 'w-full md:w-auto md:min-w-[150px]',
 }) => {
   return (
     <Select
@@ -36,7 +36,7 @@ const FilterSelect: React.FC<FilterSelectProps> = ({
         }),
         control: (base) => ({
           ...base,
-          minHeight: '34px',
+          minHeight: '24px',
           minWidth: '90px',
           borderColor: '#d1d5db',
           boxShadow: 'none',
