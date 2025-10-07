@@ -259,7 +259,8 @@ const CashflowReports = () => {
                 {formatCurrency(data.summary.opening_balance)}
               </div>
               <div className="text-xs text-gray-500 mt-1">
-                As of 26 July, 2024
+                {getPeriodText() ||
+                  `As of ${formatDate(new Date().toISOString())}`}
               </div>
             </div>
             <div className="bg-green-50 border border-green-200 rounded-lg p-4 hover:shadow-md hover:border-green-300 transition-all duration-300">
@@ -310,7 +311,8 @@ const CashflowReports = () => {
                 {formatCurrency(data.summary.ending_balance)}
               </div>
               <div className="text-xs text-blue-600 mt-1">
-                As of 26 July, 2025
+                {getPeriodText() ||
+                  `As of ${formatDate(new Date().toISOString())}`}
               </div>
             </div>
           </div>
