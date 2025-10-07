@@ -6,9 +6,10 @@ import { formatCurrency } from "@/utils/currency";
 export interface FeeStatementStudent {
   id: number;
   registration_number: string;
-  name: string; // full name instead of first_name / last_name
+  name: string;
   programme: string;
   cohort: string;
+  balance: string; // ✅ added from backend
   statements: FeeStatementRecord[];
 }
 
@@ -17,7 +18,7 @@ interface FeeStatementRecord {
   statement_type: string;
   debit: string;
   credit: string;
-  balance: string; // note: string in your data
+  balance: string;
   payment_method: string | null;
   semester: string;
   created_on: string;
@@ -50,8 +51,9 @@ const StudentFeeStatementHTMLView = ({
           (sum, s) => sum + parseFloat(s.credit || "0"),
           0
         );
-        const currentBalance =
-          parseFloat(statements[statements.length - 1]?.balance || "0");
+
+        // ✅ use backend balance instead of computing
+        const currentBalance = parseFloat(student.balance || "0");
 
         return (
           <div
@@ -82,7 +84,7 @@ const StudentFeeStatementHTMLView = ({
               </h2>
             </div>
 
-            {/* Student Information */}
+            {/* Student Info */}
             <div className="grid grid-cols-4 gap-4 mb-6 p-4 bg-gray-50 rounded">
               <div className="space-y-2">
                 <p>
@@ -114,14 +116,14 @@ const StudentFeeStatementHTMLView = ({
                   {new Date(statements[0].created_on).getFullYear()}
                 </p>
               </div>
-              {/* <div className="space-y-2">
+              <div className="space-y-2">
                 <p>
                   <span className="font-bold text-gray-700">Balance: </span>
                   <span className="font-bold">
                     {formatCurrency(currentBalance)}
                   </span>
                 </p>
-              </div> */}
+              </div>
             </div>
 
             {/* Statement Table */}

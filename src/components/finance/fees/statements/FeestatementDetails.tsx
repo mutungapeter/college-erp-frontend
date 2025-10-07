@@ -62,7 +62,7 @@ const FeeStatementsDetails = () => {
     refetchOnMountOrArgChange: true,
   });
 
-  // console.log("Fee statements data:", data);
+  console.log("Fee statements data:", data);
   // console.log("error:", error);
 
   const { data: cohortsData } = useGetCohortsQuery(
